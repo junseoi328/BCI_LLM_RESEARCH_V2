@@ -1,0 +1,35 @@
+### Health
+GET http://127.0.0.1:8000/health
+
+### Context-sensitive initials prediction
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+
+{
+  "input_mode": "initials",
+  "bci_input": "ㄷㅇㅈ",
+  "partner": "friend",
+  "situation": "schedule",
+  "recent_context": ["다음 주에 약속 잡을까"],
+  "context_level": "full",
+  "top_k": 3
+}
+
+### EEG top-k fusion
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+
+{
+  "input_mode": "initials",
+  "bci_input": "ㄷㅇㅈ",
+  "partner": "family",
+  "situation": "positioning",
+  "recent_context": ["혼자 자세를 바꾸기 어렵다"],
+  "eeg_score_type": "probability",
+  "eeg_hypotheses": [
+    {"initials": "ㄷㅇㅈ", "score": 0.61},
+    {"initials": "ㄷㅇㅊ", "score": 0.22},
+    {"initials": "ㅌㅇㅈ", "score": 0.17}
+  ],
+  "top_k": 3
+}

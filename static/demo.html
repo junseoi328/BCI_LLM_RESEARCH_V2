@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BCI LLM Test UI</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 920px; margin: 40px auto; padding: 0 20px; background:#111; color:#eee; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    label { display:block; font-size:14px; margin-bottom:6px; color:#bbb; }
+    input, select, textarea, button { width:100%; box-sizing:border-box; padding:12px; border-radius:8px; border:1px solid #444; background:#1d1d1d; color:#fff; }
+    textarea { min-height:90px; }
+    button { cursor:pointer; background:#176b3a; font-weight:700; margin-top:16px; }
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+    .card { border:1px solid #444; padding:18px; border-radius:12px; background:#1a1a1a; }
+    pre { white-space:pre-wrap; background:#080808; padding:16px; border-radius:10px; overflow:auto; }
+    .meta { color:#aaa; font-size:13px; }
+  </style>
+</head>
+<body>
+  <h1>BCI Korean LLM Test UI</h1>
+  <p class="meta">OpenAI API key는 브라우저에 넣지 않습니다. 이 페이지는 FastAPI /predict만 호출합니다.</p>
+  <div class="grid">
+    <div><label>초성열</label><input id="input" value="ㄷㅇㅈ" /></div>
+    <div><label>상대</label><select id="partner"><option>family</option><option selected>friend</option><option>caregiver</option><option>medical_staff</option><option>other</option></select></div>
+    <div><label>상황</label><select id="situation"><option>general</option><option>home</option><option>hospital</option><option>meal</option><option>pain</option><option>positioning</option><option selected>schedule</option><option>entertainment</option><option>emergency</option></select></div>
+    <div><label>Context level</label><select id="contextLevel"><option>none</option><option>partner</option><option>partner_situation</option><option selected>full</option></select></div>
+  </div>
+  <label style="margin-top:16px">최근 대화 (한 줄 = 한 발화)</label>
+  <textarea id="context">다음 주에 약속 잡을까</textarea>
+  <button id="run">Predict</button>
+  <div id="cards" class="cards"></div>
+  <h3>Raw response</h3>
+  <pre id="raw">아직 요청하지 않았습니다.</pre>
+<script>
+const $ = id => document.getElementById(id);
+$('run').onclick = async () => {
+  $('raw').textContent = '요청 중...';
+  $('cards').innerHTML = '';
+  const body = {
+    input_mode: 'initials',
+    bci_input: $('input').value.trim(),
+    partner: $('partner').value,
+    situation: $('situation').value,
+    current_sentence: '',
+    recent_context: $('context').value.split('\n').map(x=>x.trim()).filter(Boolean),
+    context_level: $('contextLevel').value,
+    top_k: 3
+  };
+  try {
+    const res = await fetch('/predict', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    const data = await res.json();
+    $('raw').textContent = JSON.stringify(data, null, 2);
+    if (!res.ok) return;
+    data.candidates.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `<b>${c.rank}. ${c.text}</b><div class="meta">final=${c.final_score.toFixed(3)}<br>context=${c.context_score.toFixed(3)}<br>language=${c.language_score.toFixed(3)}</div>`;
+      $('cards').appendChild(el);
+    });
+  } catch (e) { $('raw').textContent = String(e); }
+};
+</script>
+</body>
+</html>

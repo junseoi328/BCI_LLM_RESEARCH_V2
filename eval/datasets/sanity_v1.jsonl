@@ -1,0 +1,50 @@
+{"id": "T001", "target": "도와줘", "bci_input": "ㄷㅇㅈ", "partner": "family", "situation": "positioning", "current_sentence": "", "recent_context": ["혼자 자세를 바꾸기 어렵다"]}
+{"id": "T002", "target": "물 줘", "bci_input": "ㅁㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["목이 말라"]}
+{"id": "T003", "target": "불 꺼줘", "bci_input": "ㅂㄲㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["이제 자려고 해"]}
+{"id": "T004", "target": "자세 바꿔줘", "bci_input": "ㅈㅅㅂㄲㅈ", "partner": "caregiver", "situation": "positioning", "current_sentence": "", "recent_context": ["현재 자세가 불편해"]}
+{"id": "T005", "target": "목 말라", "bci_input": "ㅁㅁㄹ", "partner": "family", "situation": "meal", "current_sentence": "", "recent_context": ["물을 마시고 싶어"]}
+{"id": "T006", "target": "추워", "bci_input": "ㅊㅇ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["방이 너무 춥다"]}
+{"id": "T007", "target": "더워", "bci_input": "ㄷㅇ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["방이 너무 덥다"]}
+{"id": "T008", "target": "고마워", "bci_input": "ㄱㅁㅇ", "partner": "family", "situation": "general", "current_sentence": "", "recent_context": ["도와줘서 정말 좋았어"]}
+{"id": "T009", "target": "사랑해", "bci_input": "ㅅㄹㅎ", "partner": "family", "situation": "general", "current_sentence": "", "recent_context": ["가족에게 마음을 표현하고 싶다"]}
+{"id": "T010", "target": "잘 자", "bci_input": "ㅈㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["이제 잠들 시간이다"]}
+{"id": "T011", "target": "배고파", "bci_input": "ㅂㄱㅍ", "partner": "family", "situation": "meal", "current_sentence": "", "recent_context": ["아직 저녁을 먹지 않았다"]}
+{"id": "T012", "target": "밥 줘", "bci_input": "ㅂㅈ", "partner": "family", "situation": "meal", "current_sentence": "", "recent_context": ["식사 시간이 됐다"]}
+{"id": "T013", "target": "물 마실래", "bci_input": "ㅁㅁㅅㄹ", "partner": "friend", "situation": "meal", "current_sentence": "", "recent_context": ["목이 말라서 음료 이야기를 하고 있다"]}
+{"id": "T014", "target": "커피 마실래", "bci_input": "ㅋㅍㅁㅅㄹ", "partner": "friend", "situation": "meal", "current_sentence": "", "recent_context": ["카페에서 무엇을 마실지 이야기 중이다"]}
+{"id": "T015", "target": "화장실 가고 싶어", "bci_input": "ㅎㅈㅅㄱㄱㅅㅇ", "partner": "caregiver", "situation": "home", "current_sentence": "", "recent_context": ["화장실에 가고 싶다는 의사를 전달해야 한다"]}
+{"id": "T016", "target": "쉬고 싶어", "bci_input": "ㅅㄱㅅㅇ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["오래 활동해서 피곤하다"]}
+{"id": "T017", "target": "자고 싶어", "bci_input": "ㅈㄱㅅㅇ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["너무 피곤해서 잠을 자고 싶다"]}
+{"id": "T018", "target": "일어나고 싶어", "bci_input": "ㅇㅇㄴㄱㅅㅇ", "partner": "caregiver", "situation": "positioning", "current_sentence": "", "recent_context": ["침대에서 일어나고 싶다"]}
+{"id": "T019", "target": "앉고 싶어", "bci_input": "ㅇㄱㅅㅇ", "partner": "caregiver", "situation": "positioning", "current_sentence": "", "recent_context": ["누워 있는데 앉은 자세로 바꾸고 싶다"]}
+{"id": "T020", "target": "누워 있고 싶어", "bci_input": "ㄴㅇㅇㄱㅅㅇ", "partner": "caregiver", "situation": "positioning", "current_sentence": "", "recent_context": ["앉아 있는 자세가 힘들다"]}
+{"id": "T021", "target": "아파", "bci_input": "ㅇㅍ", "partner": "medical_staff", "situation": "pain", "current_sentence": "", "recent_context": ["통증이 있다는 것을 알려야 한다"]}
+{"id": "T022", "target": "머리 아파", "bci_input": "ㅁㄹㅇㅍ", "partner": "medical_staff", "situation": "pain", "current_sentence": "", "recent_context": ["통증 위치가 머리다"]}
+{"id": "T023", "target": "배 아파", "bci_input": "ㅂㅇㅍ", "partner": "medical_staff", "situation": "pain", "current_sentence": "", "recent_context": ["통증 위치가 배다"]}
+{"id": "T024", "target": "숨쉬기 힘들어", "bci_input": "ㅅㅅㄱㅎㄷㅇ", "partner": "medical_staff", "situation": "emergency", "current_sentence": "", "recent_context": ["호흡이 불편하다는 것을 즉시 전달해야 한다"]}
+{"id": "T025", "target": "간호사 불러줘", "bci_input": "ㄱㅎㅅㅂㄹㅈ", "partner": "caregiver", "situation": "hospital", "current_sentence": "", "recent_context": ["간호사의 도움이 필요하다"]}
+{"id": "T026", "target": "의사 불러줘", "bci_input": "ㅇㅅㅂㄹㅈ", "partner": "caregiver", "situation": "hospital", "current_sentence": "", "recent_context": ["의사를 만나고 싶다"]}
+{"id": "T027", "target": "약 주세요", "bci_input": "ㅇㅈㅅㅇ", "partner": "medical_staff", "situation": "hospital", "current_sentence": "", "recent_context": ["복용할 약을 요청하고 있다"]}
+{"id": "T028", "target": "괜찮아요", "bci_input": "ㄱㅊㅇㅇ", "partner": "medical_staff", "situation": "hospital", "current_sentence": "", "recent_context": ["현재 상태가 괜찮다고 답하려 한다"]}
+{"id": "T029", "target": "안 괜찮아요", "bci_input": "ㅇㄱㅊㅇㅇ", "partner": "medical_staff", "situation": "hospital", "current_sentence": "", "recent_context": ["현재 상태가 괜찮지 않다고 답하려 한다"]}
+{"id": "T030", "target": "지금 몇 시야", "bci_input": "ㅈㄱㅁㅅㅇ", "partner": "family", "situation": "general", "current_sentence": "", "recent_context": ["현재 시간을 묻고 싶다"]}
+{"id": "T031", "target": "오늘 뭐 해", "bci_input": "ㅇㄴㅁㅎ", "partner": "friend", "situation": "schedule", "current_sentence": "", "recent_context": ["오늘 일정을 이야기 중이다"]}
+{"id": "T032", "target": "내일 뭐 해", "bci_input": "ㄴㅇㅁㅎ", "partner": "friend", "situation": "schedule", "current_sentence": "", "recent_context": ["내일 일정이 있는지 묻고 있다"]}
+{"id": "T033", "target": "다음 주", "bci_input": "ㄷㅇㅈ", "partner": "friend", "situation": "schedule", "current_sentence": "", "recent_context": ["다음 주에 약속 잡을까"]}
+{"id": "T034", "target": "같이 보자", "bci_input": "ㄱㅇㅂㅈ", "partner": "friend", "situation": "entertainment", "current_sentence": "", "recent_context": ["영화를 함께 볼지 이야기하고 있다"]}
+{"id": "T035", "target": "음악 틀어줘", "bci_input": "ㅇㅇㅌㅇㅈ", "partner": "family", "situation": "entertainment", "current_sentence": "", "recent_context": ["음악을 듣고 싶다"]}
+{"id": "T036", "target": "티비 켜줘", "bci_input": "ㅌㅂㅋㅈ", "partner": "family", "situation": "entertainment", "current_sentence": "", "recent_context": ["TV를 보고 싶다"]}
+{"id": "T037", "target": "창문 열어줘", "bci_input": "ㅊㅁㅇㅇㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["방 안이 답답해서 환기하고 싶다"]}
+{"id": "T038", "target": "문 닫아줘", "bci_input": "ㅁㄷㅇㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["열린 문을 닫고 싶다"]}
+{"id": "T039", "target": "조명 켜줘", "bci_input": "ㅈㅁㅋㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["방이 너무 어둡다"]}
+{"id": "T040", "target": "조명 꺼줘", "bci_input": "ㅈㅁㄲㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["방이 너무 밝아서 조명을 끄고 싶다"]}
+{"id": "T041", "target": "너무 밝아", "bci_input": "ㄴㅁㅂㅇ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["빛이 강해서 불편하다"]}
+{"id": "T042", "target": "너무 어두워", "bci_input": "ㄴㅁㅇㄷㅇ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["주변이 어두워 잘 보이지 않는다"]}
+{"id": "T043", "target": "좋아", "bci_input": "ㅈㅇ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["상대의 제안에 긍정하고 싶다"]}
+{"id": "T044", "target": "싫어", "bci_input": "ㅅㅇ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["상대의 제안을 거절하고 싶다"]}
+{"id": "T045", "target": "맞아", "bci_input": "ㅁㅇ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["상대가 한 말이 맞다고 동의한다"]}
+{"id": "T046", "target": "아니", "bci_input": "ㅇㄴ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["상대의 말에 아니라고 답한다"]}
+{"id": "T047", "target": "다시 말해줘", "bci_input": "ㄷㅅㅁㅎㅈ", "partner": "family", "situation": "general", "current_sentence": "", "recent_context": ["상대의 말을 잘 이해하지 못했다"]}
+{"id": "T048", "target": "천천히 말해줘", "bci_input": "ㅊㅊㅎㅁㅎㅈ", "partner": "family", "situation": "general", "current_sentence": "", "recent_context": ["상대가 너무 빨리 말하고 있다"]}
+{"id": "T049", "target": "잠깐만", "bci_input": "ㅈㄲㅁ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["잠시 기다려 달라고 말하고 싶다"]}
+{"id": "T050", "target": "다음에 하자", "bci_input": "ㄷㅇㅇㅎㅈ", "partner": "friend", "situation": "schedule", "current_sentence": "", "recent_context": ["지금 말고 다음 기회로 미루고 싶다"]}
