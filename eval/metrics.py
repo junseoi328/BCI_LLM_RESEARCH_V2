@@ -49,3 +49,43 @@ def ksr(baseline_selections: float, assisted_selections: float) -> float:
     if baseline_selections <= 0:
         raise ValueError("baseline_selections must be > 0")
     return 1.0 - assisted_selections / baseline_selections
+
+
+
+import re
+import unicodedata
+
+
+def normalize_eval_text(text: str) -> str:
+    """
+    의미를 바꾸지 않는 표면 차이만 제거한다.
+
+    예:
+    '물 마실래?' -> '물마실래'
+    '티비 켜 줘' -> '티비켜줘'
+    '맞아.' -> '맞아'
+    """
+    text = unicodedata.normalize("NFC", text or "")
+    text = text.strip()
+
+    # 공백 제거
+    text = re.sub(r"\s+", "", text)
+
+    # 일반 문장부호 제거
+    text = re.sub(
+        r"""[.,!?~…'"“”‘’·:;()\[\]{}]""",
+        "",
+        text,
+    )
+
+    return text
+
+
+def normalized_rank(target: str, predictions: list[str]):
+    target_norm = normalize_eval_text(target)
+
+    for i, prediction in enumerate(predictions, start=1):
+        if normalize_eval_text(prediction) == target_norm:
+            return i
+
+    return None
