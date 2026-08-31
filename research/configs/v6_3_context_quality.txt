@@ -1,0 +1,41 @@
+Experiment: v6.3 context-quality conditional ensemble
+
+MODEL
+generator_model=gpt-5.6-luna
+ranker_model=gpt-5.6-luna
+
+GENERATION
+generation_count=16
+diversity_generation_count=8
+
+ENSEMBLE
+ensemble_mode=context_quality
+ensemble_min_valid=6
+ensemble_context_threshold=0.72
+ensemble_intent_threshold=0.72
+
+PROMPT
+generator_prompt_version=generator-v2+context-diversity-v2
+ranker_prompt_version=ranker-v2
+
+PIPELINE
+pipeline_version=0.4.3-context-quality-v6-3
+
+DEV RESULT
+n=50
+Acc@1=0.80
+Acc@3=0.86
+MRR=0.83
+mean_latency_ms=21837.1
+p50_latency_ms=17588.5
+p95_latency_ms=41839.2
+total_cost_usd=0.141305
+mean_cost_usd=0.0028261
+fallback_rate=0.0
+
+CSV
+eval_full_20260831_164302.csv
+
+NOTE
+Current 50 cases are DEV data, not final TEST data.
+Thresholds and pipeline were developed using these cases.
