@@ -157,7 +157,9 @@ def generate_diversity_candidates(
     initials: str,
     count: int,
     existing_candidates: list[str],
+    context: str,
 ) -> GenerationCallResult:
+
     """
     OpenAILanguageModelClient의 기존 base generator를 건드리지 않고
     보조 diversity generation을 한 번 수행한다.
@@ -207,7 +209,8 @@ def generate_diversity_candidates(
                 input=build_diversity_input(
                     initials=initials,
                     count=count,
-                    existing_candidates=existing_candidates,
+    		    existing_candidates=existing_candidates,
+       		    context=context,
                 ),
                 reasoning={
                     "effort": settings.reasoning_effort,

@@ -411,6 +411,7 @@ class BCILanguagePipeline:
                                 c.text
                                 for c in base_raw
                             ],
+			     context=context,
                         )
                     )
 

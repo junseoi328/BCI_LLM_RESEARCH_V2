@@ -57,11 +57,11 @@ DIVERSITY_GENERATOR_INSTRUCTIONS = """
     구조화된 후보 배열만 반환한다.
 """.strip()
 
-
 def build_diversity_input(
     initials: str,
     count: int,
     existing_candidates: list[str],
+    context: str,
 ) -> str:
 
     if existing_candidates:
@@ -72,12 +72,31 @@ def build_diversity_input(
     else:
         existing = "(없음)"
 
+    context_text = (
+        context.strip()
+        if context and context.strip()
+        else "(추가 문맥 없음)"
+    )
+
     return (
         f"입력 초성열: {initials}\n"
         f"추가 생성 후보 수: {count}\n\n"
+
+        "현재 의사소통 문맥:\n"
+        f"{context_text}\n\n"
+
         "기본 generator가 이미 생성한 후보:\n"
         f"{existing}\n\n"
-        "위 기존 후보와 겹치지 않으면서 "
-        "입력 초성열에 정확히 대응할 수 있는 "
-        "새로운 한국어 발화 후보를 생성하라."
+
+        "해야 할 일:\n"
+        "1. 입력 초성열과 정확히 대응하는 발화를 생성한다.\n"
+        "2. 현재 문맥에서 사용자가 실제로 말하고 싶을 가능성이 "
+        "높은 표현을 적극적으로 탐색한다.\n"
+        "3. 기존 후보와 동일한 표현은 반복하지 않는다.\n"
+        "4. 문맥과 관계없는 사람 이름, 고유명사, 억지 표현은 "
+        "특별한 근거가 없으면 우선순위를 낮춘다.\n"
+        "5. 짧고 자연스럽고 실제 AAC/BCI 의사소통에서 "
+        "선택 가능한 표현을 우선한다.\n"
+        "6. 다만 문맥에 지나치게 끌려가서 초성 제약을 "
+        "위반해서는 안 된다."
     )
