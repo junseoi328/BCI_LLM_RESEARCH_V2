@@ -1,0 +1,164 @@
+{"initials": "ㄷㅇㅈ", "text": "도와줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅈ", "text": "다음 주", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅈ", "text": "들어줘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅈ", "text": "다 알지", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅈ", "text": "다 있지", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅈ", "text": "다 오죠", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅈ", "text": "더 있죠", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "물 줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "물 좀", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "맥주", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "먹자", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "맞지", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "뭐지", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "먼저", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "모자", "weight": 0.65, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "문제", "weight": 0.6, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "만져", "weight": 0.6, "source": "train_catalog_v1"}
+{"initials": "ㅁㅈ", "text": "말자", "weight": 0.6, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "좋아", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "줘요", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "저요", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "자요", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "주워", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "지워", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "조용", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅈㅇ", "text": "제일", "weight": 0.65, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "아니", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "안녕", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "오늘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "언니", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "안내", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "있나", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "없나", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴ", "text": "오냐", "weight": 0.65, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "밥 줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "밥 좀", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "봐줘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "보자", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "바지", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "부자", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "병 줘", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅂㅈ", "text": "빚져", "weight": 0.65, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇ", "text": "더워", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇ", "text": "도와", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇ", "text": "닫아", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇ", "text": "다음", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇ", "text": "동의", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇ", "text": "되어", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇ", "text": "들어", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅅㅇ", "text": "싫어", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅅㅇ", "text": "쉬어", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅅㅇ", "text": "사요", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅅㅇ", "text": "수요", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅅㅇ", "text": "서요", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅅㅇ", "text": "소요", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㅅㅇ", "text": "세워", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "맞아", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "뭐야", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "미안", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "모여", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "마요", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "무용", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "매워", "weight": 0.7, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇ", "text": "믿어", "weight": 0.65, "source": "train_catalog_v1"}
+{"initials": "ㄱㅁㅇ", "text": "고마워", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄱㅁㅇ", "text": "그만요", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄱㅁㅇ", "text": "개막일", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄱㅁㅇ", "text": "구매요", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㄱㅁㅇ", "text": "그 말이", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅅㅇ", "text": "자고 싶어", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅅㅇ", "text": "지금 사요", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅅㅇ", "text": "저거 사요", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅅㅇ", "text": "조금 세요", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅅㅇ", "text": "제가 사요", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅅㅇ", "text": "저기 서요", "weight": 0.75, "source": "train_catalog_v1"}
+{"initials": "ㅁㄹㅇㅍ", "text": "머리 아파", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅁㄹㅇㅍ", "text": "무릎 아파", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅂㅇㅍ", "text": "배 아파", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅂㅇㅍ", "text": "발 아파", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅂㅇㅍ", "text": "볼 아파", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇㅍ", "text": "목 아픔", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇㅍ", "text": "몸 아파", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅁㅇㅍ", "text": "맘 아파", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅇㅅㅂㄹㅈ", "text": "의사 불러줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅇㅅㅂㄹㅈ", "text": "어서 불러줘", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅇㅅㅂㄹㅈ", "text": "우선 불러줘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅇㅅㅂㄹㅈ", "text": "우산 빌려줘", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㄱㅎㅅㅂㄹㅈ", "text": "간호사 불러줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄱㅎㅅㅂㄹㅈ", "text": "그 학생 불러줘", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄱㅎㅅㅂㄹㅈ", "text": "그 회사 불러줘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅂㄲㅈ", "text": "불 꺼줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅂㄲㅈ", "text": "불 끄자", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅂㄲㅈ", "text": "바꿔줘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅂㄲㅈ", "text": "불 껐지", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㅋㅈ", "text": "조명 켜줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㅋㅈ", "text": "자막 켜줘", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㅋㅈ", "text": "조명 켜자", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㅋㅈ", "text": "조명 켜죠", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㄲㅈ", "text": "조명 꺼줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㄲㅈ", "text": "좀만 꺼줘", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㄲㅈ", "text": "조명 꺼져", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㄲㅈ", "text": "조명 끄자", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㅁㄲㅈ", "text": "좀만 끄자", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅌㅂㅋㅈ", "text": "티비 켜줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅌㅂㅋㅈ", "text": "티비 켜자", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅌㅂㅋㅈ", "text": "티비 켜죠", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅌㅂㅋㅈ", "text": "티비 키자", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅁㄷㅇㅈ", "text": "문 닫아줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅁㄷㅇㅈ", "text": "만들어줘", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅁㄷㅇㅈ", "text": "말 들어줘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅁㄷㅇㅈ", "text": "물도 있죠", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅇㄷㅇ", "text": "너무 어두워", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅇㄷㅇ", "text": "내 물 어디야", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅇㄷㅇ", "text": "나 뭐 어딨어", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅇㄷㅇ", "text": "내 맘 안 돼요", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅂㅇ", "text": "너무 밝아", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅂㅇ", "text": "나만 봐요", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅂㅇ", "text": "내 말 봐요", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄴㅁㅂㅇ", "text": "너 뭐 보여", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴㅁㅎ", "text": "오늘 뭐 해", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴㅁㅎ", "text": "아니 뭐 해", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴㅁㅎ", "text": "아냐 뭐 해", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅇㄴㅁㅎ", "text": "오늘 뭐함", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㄴㅇㅁㅎ", "text": "내일 뭐 해", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄴㅇㅁㅎ", "text": "너 왜 뭐 해", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄴㅇㅁㅎ", "text": "내일 뭐함", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄴㅇㅁㅎ", "text": "나 왜 뭐 해", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅁㅅㅇ", "text": "지금 몇 시야", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅁㅅㅇ", "text": "저기 몇 시야", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅁㅅㅇ", "text": "자기 몇 시야", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅁㅅㅇ", "text": "지금 뭐 사요", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㄱㅁㅅㅇ", "text": "조금만 쉬어", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㄷㅅㅁㅎㅈ", "text": "다시 말해줘", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄷㅅㅁㅎㅈ", "text": "대신 말해줘", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄷㅅㅁㅎㅈ", "text": "다 설명해줘", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄷㅅㅁㅎㅈ", "text": "더 설명해줘", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅈㄲㅁ", "text": "잠깐만", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅈㄲㅁ", "text": "자꾸만", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅈㄲㅁ", "text": "저 껌만", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅇㅎㅈ", "text": "다음에 하자", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅇㅎㅈ", "text": "다음에 해줘", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄷㅇㅇㅎㅈ", "text": "다음에 하죠", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㄹ", "text": "목 말라", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㄹ", "text": "뭐 말래", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㄹ", "text": "목마름", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㄹ", "text": "맘마를", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㄹ", "text": "마무리", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㅅㄹ", "text": "물 마실래", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㅅㄹ", "text": "뭐 마실래", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㅅㄹ", "text": "뭘 마실래", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅁㅁㅅㄹ", "text": "물 마시러", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅅㄱㅅㅇ", "text": "쉬고 싶어", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅅㄱㅅㅇ", "text": "사고 싶어", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅅㄱㅅㅇ", "text": "살고 싶어", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅅㄱㅅㅇ", "text": "숨고 싶어", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅅㄱㅅㅇ", "text": "서고 싶어", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㅇㄱㅅㅇ", "text": "앉고 싶어", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㅇㄱㅅㅇ", "text": "알고 싶어", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㅇㄱㅅㅇ", "text": "읽고 싶어", "weight": 0.9, "source": "train_catalog_v1"}
+{"initials": "ㅇㄱㅅㅇ", "text": "입고 싶어", "weight": 0.85, "source": "train_catalog_v1"}
+{"initials": "ㅇㄱㅅㅇ", "text": "오고 싶어", "weight": 0.8, "source": "train_catalog_v1"}
+{"initials": "ㄴㅇㅇㄱㅅㅇ", "text": "누워 있고 싶어", "weight": 1.0, "source": "train_catalog_v1"}
+{"initials": "ㄴㅇㅇㄱㅅㅇ", "text": "내 옆에 계세요", "weight": 0.95, "source": "train_catalog_v1"}
+{"initials": "ㄴㅇㅇㄱㅅㅇ", "text": "내 앞에 계세요", "weight": 0.9, "source": "train_catalog_v1"}

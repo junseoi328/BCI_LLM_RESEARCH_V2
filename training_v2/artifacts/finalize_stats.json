@@ -1,0 +1,39 @@
+{
+  "approved_candidates": 281,
+  "approved_initial_groups": 234,
+  "train_initial_groups": 176,
+  "dev_initial_groups": 58,
+  "train_examples": 600,
+  "dev_examples": 100,
+  "hard_examples": 50,
+  "train_category_counts": {
+    "social": 35,
+    "medical_communication": 60,
+    "ambiguity": 80,
+    "basic_request": 40,
+    "pain_discomfort": 60,
+    "communication_control": 40,
+    "schedule_time": 35,
+    "food_drink": 40,
+    "device_control": 40,
+    "positioning": 60,
+    "emotion_needs": 35,
+    "questions_answers": 35,
+    "environment": 40
+  },
+  "dev_category_counts": {
+    "positioning": 10,
+    "device_control": 6,
+    "basic_request": 7,
+    "medical_communication": 10,
+    "pain_discomfort": 10,
+    "food_drink": 7,
+    "questions_answers": 6,
+    "emotion_needs": 6,
+    "social": 6,
+    "ambiguity": 13,
+    "communication_control": 6,
+    "schedule_time": 6,
+    "environment": 7
+  }
+}
