@@ -21,21 +21,17 @@ ranker_prompt_version=ranker-v2
 PIPELINE
 pipeline_version=0.4.3-context-quality-v6-3
 
-DEV RESULT
-n=50
+DEV RESULT (50 cases)
 Acc@1=0.80
 Acc@3=0.86
 MRR=0.83
 mean_latency_ms=21837.1
 p50_latency_ms=17588.5
 p95_latency_ms=41839.2
-total_cost_usd=0.141305
+total_estimated_cost_usd=0.141305
 mean_cost_usd=0.0028261
 fallback_rate=0.0
 
-CSV
-eval_full_20260831_164302.csv
-
 NOTE
 Current 50 cases are DEV data, not final TEST data.
-Thresholds and pipeline were developed using these cases.
+Do not tune thresholds on test_v1_150 after observing results.
