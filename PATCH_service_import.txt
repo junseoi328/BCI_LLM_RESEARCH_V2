@@ -1,0 +1,11 @@
+# app/pipeline/service.py의 import는 아래처럼 정리하는 것을 권장합니다.
+
+from app.llm.factory import get_language_model_client
+
+# 이전 실험에서 아래 형태라면:
+# from app.llm.factory_final import get_language_model_client_final as get_language_model_client
+#
+# 공개 배포 branch에서는 기본 factory import로 되돌리세요.
+#
+# 단, 제공된 factory_final.py compatibility wrapper도 동작하므로
+# 당장 service.py를 수정하지 않아도 됩니다.

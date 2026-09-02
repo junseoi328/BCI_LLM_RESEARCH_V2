@@ -1,0 +1,500 @@
+{"id": "TRAIN0001", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 3, "candidates": ["도와줘", "다음 주", "들어줘"], "catalog_size": 7}
+{"id": "TRAIN0002", "split": "train", "initials": "ㅁㅈ", "requested_count": 5, "candidates": ["물 줘", "물 좀", "맥주", "먹자", "맞지"], "catalog_size": 11}
+{"id": "TRAIN0003", "split": "train", "initials": "ㅈㅇ", "requested_count": 8, "candidates": ["좋아", "줘요", "저요", "자요", "주워", "지워", "조용", "제일"], "catalog_size": 8}
+{"id": "TRAIN0004", "split": "train", "initials": "ㅇㄴ", "requested_count": 12, "candidates": ["아니", "안녕", "오늘", "언니", "안내", "있나", "없나", "오냐"], "catalog_size": 8}
+{"id": "TRAIN0005", "split": "train", "initials": "ㅂㅈ", "requested_count": 16, "candidates": ["밥 줘", "밥 좀", "봐줘", "보자", "바지", "부자", "병 줘", "빚져"], "catalog_size": 8}
+{"id": "TRAIN0006", "split": "train", "initials": "ㄷㅇ", "requested_count": 3, "candidates": ["더워", "도와", "닫아"], "catalog_size": 7}
+{"id": "TRAIN0007", "split": "train", "initials": "ㅅㅇ", "requested_count": 5, "candidates": ["싫어", "쉬어", "사요", "수요", "서요"], "catalog_size": 7}
+{"id": "TRAIN0008", "split": "train", "initials": "ㅁㅇ", "requested_count": 8, "candidates": ["맞아", "뭐야", "미안", "모여", "마요", "무용", "매워", "믿어"], "catalog_size": 8}
+{"id": "TRAIN0009", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 12, "candidates": ["고마워", "그만요", "개막일", "구매요", "그 말이"], "catalog_size": 5}
+{"id": "TRAIN0010", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 16, "candidates": ["자고 싶어", "지금 사요", "저거 사요", "조금 세요", "제가 사요", "저기 서요"], "catalog_size": 6}
+{"id": "TRAIN0011", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 3, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0012", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 5, "candidates": ["배 아파", "발 아파", "볼 아파"], "catalog_size": 3}
+{"id": "TRAIN0013", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 8, "candidates": ["목 아픔", "몸 아파", "맘 아파"], "catalog_size": 3}
+{"id": "TRAIN0014", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 12, "candidates": ["의사 불러줘", "어서 불러줘", "우선 불러줘", "우산 빌려줘"], "catalog_size": 4}
+{"id": "TRAIN0015", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 16, "candidates": ["간호사 불러줘", "그 학생 불러줘", "그 회사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0016", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 3, "candidates": ["불 꺼줘", "불 끄자", "바꿔줘"], "catalog_size": 4}
+{"id": "TRAIN0017", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 5, "candidates": ["조명 켜줘", "자막 켜줘", "조명 켜자", "조명 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0018", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 8, "candidates": ["조명 꺼줘", "좀만 꺼줘", "조명 꺼져", "조명 끄자", "좀만 끄자"], "catalog_size": 5}
+{"id": "TRAIN0019", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 12, "candidates": ["티비 켜줘", "티비 켜자", "티비 켜죠", "티비 키자"], "catalog_size": 4}
+{"id": "TRAIN0020", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 16, "candidates": ["문 닫아줘", "만들어줘", "말 들어줘", "물도 있죠"], "catalog_size": 4}
+{"id": "TRAIN0021", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 3, "candidates": ["너무 어두워", "내 물 어디야", "나 뭐 어딨어"], "catalog_size": 4}
+{"id": "TRAIN0022", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 5, "candidates": ["너무 밝아", "나만 봐요", "내 말 봐요", "너 뭐 보여"], "catalog_size": 4}
+{"id": "TRAIN0023", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 8, "candidates": ["오늘 뭐 해", "아니 뭐 해", "아냐 뭐 해", "오늘 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0024", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 12, "candidates": ["내일 뭐 해", "너 왜 뭐 해", "내일 뭐함", "나 왜 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0025", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 16, "candidates": ["지금 몇 시야", "저기 몇 시야", "자기 몇 시야", "지금 뭐 사요", "조금만 쉬어"], "catalog_size": 5}
+{"id": "TRAIN0026", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 3, "candidates": ["다시 말해줘", "대신 말해줘", "다 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0027", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 5, "candidates": ["잠깐만", "자꾸만", "저 껌만"], "catalog_size": 3}
+{"id": "TRAIN0028", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 8, "candidates": ["다음에 하자", "다음에 해줘", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0029", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 12, "candidates": ["목 말라", "뭐 말래", "목마름", "맘마를", "마무리"], "catalog_size": 5}
+{"id": "TRAIN0030", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 16, "candidates": ["물 마실래", "뭐 마실래", "뭘 마실래", "물 마시러"], "catalog_size": 4}
+{"id": "TRAIN0031", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 3, "candidates": ["쉬고 싶어", "사고 싶어", "살고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0032", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 5, "candidates": ["앉고 싶어", "알고 싶어", "읽고 싶어", "입고 싶어", "오고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0033", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 8, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0034", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 12, "candidates": ["다음 주", "들어줘", "다 알지", "다 있지", "다 오죠", "더 있죠", "도와줘"], "catalog_size": 7}
+{"id": "TRAIN0035", "split": "train", "initials": "ㅁㅈ", "requested_count": 16, "candidates": ["물 좀", "맥주", "먹자", "맞지", "뭐지", "먼저", "모자", "문제", "만져", "말자", "물 줘"], "catalog_size": 11}
+{"id": "TRAIN0036", "split": "train", "initials": "ㅈㅇ", "requested_count": 3, "candidates": ["줘요", "저요", "자요"], "catalog_size": 8}
+{"id": "TRAIN0037", "split": "train", "initials": "ㅇㄴ", "requested_count": 5, "candidates": ["안녕", "오늘", "언니", "안내", "있나"], "catalog_size": 8}
+{"id": "TRAIN0038", "split": "train", "initials": "ㅂㅈ", "requested_count": 8, "candidates": ["밥 좀", "봐줘", "보자", "바지", "부자", "병 줘", "빚져", "밥 줘"], "catalog_size": 8}
+{"id": "TRAIN0039", "split": "train", "initials": "ㄷㅇ", "requested_count": 12, "candidates": ["도와", "닫아", "다음", "동의", "되어", "들어", "더워"], "catalog_size": 7}
+{"id": "TRAIN0040", "split": "train", "initials": "ㅅㅇ", "requested_count": 16, "candidates": ["쉬어", "사요", "수요", "서요", "소요", "세워", "싫어"], "catalog_size": 7}
+{"id": "TRAIN0041", "split": "train", "initials": "ㅁㅇ", "requested_count": 3, "candidates": ["뭐야", "미안", "모여"], "catalog_size": 8}
+{"id": "TRAIN0042", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 5, "candidates": ["그만요", "개막일", "구매요", "그 말이", "고마워"], "catalog_size": 5}
+{"id": "TRAIN0043", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 8, "candidates": ["지금 사요", "저거 사요", "조금 세요", "제가 사요", "저기 서요", "자고 싶어"], "catalog_size": 6}
+{"id": "TRAIN0044", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 12, "candidates": ["무릎 아파", "머리 아파"], "catalog_size": 2}
+{"id": "TRAIN0045", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 16, "candidates": ["발 아파", "볼 아파", "배 아파"], "catalog_size": 3}
+{"id": "TRAIN0046", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 3, "candidates": ["몸 아파", "맘 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0047", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 5, "candidates": ["어서 불러줘", "우선 불러줘", "우산 빌려줘", "의사 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0048", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 8, "candidates": ["그 학생 불러줘", "그 회사 불러줘", "간호사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0049", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 12, "candidates": ["불 끄자", "바꿔줘", "불 껐지", "불 꺼줘"], "catalog_size": 4}
+{"id": "TRAIN0050", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 16, "candidates": ["자막 켜줘", "조명 켜자", "조명 켜죠", "조명 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0051", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 3, "candidates": ["좀만 꺼줘", "조명 꺼져", "조명 끄자"], "catalog_size": 5}
+{"id": "TRAIN0052", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 5, "candidates": ["티비 켜자", "티비 켜죠", "티비 키자", "티비 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0053", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 8, "candidates": ["만들어줘", "말 들어줘", "물도 있죠", "문 닫아줘"], "catalog_size": 4}
+{"id": "TRAIN0054", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 12, "candidates": ["내 물 어디야", "나 뭐 어딨어", "내 맘 안 돼요", "너무 어두워"], "catalog_size": 4}
+{"id": "TRAIN0055", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 16, "candidates": ["나만 봐요", "내 말 봐요", "너 뭐 보여", "너무 밝아"], "catalog_size": 4}
+{"id": "TRAIN0056", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 3, "candidates": ["아니 뭐 해", "아냐 뭐 해", "오늘 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0057", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 5, "candidates": ["너 왜 뭐 해", "내일 뭐함", "나 왜 뭐 해", "내일 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0058", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 8, "candidates": ["저기 몇 시야", "자기 몇 시야", "지금 뭐 사요", "조금만 쉬어", "지금 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0059", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 12, "candidates": ["대신 말해줘", "다 설명해줘", "더 설명해줘", "다시 말해줘"], "catalog_size": 4}
+{"id": "TRAIN0060", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 16, "candidates": ["자꾸만", "저 껌만", "잠깐만"], "catalog_size": 3}
+{"id": "TRAIN0061", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 3, "candidates": ["다음에 해줘", "다음에 하죠", "다음에 하자"], "catalog_size": 3}
+{"id": "TRAIN0062", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 5, "candidates": ["뭐 말래", "목마름", "맘마를", "마무리", "목 말라"], "catalog_size": 5}
+{"id": "TRAIN0063", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 8, "candidates": ["뭐 마실래", "뭘 마실래", "물 마시러", "물 마실래"], "catalog_size": 4}
+{"id": "TRAIN0064", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 12, "candidates": ["사고 싶어", "살고 싶어", "숨고 싶어", "서고 싶어", "쉬고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0065", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 16, "candidates": ["알고 싶어", "읽고 싶어", "입고 싶어", "오고 싶어", "앉고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0066", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 3, "candidates": ["내 옆에 계세요", "내 앞에 계세요", "누워 있고 싶어"], "catalog_size": 3}
+{"id": "TRAIN0067", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 5, "candidates": ["더 있죠", "도와줘", "다 알지", "다 있지", "들어줘"], "catalog_size": 7}
+{"id": "TRAIN0068", "split": "train", "initials": "ㅁㅈ", "requested_count": 8, "candidates": ["물 줘", "먹자", "뭐지", "만져", "말자", "물 좀", "맥주", "먼저"], "catalog_size": 11}
+{"id": "TRAIN0069", "split": "train", "initials": "ㅈㅇ", "requested_count": 12, "candidates": ["좋아", "줘요", "주워", "저요", "자요", "조용", "지워", "제일"], "catalog_size": 8}
+{"id": "TRAIN0070", "split": "train", "initials": "ㅇㄴ", "requested_count": 16, "candidates": ["안내", "없나", "언니", "있나", "안녕", "오냐", "아니", "오늘"], "catalog_size": 8}
+{"id": "TRAIN0071", "split": "train", "initials": "ㅂㅈ", "requested_count": 3, "candidates": ["밥 줘", "밥 좀", "바지"], "catalog_size": 8}
+{"id": "TRAIN0072", "split": "train", "initials": "ㄷㅇ", "requested_count": 5, "candidates": ["닫아", "다음", "도와", "들어", "더워"], "catalog_size": 7}
+{"id": "TRAIN0073", "split": "train", "initials": "ㅅㅇ", "requested_count": 8, "candidates": ["쉬어", "소요", "세워", "싫어", "사요", "서요", "수요"], "catalog_size": 7}
+{"id": "TRAIN0074", "split": "train", "initials": "ㅁㅇ", "requested_count": 12, "candidates": ["마요", "모여", "매워", "뭐야", "믿어", "미안", "무용", "맞아"], "catalog_size": 8}
+{"id": "TRAIN0075", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 16, "candidates": ["개막일", "그 말이", "구매요", "그만요", "고마워"], "catalog_size": 5}
+{"id": "TRAIN0076", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 3, "candidates": ["제가 사요", "저거 사요", "저기 서요"], "catalog_size": 6}
+{"id": "TRAIN0077", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 5, "candidates": ["무릎 아파", "머리 아파"], "catalog_size": 2}
+{"id": "TRAIN0078", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 8, "candidates": ["볼 아파", "발 아파", "배 아파"], "catalog_size": 3}
+{"id": "TRAIN0079", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 12, "candidates": ["맘 아파", "몸 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0080", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 16, "candidates": ["우선 불러줘", "어서 불러줘", "우산 빌려줘", "의사 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0081", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 3, "candidates": ["간호사 불러줘", "그 회사 불러줘", "그 학생 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0082", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 5, "candidates": ["바꿔줘", "불 꺼줘", "불 끄자", "불 껐지"], "catalog_size": 4}
+{"id": "TRAIN0083", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 8, "candidates": ["조명 켜죠", "조명 켜자", "조명 켜줘", "자막 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0084", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 12, "candidates": ["조명 꺼져", "조명 꺼줘", "조명 끄자", "좀만 끄자", "좀만 꺼줘"], "catalog_size": 5}
+{"id": "TRAIN0085", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 16, "candidates": ["티비 켜자", "티비 켜죠", "티비 켜줘", "티비 키자"], "catalog_size": 4}
+{"id": "TRAIN0086", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 3, "candidates": ["말 들어줘", "만들어줘", "물도 있죠"], "catalog_size": 4}
+{"id": "TRAIN0087", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 5, "candidates": ["나 뭐 어딨어", "내 물 어디야", "너무 어두워", "내 맘 안 돼요"], "catalog_size": 4}
+{"id": "TRAIN0088", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 8, "candidates": ["내 말 봐요", "너 뭐 보여", "너무 밝아", "나만 봐요"], "catalog_size": 4}
+{"id": "TRAIN0089", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 12, "candidates": ["오늘 뭐함", "아냐 뭐 해", "오늘 뭐 해", "아니 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0090", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 16, "candidates": ["나 왜 뭐 해", "내일 뭐 해", "너 왜 뭐 해", "내일 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0091", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 3, "candidates": ["저기 몇 시야", "지금 뭐 사요", "자기 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0092", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 5, "candidates": ["더 설명해줘", "대신 말해줘", "다 설명해줘", "다시 말해줘"], "catalog_size": 4}
+{"id": "TRAIN0093", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 8, "candidates": ["저 껌만", "자꾸만", "잠깐만"], "catalog_size": 3}
+{"id": "TRAIN0094", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 12, "candidates": ["다음에 하죠", "다음에 해줘", "다음에 하자"], "catalog_size": 3}
+{"id": "TRAIN0095", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 16, "candidates": ["마무리", "뭐 말래", "목마름", "맘마를", "목 말라"], "catalog_size": 5}
+{"id": "TRAIN0096", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 3, "candidates": ["뭘 마실래", "물 마시러", "물 마실래"], "catalog_size": 4}
+{"id": "TRAIN0097", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 5, "candidates": ["사고 싶어", "숨고 싶어", "서고 싶어", "살고 싶어", "쉬고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0098", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 8, "candidates": ["앉고 싶어", "알고 싶어", "오고 싶어", "읽고 싶어", "입고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0099", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 12, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0100", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 16, "candidates": ["다 알지", "다 있지", "다 오죠", "더 있죠", "도와줘", "다음 주", "들어줘"], "catalog_size": 7}
+{"id": "TRAIN0101", "split": "train", "initials": "ㅁㅈ", "requested_count": 3, "candidates": ["먹자", "맞지", "뭐지"], "catalog_size": 11}
+{"id": "TRAIN0102", "split": "train", "initials": "ㅈㅇ", "requested_count": 5, "candidates": ["자요", "주워", "지워", "조용", "제일"], "catalog_size": 8}
+{"id": "TRAIN0103", "split": "train", "initials": "ㅇㄴ", "requested_count": 8, "candidates": ["언니", "안내", "있나", "없나", "오냐", "아니", "안녕", "오늘"], "catalog_size": 8}
+{"id": "TRAIN0104", "split": "train", "initials": "ㅂㅈ", "requested_count": 12, "candidates": ["보자", "바지", "부자", "병 줘", "빚져", "밥 줘", "밥 좀", "봐줘"], "catalog_size": 8}
+{"id": "TRAIN0105", "split": "train", "initials": "ㄷㅇ", "requested_count": 16, "candidates": ["다음", "동의", "되어", "들어", "더워", "도와", "닫아"], "catalog_size": 7}
+{"id": "TRAIN0106", "split": "train", "initials": "ㅅㅇ", "requested_count": 3, "candidates": ["수요", "서요", "소요"], "catalog_size": 7}
+{"id": "TRAIN0107", "split": "train", "initials": "ㅁㅇ", "requested_count": 5, "candidates": ["모여", "마요", "무용", "매워", "믿어"], "catalog_size": 8}
+{"id": "TRAIN0108", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 8, "candidates": ["구매요", "그 말이", "고마워", "그만요", "개막일"], "catalog_size": 5}
+{"id": "TRAIN0109", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 12, "candidates": ["조금 세요", "제가 사요", "저기 서요", "자고 싶어", "지금 사요", "저거 사요"], "catalog_size": 6}
+{"id": "TRAIN0110", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 16, "candidates": ["무릎 아파", "머리 아파"], "catalog_size": 2}
+{"id": "TRAIN0111", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 3, "candidates": ["배 아파", "발 아파", "볼 아파"], "catalog_size": 3}
+{"id": "TRAIN0112", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 5, "candidates": ["목 아픔", "몸 아파", "맘 아파"], "catalog_size": 3}
+{"id": "TRAIN0113", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 8, "candidates": ["우산 빌려줘", "의사 불러줘", "어서 불러줘", "우선 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0114", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 12, "candidates": ["간호사 불러줘", "그 학생 불러줘", "그 회사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0115", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 16, "candidates": ["불 껐지", "불 꺼줘", "불 끄자", "바꿔줘"], "catalog_size": 4}
+{"id": "TRAIN0116", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 3, "candidates": ["조명 켜죠", "조명 켜줘", "자막 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0117", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 5, "candidates": ["조명 끄자", "좀만 끄자", "조명 꺼줘", "좀만 꺼줘", "조명 꺼져"], "catalog_size": 5}
+{"id": "TRAIN0118", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 8, "candidates": ["티비 키자", "티비 켜줘", "티비 켜자", "티비 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0119", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 12, "candidates": ["물도 있죠", "문 닫아줘", "만들어줘", "말 들어줘"], "catalog_size": 4}
+{"id": "TRAIN0120", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 16, "candidates": ["내 맘 안 돼요", "너무 어두워", "내 물 어디야", "나 뭐 어딨어"], "catalog_size": 4}
+{"id": "TRAIN0121", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 3, "candidates": ["너 뭐 보여", "너무 밝아", "나만 봐요"], "catalog_size": 4}
+{"id": "TRAIN0122", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 5, "candidates": ["오늘 뭐함", "오늘 뭐 해", "아니 뭐 해", "아냐 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0123", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 8, "candidates": ["나 왜 뭐 해", "내일 뭐 해", "너 왜 뭐 해", "내일 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0124", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 12, "candidates": ["지금 뭐 사요", "조금만 쉬어", "지금 몇 시야", "저기 몇 시야", "자기 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0125", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 16, "candidates": ["더 설명해줘", "다시 말해줘", "대신 말해줘", "다 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0126", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 3, "candidates": ["잠깐만", "자꾸만", "저 껌만"], "catalog_size": 3}
+{"id": "TRAIN0127", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 5, "candidates": ["다음에 하자", "다음에 해줘", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0128", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 8, "candidates": ["맘마를", "마무리", "목 말라", "뭐 말래", "목마름"], "catalog_size": 5}
+{"id": "TRAIN0129", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 12, "candidates": ["물 마시러", "물 마실래", "뭐 마실래", "뭘 마실래"], "catalog_size": 4}
+{"id": "TRAIN0130", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 16, "candidates": ["숨고 싶어", "서고 싶어", "쉬고 싶어", "사고 싶어", "살고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0131", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 3, "candidates": ["입고 싶어", "오고 싶어", "앉고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0132", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 5, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0133", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 8, "candidates": ["다 있지", "다 오죠", "더 있죠", "도와줘", "다음 주", "들어줘", "다 알지"], "catalog_size": 7}
+{"id": "TRAIN0134", "split": "train", "initials": "ㅁㅈ", "requested_count": 12, "candidates": ["맞지", "뭐지", "먼저", "모자", "문제", "만져", "말자", "물 줘", "물 좀", "맥주", "먹자"], "catalog_size": 11}
+{"id": "TRAIN0135", "split": "train", "initials": "ㅈㅇ", "requested_count": 16, "candidates": ["주워", "지워", "조용", "제일", "좋아", "줘요", "저요", "자요"], "catalog_size": 8}
+{"id": "TRAIN0136", "split": "train", "initials": "ㅇㄴ", "requested_count": 3, "candidates": ["안내", "있나", "없나"], "catalog_size": 8}
+{"id": "TRAIN0137", "split": "train", "initials": "ㅂㅈ", "requested_count": 5, "candidates": ["바지", "부자", "병 줘", "빚져", "밥 줘"], "catalog_size": 8}
+{"id": "TRAIN0138", "split": "train", "initials": "ㄷㅇ", "requested_count": 8, "candidates": ["동의", "되어", "들어", "더워", "도와", "닫아", "다음"], "catalog_size": 7}
+{"id": "TRAIN0139", "split": "train", "initials": "ㅅㅇ", "requested_count": 12, "candidates": ["서요", "소요", "세워", "싫어", "쉬어", "사요", "수요"], "catalog_size": 7}
+{"id": "TRAIN0140", "split": "train", "initials": "ㅁㅇ", "requested_count": 16, "candidates": ["마요", "무용", "매워", "믿어", "맞아", "뭐야", "미안", "모여"], "catalog_size": 8}
+{"id": "TRAIN0141", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 3, "candidates": ["그 말이", "고마워", "그만요"], "catalog_size": 5}
+{"id": "TRAIN0142", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 5, "candidates": ["제가 사요", "저기 서요", "자고 싶어", "지금 사요", "저거 사요"], "catalog_size": 6}
+{"id": "TRAIN0143", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 8, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0144", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 12, "candidates": ["발 아파", "볼 아파", "배 아파"], "catalog_size": 3}
+{"id": "TRAIN0145", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 16, "candidates": ["몸 아파", "맘 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0146", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 3, "candidates": ["의사 불러줘", "어서 불러줘", "우선 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0147", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 5, "candidates": ["그 학생 불러줘", "그 회사 불러줘", "간호사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0148", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 8, "candidates": ["불 꺼줘", "불 끄자", "바꿔줘", "불 껐지"], "catalog_size": 4}
+{"id": "TRAIN0149", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 12, "candidates": ["조명 켜줘", "자막 켜줘", "조명 켜자", "조명 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0150", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 16, "candidates": ["좀만 끄자", "조명 꺼줘", "좀만 꺼줘", "조명 꺼져", "조명 끄자"], "catalog_size": 5}
+{"id": "TRAIN0151", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 3, "candidates": ["티비 켜줘", "티비 켜자", "티비 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0152", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 5, "candidates": ["문 닫아줘", "만들어줘", "말 들어줘", "물도 있죠"], "catalog_size": 4}
+{"id": "TRAIN0153", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 8, "candidates": ["너무 어두워", "내 물 어디야", "나 뭐 어딨어", "내 맘 안 돼요"], "catalog_size": 4}
+{"id": "TRAIN0154", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 12, "candidates": ["너무 밝아", "나만 봐요", "내 말 봐요", "너 뭐 보여"], "catalog_size": 4}
+{"id": "TRAIN0155", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 16, "candidates": ["오늘 뭐 해", "아니 뭐 해", "아냐 뭐 해", "오늘 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0156", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 3, "candidates": ["내일 뭐 해", "너 왜 뭐 해", "내일 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0157", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 5, "candidates": ["조금만 쉬어", "지금 몇 시야", "저기 몇 시야", "자기 몇 시야", "지금 뭐 사요"], "catalog_size": 5}
+{"id": "TRAIN0158", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 8, "candidates": ["다시 말해줘", "대신 말해줘", "다 설명해줘", "더 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0159", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 12, "candidates": ["자꾸만", "저 껌만", "잠깐만"], "catalog_size": 3}
+{"id": "TRAIN0160", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 16, "candidates": ["다음에 해줘", "다음에 하죠", "다음에 하자"], "catalog_size": 3}
+{"id": "TRAIN0161", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 3, "candidates": ["마무리", "목 말라", "뭐 말래"], "catalog_size": 5}
+{"id": "TRAIN0162", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 5, "candidates": ["물 마실래", "뭐 마실래", "뭘 마실래", "물 마시러"], "catalog_size": 4}
+{"id": "TRAIN0163", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 8, "candidates": ["서고 싶어", "쉬고 싶어", "사고 싶어", "살고 싶어", "숨고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0164", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 12, "candidates": ["오고 싶어", "앉고 싶어", "알고 싶어", "읽고 싶어", "입고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0165", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 16, "candidates": ["내 옆에 계세요", "내 앞에 계세요", "누워 있고 싶어"], "catalog_size": 3}
+{"id": "TRAIN0166", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 3, "candidates": ["다 있지", "들어줘", "다 알지"], "catalog_size": 7}
+{"id": "TRAIN0167", "split": "train", "initials": "ㅁㅈ", "requested_count": 5, "candidates": ["물 좀", "맥주", "먹자", "뭐지", "말자"], "catalog_size": 11}
+{"id": "TRAIN0168", "split": "train", "initials": "ㅈㅇ", "requested_count": 8, "candidates": ["지워", "주워", "저요", "자요", "좋아", "줘요", "조용", "제일"], "catalog_size": 8}
+{"id": "TRAIN0169", "split": "train", "initials": "ㅇㄴ", "requested_count": 12, "candidates": ["아니", "없나", "있나", "언니", "안내", "오냐", "오늘", "안녕"], "catalog_size": 8}
+{"id": "TRAIN0170", "split": "train", "initials": "ㅂㅈ", "requested_count": 16, "candidates": ["보자", "밥 좀", "바지", "밥 줘", "빚져", "봐줘", "부자", "병 줘"], "catalog_size": 8}
+{"id": "TRAIN0171", "split": "train", "initials": "ㄷㅇ", "requested_count": 3, "candidates": ["도와", "더워", "되어"], "catalog_size": 7}
+{"id": "TRAIN0172", "split": "train", "initials": "ㅅㅇ", "requested_count": 5, "candidates": ["사요", "세워", "쉬어", "서요", "수요"], "catalog_size": 7}
+{"id": "TRAIN0173", "split": "train", "initials": "ㅁㅇ", "requested_count": 8, "candidates": ["매워", "뭐야", "마요", "미안", "맞아", "무용", "모여", "믿어"], "catalog_size": 8}
+{"id": "TRAIN0174", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 12, "candidates": ["그 말이", "개막일", "고마워", "구매요", "그만요"], "catalog_size": 5}
+{"id": "TRAIN0175", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 16, "candidates": ["저기 서요", "저거 사요", "제가 사요", "지금 사요", "조금 세요", "자고 싶어"], "catalog_size": 6}
+{"id": "TRAIN0176", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 3, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0177", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 5, "candidates": ["볼 아파", "배 아파", "발 아파"], "catalog_size": 3}
+{"id": "TRAIN0178", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 8, "candidates": ["맘 아파", "몸 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0179", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 12, "candidates": ["의사 불러줘", "어서 불러줘", "우산 빌려줘", "우선 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0180", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 16, "candidates": ["그 학생 불러줘", "간호사 불러줘", "그 회사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0181", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 3, "candidates": ["불 끄자", "바꿔줘", "불 껐지"], "catalog_size": 4}
+{"id": "TRAIN0182", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 5, "candidates": ["자막 켜줘", "조명 켜줘", "조명 켜자", "조명 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0183", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 8, "candidates": ["조명 꺼져", "조명 꺼줘", "좀만 꺼줘", "조명 끄자", "좀만 끄자"], "catalog_size": 5}
+{"id": "TRAIN0184", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 12, "candidates": ["티비 켜죠", "티비 켜줘", "티비 키자", "티비 켜자"], "catalog_size": 4}
+{"id": "TRAIN0185", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 16, "candidates": ["물도 있죠", "만들어줘", "문 닫아줘", "말 들어줘"], "catalog_size": 4}
+{"id": "TRAIN0186", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 3, "candidates": ["내 맘 안 돼요", "너무 어두워", "내 물 어디야"], "catalog_size": 4}
+{"id": "TRAIN0187", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 5, "candidates": ["내 말 봐요", "너무 밝아", "너 뭐 보여", "나만 봐요"], "catalog_size": 4}
+{"id": "TRAIN0188", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 8, "candidates": ["오늘 뭐함", "아니 뭐 해", "오늘 뭐 해", "아냐 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0189", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 12, "candidates": ["나 왜 뭐 해", "너 왜 뭐 해", "내일 뭐함", "내일 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0190", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 16, "candidates": ["저기 몇 시야", "지금 몇 시야", "조금만 쉬어", "자기 몇 시야", "지금 뭐 사요"], "catalog_size": 5}
+{"id": "TRAIN0191", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 3, "candidates": ["다시 말해줘", "더 설명해줘", "대신 말해줘"], "catalog_size": 4}
+{"id": "TRAIN0192", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 5, "candidates": ["자꾸만", "저 껌만", "잠깐만"], "catalog_size": 3}
+{"id": "TRAIN0193", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 8, "candidates": ["다음에 해줘", "다음에 하자", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0194", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 12, "candidates": ["목 말라", "목마름", "뭐 말래", "맘마를", "마무리"], "catalog_size": 5}
+{"id": "TRAIN0195", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 16, "candidates": ["뭐 마실래", "물 마실래", "뭘 마실래", "물 마시러"], "catalog_size": 4}
+{"id": "TRAIN0196", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 3, "candidates": ["숨고 싶어", "서고 싶어", "쉬고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0197", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 5, "candidates": ["읽고 싶어", "입고 싶어", "알고 싶어", "앉고 싶어", "오고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0198", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 8, "candidates": ["누워 있고 싶어", "내 앞에 계세요", "내 옆에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0199", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 12, "candidates": ["더 있죠", "도와줘", "다음 주", "들어줘", "다 알지", "다 있지", "다 오죠"], "catalog_size": 7}
+{"id": "TRAIN0200", "split": "train", "initials": "ㅁㅈ", "requested_count": 16, "candidates": ["먼저", "모자", "문제", "만져", "말자", "물 줘", "물 좀", "맥주", "먹자", "맞지", "뭐지"], "catalog_size": 11}
+{"id": "TRAIN0201", "split": "train", "initials": "ㅈㅇ", "requested_count": 3, "candidates": ["조용", "제일", "좋아"], "catalog_size": 8}
+{"id": "TRAIN0202", "split": "train", "initials": "ㅇㄴ", "requested_count": 5, "candidates": ["없나", "오냐", "아니", "안녕", "오늘"], "catalog_size": 8}
+{"id": "TRAIN0203", "split": "train", "initials": "ㅂㅈ", "requested_count": 8, "candidates": ["병 줘", "빚져", "밥 줘", "밥 좀", "봐줘", "보자", "바지", "부자"], "catalog_size": 8}
+{"id": "TRAIN0204", "split": "train", "initials": "ㄷㅇ", "requested_count": 12, "candidates": ["들어", "더워", "도와", "닫아", "다음", "동의", "되어"], "catalog_size": 7}
+{"id": "TRAIN0205", "split": "train", "initials": "ㅅㅇ", "requested_count": 16, "candidates": ["세워", "싫어", "쉬어", "사요", "수요", "서요", "소요"], "catalog_size": 7}
+{"id": "TRAIN0206", "split": "train", "initials": "ㅁㅇ", "requested_count": 3, "candidates": ["매워", "믿어", "맞아"], "catalog_size": 8}
+{"id": "TRAIN0207", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 5, "candidates": ["그만요", "개막일", "구매요", "그 말이", "고마워"], "catalog_size": 5}
+{"id": "TRAIN0208", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 8, "candidates": ["자고 싶어", "지금 사요", "저거 사요", "조금 세요", "제가 사요", "저기 서요"], "catalog_size": 6}
+{"id": "TRAIN0209", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 12, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0210", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 16, "candidates": ["배 아파", "발 아파", "볼 아파"], "catalog_size": 3}
+{"id": "TRAIN0211", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 3, "candidates": ["목 아픔", "몸 아파", "맘 아파"], "catalog_size": 3}
+{"id": "TRAIN0212", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 5, "candidates": ["우선 불러줘", "우산 빌려줘", "의사 불러줘", "어서 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0213", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 8, "candidates": ["간호사 불러줘", "그 학생 불러줘", "그 회사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0214", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 12, "candidates": ["바꿔줘", "불 껐지", "불 꺼줘", "불 끄자"], "catalog_size": 4}
+{"id": "TRAIN0215", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 16, "candidates": ["조명 켜자", "조명 켜죠", "조명 켜줘", "자막 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0216", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 3, "candidates": ["좀만 꺼줘", "조명 꺼져", "조명 끄자"], "catalog_size": 5}
+{"id": "TRAIN0217", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 5, "candidates": ["티비 켜죠", "티비 키자", "티비 켜줘", "티비 켜자"], "catalog_size": 4}
+{"id": "TRAIN0218", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 8, "candidates": ["말 들어줘", "물도 있죠", "문 닫아줘", "만들어줘"], "catalog_size": 4}
+{"id": "TRAIN0219", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 12, "candidates": ["나 뭐 어딨어", "내 맘 안 돼요", "너무 어두워", "내 물 어디야"], "catalog_size": 4}
+{"id": "TRAIN0220", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 16, "candidates": ["내 말 봐요", "너 뭐 보여", "너무 밝아", "나만 봐요"], "catalog_size": 4}
+{"id": "TRAIN0221", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 3, "candidates": ["아냐 뭐 해", "오늘 뭐함", "오늘 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0222", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 5, "candidates": ["내일 뭐함", "나 왜 뭐 해", "내일 뭐 해", "너 왜 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0223", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 8, "candidates": ["저기 몇 시야", "자기 몇 시야", "지금 뭐 사요", "조금만 쉬어", "지금 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0224", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 12, "candidates": ["다 설명해줘", "더 설명해줘", "다시 말해줘", "대신 말해줘"], "catalog_size": 4}
+{"id": "TRAIN0225", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 16, "candidates": ["잠깐만", "자꾸만", "저 껌만"], "catalog_size": 3}
+{"id": "TRAIN0226", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 3, "candidates": ["다음에 하자", "다음에 해줘", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0227", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 5, "candidates": ["뭐 말래", "목마름", "맘마를", "마무리", "목 말라"], "catalog_size": 5}
+{"id": "TRAIN0228", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 8, "candidates": ["뭘 마실래", "물 마시러", "물 마실래", "뭐 마실래"], "catalog_size": 4}
+{"id": "TRAIN0229", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 12, "candidates": ["사고 싶어", "살고 싶어", "숨고 싶어", "서고 싶어", "쉬고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0230", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 16, "candidates": ["알고 싶어", "읽고 싶어", "입고 싶어", "오고 싶어", "앉고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0231", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 3, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0232", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 5, "candidates": ["도와줘", "다음 주", "들어줘", "다 알지", "다 있지"], "catalog_size": 7}
+{"id": "TRAIN0233", "split": "train", "initials": "ㅁㅈ", "requested_count": 8, "candidates": ["모자", "문제", "만져", "말자", "물 줘", "물 좀", "맥주", "먹자"], "catalog_size": 11}
+{"id": "TRAIN0234", "split": "train", "initials": "ㅈㅇ", "requested_count": 12, "candidates": ["제일", "좋아", "줘요", "저요", "자요", "주워", "지워", "조용"], "catalog_size": 8}
+{"id": "TRAIN0235", "split": "train", "initials": "ㅇㄴ", "requested_count": 16, "candidates": ["오냐", "아니", "안녕", "오늘", "언니", "안내", "있나", "없나"], "catalog_size": 8}
+{"id": "TRAIN0236", "split": "train", "initials": "ㅂㅈ", "requested_count": 3, "candidates": ["빚져", "밥 줘", "밥 좀"], "catalog_size": 8}
+{"id": "TRAIN0237", "split": "train", "initials": "ㄷㅇ", "requested_count": 5, "candidates": ["더워", "도와", "닫아", "다음", "동의"], "catalog_size": 7}
+{"id": "TRAIN0238", "split": "train", "initials": "ㅅㅇ", "requested_count": 8, "candidates": ["싫어", "쉬어", "사요", "수요", "서요", "소요", "세워"], "catalog_size": 7}
+{"id": "TRAIN0239", "split": "train", "initials": "ㅁㅇ", "requested_count": 12, "candidates": ["믿어", "맞아", "뭐야", "미안", "모여", "마요", "무용", "매워"], "catalog_size": 8}
+{"id": "TRAIN0240", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 16, "candidates": ["개막일", "구매요", "그 말이", "고마워", "그만요"], "catalog_size": 5}
+{"id": "TRAIN0241", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 3, "candidates": ["지금 사요", "저거 사요", "조금 세요"], "catalog_size": 6}
+{"id": "TRAIN0242", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 5, "candidates": ["무릎 아파", "머리 아파"], "catalog_size": 2}
+{"id": "TRAIN0243", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 8, "candidates": ["발 아파", "볼 아파", "배 아파"], "catalog_size": 3}
+{"id": "TRAIN0244", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 12, "candidates": ["몸 아파", "맘 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0245", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 16, "candidates": ["우산 빌려줘", "의사 불러줘", "어서 불러줘", "우선 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0246", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 3, "candidates": ["그 학생 불러줘", "그 회사 불러줘", "간호사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0247", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 5, "candidates": ["불 껐지", "불 꺼줘", "불 끄자", "바꿔줘"], "catalog_size": 4}
+{"id": "TRAIN0248", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 8, "candidates": ["조명 켜죠", "조명 켜줘", "자막 켜줘", "조명 켜자"], "catalog_size": 4}
+{"id": "TRAIN0249", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 12, "candidates": ["조명 꺼져", "조명 끄자", "좀만 끄자", "조명 꺼줘", "좀만 꺼줘"], "catalog_size": 5}
+{"id": "TRAIN0250", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 16, "candidates": ["티비 키자", "티비 켜줘", "티비 켜자", "티비 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0251", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 3, "candidates": ["물도 있죠", "문 닫아줘", "만들어줘"], "catalog_size": 4}
+{"id": "TRAIN0252", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 5, "candidates": ["내 맘 안 돼요", "너무 어두워", "내 물 어디야", "나 뭐 어딨어"], "catalog_size": 4}
+{"id": "TRAIN0253", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 8, "candidates": ["너 뭐 보여", "너무 밝아", "나만 봐요", "내 말 봐요"], "catalog_size": 4}
+{"id": "TRAIN0254", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 12, "candidates": ["오늘 뭐함", "오늘 뭐 해", "아니 뭐 해", "아냐 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0255", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 16, "candidates": ["나 왜 뭐 해", "내일 뭐 해", "너 왜 뭐 해", "내일 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0256", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 3, "candidates": ["자기 몇 시야", "지금 뭐 사요", "조금만 쉬어"], "catalog_size": 5}
+{"id": "TRAIN0257", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 5, "candidates": ["더 설명해줘", "다시 말해줘", "대신 말해줘", "다 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0258", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 8, "candidates": ["자꾸만", "저 껌만", "잠깐만"], "catalog_size": 3}
+{"id": "TRAIN0259", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 12, "candidates": ["다음에 해줘", "다음에 하죠", "다음에 하자"], "catalog_size": 3}
+{"id": "TRAIN0260", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 16, "candidates": ["목마름", "맘마를", "마무리", "목 말라", "뭐 말래"], "catalog_size": 5}
+{"id": "TRAIN0261", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 3, "candidates": ["물 마시러", "물 마실래", "뭐 마실래"], "catalog_size": 4}
+{"id": "TRAIN0262", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 5, "candidates": ["살고 싶어", "숨고 싶어", "서고 싶어", "쉬고 싶어", "사고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0263", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 8, "candidates": ["읽고 싶어", "입고 싶어", "오고 싶어", "앉고 싶어", "알고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0264", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 12, "candidates": ["내 옆에 계세요", "내 앞에 계세요", "누워 있고 싶어"], "catalog_size": 3}
+{"id": "TRAIN0265", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 16, "candidates": ["다 있지", "다 오죠", "다음 주", "들어줘", "도와줘", "다 알지", "더 있죠"], "catalog_size": 7}
+{"id": "TRAIN0266", "split": "train", "initials": "ㅁㅈ", "requested_count": 3, "candidates": ["뭐지", "먹자", "말자"], "catalog_size": 11}
+{"id": "TRAIN0267", "split": "train", "initials": "ㅈㅇ", "requested_count": 5, "candidates": ["좋아", "지워", "조용", "주워", "줘요"], "catalog_size": 8}
+{"id": "TRAIN0268", "split": "train", "initials": "ㅇㄴ", "requested_count": 8, "candidates": ["언니", "오늘", "오냐", "있나", "아니", "없나", "안내", "안녕"], "catalog_size": 8}
+{"id": "TRAIN0269", "split": "train", "initials": "ㅂㅈ", "requested_count": 12, "candidates": ["바지", "봐줘", "밥 줘", "빚져", "보자", "부자", "병 줘", "밥 좀"], "catalog_size": 8}
+{"id": "TRAIN0270", "split": "train", "initials": "ㄷㅇ", "requested_count": 16, "candidates": ["더워", "닫아", "되어", "도와", "동의", "다음", "들어"], "catalog_size": 7}
+{"id": "TRAIN0271", "split": "train", "initials": "ㅅㅇ", "requested_count": 3, "candidates": ["수요", "싫어", "사요"], "catalog_size": 7}
+{"id": "TRAIN0272", "split": "train", "initials": "ㅁㅇ", "requested_count": 5, "candidates": ["믿어", "뭐야", "마요", "매워", "무용"], "catalog_size": 8}
+{"id": "TRAIN0273", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 8, "candidates": ["개막일", "구매요", "그 말이", "고마워", "그만요"], "catalog_size": 5}
+{"id": "TRAIN0274", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 12, "candidates": ["지금 사요", "자고 싶어", "저거 사요", "저기 서요", "조금 세요", "제가 사요"], "catalog_size": 6}
+{"id": "TRAIN0275", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 16, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0276", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 3, "candidates": ["배 아파", "발 아파", "볼 아파"], "catalog_size": 3}
+{"id": "TRAIN0277", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 5, "candidates": ["목 아픔", "맘 아파", "몸 아파"], "catalog_size": 3}
+{"id": "TRAIN0278", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 8, "candidates": ["우선 불러줘", "우산 빌려줘", "의사 불러줘", "어서 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0279", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 12, "candidates": ["그 학생 불러줘", "그 회사 불러줘", "간호사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0280", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 16, "candidates": ["불 꺼줘", "불 껐지", "불 끄자", "바꿔줘"], "catalog_size": 4}
+{"id": "TRAIN0281", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 3, "candidates": ["조명 켜죠", "조명 켜자", "자막 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0282", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 5, "candidates": ["좀만 꺼줘", "좀만 끄자", "조명 끄자", "조명 꺼져", "조명 꺼줘"], "catalog_size": 5}
+{"id": "TRAIN0283", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 8, "candidates": ["티비 켜죠", "티비 키자", "티비 켜줘", "티비 켜자"], "catalog_size": 4}
+{"id": "TRAIN0284", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 12, "candidates": ["만들어줘", "문 닫아줘", "말 들어줘", "물도 있죠"], "catalog_size": 4}
+{"id": "TRAIN0285", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 16, "candidates": ["나 뭐 어딨어", "내 맘 안 돼요", "너무 어두워", "내 물 어디야"], "catalog_size": 4}
+{"id": "TRAIN0286", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 3, "candidates": ["나만 봐요", "내 말 봐요", "너무 밝아"], "catalog_size": 4}
+{"id": "TRAIN0287", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 5, "candidates": ["오늘 뭐함", "오늘 뭐 해", "아니 뭐 해", "아냐 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0288", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 8, "candidates": ["내일 뭐함", "나 왜 뭐 해", "내일 뭐 해", "너 왜 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0289", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 12, "candidates": ["지금 뭐 사요", "지금 몇 시야", "조금만 쉬어", "저기 몇 시야", "자기 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0290", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 16, "candidates": ["다시 말해줘", "더 설명해줘", "대신 말해줘", "다 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0291", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 3, "candidates": ["자꾸만", "잠깐만", "저 껌만"], "catalog_size": 3}
+{"id": "TRAIN0292", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 5, "candidates": ["다음에 하죠", "다음에 해줘", "다음에 하자"], "catalog_size": 3}
+{"id": "TRAIN0293", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 8, "candidates": ["목마름", "뭐 말래", "목 말라", "마무리", "맘마를"], "catalog_size": 5}
+{"id": "TRAIN0294", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 12, "candidates": ["뭐 마실래", "물 마시러", "물 마실래", "뭘 마실래"], "catalog_size": 4}
+{"id": "TRAIN0295", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 16, "candidates": ["쉬고 싶어", "숨고 싶어", "서고 싶어", "살고 싶어", "사고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0296", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 3, "candidates": ["앉고 싶어", "오고 싶어", "알고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0297", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 5, "candidates": ["내 옆에 계세요", "내 앞에 계세요", "누워 있고 싶어"], "catalog_size": 3}
+{"id": "TRAIN0298", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 8, "candidates": ["들어줘", "다 알지", "다 있지", "다 오죠", "더 있죠", "도와줘", "다음 주"], "catalog_size": 7}
+{"id": "TRAIN0299", "split": "train", "initials": "ㅁㅈ", "requested_count": 12, "candidates": ["만져", "말자", "물 줘", "물 좀", "맥주", "먹자", "맞지", "뭐지", "먼저", "모자", "문제"], "catalog_size": 11}
+{"id": "TRAIN0300", "split": "train", "initials": "ㅈㅇ", "requested_count": 16, "candidates": ["줘요", "저요", "자요", "주워", "지워", "조용", "제일", "좋아"], "catalog_size": 8}
+{"id": "TRAIN0301", "split": "train", "initials": "ㅇㄴ", "requested_count": 3, "candidates": ["안녕", "오늘", "언니"], "catalog_size": 8}
+{"id": "TRAIN0302", "split": "train", "initials": "ㅂㅈ", "requested_count": 5, "candidates": ["밥 좀", "봐줘", "보자", "바지", "부자"], "catalog_size": 8}
+{"id": "TRAIN0303", "split": "train", "initials": "ㄷㅇ", "requested_count": 8, "candidates": ["닫아", "다음", "동의", "되어", "들어", "더워", "도와"], "catalog_size": 7}
+{"id": "TRAIN0304", "split": "train", "initials": "ㅅㅇ", "requested_count": 12, "candidates": ["사요", "수요", "서요", "소요", "세워", "싫어", "쉬어"], "catalog_size": 7}
+{"id": "TRAIN0305", "split": "train", "initials": "ㅁㅇ", "requested_count": 16, "candidates": ["뭐야", "미안", "모여", "마요", "무용", "매워", "믿어", "맞아"], "catalog_size": 8}
+{"id": "TRAIN0306", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 3, "candidates": ["그 말이", "고마워", "그만요"], "catalog_size": 5}
+{"id": "TRAIN0307", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 5, "candidates": ["조금 세요", "제가 사요", "저기 서요", "자고 싶어", "지금 사요"], "catalog_size": 6}
+{"id": "TRAIN0308", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 8, "candidates": ["무릎 아파", "머리 아파"], "catalog_size": 2}
+{"id": "TRAIN0309", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 12, "candidates": ["배 아파", "발 아파", "볼 아파"], "catalog_size": 3}
+{"id": "TRAIN0310", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 16, "candidates": ["목 아픔", "몸 아파", "맘 아파"], "catalog_size": 3}
+{"id": "TRAIN0311", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 3, "candidates": ["어서 불러줘", "우선 불러줘", "우산 빌려줘"], "catalog_size": 4}
+{"id": "TRAIN0312", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 5, "candidates": ["간호사 불러줘", "그 학생 불러줘", "그 회사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0313", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 8, "candidates": ["불 끄자", "바꿔줘", "불 껐지", "불 꺼줘"], "catalog_size": 4}
+{"id": "TRAIN0314", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 12, "candidates": ["자막 켜줘", "조명 켜자", "조명 켜죠", "조명 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0315", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 16, "candidates": ["좀만 끄자", "조명 꺼줘", "좀만 꺼줘", "조명 꺼져", "조명 끄자"], "catalog_size": 5}
+{"id": "TRAIN0316", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 3, "candidates": ["티비 켜자", "티비 켜죠", "티비 키자"], "catalog_size": 4}
+{"id": "TRAIN0317", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 5, "candidates": ["만들어줘", "말 들어줘", "물도 있죠", "문 닫아줘"], "catalog_size": 4}
+{"id": "TRAIN0318", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 8, "candidates": ["내 물 어디야", "나 뭐 어딨어", "내 맘 안 돼요", "너무 어두워"], "catalog_size": 4}
+{"id": "TRAIN0319", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 12, "candidates": ["나만 봐요", "내 말 봐요", "너 뭐 보여", "너무 밝아"], "catalog_size": 4}
+{"id": "TRAIN0320", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 16, "candidates": ["아니 뭐 해", "아냐 뭐 해", "오늘 뭐함", "오늘 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0321", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 3, "candidates": ["너 왜 뭐 해", "내일 뭐함", "나 왜 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0322", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 5, "candidates": ["조금만 쉬어", "지금 몇 시야", "저기 몇 시야", "자기 몇 시야", "지금 뭐 사요"], "catalog_size": 5}
+{"id": "TRAIN0323", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 8, "candidates": ["대신 말해줘", "다 설명해줘", "더 설명해줘", "다시 말해줘"], "catalog_size": 4}
+{"id": "TRAIN0324", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 12, "candidates": ["잠깐만", "자꾸만", "저 껌만"], "catalog_size": 3}
+{"id": "TRAIN0325", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 16, "candidates": ["다음에 하자", "다음에 해줘", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0326", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 3, "candidates": ["마무리", "목 말라", "뭐 말래"], "catalog_size": 5}
+{"id": "TRAIN0327", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 5, "candidates": ["뭐 마실래", "뭘 마실래", "물 마시러", "물 마실래"], "catalog_size": 4}
+{"id": "TRAIN0328", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 8, "candidates": ["서고 싶어", "쉬고 싶어", "사고 싶어", "살고 싶어", "숨고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0329", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 12, "candidates": ["오고 싶어", "앉고 싶어", "알고 싶어", "읽고 싶어", "입고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0330", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 16, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0331", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 3, "candidates": ["다 알지", "다 있지", "다 오죠"], "catalog_size": 7}
+{"id": "TRAIN0332", "split": "train", "initials": "ㅁㅈ", "requested_count": 5, "candidates": ["말자", "물 줘", "물 좀", "맥주", "먹자"], "catalog_size": 11}
+{"id": "TRAIN0333", "split": "train", "initials": "ㅈㅇ", "requested_count": 8, "candidates": ["저요", "자요", "주워", "지워", "조용", "제일", "좋아", "줘요"], "catalog_size": 8}
+{"id": "TRAIN0334", "split": "train", "initials": "ㅇㄴ", "requested_count": 12, "candidates": ["오늘", "언니", "안내", "있나", "없나", "오냐", "아니", "안녕"], "catalog_size": 8}
+{"id": "TRAIN0335", "split": "train", "initials": "ㅂㅈ", "requested_count": 16, "candidates": ["봐줘", "보자", "바지", "부자", "병 줘", "빚져", "밥 줘", "밥 좀"], "catalog_size": 8}
+{"id": "TRAIN0336", "split": "train", "initials": "ㄷㅇ", "requested_count": 3, "candidates": ["다음", "동의", "되어"], "catalog_size": 7}
+{"id": "TRAIN0337", "split": "train", "initials": "ㅅㅇ", "requested_count": 5, "candidates": ["수요", "서요", "소요", "세워", "싫어"], "catalog_size": 7}
+{"id": "TRAIN0338", "split": "train", "initials": "ㅁㅇ", "requested_count": 8, "candidates": ["미안", "모여", "마요", "무용", "매워", "믿어", "맞아", "뭐야"], "catalog_size": 8}
+{"id": "TRAIN0339", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 12, "candidates": ["고마워", "그만요", "개막일", "구매요", "그 말이"], "catalog_size": 5}
+{"id": "TRAIN0340", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 16, "candidates": ["제가 사요", "저기 서요", "자고 싶어", "지금 사요", "저거 사요", "조금 세요"], "catalog_size": 6}
+{"id": "TRAIN0341", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 3, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0342", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 5, "candidates": ["발 아파", "볼 아파", "배 아파"], "catalog_size": 3}
+{"id": "TRAIN0343", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 8, "candidates": ["몸 아파", "맘 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0344", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 12, "candidates": ["우선 불러줘", "우산 빌려줘", "의사 불러줘", "어서 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0345", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 16, "candidates": ["그 학생 불러줘", "그 회사 불러줘", "간호사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0346", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 3, "candidates": ["바꿔줘", "불 껐지", "불 꺼줘"], "catalog_size": 4}
+{"id": "TRAIN0347", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 5, "candidates": ["조명 켜자", "조명 켜죠", "조명 켜줘", "자막 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0348", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 8, "candidates": ["조명 꺼줘", "좀만 꺼줘", "조명 꺼져", "조명 끄자", "좀만 끄자"], "catalog_size": 5}
+{"id": "TRAIN0349", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 12, "candidates": ["티비 켜죠", "티비 키자", "티비 켜줘", "티비 켜자"], "catalog_size": 4}
+{"id": "TRAIN0350", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 16, "candidates": ["말 들어줘", "물도 있죠", "문 닫아줘", "만들어줘"], "catalog_size": 4}
+{"id": "TRAIN0351", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 3, "candidates": ["나 뭐 어딨어", "내 맘 안 돼요", "너무 어두워"], "catalog_size": 4}
+{"id": "TRAIN0352", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 5, "candidates": ["내 말 봐요", "너 뭐 보여", "너무 밝아", "나만 봐요"], "catalog_size": 4}
+{"id": "TRAIN0353", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 8, "candidates": ["아냐 뭐 해", "오늘 뭐함", "오늘 뭐 해", "아니 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0354", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 12, "candidates": ["내일 뭐함", "나 왜 뭐 해", "내일 뭐 해", "너 왜 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0355", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 16, "candidates": ["지금 몇 시야", "저기 몇 시야", "자기 몇 시야", "지금 뭐 사요", "조금만 쉬어"], "catalog_size": 5}
+{"id": "TRAIN0356", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 3, "candidates": ["다 설명해줘", "더 설명해줘", "다시 말해줘"], "catalog_size": 4}
+{"id": "TRAIN0357", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 5, "candidates": ["자꾸만", "저 껌만", "잠깐만"], "catalog_size": 3}
+{"id": "TRAIN0358", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 8, "candidates": ["다음에 해줘", "다음에 하죠", "다음에 하자"], "catalog_size": 3}
+{"id": "TRAIN0359", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 12, "candidates": ["목 말라", "뭐 말래", "목마름", "맘마를", "마무리"], "catalog_size": 5}
+{"id": "TRAIN0360", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 16, "candidates": ["뭘 마실래", "물 마시러", "물 마실래", "뭐 마실래"], "catalog_size": 4}
+{"id": "TRAIN0361", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 3, "candidates": ["쉬고 싶어", "사고 싶어", "살고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0362", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 5, "candidates": ["앉고 싶어", "알고 싶어", "읽고 싶어", "입고 싶어", "오고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0363", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 8, "candidates": ["내 옆에 계세요", "내 앞에 계세요", "누워 있고 싶어"], "catalog_size": 3}
+{"id": "TRAIN0364", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 12, "candidates": ["다음 주", "다 오죠", "더 있죠", "도와줘", "다 알지", "들어줘", "다 있지"], "catalog_size": 7}
+{"id": "TRAIN0365", "split": "train", "initials": "ㅁㅈ", "requested_count": 16, "candidates": ["물 좀", "물 줘", "말자", "맞지", "문제", "맥주", "먹자", "모자", "만져", "뭐지", "먼저"], "catalog_size": 11}
+{"id": "TRAIN0366", "split": "train", "initials": "ㅈㅇ", "requested_count": 3, "candidates": ["조용", "줘요", "지워"], "catalog_size": 8}
+{"id": "TRAIN0367", "split": "train", "initials": "ㅇㄴ", "requested_count": 5, "candidates": ["있나", "없나", "오냐", "오늘", "안내"], "catalog_size": 8}
+{"id": "TRAIN0368", "split": "train", "initials": "ㅂㅈ", "requested_count": 8, "candidates": ["바지", "봐줘", "부자", "빚져", "보자", "병 줘", "밥 좀", "밥 줘"], "catalog_size": 8}
+{"id": "TRAIN0369", "split": "train", "initials": "ㄷㅇ", "requested_count": 12, "candidates": ["닫아", "다음", "동의", "들어", "도와", "더워", "되어"], "catalog_size": 7}
+{"id": "TRAIN0370", "split": "train", "initials": "ㅅㅇ", "requested_count": 16, "candidates": ["소요", "사요", "서요", "수요", "세워", "쉬어", "싫어"], "catalog_size": 7}
+{"id": "TRAIN0371", "split": "train", "initials": "ㅁㅇ", "requested_count": 3, "candidates": ["매워", "모여", "뭐야"], "catalog_size": 8}
+{"id": "TRAIN0372", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 5, "candidates": ["구매요", "개막일", "고마워", "그 말이", "그만요"], "catalog_size": 5}
+{"id": "TRAIN0373", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 8, "candidates": ["지금 사요", "제가 사요", "조금 세요", "자고 싶어", "저기 서요", "저거 사요"], "catalog_size": 6}
+{"id": "TRAIN0374", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 12, "candidates": ["무릎 아파", "머리 아파"], "catalog_size": 2}
+{"id": "TRAIN0375", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 16, "candidates": ["볼 아파", "발 아파", "배 아파"], "catalog_size": 3}
+{"id": "TRAIN0376", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 3, "candidates": ["맘 아파", "목 아픔", "몸 아파"], "catalog_size": 3}
+{"id": "TRAIN0377", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 5, "candidates": ["어서 불러줘", "우산 빌려줘", "우선 불러줘", "의사 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0378", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 8, "candidates": ["간호사 불러줘", "그 회사 불러줘", "그 학생 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0379", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 12, "candidates": ["불 꺼줘", "바꿔줘", "불 끄자", "불 껐지"], "catalog_size": 4}
+{"id": "TRAIN0380", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 16, "candidates": ["조명 켜줘", "조명 켜자", "조명 켜죠", "자막 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0381", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 3, "candidates": ["조명 꺼져", "좀만 꺼줘", "좀만 끄자"], "catalog_size": 5}
+{"id": "TRAIN0382", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 5, "candidates": ["티비 켜줘", "티비 키자", "티비 켜죠", "티비 켜자"], "catalog_size": 4}
+{"id": "TRAIN0383", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 8, "candidates": ["말 들어줘", "문 닫아줘", "물도 있죠", "만들어줘"], "catalog_size": 4}
+{"id": "TRAIN0384", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 12, "candidates": ["내 맘 안 돼요", "나 뭐 어딨어", "내 물 어디야", "너무 어두워"], "catalog_size": 4}
+{"id": "TRAIN0385", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 16, "candidates": ["너무 밝아", "내 말 봐요", "나만 봐요", "너 뭐 보여"], "catalog_size": 4}
+{"id": "TRAIN0386", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 3, "candidates": ["아냐 뭐 해", "아니 뭐 해", "오늘 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0387", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 5, "candidates": ["나 왜 뭐 해", "내일 뭐 해", "내일 뭐함", "너 왜 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0388", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 8, "candidates": ["지금 뭐 사요", "조금만 쉬어", "자기 몇 시야", "저기 몇 시야", "지금 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0389", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 12, "candidates": ["다시 말해줘", "다 설명해줘", "대신 말해줘", "더 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0390", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 16, "candidates": ["자꾸만", "잠깐만", "저 껌만"], "catalog_size": 3}
+{"id": "TRAIN0391", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 3, "candidates": ["다음에 하자", "다음에 해줘", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0392", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 5, "candidates": ["목 말라", "맘마를", "목마름", "마무리", "뭐 말래"], "catalog_size": 5}
+{"id": "TRAIN0393", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 8, "candidates": ["물 마실래", "뭐 마실래", "뭘 마실래", "물 마시러"], "catalog_size": 4}
+{"id": "TRAIN0394", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 12, "candidates": ["쉬고 싶어", "숨고 싶어", "사고 싶어", "서고 싶어", "살고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0395", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 16, "candidates": ["앉고 싶어", "읽고 싶어", "오고 싶어", "알고 싶어", "입고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0396", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 3, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0397", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 5, "candidates": ["다 오죠", "더 있죠", "도와줘", "다음 주", "들어줘"], "catalog_size": 7}
+{"id": "TRAIN0398", "split": "train", "initials": "ㅁㅈ", "requested_count": 8, "candidates": ["물 좀", "맥주", "먹자", "맞지", "뭐지", "먼저", "모자", "문제"], "catalog_size": 11}
+{"id": "TRAIN0399", "split": "train", "initials": "ㅈㅇ", "requested_count": 12, "candidates": ["주워", "지워", "조용", "제일", "좋아", "줘요", "저요", "자요"], "catalog_size": 8}
+{"id": "TRAIN0400", "split": "train", "initials": "ㅇㄴ", "requested_count": 16, "candidates": ["안내", "있나", "없나", "오냐", "아니", "안녕", "오늘", "언니"], "catalog_size": 8}
+{"id": "TRAIN0401", "split": "train", "initials": "ㅂㅈ", "requested_count": 3, "candidates": ["바지", "부자", "병 줘"], "catalog_size": 8}
+{"id": "TRAIN0402", "split": "train", "initials": "ㄷㅇ", "requested_count": 5, "candidates": ["되어", "들어", "더워", "도와", "닫아"], "catalog_size": 7}
+{"id": "TRAIN0403", "split": "train", "initials": "ㅅㅇ", "requested_count": 8, "candidates": ["소요", "세워", "싫어", "쉬어", "사요", "수요", "서요"], "catalog_size": 7}
+{"id": "TRAIN0404", "split": "train", "initials": "ㅁㅇ", "requested_count": 12, "candidates": ["마요", "무용", "매워", "믿어", "맞아", "뭐야", "미안", "모여"], "catalog_size": 8}
+{"id": "TRAIN0405", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 16, "candidates": ["개막일", "구매요", "그 말이", "고마워", "그만요"], "catalog_size": 5}
+{"id": "TRAIN0406", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 3, "candidates": ["자고 싶어", "지금 사요", "저거 사요"], "catalog_size": 6}
+{"id": "TRAIN0407", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 5, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0408", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 8, "candidates": ["배 아파", "발 아파", "볼 아파"], "catalog_size": 3}
+{"id": "TRAIN0409", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 12, "candidates": ["목 아픔", "몸 아파", "맘 아파"], "catalog_size": 3}
+{"id": "TRAIN0410", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 16, "candidates": ["의사 불러줘", "어서 불러줘", "우선 불러줘", "우산 빌려줘"], "catalog_size": 4}
+{"id": "TRAIN0411", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 3, "candidates": ["간호사 불러줘", "그 학생 불러줘", "그 회사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0412", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 5, "candidates": ["불 꺼줘", "불 끄자", "바꿔줘", "불 껐지"], "catalog_size": 4}
+{"id": "TRAIN0413", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 8, "candidates": ["조명 켜줘", "자막 켜줘", "조명 켜자", "조명 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0414", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 12, "candidates": ["조명 꺼져", "조명 끄자", "좀만 끄자", "조명 꺼줘", "좀만 꺼줘"], "catalog_size": 5}
+{"id": "TRAIN0415", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 16, "candidates": ["티비 켜줘", "티비 켜자", "티비 켜죠", "티비 키자"], "catalog_size": 4}
+{"id": "TRAIN0416", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 3, "candidates": ["문 닫아줘", "만들어줘", "말 들어줘"], "catalog_size": 4}
+{"id": "TRAIN0417", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 5, "candidates": ["너무 어두워", "내 물 어디야", "나 뭐 어딨어", "내 맘 안 돼요"], "catalog_size": 4}
+{"id": "TRAIN0418", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 8, "candidates": ["너무 밝아", "나만 봐요", "내 말 봐요", "너 뭐 보여"], "catalog_size": 4}
+{"id": "TRAIN0419", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 12, "candidates": ["오늘 뭐 해", "아니 뭐 해", "아냐 뭐 해", "오늘 뭐함"], "catalog_size": 4}
+{"id": "TRAIN0420", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 16, "candidates": ["내일 뭐 해", "너 왜 뭐 해", "내일 뭐함", "나 왜 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0421", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 3, "candidates": ["자기 몇 시야", "지금 뭐 사요", "조금만 쉬어"], "catalog_size": 5}
+{"id": "TRAIN0422", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 5, "candidates": ["다시 말해줘", "대신 말해줘", "다 설명해줘", "더 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0423", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 8, "candidates": ["잠깐만", "자꾸만", "저 껌만"], "catalog_size": 3}
+{"id": "TRAIN0424", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 12, "candidates": ["다음에 하자", "다음에 해줘", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0425", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 16, "candidates": ["목마름", "맘마를", "마무리", "목 말라", "뭐 말래"], "catalog_size": 5}
+{"id": "TRAIN0426", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 3, "candidates": ["물 마실래", "뭐 마실래", "뭘 마실래"], "catalog_size": 4}
+{"id": "TRAIN0427", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 5, "candidates": ["살고 싶어", "숨고 싶어", "서고 싶어", "쉬고 싶어", "사고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0428", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 8, "candidates": ["읽고 싶어", "입고 싶어", "오고 싶어", "앉고 싶어", "알고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0429", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 12, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0430", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 16, "candidates": ["더 있죠", "도와줘", "다음 주", "들어줘", "다 알지", "다 있지", "다 오죠"], "catalog_size": 7}
+{"id": "TRAIN0431", "split": "train", "initials": "ㅁㅈ", "requested_count": 3, "candidates": ["맥주", "먹자", "맞지"], "catalog_size": 11}
+{"id": "TRAIN0432", "split": "train", "initials": "ㅈㅇ", "requested_count": 5, "candidates": ["지워", "조용", "제일", "좋아", "줘요"], "catalog_size": 8}
+{"id": "TRAIN0433", "split": "train", "initials": "ㅇㄴ", "requested_count": 8, "candidates": ["있나", "없나", "오냐", "아니", "안녕", "오늘", "언니", "안내"], "catalog_size": 8}
+{"id": "TRAIN0434", "split": "train", "initials": "ㅂㅈ", "requested_count": 12, "candidates": ["부자", "병 줘", "빚져", "밥 줘", "밥 좀", "봐줘", "보자", "바지"], "catalog_size": 8}
+{"id": "TRAIN0435", "split": "train", "initials": "ㄷㅇ", "requested_count": 16, "candidates": ["들어", "더워", "도와", "닫아", "다음", "동의", "되어"], "catalog_size": 7}
+{"id": "TRAIN0436", "split": "train", "initials": "ㅅㅇ", "requested_count": 3, "candidates": ["세워", "싫어", "쉬어"], "catalog_size": 7}
+{"id": "TRAIN0437", "split": "train", "initials": "ㅁㅇ", "requested_count": 5, "candidates": ["무용", "매워", "믿어", "맞아", "뭐야"], "catalog_size": 8}
+{"id": "TRAIN0438", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 8, "candidates": ["구매요", "그 말이", "고마워", "그만요", "개막일"], "catalog_size": 5}
+{"id": "TRAIN0439", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 12, "candidates": ["지금 사요", "저거 사요", "조금 세요", "제가 사요", "저기 서요", "자고 싶어"], "catalog_size": 6}
+{"id": "TRAIN0440", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 16, "candidates": ["무릎 아파", "머리 아파"], "catalog_size": 2}
+{"id": "TRAIN0441", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 3, "candidates": ["발 아파", "볼 아파", "배 아파"], "catalog_size": 3}
+{"id": "TRAIN0442", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 5, "candidates": ["몸 아파", "맘 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0443", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 8, "candidates": ["어서 불러줘", "우선 불러줘", "우산 빌려줘", "의사 불러줘"], "catalog_size": 4}
+{"id": "TRAIN0444", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 12, "candidates": ["그 학생 불러줘", "그 회사 불러줘", "간호사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0445", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 16, "candidates": ["불 끄자", "바꿔줘", "불 껐지", "불 꺼줘"], "catalog_size": 4}
+{"id": "TRAIN0446", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 3, "candidates": ["자막 켜줘", "조명 켜자", "조명 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0447", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 5, "candidates": ["조명 끄자", "좀만 끄자", "조명 꺼줘", "좀만 꺼줘", "조명 꺼져"], "catalog_size": 5}
+{"id": "TRAIN0448", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 8, "candidates": ["티비 켜자", "티비 켜죠", "티비 키자", "티비 켜줘"], "catalog_size": 4}
+{"id": "TRAIN0449", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 12, "candidates": ["만들어줘", "말 들어줘", "물도 있죠", "문 닫아줘"], "catalog_size": 4}
+{"id": "TRAIN0450", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 16, "candidates": ["내 물 어디야", "나 뭐 어딨어", "내 맘 안 돼요", "너무 어두워"], "catalog_size": 4}
+{"id": "TRAIN0451", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 3, "candidates": ["나만 봐요", "내 말 봐요", "너 뭐 보여"], "catalog_size": 4}
+{"id": "TRAIN0452", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 5, "candidates": ["아니 뭐 해", "아냐 뭐 해", "오늘 뭐함", "오늘 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0453", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 8, "candidates": ["너 왜 뭐 해", "내일 뭐함", "나 왜 뭐 해", "내일 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0454", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 12, "candidates": ["지금 뭐 사요", "조금만 쉬어", "지금 몇 시야", "저기 몇 시야", "자기 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0455", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 16, "candidates": ["대신 말해줘", "다 설명해줘", "더 설명해줘", "다시 말해줘"], "catalog_size": 4}
+{"id": "TRAIN0456", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 3, "candidates": ["자꾸만", "저 껌만", "잠깐만"], "catalog_size": 3}
+{"id": "TRAIN0457", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 5, "candidates": ["다음에 해줘", "다음에 하죠", "다음에 하자"], "catalog_size": 3}
+{"id": "TRAIN0458", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 8, "candidates": ["맘마를", "마무리", "목 말라", "뭐 말래", "목마름"], "catalog_size": 5}
+{"id": "TRAIN0459", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 12, "candidates": ["뭐 마실래", "뭘 마실래", "물 마시러", "물 마실래"], "catalog_size": 4}
+{"id": "TRAIN0460", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 16, "candidates": ["숨고 싶어", "서고 싶어", "쉬고 싶어", "사고 싶어", "살고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0461", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 3, "candidates": ["입고 싶어", "오고 싶어", "앉고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0462", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 5, "candidates": ["내 옆에 계세요", "내 앞에 계세요", "누워 있고 싶어"], "catalog_size": 3}
+{"id": "TRAIN0463", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 8, "candidates": ["다 알지", "더 있죠", "다 있지", "도와줘", "들어줘", "다 오죠", "다음 주"], "catalog_size": 7}
+{"id": "TRAIN0464", "split": "train", "initials": "ㅁㅈ", "requested_count": 12, "candidates": ["물 줘", "맞지", "먹자", "말자", "모자", "문제", "맥주", "물 좀", "먼저", "뭐지", "만져"], "catalog_size": 11}
+{"id": "TRAIN0465", "split": "train", "initials": "ㅈㅇ", "requested_count": 16, "candidates": ["줘요", "조용", "주워", "지워", "저요", "제일", "좋아", "자요"], "catalog_size": 8}
+{"id": "TRAIN0466", "split": "train", "initials": "ㅇㄴ", "requested_count": 3, "candidates": ["안내", "안녕", "있나"], "catalog_size": 8}
+{"id": "TRAIN0467", "split": "train", "initials": "ㅂㅈ", "requested_count": 5, "candidates": ["밥 좀", "빚져", "부자", "보자", "병 줘"], "catalog_size": 8}
+{"id": "TRAIN0468", "split": "train", "initials": "ㄷㅇ", "requested_count": 8, "candidates": ["도와", "더워", "동의", "닫아", "들어", "되어", "다음"], "catalog_size": 7}
+{"id": "TRAIN0469", "split": "train", "initials": "ㅅㅇ", "requested_count": 12, "candidates": ["싫어", "세워", "쉬어", "소요", "수요", "사요", "서요"], "catalog_size": 7}
+{"id": "TRAIN0470", "split": "train", "initials": "ㅁㅇ", "requested_count": 16, "candidates": ["맞아", "미안", "뭐야", "매워", "마요", "믿어", "모여", "무용"], "catalog_size": 8}
+{"id": "TRAIN0471", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 3, "candidates": ["그만요", "그 말이", "구매요"], "catalog_size": 5}
+{"id": "TRAIN0472", "split": "train", "initials": "ㅈㄱㅅㅇ", "requested_count": 5, "candidates": ["제가 사요", "자고 싶어", "지금 사요", "저기 서요", "조금 세요"], "catalog_size": 6}
+{"id": "TRAIN0473", "split": "train", "initials": "ㅁㄹㅇㅍ", "requested_count": 8, "candidates": ["머리 아파", "무릎 아파"], "catalog_size": 2}
+{"id": "TRAIN0474", "split": "train", "initials": "ㅂㅇㅍ", "requested_count": 12, "candidates": ["배 아파", "볼 아파", "발 아파"], "catalog_size": 3}
+{"id": "TRAIN0475", "split": "train", "initials": "ㅁㅇㅍ", "requested_count": 16, "candidates": ["맘 아파", "몸 아파", "목 아픔"], "catalog_size": 3}
+{"id": "TRAIN0476", "split": "train", "initials": "ㅇㅅㅂㄹㅈ", "requested_count": 3, "candidates": ["우선 불러줘", "의사 불러줘", "우산 빌려줘"], "catalog_size": 4}
+{"id": "TRAIN0477", "split": "train", "initials": "ㄱㅎㅅㅂㄹㅈ", "requested_count": 5, "candidates": ["그 학생 불러줘", "그 회사 불러줘", "간호사 불러줘"], "catalog_size": 3}
+{"id": "TRAIN0478", "split": "train", "initials": "ㅂㄲㅈ", "requested_count": 8, "candidates": ["불 꺼줘", "불 끄자", "바꿔줘", "불 껐지"], "catalog_size": 4}
+{"id": "TRAIN0479", "split": "train", "initials": "ㅈㅁㅋㅈ", "requested_count": 12, "candidates": ["자막 켜줘", "조명 켜자", "조명 켜줘", "조명 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0480", "split": "train", "initials": "ㅈㅁㄲㅈ", "requested_count": 16, "candidates": ["조명 꺼져", "좀만 끄자", "조명 꺼줘", "조명 끄자", "좀만 꺼줘"], "catalog_size": 5}
+{"id": "TRAIN0481", "split": "train", "initials": "ㅌㅂㅋㅈ", "requested_count": 3, "candidates": ["티비 키자", "티비 켜줘", "티비 켜죠"], "catalog_size": 4}
+{"id": "TRAIN0482", "split": "train", "initials": "ㅁㄷㅇㅈ", "requested_count": 5, "candidates": ["문 닫아줘", "만들어줘", "말 들어줘", "물도 있죠"], "catalog_size": 4}
+{"id": "TRAIN0483", "split": "train", "initials": "ㄴㅁㅇㄷㅇ", "requested_count": 8, "candidates": ["내 물 어디야", "나 뭐 어딨어", "내 맘 안 돼요", "너무 어두워"], "catalog_size": 4}
+{"id": "TRAIN0484", "split": "train", "initials": "ㄴㅁㅂㅇ", "requested_count": 12, "candidates": ["너무 밝아", "나만 봐요", "내 말 봐요", "너 뭐 보여"], "catalog_size": 4}
+{"id": "TRAIN0485", "split": "train", "initials": "ㅇㄴㅁㅎ", "requested_count": 16, "candidates": ["아냐 뭐 해", "오늘 뭐함", "아니 뭐 해", "오늘 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0486", "split": "train", "initials": "ㄴㅇㅁㅎ", "requested_count": 3, "candidates": ["나 왜 뭐 해", "너 왜 뭐 해", "내일 뭐 해"], "catalog_size": 4}
+{"id": "TRAIN0487", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 5, "candidates": ["지금 뭐 사요", "조금만 쉬어", "저기 몇 시야", "자기 몇 시야", "지금 몇 시야"], "catalog_size": 5}
+{"id": "TRAIN0488", "split": "train", "initials": "ㄷㅅㅁㅎㅈ", "requested_count": 8, "candidates": ["더 설명해줘", "대신 말해줘", "다시 말해줘", "다 설명해줘"], "catalog_size": 4}
+{"id": "TRAIN0489", "split": "train", "initials": "ㅈㄲㅁ", "requested_count": 12, "candidates": ["저 껌만", "잠깐만", "자꾸만"], "catalog_size": 3}
+{"id": "TRAIN0490", "split": "train", "initials": "ㄷㅇㅇㅎㅈ", "requested_count": 16, "candidates": ["다음에 해줘", "다음에 하자", "다음에 하죠"], "catalog_size": 3}
+{"id": "TRAIN0491", "split": "train", "initials": "ㅁㅁㄹ", "requested_count": 3, "candidates": ["맘마를", "뭐 말래", "마무리"], "catalog_size": 5}
+{"id": "TRAIN0492", "split": "train", "initials": "ㅁㅁㅅㄹ", "requested_count": 5, "candidates": ["물 마실래", "뭐 마실래", "뭘 마실래", "물 마시러"], "catalog_size": 4}
+{"id": "TRAIN0493", "split": "train", "initials": "ㅅㄱㅅㅇ", "requested_count": 8, "candidates": ["쉬고 싶어", "사고 싶어", "서고 싶어", "숨고 싶어", "살고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0494", "split": "train", "initials": "ㅇㄱㅅㅇ", "requested_count": 12, "candidates": ["오고 싶어", "입고 싶어", "알고 싶어", "읽고 싶어", "앉고 싶어"], "catalog_size": 5}
+{"id": "TRAIN0495", "split": "train", "initials": "ㄴㅇㅇㄱㅅㅇ", "requested_count": 16, "candidates": ["누워 있고 싶어", "내 옆에 계세요", "내 앞에 계세요"], "catalog_size": 3}
+{"id": "TRAIN0496", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 3, "candidates": ["다음 주", "들어줘", "다 알지"], "catalog_size": 7}
+{"id": "TRAIN0497", "split": "train", "initials": "ㅁㅈ", "requested_count": 5, "candidates": ["맞지", "뭐지", "먼저", "모자", "문제"], "catalog_size": 11}
+{"id": "TRAIN0498", "split": "train", "initials": "ㅈㅇ", "requested_count": 8, "candidates": ["제일", "좋아", "줘요", "저요", "자요", "주워", "지워", "조용"], "catalog_size": 8}
+{"id": "TRAIN0499", "split": "train", "initials": "ㅇㄴ", "requested_count": 12, "candidates": ["오냐", "아니", "안녕", "오늘", "언니", "안내", "있나", "없나"], "catalog_size": 8}
+{"id": "TRAIN0500", "split": "train", "initials": "ㅂㅈ", "requested_count": 16, "candidates": ["빚져", "밥 줘", "밥 좀", "봐줘", "보자", "바지", "부자", "병 줘"], "catalog_size": 8}

@@ -1,0 +1,23 @@
+[
+  {
+    "epoch": 1,
+    "global_step": 75,
+    "train_loss": 1.2374076054121057,
+    "eval_loss": 1.622797939479351,
+    "elapsed_sec": 806.7869086265564
+  },
+  {
+    "epoch": 2,
+    "global_step": 150,
+    "train_loss": 0.3904393590800464,
+    "eval_loss": 1.6362034171819686,
+    "elapsed_sec": 884.898759841919
+  },
+  {
+    "epoch": 3,
+    "global_step": 225,
+    "train_loss": 0.2007971269659659,
+    "eval_loss": 1.7044309383630754,
+    "elapsed_sec": 898.8045642375946
+  }
+]

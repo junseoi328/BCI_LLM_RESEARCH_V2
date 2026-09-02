@@ -1,0 +1,151 @@
+﻿id,category,target,bci_input,partner,situation,recent_context
+TEST001,basic_request,이리 와줘,ㅇㄹㅇㅈ,family,home,조금 가까이 와 달라고 말하고 싶다
+TEST002,basic_request,조금만 기다려,ㅈㄱㅁㄱㄷㄹ,family,general,지금 바로 하기보다 잠시 기다려 주길 원한다
+TEST003,basic_request,이것 좀 줘,ㅇㄱㅈㅈ,family,home,바로 앞에 있는 물건이 필요하다
+TEST004,basic_request,저것 좀 치워줘,ㅈㄱㅈㅊㅇㅈ,caregiver,home,앞에 놓인 물건 때문에 불편하다
+TEST005,basic_request,손 잡아줘,ㅅㅈㅇㅈ,family,general,옆 사람의 손을 잡고 싶다
+TEST006,basic_request,전화 걸어줘,ㅈㅎㄱㅇㅈ,family,general,직접 전화기를 조작하기 어렵다
+TEST007,basic_request,문 좀 열어줘,ㅁㅈㅇㅇㅈ,caregiver,home,방문이 닫혀 있어 열어 달라고 하고 싶다
+TEST008,basic_request,여기 봐줘,ㅇㄱㅂㅈ,family,general,상대방의 주의를 내 쪽으로 돌리고 싶다
+TEST009,basic_request,다시 해줘,ㄷㅅㅎㅈ,caregiver,general,방금 한 동작을 다시 해 달라고 요청하고 싶다
+TEST010,basic_request,조금 옮겨줘,ㅈㄱㅇㄱㅈ,caregiver,positioning,현재 위치를 약간 옮기고 싶다
+TEST011,basic_request,가져다줘,ㄱㅈㄷㅈ,family,home,필요한 물건을 가져다 달라고 요청하고 싶다
+TEST012,basic_request,옆에 놔줘,ㅇㅇㄴㅈ,caregiver,home,물건을 손이 닿기 쉬운 옆에 놓아 달라고 하고 싶다
+TEST013,basic_request,휴대폰 줘,ㅎㄷㅍㅈ,family,home,휴대폰을 사용하고 싶다
+TEST014,basic_request,안경 가져와,ㅇㄱㄱㅈㅇ,family,home,안경이 필요하지만 손이 닿지 않는다
+TEST015,basic_request,리모컨 줘,ㄹㅁㅋㅈ,family,home,기기를 조작하려고 리모컨이 필요하다
+TEST016,food_drink,찬물 줘,ㅊㅁㅈ,family,meal,시원한 물을 마시고 싶다
+TEST017,food_drink,물 좀 마실게,ㅁㅈㅁㅅㄱ,family,meal,지금 물을 마시겠다는 뜻을 전하고 싶다
+TEST018,food_drink,주스 마실래,ㅈㅅㅁㅅㄹ,family,meal,음료 중 주스를 마시고 싶다
+TEST019,food_drink,차 마시고 싶어,ㅊㅁㅅㄱㅅㅇ,friend,meal,따뜻한 차를 마시고 싶은 상황이다
+TEST020,food_drink,국 조금 줘,ㄱㅈㄱㅈ,family,meal,식사 중 국을 조금 더 먹고 싶다
+TEST021,food_drink,반찬 더 줘,ㅂㅊㄷㅈ,family,meal,지금 먹는 반찬을 더 원한다
+TEST022,food_drink,숟가락 줘,ㅅㄱㄹㅈ,family,meal,식사 도구가 필요하다
+TEST023,food_drink,빨대 꽂아줘,ㅃㄷㄲㅇㅈ,caregiver,meal,컵에 빨대를 꽂아 주길 원한다
+TEST024,food_drink,물병 열어줘,ㅁㅂㅇㅇㅈ,caregiver,meal,물병 뚜껑을 직접 열기 어렵다
+TEST025,food_drink,컵 가져와,ㅋㄱㅈㅇ,family,meal,물을 마시려면 컵이 필요하다
+TEST026,food_drink,목이 타,ㅁㅇㅌ,family,meal,갈증이 심하다는 상태를 표현하고 싶다
+TEST027,food_drink,따뜻한 물 줘,ㄸㄸㅎㅁㅈ,caregiver,meal,차가운 물보다 따뜻한 물을 원한다
+TEST028,food_drink,죽 먹고 싶어,ㅈㅁㄱㅅㅇ,family,meal,부드러운 음식을 먹고 싶다
+TEST029,food_drink,과일 먹을래,ㄱㅇㅁㅇㄹ,family,meal,간식으로 과일을 먹고 싶다
+TEST030,food_drink,식사 그만할래,ㅅㅅㄱㅁㅎㄹ,caregiver,meal,더 이상 식사를 계속하고 싶지 않다
+TEST031,environment,에어컨 켜줘,ㅇㅇㅋㅋㅈ,family,home,방이 덥고 냉방이 필요하다
+TEST032,environment,히터 켜줘,ㅎㅌㅋㅈ,family,home,방이 차가워 난방이 필요하다
+TEST033,environment,선풍기 켜줘,ㅅㅍㄱㅋㅈ,family,home,바람을 쐬고 싶다
+TEST034,environment,커튼 열어줘,ㅋㅌㅇㅇㅈ,caregiver,home,밖의 빛이 들어오게 하고 싶다
+TEST035,environment,커튼 닫아줘,ㅋㅌㄷㅇㅈ,caregiver,home,빛을 줄이기 위해 커튼을 닫고 싶다
+TEST036,environment,문 열어줘,ㅁㅇㅇㅈ,family,home,방문을 열어 두고 싶다
+TEST037,environment,환기해줘,ㅎㄱㅎㅈ,caregiver,home,방 안 공기가 답답해서 환기가 필요하다
+TEST038,environment,소리 줄여줘,ㅅㄹㅈㅇㅈ,family,home,주변 소리가 너무 크다
+TEST039,environment,볼륨 올려줘,ㅂㄹㅇㄹㅈ,family,home,소리가 잘 들리지 않는다
+TEST040,environment,불 좀 켜줘,ㅂㅈㅋㅈ,caregiver,home,방이 어두워 조명을 켜고 싶다
+TEST041,environment,불 좀 줄여줘,ㅂㅈㅈㅇㅈ,caregiver,home,조명이 너무 강해 밝기를 낮추고 싶다
+TEST042,environment,창문 닫아줘,ㅊㅁㄷㅇㅈ,family,home,밖에서 찬바람이 들어온다
+TEST043,environment,방이 추워,ㅂㅇㅊㅇ,family,home,현재 방 온도가 낮다고 알리고 싶다
+TEST044,environment,방이 더워,ㅂㅇㄷㅇ,family,home,현재 방 온도가 높다고 알리고 싶다
+TEST045,environment,조용히 해줘,ㅈㅇㅎㅎㅈ,family,home,쉬고 싶어서 주변을 조용하게 해 달라고 하고 싶다
+TEST046,positioning,오른쪽으로 돌려줘,ㅇㄹㅉㅇㄹㄷㄹㅈ,caregiver,positioning,몸을 오른쪽으로 돌리고 싶다
+TEST047,positioning,왼쪽으로 돌려줘,ㅇㅉㅇㄹㄷㄹㅈ,caregiver,positioning,몸을 왼쪽으로 돌리고 싶다
+TEST048,positioning,다리 올려줘,ㄷㄹㅇㄹㅈ,caregiver,positioning,다리를 조금 높이고 싶다
+TEST049,positioning,다리 내려줘,ㄷㄹㄴㄹㅈ,caregiver,positioning,올라간 다리를 내려 달라고 하고 싶다
+TEST050,positioning,팔 올려줘,ㅍㅇㄹㅈ,caregiver,positioning,팔의 위치를 위로 바꾸고 싶다
+TEST051,positioning,팔 내려줘,ㅍㄴㄹㅈ,caregiver,positioning,팔이 불편해서 내려 달라고 하고 싶다
+TEST052,positioning,베개 높여줘,ㅂㄱㄴㅇㅈ,caregiver,positioning,머리 위치가 낮아서 베개를 높이고 싶다
+TEST053,positioning,베개 낮춰줘,ㅂㄱㄴㅊㅈ,caregiver,positioning,베개가 너무 높아 낮추고 싶다
+TEST054,positioning,등을 세워줘,ㄷㅇㅅㅇㅈ,caregiver,positioning,상체를 조금 세우고 싶다
+TEST055,positioning,몸을 눕혀줘,ㅁㅇㄴㅎㅈ,caregiver,positioning,상체를 내려 편하게 눕고 싶다
+TEST056,positioning,고개 돌려줘,ㄱㄱㄷㄹㅈ,caregiver,positioning,고개 방향을 바꾸고 싶다
+TEST057,positioning,손 펴줘,ㅅㅍㅈ,caregiver,positioning,손이 오므라들어 펴는 도움이 필요하다
+TEST058,positioning,손 내려줘,ㅅㄴㄹㅈ,caregiver,positioning,올라간 손을 내려 달라고 하고 싶다
+TEST059,positioning,발 받쳐줘,ㅂㅂㅊㅈ,caregiver,positioning,발이 불편해 받침이 필요하다
+TEST060,positioning,침대 올려줘,ㅊㄷㅇㄹㅈ,caregiver,positioning,침대 상체 각도를 올리고 싶다
+TEST061,pain_discomfort,목 아파,ㅁㅇㅍ,medical_staff,pain,목 부위에 통증이 있다
+TEST062,pain_discomfort,허리 아파,ㅎㄹㅇㅍ,medical_staff,pain,허리 통증이 있다는 것을 알리고 싶다
+TEST063,pain_discomfort,다리 아파,ㄷㄹㅇㅍ,caregiver,pain,다리에 통증이 있다
+TEST064,pain_discomfort,가슴 답답해,ㄱㅅㄷㄷㅎ,medical_staff,pain,가슴이 답답한 느낌을 알리고 싶다
+TEST065,pain_discomfort,숨이 차,ㅅㅇㅊ,medical_staff,pain,숨이 차고 호흡이 불편하다
+TEST066,pain_discomfort,어지러워,ㅇㅈㄹㅇ,medical_staff,pain,어지러운 증상이 있다
+TEST067,pain_discomfort,속이 메스꺼워,ㅅㅇㅁㅅㄲㅇ,medical_staff,pain,속이 울렁거리고 메스꺼운 상태다
+TEST068,pain_discomfort,손이 저려,ㅅㅇㅈㄹ,medical_staff,pain,손에 저린 느낌이 있다
+TEST069,pain_discomfort,다리가 저려,ㄷㄹㄱㅈㄹ,medical_staff,pain,다리에 저린 느낌이 있다
+TEST070,pain_discomfort,목이 간지러워,ㅁㅇㄱㅈㄹㅇ,caregiver,pain,목 안쪽이 간지럽고 불편하다
+TEST071,pain_discomfort,기침 나와,ㄱㅊㄴㅇ,medical_staff,pain,기침이 나올 것 같다고 알리고 싶다
+TEST072,pain_discomfort,열이 나는 것 같아,ㅇㅇㄴㄴㄱㄱㅇ,medical_staff,pain,몸에 열이 있는 것처럼 느껴진다
+TEST073,pain_discomfort,눈이 아파,ㄴㅇㅇㅍ,medical_staff,pain,눈에 통증이 있다
+TEST074,pain_discomfort,입이 말라,ㅇㅇㅁㄹ,caregiver,pain,입 안이 건조하다고 알리고 싶다
+TEST075,pain_discomfort,몸이 떨려,ㅁㅇㄸㄹ,medical_staff,pain,몸이 떨리는 상태를 알리고 싶다
+TEST076,medical_communication,혈압 재주세요,ㅎㅇㅈㅈㅅㅇ,medical_staff,hospital,혈압 측정을 부탁하고 싶다
+TEST077,medical_communication,체온 재주세요,ㅊㅇㅈㅈㅅㅇ,medical_staff,hospital,체온을 확인해 달라고 요청하고 싶다
+TEST078,medical_communication,산소 확인해줘,ㅅㅅㅎㅇㅎㅈ,medical_staff,hospital,산소 관련 상태를 확인해 달라고 하고 싶다
+TEST079,medical_communication,통증이 심해요,ㅌㅈㅇㅅㅎㅇ,medical_staff,hospital,현재 통증 강도가 심하다고 알리고 싶다
+TEST080,medical_communication,약 먹었어요,ㅇㅁㅇㅇㅇ,medical_staff,hospital,이미 약을 복용했다는 사실을 알리고 싶다
+TEST081,medical_communication,약 아직 안 먹었어요,ㅇㅇㅈㅇㅁㅇㅇㅇ,medical_staff,hospital,아직 약을 복용하지 않았다고 알리고 싶다
+TEST082,medical_communication,보호자 불러주세요,ㅂㅎㅈㅂㄹㅈㅅㅇ,medical_staff,hospital,보호자를 불러 달라고 요청하고 싶다
+TEST083,medical_communication,흡인 해주세요,ㅎㅇㅎㅈㅅㅇ,medical_staff,hospital,필요한 처치를 요청하고 싶다
+TEST084,medical_communication,자세 확인해주세요,ㅈㅅㅎㅇㅎㅈㅅㅇ,medical_staff,hospital,현재 자세가 적절한지 확인해 달라고 하고 싶다
+TEST085,medical_communication,간호사 언제 와요,ㄱㅎㅅㅇㅈㅇㅇ,caregiver,hospital,간호사가 언제 오는지 묻고 싶다
+TEST086,medical_communication,의사 언제 와요,ㅇㅅㅇㅈㅇㅇ,caregiver,hospital,의사가 언제 오는지 묻고 싶다
+TEST087,medical_communication,검사 언제 해요,ㄱㅅㅇㅈㅎㅇ,medical_staff,hospital,예정된 검사 시간이 궁금하다
+TEST088,medical_communication,설명 다시 해주세요,ㅅㅁㄷㅅㅎㅈㅅㅇ,medical_staff,hospital,방금 설명을 다시 듣고 싶다
+TEST089,medical_communication,주사 아파요,ㅈㅅㅇㅍㅇ,medical_staff,hospital,주사 부위가 아프다고 알리고 싶다
+TEST090,medical_communication,응급실 가야 해요,ㅇㄱㅅㄱㅇㅎㅇ,family,hospital,응급실로 가야 할 것 같다는 의사를 표현하고 싶다
+TEST091,time_schedule,몇 시에 와,ㅁㅅㅇㅇ,family,schedule,상대가 오는 시간을 묻고 싶다
+TEST092,time_schedule,언제 출발해,ㅇㅈㅊㅂㅎ,friend,schedule,출발 예정 시간이 궁금하다
+TEST093,time_schedule,오늘 병원 가,ㅇㄴㅂㅇㄱ,family,schedule,오늘 병원 일정이 있는지 확인하고 싶다
+TEST094,time_schedule,내일 약속 있어,ㄴㅇㅇㅅㅇㅇ,friend,schedule,내일 일정 여부를 말하거나 확인하고 싶다
+TEST095,time_schedule,오후에 뭐 해,ㅇㅎㅇㅁㅎ,friend,schedule,오후 계획이 궁금하다
+TEST096,time_schedule,저녁에 누가 와,ㅈㄴㅇㄴㄱㅇ,family,schedule,저녁 방문자가 누구인지 궁금하다
+TEST097,time_schedule,이번 주말 뭐 해,ㅇㅂㅈㅁㅁㅎ,friend,schedule,이번 주말 계획을 묻고 싶다
+TEST098,time_schedule,다음 달에 가자,ㄷㅇㄷㅇㄱㅈ,friend,schedule,다음 달로 약속을 잡고 싶다
+TEST099,time_schedule,아침에 깨워줘,ㅇㅊㅇㄲㅇㅈ,family,schedule,아침에 깨워 달라고 부탁하고 싶다
+TEST100,time_schedule,점심 언제 먹어,ㅈㅅㅇㅈㅁㅇ,family,schedule,점심 식사 시간이 궁금하다
+TEST101,time_schedule,약 먹을 시간이야,ㅇㅁㅇㅅㄱㅇㅇ,family,schedule,약 복용 시간이 되었다고 말하고 싶다
+TEST102,time_schedule,지금 몇 분이야,ㅈㄱㅁㅂㅇㅇ,family,schedule,현재 분 단위 시간을 묻고 싶다
+TEST103,time_schedule,오늘 무슨 요일이야,ㅇㄴㅁㅅㅇㅇㅇㅇ,family,schedule,오늘 요일이 궁금하다
+TEST104,time_schedule,예약 몇 시야,ㅇㅇㅁㅅㅇ,caregiver,schedule,예약된 시간이 궁금하다
+TEST105,time_schedule,언제 다시 와,ㅇㅈㄷㅅㅇ,family,schedule,상대가 다시 오는 시간을 묻고 싶다
+TEST106,social,보고 싶어,ㅂㄱㅅㅇ,family,general,가까운 사람을 그리워하는 마음을 표현하고 싶다
+TEST107,social,반가워,ㅂㄱㅇ,friend,general,만난 사람에게 반가움을 표현하고 싶다
+TEST108,social,잘 지냈어,ㅈㅈㄴㅇ,friend,general,오랜만에 만난 사람에게 안부를 묻고 싶다
+TEST109,social,재밌어,ㅈㅁㅇ,friend,general,지금 상황이 즐겁다고 말하고 싶다
+TEST110,social,웃겨,ㅇㄱ,friend,general,상대의 말이나 상황이 재미있다고 표현하고 싶다
+TEST111,social,미안해,ㅁㅇㅎ,family,general,상대에게 미안한 마음을 전하고 싶다
+TEST112,social,축하해,ㅊㅎㅎ,friend,general,상대의 좋은 일을 축하하고 싶다
+TEST113,social,괜찮아?,ㄱㅊㅇ,family,general,상대의 상태가 괜찮은지 묻고 싶다
+TEST114,social,사랑해요,ㅅㄹㅎㅇ,family,general,가족에게 애정을 조금 더 공손하게 표현하고 싶다
+TEST115,social,보고 싶었어,ㅂㄱㅅㅇㅇ,friend,general,오랜만에 만난 사람에게 그리웠다고 말하고 싶다
+TEST116,social,같이 이야기하자,ㄱㅇㅇㅇㄱㅎㅈ,friend,general,상대와 대화를 이어가고 싶다
+TEST117,social,사진 보여줘,ㅅㅈㅂㅇㅈ,family,general,사진을 보고 싶다고 요청하고 싶다
+TEST118,social,가족에게 전화해줘,ㄱㅈㅇㄱㅈㅎㅎㅈ,caregiver,general,가족에게 전화를 걸어 달라고 부탁하고 싶다
+TEST119,social,친구 불러줘,ㅊㄱㅂㄹㅈ,family,general,친구를 불러 달라고 부탁하고 싶다
+TEST120,social,오늘 즐거웠어,ㅇㄴㅈㄱㅇㅇ,friend,general,오늘 함께한 시간이 즐거웠다고 말하고 싶다
+TEST121,questions_answers,어디 가,ㅇㄷㄱ,family,general,상대가 어디로 가는지 묻고 싶다
+TEST122,questions_answers,누구야,ㄴㄱㅇ,family,general,누군지 확인하고 싶다
+TEST123,questions_answers,뭐라고 했어,ㅁㄹㄱㅎㅇ,friend,general,방금 들은 말을 다시 확인하고 싶다
+TEST124,questions_answers,왜 그래,ㅇㄱㄹ,family,general,상대에게 이유를 묻고 싶다
+TEST125,questions_answers,어떻게 해,ㅇㄸㄱㅎ,caregiver,general,어떻게 해야 하는지 묻고 싶다
+TEST126,questions_answers,언제 와,ㅇㅈㅇ,family,general,상대가 언제 오는지 묻고 싶다
+TEST127,questions_answers,이거 뭐야,ㅇㄱㅁㅇ,family,general,앞에 있는 물건이 무엇인지 묻고 싶다
+TEST128,questions_answers,저거 뭐야,ㅈㄱㅁㅇ,family,general,조금 떨어진 물건이 무엇인지 묻고 싶다
+TEST129,questions_answers,누가 왔어,ㄴㄱㅇㅇ,family,general,방금 온 사람이 누구인지 묻고 싶다
+TEST130,questions_answers,다 했어,ㄷㅎㅇ,caregiver,general,해야 할 일이 끝났다는 것을 알리고 싶다
+TEST131,questions_answers,아직이야,ㅇㅈㅇㅇ,family,general,아직 끝나지 않았다고 답하고 싶다
+TEST132,questions_answers,모르겠어,ㅁㄹㄱㅇ,family,general,질문에 답을 모르겠다고 말하고 싶다
+TEST133,questions_answers,기억 안 나,ㄱㅇㅇㄴ,family,general,기억이 나지 않는다고 답하고 싶다
+TEST134,questions_answers,다시 물어봐,ㄷㅅㅁㅇㅂ,friend,general,질문을 다시 해 달라고 요청하고 싶다
+TEST135,questions_answers,맞는 것 같아,ㅁㄴㄱㄱㅇ,family,general,상대의 말이 맞는 것 같다고 답하고 싶다
+TEST136,emotion_needs,무서워,ㅁㅅㅇ,family,general,현재 상황이 무섭다고 표현하고 싶다
+TEST137,emotion_needs,불안해,ㅂㅇㅎ,family,general,불안한 감정을 알리고 싶다
+TEST138,emotion_needs,외로워,ㅇㄹㅇ,family,general,혼자 있는 것이 외롭다고 말하고 싶다
+TEST139,emotion_needs,심심해,ㅅㅅㅎ,family,general,할 일이 없어 심심하다고 표현하고 싶다
+TEST140,emotion_needs,피곤해,ㅍㄱㅎ,caregiver,general,피곤해서 휴식이 필요하다고 말하고 싶다
+TEST141,emotion_needs,답답해,ㄷㄷㅎ,family,general,마음이 답답하다고 표현하고 싶다
+TEST142,emotion_needs,편안해,ㅍㅇㅎ,caregiver,general,현재 상태가 편안하다고 알려주고 싶다
+TEST143,emotion_needs,행복해,ㅎㅂㅎ,family,general,기분이 행복하다고 표현하고 싶다
+TEST144,emotion_needs,속상해,ㅅㅅㅎ,family,general,속상한 감정을 알리고 싶다
+TEST145,emotion_needs,화가 나,ㅎㄱㄴ,family,general,화가 난 상태를 표현하고 싶다
+TEST146,emotion_needs,울고 싶어,ㅇㄱㅅㅇ,family,general,울고 싶은 감정을 표현하고 싶다
+TEST147,emotion_needs,웃고 싶어,ㅇㄱㅅㅇ,friend,general,웃고 싶은 기분을 표현하고 싶다
+TEST148,emotion_needs,혼자 있고 싶어,ㅎㅈㅇㄱㅅㅇ,family,general,잠시 혼자 있고 싶다는 의사를 전하고 싶다
+TEST149,emotion_needs,같이 있고 싶어,ㄱㅇㅇㄱㅅㅇ,family,general,누군가와 함께 있고 싶다는 의사를 전하고 싶다
+TEST150,emotion_needs,집에 가고 싶어,ㅈㅇㄱㄱㅅㅇ,family,general,현재 장소를 떠나 집에 가고 싶다고 말하고 싶다

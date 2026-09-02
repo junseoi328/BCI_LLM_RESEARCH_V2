@@ -1,0 +1,20 @@
+{"id": "V7D001", "target": "화장실 가고 싶어", "bci_input": "ㅎㅈㅅㄱㄱㅅㅇ", "partner": "caregiver", "situation": "positioning", "current_sentence": "", "recent_context": ["소변이 마렵고 화장실에 가고 싶다"], "top_k": 3}
+{"id": "V7D002", "target": "혼자서 걷고 싶어", "bci_input": "ㅎㅈㅅㄱㄱㅅㅇ", "partner": "caregiver", "situation": "positioning", "current_sentence": "", "recent_context": ["재활 중이라 가능하면 혼자 걸어 보고 싶다"], "top_k": 3}
+{"id": "V7D003", "target": "안 괜찮아요", "bci_input": "ㅇㄱㅊㅇㅇ", "partner": "medical_staff", "situation": "pain", "current_sentence": "", "recent_context": ["상태가 좋지 않고 괜찮지 않다고 알려야 한다"], "top_k": 3}
+{"id": "V7D004", "target": "약간 추워요", "bci_input": "ㅇㄱㅊㅇㅇ", "partner": "caregiver", "situation": "home", "current_sentence": "", "recent_context": ["방 온도가 낮아서 조금 춥다고 말하고 싶다"], "top_k": 3}
+{"id": "V7D005", "target": "같이 보자", "bci_input": "ㄱㅇㅂㅈ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["친구와 화면을 함께 보고 싶다"], "top_k": 3}
+{"id": "V7D006", "target": "공연 보자", "bci_input": "ㄱㅇㅂㅈ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["주말에 공연을 같이 보자고 제안하고 싶다"], "top_k": 3}
+{"id": "V7D007", "target": "게임 보자", "bci_input": "ㄱㅇㅂㅈ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["친구와 게임 방송을 같이 보고 싶다"], "top_k": 3}
+{"id": "V7D008", "target": "음악 틀어줘", "bci_input": "ㅇㅇㅌㅇㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["조용한 음악을 듣고 싶다"], "top_k": 3}
+{"id": "V7D009", "target": "음원 틀어줘", "bci_input": "ㅇㅇㅌㅇㅈ", "partner": "family", "situation": "home", "current_sentence": "", "recent_context": ["저장된 음원을 재생해 달라고 하고 싶다"], "top_k": 3}
+{"id": "V7D010", "target": "창문 열어줘", "bci_input": "ㅊㅁㅇㅇㅈ", "partner": "caregiver", "situation": "home", "current_sentence": "", "recent_context": ["방이 답답해서 환기를 하고 싶다"], "top_k": 3}
+{"id": "V7D011", "target": "자세 바꿔줘", "bci_input": "ㅈㅅㅂㄲㅈ", "partner": "caregiver", "situation": "positioning", "current_sentence": "", "recent_context": ["현재 누운 자세가 불편해서 몸의 자세를 바꾸고 싶다"], "top_k": 3}
+{"id": "V7D012", "target": "좌석 바꿔줘", "bci_input": "ㅈㅅㅂㄲㅈ", "partner": "friend", "situation": "general", "current_sentence": "", "recent_context": ["현재 앉은 자리가 불편해서 좌석을 바꾸고 싶다"], "top_k": 3}
+{"id": "V7D013", "target": "장소 바꿔줘", "bci_input": "ㅈㅅㅂㄲㅈ", "partner": "family", "situation": "general", "current_sentence": "", "recent_context": ["지금 있는 곳보다 다른 장소로 옮기고 싶다"], "top_k": 3}
+{"id": "V7D014", "target": "잠시 불 꺼줘", "bci_input": "ㅈㅅㅂㄲㅈ", "partner": "caregiver", "situation": "home", "current_sentence": "", "recent_context": ["눈이 부셔서 잠깐만 불을 꺼 달라고 하고 싶다"], "top_k": 3}
+{"id": "V7D015", "target": "커피 마실래", "bci_input": "ㅋㅍㅁㅅㄹ", "partner": "friend", "situation": "meal", "current_sentence": "", "recent_context": ["친구에게 커피를 같이 마시자고 제안하고 싶다"], "top_k": 3}
+{"id": "V7D016", "target": "커피 마시러", "bci_input": "ㅋㅍㅁㅅㄹ", "partner": "friend", "situation": "meal", "current_sentence": "", "recent_context": ["커피를 마시러 가고 싶다는 뜻을 전하고 싶다"], "top_k": 3}
+{"id": "V7D017", "target": "숨쉬기 힘들어", "bci_input": "ㅅㅅㄱㅎㄷㅇ", "partner": "medical_staff", "situation": "pain", "current_sentence": "", "recent_context": ["호흡이 불편하고 숨쉬기가 힘들다고 즉시 알려야 한다"], "top_k": 3}
+{"id": "V7D018", "target": "약 주세요", "bci_input": "ㅇㅈㅅㅇ", "partner": "medical_staff", "situation": "hospital", "current_sentence": "", "recent_context": ["복용할 약을 달라고 의료진에게 요청하고 싶다"], "top_k": 3}
+{"id": "V7D019", "target": "천천히 말해줘", "bci_input": "ㅊㅊㅎㅁㅎㅈ", "partner": "caregiver", "situation": "general", "current_sentence": "", "recent_context": ["상대방 말이 너무 빨라서 천천히 말해 달라고 하고 싶다"], "top_k": 3}
+{"id": "V7D020", "target": "천천히만 해줘", "bci_input": "ㅊㅊㅎㅁㅎㅈ", "partner": "caregiver", "situation": "general", "current_sentence": "", "recent_context": ["동작이나 설명을 천천히 해 달라고 부탁하고 싶다"], "top_k": 3}

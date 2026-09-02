@@ -1,0 +1,35 @@
+{
+  "rows_total": 3201,
+  "teacher_rows_total": 2920,
+  "curated_rows_total": 281,
+  "approved_rows_total": 281,
+  "approved_initial_groups": 234,
+  "approved_groups_ge_2": 12,
+  "approved_groups_ge_3": 10,
+  "approved_groups_ge_5": 8,
+  "approved_groups_ge_8": 1,
+  "approved_singletons": 222,
+  "approved_source_counts": {
+    "curated_seed_v2": 281
+  },
+  "approved_category_counts": {
+    "basic_request": 19,
+    "food_drink": 17,
+    "environment": 20,
+    "positioning": 18,
+    "pain_discomfort": 16,
+    "medical_communication": 20,
+    "schedule_time": 18,
+    "social": 18,
+    "questions_answers": 19,
+    "emotion_needs": 20,
+    "communication_control": 20,
+    "device_control": 20,
+    "ambiguity": 56
+  },
+  "initial_mismatch_count": 0,
+  "duplicate_count": 0,
+  "checkpoint_done_groups": 234,
+  "checkpoint_error_groups": 0,
+  "expected_groups": 234
+}

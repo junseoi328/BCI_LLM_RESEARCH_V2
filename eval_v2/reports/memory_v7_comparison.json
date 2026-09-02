@@ -1,0 +1,226 @@
+{
+  "base": {
+    "label": "v6_3",
+    "n": 50,
+    "acc_at_1": 0.26,
+    "acc_at_3": 0.28,
+    "mrr": 0.27,
+    "mean_latency_ms": 35711.12,
+    "service_error_rate": 0.0
+  },
+  "v7_memory": {
+    "label": "v7_memory",
+    "n": 50,
+    "acc_at_1": 0.26,
+    "acc_at_3": 0.3,
+    "mrr": 0.27666666666666667,
+    "mean_latency_ms": 40077.48,
+    "service_error_rate": 0.0
+  },
+  "delta": {
+    "acc_at_1": 0.0,
+    "acc_at_3": 0.019999999999999962,
+    "mrr": 0.006666666666666654,
+    "mean_latency_ms": 4366.360000000001
+  },
+  "case_changes": [
+    {
+      "id": "HARD005",
+      "target": "다음 곡 틀어줘",
+      "bci_input": "ㄷㅇㄱㅌㅇㅈ",
+      "base": [
+        "다음 곡 틀어줘",
+        "동요 곡 틀어줘",
+        "다음 곡 틀었지"
+      ],
+      "base_rank": 1,
+      "memory": [
+        "다음 걸 타야지",
+        "다음 거 타야지",
+        "다음 걸 타야죠"
+      ],
+      "memory_rank": null,
+      "change": "regressed"
+    },
+    {
+      "id": "HARD007",
+      "target": "팔이 너무 아파",
+      "bci_input": "ㅍㅇㄴㅁㅇㅍ",
+      "base": [
+        "팔이 눌면 아파",
+        "피 안 나면 아파",
+        "팔이 늘면 아파"
+      ],
+      "base_rank": null,
+      "memory": [
+        "팔이 너무 아파",
+        "팔은 너무 아파",
+        "팔이 나만 아파"
+      ],
+      "memory_rank": 1,
+      "change": "improved"
+    },
+    {
+      "id": "HARD013",
+      "target": "언니",
+      "bci_input": "ㅇㄴ",
+      "base": [
+        "안녕",
+        "어, 네",
+        "아냐"
+      ],
+      "base_rank": null,
+      "memory": [
+        "안녕",
+        "언니",
+        "응, 나"
+      ],
+      "memory_rank": 2,
+      "change": "improved"
+    },
+    {
+      "id": "HARD017",
+      "target": "전화 끊어줘",
+      "bci_input": "ㅈㅎㄲㅇㅈ",
+      "base": [
+        "전화 끊어줘",
+        "전화 끊어, 좀",
+        "전화 끊어, 저"
+      ],
+      "base_rank": 1,
+      "memory": [
+        "저희 꺼요, 줘",
+        "저희 꺼 있죠",
+        "저희 껀 있죠"
+      ],
+      "memory_rank": null,
+      "change": "regressed"
+    },
+    {
+      "id": "HARD023",
+      "target": "아니",
+      "bci_input": "ㅇㄴ",
+      "base": [
+        "아냐",
+        "아니",
+        "안녕"
+      ],
+      "base_rank": 2,
+      "memory": [
+        "아냐",
+        "안녕",
+        "응, 너"
+      ],
+      "memory_rank": null,
+      "change": "regressed"
+    },
+    {
+      "id": "HARD032",
+      "target": "채널 바꿔줘",
+      "bci_input": "ㅊㄴㅂㄲㅈ",
+      "base": [
+        "채널 바꿔줘",
+        "차 내비 꺼줘",
+        "차내 불 꺼줘"
+      ],
+      "base_rank": 1,
+      "memory": [
+        "차는 불 꺼줘",
+        "차는 바꿔줘",
+        "천 냥 바꿔줘"
+      ],
+      "memory_rank": null,
+      "change": "regressed"
+    },
+    {
+      "id": "HARD034",
+      "target": "검사 결과를 알려주세요",
+      "bci_input": "ㄱㅅㄱㄱㄹㅇㄹㅈㅅㅇ",
+      "base": [
+        "검사 결과로 알려주세요",
+        "계속 그걸로 알려주세요",
+        "계속 그걸로 올려주셔요"
+      ],
+      "base_rank": null,
+      "memory": [
+        "검사 결과를 알려주세요",
+        "계산 결과를 알려주세요",
+        "개선 결과를 알려주세요"
+      ],
+      "memory_rank": 1,
+      "change": "improved"
+    },
+    {
+      "id": "HARD039",
+      "target": "어디에 있는 거야",
+      "bci_input": "ㅇㄷㅇㅇㄴㄱㅇ",
+      "base": [
+        "어디에 있는 거야",
+        "어디야, 있는 거야",
+        "어디에 앉는 거야"
+      ],
+      "base_rank": 1,
+      "memory": [
+        "이 돈은 왜 나가요",
+        "이 돈이 왜 나가요",
+        "아 돈은 왜 나가요"
+      ],
+      "memory_rank": null,
+      "change": "regressed"
+    },
+    {
+      "id": "HARD042",
+      "target": "마음이 편해졌어",
+      "bci_input": "ㅁㅇㅇㅍㅎㅈㅇ",
+      "base": [
+        "민아 왜 피하지요",
+        "뭐야 왜 피하지요",
+        "뭐야 왜 편해져요"
+      ],
+      "base_rank": null,
+      "memory": [
+        "마음이 편해졌어",
+        "마음이 편해져요",
+        "맘이 왜 편해졌어"
+      ],
+      "memory_rank": 1,
+      "change": "improved"
+    },
+    {
+      "id": "HARD046",
+      "target": "체온 다시 재주세요",
+      "bci_input": "ㅊㅇㄷㅅㅈㅈㅅㅇ",
+      "base": [
+        "책을 다시 자주 사요",
+        "차 안 돼서 자주 사요",
+        "차 안 돼서 자주 쉬어"
+      ],
+      "base_rank": null,
+      "memory": [
+        "체온 다시 재주세요",
+        "체온 다시 재주셔요",
+        "체온도 숫자 주세요"
+      ],
+      "memory_rank": 1,
+      "change": "improved"
+    },
+    {
+      "id": "HARD050",
+      "target": "기침이 계속 나와",
+      "bci_input": "ㄱㅊㅇㄱㅅㄴㅇ",
+      "base": [
+        "기침이 계속 나요",
+        "괜찮은 게 싫나요",
+        "그 책은 곧 사나요"
+      ],
+      "base_rank": null,
+      "memory": [
+        "기침이 계속 나요",
+        "기침은 계속 나요",
+        "기침이 계속 나와"
+      ],
+      "memory_rank": 3,
+      "change": "improved"
+    }
+  ]
+}

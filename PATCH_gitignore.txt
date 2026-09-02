@@ -1,0 +1,12 @@
+# 반드시 기존 .gitignore에 포함
+.env
+.env.*
+!.env.example
+!.env.production.example
+local_models/
+local_ft/
+__pycache__/
+*.pyc
+.pytest_cache/
+eval/reports/
+eval_v2/reports/
