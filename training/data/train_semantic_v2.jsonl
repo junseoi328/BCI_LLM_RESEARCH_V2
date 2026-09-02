@@ -1,0 +1,600 @@
+{"id": "TRAIN0001", "split": "train", "initials": "ㅇㄴㅈㅁㅇㅇ", "requested_count": 16, "target": "오늘 재밌었어", "category": "social", "candidates": ["오늘 재밌었어"]}
+{"id": "TRAIN0002", "split": "train", "initials": "ㅈㄱㄷㅇㅇㄱㅎㅈ", "requested_count": 8, "target": "조금 더 이야기하자", "category": "social", "candidates": ["조금 더 이야기하자"]}
+{"id": "TRAIN0003", "split": "train", "initials": "ㅂㅎㅈㅇㄱㅇㄹㅎㅈㅅㅇ", "requested_count": 12, "target": "보호자에게 연락해주세요", "category": "medical_communication", "candidates": ["보호자에게 연락해주세요"]}
+{"id": "TRAIN0004", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 16, "target": "도와줘", "category": "ambiguity", "candidates": ["도와줘", "다음 주", "다 있지", "더 있죠", "들어줘", "다 알지"]}
+{"id": "TRAIN0005", "split": "train", "initials": "ㅇㅇㅇㅈㅁㅁㅇㅇㅇ", "requested_count": 8, "target": "약을 아직 못 먹었어요", "category": "medical_communication", "candidates": ["약을 아직 못 먹었어요"]}
+{"id": "TRAIN0006", "split": "train", "initials": "ㅈㄱㅊㅊㅎㅎㅈ", "requested_count": 16, "target": "조금 천천히 해줘", "category": "basic_request", "candidates": ["조금 천천히 해줘"]}
+{"id": "TRAIN0007", "split": "train", "initials": "ㅅㄲㅇㅈㄹ", "requested_count": 6, "target": "손끝이 저려", "category": "pain_discomfort", "candidates": ["손끝이 저려"]}
+{"id": "TRAIN0008", "split": "train", "initials": "ㅅㅂㅉㄹㅎㄱ", "requested_count": 8, "target": "세 번째로 할게", "category": "communication_control", "candidates": ["세 번째로 할게"]}
+{"id": "TRAIN0009", "split": "train", "initials": "ㅈㅅㅇㅇㅈㅁㅇ", "requested_count": 6, "target": "점심은 언제 먹어", "category": "schedule_time", "candidates": ["점심은 언제 먹어"]}
+{"id": "TRAIN0010", "split": "train", "initials": "ㅈㅁㅊㅎㅎ", "requested_count": 4, "target": "정말 축하해", "category": "social", "candidates": ["정말 축하해"]}
+{"id": "TRAIN0011", "split": "train", "initials": "ㅃㄷㄴㅇㅈ", "requested_count": 4, "target": "빨대 넣어줘", "category": "food_drink", "candidates": ["빨대 넣어줘"]}
+{"id": "TRAIN0012", "split": "train", "initials": "ㅂㅈ", "requested_count": 8, "target": "밥 좀", "category": "ambiguity", "candidates": ["밥 좀", "바지", "부자", "밥 줘", "봐줘", "보자"]}
+{"id": "TRAIN0013", "split": "train", "initials": "ㅅㄹㄹㄴㅊㅈ", "requested_count": 8, "target": "소리를 낮춰줘", "category": "device_control", "candidates": ["소리를 낮춰줘"]}
+{"id": "TRAIN0014", "split": "train", "initials": "ㅅㅇ", "requested_count": 8, "target": "세워", "category": "ambiguity", "candidates": ["세워", "사요", "서요", "싫어", "쉬어"]}
+{"id": "TRAIN0015", "split": "train", "initials": "ㅍㅈㅇㄹㅈ", "requested_count": 6, "target": "팔 좀 올려줘", "category": "positioning", "candidates": ["팔 좀 올려줘"]}
+{"id": "TRAIN0016", "split": "train", "initials": "ㅇㅇㄹㅇㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "약 이름을 알려주세요", "category": "medical_communication", "candidates": ["약 이름을 알려주세요"]}
+{"id": "TRAIN0017", "split": "train", "initials": "ㅎㄱㅁㅇㄴ", "requested_count": 16, "target": "화가 많이 나", "category": "emotion_needs", "candidates": ["화가 많이 나"]}
+{"id": "TRAIN0018", "split": "train", "initials": "ㄴㅇㄸㄱㅇ", "requested_count": 8, "target": "눈이 따가워", "category": "pain_discomfort", "candidates": ["눈이 따가워"]}
+{"id": "TRAIN0019", "split": "train", "initials": "ㅎㄹㄹㅂㅊㅈ", "requested_count": 6, "target": "허리를 받쳐줘", "category": "positioning", "candidates": ["허리를 받쳐줘"]}
+{"id": "TRAIN0020", "split": "train", "initials": "ㅇㄷㄹㄱㄴㄱㅇ", "requested_count": 6, "target": "어디로 가는 거야", "category": "questions_answers", "candidates": ["어디로 가는 거야"]}
+{"id": "TRAIN0021", "split": "train", "initials": "ㅇㅈㅊㅂㅎㄱㅇ", "requested_count": 8, "target": "언제 출발할 거야", "category": "schedule_time", "candidates": ["언제 출발할 거야"]}
+{"id": "TRAIN0022", "split": "train", "initials": "ㅎㅊㅂㅌㄴㄹㅈ", "requested_count": 4, "target": "호출 버튼 눌러줘", "category": "device_control", "candidates": ["호출 버튼 눌러줘"]}
+{"id": "TRAIN0023", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 4, "target": "도와줘", "category": "ambiguity", "candidates": ["도와줘", "다 알지", "들어줘", "더 있죠"]}
+{"id": "TRAIN0024", "split": "train", "initials": "ㅇㅊㅇㄲㅇㅈㄹ", "requested_count": 12, "target": "아침에 깨워줄래", "category": "schedule_time", "candidates": ["아침에 깨워줄래"]}
+{"id": "TRAIN0025", "split": "train", "initials": "ㅅㄹㄹㅋㅇㅈ", "requested_count": 6, "target": "소리를 키워줘", "category": "device_control", "candidates": ["소리를 키워줘"]}
+{"id": "TRAIN0026", "split": "train", "initials": "ㅎㄹㄱㅃㄱㅎ", "requested_count": 12, "target": "허리가 뻐근해", "category": "pain_discomfort", "candidates": ["허리가 뻐근해"]}
+{"id": "TRAIN0027", "split": "train", "initials": "ㅈㅅㅇㅇㅈㅁㅇ", "requested_count": 16, "target": "점심은 언제 먹어", "category": "schedule_time", "candidates": ["점심은 언제 먹어"]}
+{"id": "TRAIN0028", "split": "train", "initials": "ㅊㅈㄱㅇㄱㅎㅈ", "requested_count": 6, "target": "충전기 연결해줘", "category": "device_control", "candidates": ["충전기 연결해줘"]}
+{"id": "TRAIN0029", "split": "train", "initials": "ㄴㅇㄸㄱㅇ", "requested_count": 6, "target": "눈이 따가워", "category": "pain_discomfort", "candidates": ["눈이 따가워"]}
+{"id": "TRAIN0030", "split": "train", "initials": "ㅁㅈ", "requested_count": 8, "target": "물 좀", "category": "ambiguity", "candidates": ["물 좀", "먹자", "먼저", "만져", "모자", "문제", "맥주", "물 줘"]}
+{"id": "TRAIN0031", "split": "train", "initials": "ㄴㅇㄸㄱㅇ", "requested_count": 4, "target": "눈이 따가워", "category": "pain_discomfort", "candidates": ["눈이 따가워"]}
+{"id": "TRAIN0032", "split": "train", "initials": "ㅁㅇ", "requested_count": 6, "target": "모여", "category": "ambiguity", "candidates": ["모여", "맞아", "매워", "미안", "뭐야"]}
+{"id": "TRAIN0033", "split": "train", "initials": "ㅈㄱㅋㄱㅁㅎㅈ", "requested_count": 16, "target": "조금 크게 말해줘", "category": "communication_control", "candidates": ["조금 크게 말해줘"]}
+{"id": "TRAIN0034", "split": "train", "initials": "ㅁㅈ", "requested_count": 4, "target": "모자", "category": "ambiguity", "candidates": ["모자", "맥주", "문제", "만져"]}
+{"id": "TRAIN0035", "split": "train", "initials": "ㅁㅅㅇㅇㄱㅇ", "requested_count": 12, "target": "몇 시에 올 거야", "category": "schedule_time", "candidates": ["몇 시에 올 거야"]}
+{"id": "TRAIN0036", "split": "train", "initials": "ㄱㄷㅈ", "requested_count": 8, "target": "국 더 줘", "category": "food_drink", "candidates": ["국 더 줘"]}
+{"id": "TRAIN0037", "split": "train", "initials": "ㅂㄱㅁㄹㄱㅎㅇ", "requested_count": 4, "target": "방금 뭐라고 했어", "category": "questions_answers", "candidates": ["방금 뭐라고 했어"]}
+{"id": "TRAIN0038", "split": "train", "initials": "ㅇㄹㅁㅇㄹㅂㄱㅇ", "requested_count": 6, "target": "오랜만이라 반가워", "category": "social", "candidates": ["오랜만이라 반가워"]}
+{"id": "TRAIN0039", "split": "train", "initials": "ㅅㅂㅉㄹㅎㄱ", "requested_count": 16, "target": "세 번째로 할게", "category": "communication_control", "candidates": ["세 번째로 할게"]}
+{"id": "TRAIN0040", "split": "train", "initials": "ㄱㅈㅇㅁㅇㄷ", "requested_count": 12, "target": "걱정이 많이 돼", "category": "emotion_needs", "candidates": ["걱정이 많이 돼"]}
+{"id": "TRAIN0041", "split": "train", "initials": "ㅈㄱㅅㅅㅎ", "requested_count": 8, "target": "조금 속상해", "category": "emotion_needs", "candidates": ["조금 속상해", "조금 심심해"]}
+{"id": "TRAIN0042", "split": "train", "initials": "ㅎㄹㄱㄴㅁㅇㅍ", "requested_count": 4, "target": "허리가 너무 아파", "category": "pain_discomfort", "candidates": ["허리가 너무 아파"]}
+{"id": "TRAIN0043", "split": "train", "initials": "ㅍㅈㅇㄹㅈ", "requested_count": 8, "target": "팔 좀 올려줘", "category": "positioning", "candidates": ["팔 좀 올려줘"]}
+{"id": "TRAIN0044", "split": "train", "initials": "ㅇㄷㄹㅁㅎㅈ", "requested_count": 8, "target": "이대로 말해줘", "category": "communication_control", "candidates": ["이대로 말해줘"]}
+{"id": "TRAIN0045", "split": "train", "initials": "ㅇㅁㅈㅈㅇㅈ", "requested_count": 12, "target": "이 문장 지워줘", "category": "communication_control", "candidates": ["이 문장 지워줘"]}
+{"id": "TRAIN0046", "split": "train", "initials": "ㅊㅇㅂㅌㄷㅅㅎㄱ", "requested_count": 12, "target": "처음부터 다시 할게", "category": "communication_control", "candidates": ["처음부터 다시 할게"]}
+{"id": "TRAIN0047", "split": "train", "initials": "ㄴㅂㅈㅋㅈ", "requested_count": 4, "target": "난방 좀 켜줘", "category": "environment", "candidates": ["난방 좀 켜줘"]}
+{"id": "TRAIN0048", "split": "train", "initials": "ㅅㅇ", "requested_count": 6, "target": "쉬어", "category": "ambiguity", "candidates": ["쉬어", "사요", "서요", "싫어", "세워"]}
+{"id": "TRAIN0049", "split": "train", "initials": "ㅂㄱㄴㄱㅇㅇ", "requested_count": 8, "target": "방금 누가 왔어", "category": "questions_answers", "candidates": ["방금 누가 왔어"]}
+{"id": "TRAIN0050", "split": "train", "initials": "ㅊㄷㄹㅇㄹㅈ", "requested_count": 4, "target": "침대를 올려줘", "category": "positioning", "candidates": ["침대를 올려줘"]}
+{"id": "TRAIN0051", "split": "train", "initials": "ㅈㅁㅊㅎㅎ", "requested_count": 4, "target": "정말 축하해", "category": "social", "candidates": ["정말 축하해"]}
+{"id": "TRAIN0052", "split": "train", "initials": "ㅇㅉㅇㄹㅇㄱㅈ", "requested_count": 4, "target": "이쪽으로 옮겨줘", "category": "basic_request", "candidates": ["이쪽으로 옮겨줘"]}
+{"id": "TRAIN0053", "split": "train", "initials": "ㄷㅅㅁㅇㅂㅈ", "requested_count": 8, "target": "다시 물어봐줘", "category": "questions_answers", "candidates": ["다시 물어봐줘"]}
+{"id": "TRAIN0054", "split": "train", "initials": "ㅂㄱㅈㄴㅇㅈ", "requested_count": 16, "target": "베개 좀 높여줘", "category": "positioning", "candidates": ["베개 좀 높여줘"]}
+{"id": "TRAIN0055", "split": "train", "initials": "ㅈㅁㅇㄴㅊㅈ", "requested_count": 12, "target": "조명을 낮춰줘", "category": "environment", "candidates": ["조명을 낮춰줘"]}
+{"id": "TRAIN0056", "split": "train", "initials": "ㅇㄴㄱㅅㅎㅇ", "requested_count": 4, "target": "오늘 고생했어", "category": "social", "candidates": ["오늘 고생했어"]}
+{"id": "TRAIN0057", "split": "train", "initials": "ㅁㅇㅈㄲㄸㄹ", "requested_count": 16, "target": "몸이 자꾸 떨려", "category": "pain_discomfort", "candidates": ["몸이 자꾸 떨려"]}
+{"id": "TRAIN0058", "split": "train", "initials": "ㅎㅂㅁㄷㅁㅎㅈ", "requested_count": 8, "target": "한 번만 더 말해줘", "category": "communication_control", "candidates": ["한 번만 더 말해줘"]}
+{"id": "TRAIN0059", "split": "train", "initials": "ㅂㄱㄷㅂㄹㅎ", "requested_count": 4, "target": "배가 더부룩해", "category": "pain_discomfort", "candidates": ["배가 더부룩해"]}
+{"id": "TRAIN0060", "split": "train", "initials": "ㅂㄱㅅㅌㅊㅅㅎㄱ", "requested_count": 12, "target": "방금 선택 취소할게", "category": "communication_control", "candidates": ["방금 선택 취소할게"]}
+{"id": "TRAIN0061", "split": "train", "initials": "ㅅㅈㅈㅇㅈ", "requested_count": 4, "target": "손 좀 잡아줘", "category": "basic_request", "candidates": ["손 좀 잡아줘"]}
+{"id": "TRAIN0062", "split": "train", "initials": "ㅁㅇ", "requested_count": 12, "target": "미안", "category": "ambiguity", "candidates": ["미안", "맞아", "모여", "뭐야", "매워"]}
+{"id": "TRAIN0063", "split": "train", "initials": "ㅇㄴㅎㅂㅎ", "requested_count": 12, "target": "오늘 행복해", "category": "emotion_needs", "candidates": ["오늘 행복해"]}
+{"id": "TRAIN0064", "split": "train", "initials": "ㅊㅁㅈㄷㅇㅈ", "requested_count": 6, "target": "창문 좀 닫아줘", "category": "environment", "candidates": ["창문 좀 닫아줘"]}
+{"id": "TRAIN0065", "split": "train", "initials": "ㅈㄱㅇㅍㅇㅎ", "requested_count": 6, "target": "지금은 편안해", "category": "emotion_needs", "candidates": ["지금은 편안해"]}
+{"id": "TRAIN0066", "split": "train", "initials": "ㅁㅅㅈㅂㄴㅈ", "requested_count": 6, "target": "메시지 보내줘", "category": "device_control", "candidates": ["메시지 보내줘"]}
+{"id": "TRAIN0067", "split": "train", "initials": "ㅈㅅㄹㅎㅇㅎㅈㅅㅇ", "requested_count": 12, "target": "자세를 확인해주세요", "category": "medical_communication", "candidates": ["자세를 확인해주세요"]}
+{"id": "TRAIN0068", "split": "train", "initials": "ㄱㅅㅅㄱㅇㅇㅈㅇㅇ", "requested_count": 12, "target": "검사 시간이 언제예요", "category": "medical_communication", "candidates": ["검사 시간이 언제예요"]}
+{"id": "TRAIN0069", "split": "train", "initials": "ㅊㄱㅇㄱㅇㄹㅎㅈ", "requested_count": 4, "target": "친구에게 연락해줘", "category": "social", "candidates": ["친구에게 연락해줘"]}
+{"id": "TRAIN0070", "split": "train", "initials": "ㅇㄴㅇㅁㅅㅇㅇㅇㅇ", "requested_count": 16, "target": "오늘이 무슨 요일이야", "category": "schedule_time", "candidates": ["오늘이 무슨 요일이야"]}
+{"id": "TRAIN0071", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 4, "target": "들어줘", "category": "ambiguity", "candidates": ["들어줘", "다 있지", "더 있죠", "다음 주"]}
+{"id": "TRAIN0072", "split": "train", "initials": "ㅂㄱㅈㄴㅊㅈ", "requested_count": 4, "target": "베개 좀 낮춰줘", "category": "positioning", "candidates": ["베개 좀 낮춰줘"]}
+{"id": "TRAIN0073", "split": "train", "initials": "ㅌㄹㅂㅈㄲㅈ", "requested_count": 6, "target": "텔레비전 꺼줘", "category": "device_control", "candidates": ["텔레비전 꺼줘"]}
+{"id": "TRAIN0074", "split": "train", "initials": "ㅈㄱㅅㅇㄷㅁㅈ", "requested_count": 16, "target": "조금 쉬었다 먹자", "category": "food_drink", "candidates": ["조금 쉬었다 먹자"]}
+{"id": "TRAIN0075", "split": "train", "initials": "ㄷㄹㅈㅇㄹㅈ", "requested_count": 12, "target": "다리 좀 올려줘", "category": "positioning", "candidates": ["다리 좀 올려줘"]}
+{"id": "TRAIN0076", "split": "train", "initials": "ㄴㄱㄲㄲㅈㅁㅎㄱ", "requested_count": 12, "target": "내가 끝까지 말할게", "category": "communication_control", "candidates": ["내가 끝까지 말할게"]}
+{"id": "TRAIN0077", "split": "train", "initials": "ㅎㅂㄷㅎㅈ", "requested_count": 4, "target": "한 번 더 해줘", "category": "basic_request", "candidates": ["한 번 더 해줘"]}
+{"id": "TRAIN0078", "split": "train", "initials": "ㅎㅊㅂㅌㄴㄹㅈ", "requested_count": 16, "target": "호출 버튼 눌러줘", "category": "device_control", "candidates": ["호출 버튼 눌러줘"]}
+{"id": "TRAIN0079", "split": "train", "initials": "ㅁㅅㅈㅂㄴㅈ", "requested_count": 12, "target": "메시지 보내줘", "category": "device_control", "candidates": ["메시지 보내줘"]}
+{"id": "TRAIN0080", "split": "train", "initials": "ㄷㅇㄷㅇㅁㄴㅈ", "requested_count": 12, "target": "다음 달에 만나자", "category": "schedule_time", "candidates": ["다음 달에 만나자"]}
+{"id": "TRAIN0081", "split": "train", "initials": "ㄱㅇㅇㅇㄴ", "requested_count": 12, "target": "기억이 안 나", "category": "questions_answers", "candidates": ["기억이 안 나"]}
+{"id": "TRAIN0082", "split": "train", "initials": "ㅎㄹㄱㅃㄱㅎ", "requested_count": 6, "target": "허리가 뻐근해", "category": "pain_discomfort", "candidates": ["허리가 뻐근해"]}
+{"id": "TRAIN0083", "split": "train", "initials": "ㅋㅌㅈㄷㅇㅈ", "requested_count": 4, "target": "커튼 좀 닫아줘", "category": "environment", "candidates": ["커튼 좀 닫아줘"]}
+{"id": "TRAIN0084", "split": "train", "initials": "ㅅㅍㄱㅈㄲㅈ", "requested_count": 8, "target": "선풍기 좀 꺼줘", "category": "environment", "candidates": ["선풍기 좀 꺼줘"]}
+{"id": "TRAIN0085", "split": "train", "initials": "ㅁㅇㄴㅁㅇㅍ", "requested_count": 6, "target": "목이 너무 아파", "category": "pain_discomfort", "candidates": ["목이 너무 아파"]}
+{"id": "TRAIN0086", "split": "train", "initials": "ㅈㄱㄹㅈㅈ", "requested_count": 4, "target": "젓가락 좀 줘", "category": "food_drink", "candidates": ["젓가락 좀 줘"]}
+{"id": "TRAIN0087", "split": "train", "initials": "ㅂㅈ", "requested_count": 8, "target": "밥 줘", "category": "ambiguity", "candidates": ["밥 줘", "보자", "밥 좀", "바지", "봐줘", "부자"]}
+{"id": "TRAIN0088", "split": "train", "initials": "ㅈㄱㅊㅊㅎㅎㅈ", "requested_count": 16, "target": "조금 천천히 해줘", "category": "basic_request", "candidates": ["조금 천천히 해줘"]}
+{"id": "TRAIN0089", "split": "train", "initials": "ㅅㅌㅈㄹㄷㅅㅂㅇㅈ", "requested_count": 6, "target": "선택지를 다시 보여줘", "category": "communication_control", "candidates": ["선택지를 다시 보여줘"]}
+{"id": "TRAIN0090", "split": "train", "initials": "ㄹㅁㅋㄱㅈㅇㅈ", "requested_count": 6, "target": "리모컨 가져와줘", "category": "basic_request", "candidates": ["리모컨 가져와줘"]}
+{"id": "TRAIN0091", "split": "train", "initials": "ㅅㅂㅉㄹㅎㄱ", "requested_count": 12, "target": "세 번째로 할게", "category": "communication_control", "candidates": ["세 번째로 할게"]}
+{"id": "TRAIN0092", "split": "train", "initials": "ㅎㄹㄱㄴㅁㅇㅍ", "requested_count": 16, "target": "허리가 너무 아파", "category": "pain_discomfort", "candidates": ["허리가 너무 아파"]}
+{"id": "TRAIN0093", "split": "train", "initials": "ㅂㄱㄴㄱㅇㅇ", "requested_count": 12, "target": "방금 누가 왔어", "category": "questions_answers", "candidates": ["방금 누가 왔어"]}
+{"id": "TRAIN0094", "split": "train", "initials": "ㅅㅈㅈㅇㅈ", "requested_count": 4, "target": "손 좀 잡아줘", "category": "basic_request", "candidates": ["손 좀 잡아줘"]}
+{"id": "TRAIN0095", "split": "train", "initials": "ㅊㅈㅈ", "requested_count": 4, "target": "차 좀 줘", "category": "food_drink", "candidates": ["차 좀 줘"]}
+{"id": "TRAIN0096", "split": "train", "initials": "ㅇㄲㄹㅂㅊㅈ", "requested_count": 12, "target": "어깨를 받쳐줘", "category": "positioning", "candidates": ["어깨를 받쳐줘"]}
+{"id": "TRAIN0097", "split": "train", "initials": "ㅁㅇ", "requested_count": 8, "target": "맞아", "category": "ambiguity", "candidates": ["맞아", "뭐야", "미안", "모여", "매워"]}
+{"id": "TRAIN0098", "split": "train", "initials": "ㅋㅈㅈ", "requested_count": 4, "target": "컵 좀 줘", "category": "food_drink", "candidates": ["컵 좀 줘"]}
+{"id": "TRAIN0099", "split": "train", "initials": "ㅂㄱㅁㄹㄱㅎㅇ", "requested_count": 16, "target": "방금 뭐라고 했어", "category": "questions_answers", "candidates": ["방금 뭐라고 했어"]}
+{"id": "TRAIN0100", "split": "train", "initials": "ㅇㅈㄱㅌㅇㅈ", "requested_count": 16, "target": "이전 곡 틀어줘", "category": "device_control", "candidates": ["이전 곡 틀어줘"]}
+{"id": "TRAIN0101", "split": "train", "initials": "ㅂㄱㄴㄱㅇㅇ", "requested_count": 16, "target": "방금 누가 왔어", "category": "questions_answers", "candidates": ["방금 누가 왔어"]}
+{"id": "TRAIN0102", "split": "train", "initials": "ㅎㅇㅎㅂㅎㅈㅅㅇ", "requested_count": 16, "target": "흡인 한번 해주세요", "category": "medical_communication", "candidates": ["흡인 한번 해주세요"]}
+{"id": "TRAIN0103", "split": "train", "initials": "ㅇㄲㄹㅂㅊㅈ", "requested_count": 6, "target": "어깨를 받쳐줘", "category": "positioning", "candidates": ["어깨를 받쳐줘"]}
+{"id": "TRAIN0104", "split": "train", "initials": "ㄴㄱㄱㅈㄱㅇ", "requested_count": 8, "target": "누가 가져갔어", "category": "questions_answers", "candidates": ["누가 가져갔어"]}
+{"id": "TRAIN0105", "split": "train", "initials": "ㅁㅈ", "requested_count": 8, "target": "맥주", "category": "ambiguity", "candidates": ["맥주", "문제", "먹자", "먼저", "모자", "맞지", "만져", "물 좀"]}
+{"id": "TRAIN0106", "split": "train", "initials": "ㅂㄹㅈㄴㅇㅈ", "requested_count": 12, "target": "볼륨 좀 높여줘", "category": "environment", "candidates": ["볼륨 좀 높여줘"]}
+{"id": "TRAIN0107", "split": "train", "initials": "ㅎㅂㄷㅎㅈ", "requested_count": 4, "target": "한 번 더 해줘", "category": "basic_request", "candidates": ["한 번 더 해줘"]}
+{"id": "TRAIN0108", "split": "train", "initials": "ㄱㅅㅅㄱㅇㅇㅈㅇㅇ", "requested_count": 12, "target": "검사 시간이 언제예요", "category": "medical_communication", "candidates": ["검사 시간이 언제예요"]}
+{"id": "TRAIN0109", "split": "train", "initials": "ㅅㅌㅈㄹㄷㅅㅂㅇㅈ", "requested_count": 16, "target": "선택지를 다시 보여줘", "category": "communication_control", "candidates": ["선택지를 다시 보여줘"]}
+{"id": "TRAIN0110", "split": "train", "initials": "ㅂㅎㅈㅇㄱㅇㄹㅎㅈㅅㅇ", "requested_count": 12, "target": "보호자에게 연락해주세요", "category": "medical_communication", "candidates": ["보호자에게 연락해주세요"]}
+{"id": "TRAIN0111", "split": "train", "initials": "ㅇㄲㄹㅂㅊㅈ", "requested_count": 4, "target": "어깨를 받쳐줘", "category": "positioning", "candidates": ["어깨를 받쳐줘"]}
+{"id": "TRAIN0112", "split": "train", "initials": "ㄱㅅㅇㄷㄷㅎ", "requested_count": 6, "target": "가슴이 답답해", "category": "pain_discomfort", "candidates": ["가슴이 답답해"]}
+{"id": "TRAIN0113", "split": "train", "initials": "ㅊㄷㄹㄴㄹㅈ", "requested_count": 8, "target": "침대를 내려줘", "category": "positioning", "candidates": ["침대를 내려줘"]}
+{"id": "TRAIN0114", "split": "train", "initials": "ㅋㅌㅈㄷㅇㅈ", "requested_count": 4, "target": "커튼 좀 닫아줘", "category": "environment", "candidates": ["커튼 좀 닫아줘"]}
+{"id": "TRAIN0115", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 12, "target": "다음 주", "category": "ambiguity", "candidates": ["다음 주", "더 있죠", "다 알지", "들어줘", "다 있지", "도와줘"]}
+{"id": "TRAIN0116", "split": "train", "initials": "ㅇㄱㅅㄹㄱㅇㅎㄱㄱㅇㅇ", "requested_count": 4, "target": "응급실로 가야 할 것 같아요", "category": "medical_communication", "candidates": ["응급실로 가야 할 것 같아요"]}
+{"id": "TRAIN0117", "split": "train", "initials": "ㄷㅇㅈㄱㅅㅇㅈ", "requested_count": 4, "target": "등을 조금 세워줘", "category": "positioning", "candidates": ["등을 조금 세워줘"]}
+{"id": "TRAIN0118", "split": "train", "initials": "ㅅㅇㄴㅁㅊ", "requested_count": 16, "target": "숨이 너무 차", "category": "pain_discomfort", "candidates": ["숨이 너무 차"]}
+{"id": "TRAIN0119", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 8, "target": "귤 먹어", "category": "ambiguity", "candidates": ["귤 먹어", "고마워", "그 말이", "그만요"]}
+{"id": "TRAIN0120", "split": "train", "initials": "ㅊㅁㅈㄷㅇㅈ", "requested_count": 6, "target": "창문 좀 닫아줘", "category": "environment", "candidates": ["창문 좀 닫아줘"]}
+{"id": "TRAIN0121", "split": "train", "initials": "ㅅㄲㅇㅈㄹ", "requested_count": 4, "target": "손끝이 저려", "category": "pain_discomfort", "candidates": ["손끝이 저려"]}
+{"id": "TRAIN0122", "split": "train", "initials": "ㅌㅈㅇㅊㄹㅂㅈㅅㅇ", "requested_count": 4, "target": "통증 위치를 봐주세요", "category": "medical_communication", "candidates": ["통증 위치를 봐주세요"]}
+{"id": "TRAIN0123", "split": "train", "initials": "ㄷㄹㅈㅇㄹㅈ", "requested_count": 6, "target": "다리 좀 올려줘", "category": "positioning", "candidates": ["다리 좀 올려줘"]}
+{"id": "TRAIN0124", "split": "train", "initials": "ㅇㄱㄴㅇㅈ", "requested_count": 12, "target": "여기 놓아줘", "category": "basic_request", "candidates": ["여기 놓아줘"]}
+{"id": "TRAIN0125", "split": "train", "initials": "ㅁㅈ", "requested_count": 4, "target": "물 줘", "category": "ambiguity", "candidates": ["물 줘", "물 좀", "맞지", "뭐지"]}
+{"id": "TRAIN0126", "split": "train", "initials": "ㅊㅈㅈ", "requested_count": 6, "target": "차 좀 줘", "category": "food_drink", "candidates": ["차 좀 줘"]}
+{"id": "TRAIN0127", "split": "train", "initials": "ㅅㅇ", "requested_count": 12, "target": "세워", "category": "ambiguity", "candidates": ["세워", "서요", "쉬어", "사요", "싫어"]}
+{"id": "TRAIN0128", "split": "train", "initials": "ㅇㄴㄴㅁㅍㄱㅎ", "requested_count": 6, "target": "오늘 너무 피곤해", "category": "emotion_needs", "candidates": ["오늘 너무 피곤해"]}
+{"id": "TRAIN0129", "split": "train", "initials": "ㅇㅁㅈㅈㅇㅈ", "requested_count": 8, "target": "이 문장 지워줘", "category": "communication_control", "candidates": ["이 문장 지워줘"]}
+{"id": "TRAIN0130", "split": "train", "initials": "ㅊㄷㄹㄴㄹㅈ", "requested_count": 16, "target": "침대를 내려줘", "category": "positioning", "candidates": ["침대를 내려줘"]}
+{"id": "TRAIN0131", "split": "train", "initials": "ㅅㅇㅎㅁㅈ", "requested_count": 12, "target": "시원한 물 줘", "category": "food_drink", "candidates": ["시원한 물 줘"]}
+{"id": "TRAIN0132", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 16, "target": "다 있지", "category": "ambiguity", "candidates": ["다 있지", "도와줘", "다 알지", "다음 주", "더 있죠", "들어줘"]}
+{"id": "TRAIN0133", "split": "train", "initials": "ㄴㄱㄲㄲㅈㅁㅎㄱ", "requested_count": 8, "target": "내가 끝까지 말할게", "category": "communication_control", "candidates": ["내가 끝까지 말할게"]}
+{"id": "TRAIN0134", "split": "train", "initials": "ㄷㅇ", "requested_count": 4, "target": "더워", "category": "ambiguity", "candidates": ["더워", "들어", "다음", "도와"]}
+{"id": "TRAIN0135", "split": "train", "initials": "ㄱㄷㅈ", "requested_count": 4, "target": "국 더 줘", "category": "food_drink", "candidates": ["국 더 줘"]}
+{"id": "TRAIN0136", "split": "train", "initials": "ㄷㅇ", "requested_count": 12, "target": "닫아", "category": "ambiguity", "candidates": ["닫아", "다음", "들어", "도와", "더워"]}
+{"id": "TRAIN0137", "split": "train", "initials": "ㅈㅅㅁㅊㅈ", "requested_count": 16, "target": "잠시 멈춰줘", "category": "basic_request", "candidates": ["잠시 멈춰줘"]}
+{"id": "TRAIN0138", "split": "train", "initials": "ㅇㅅㅇㅈㅇㄴㅇ", "requested_count": 6, "target": "의사 언제 오나요", "category": "medical_communication", "candidates": ["의사 언제 오나요"]}
+{"id": "TRAIN0139", "split": "train", "initials": "ㄷㄹㅈㅇㄹㅈ", "requested_count": 8, "target": "다리 좀 올려줘", "category": "positioning", "candidates": ["다리 좀 올려줘"]}
+{"id": "TRAIN0140", "split": "train", "initials": "ㅇㅈㅇㄲㄴㅇ", "requested_count": 4, "target": "아직 안 끝났어", "category": "questions_answers", "candidates": ["아직 안 끝났어"]}
+{"id": "TRAIN0141", "split": "train", "initials": "ㅅㅇㅎㅁㅈ", "requested_count": 16, "target": "시원한 물 줘", "category": "food_drink", "candidates": ["시원한 물 줘"]}
+{"id": "TRAIN0142", "split": "train", "initials": "ㅁㄴㅅㅂㄱㅇ", "requested_count": 12, "target": "만나서 반가워", "category": "social", "candidates": ["만나서 반가워"]}
+{"id": "TRAIN0143", "split": "train", "initials": "ㅂㅈ", "requested_count": 12, "target": "바지", "category": "ambiguity", "candidates": ["바지", "밥 좀", "봐줘", "보자", "부자", "밥 줘"]}
+{"id": "TRAIN0144", "split": "train", "initials": "ㄱㅎㅅㅇㅈㅇㄴㅇ", "requested_count": 8, "target": "간호사 언제 오나요", "category": "medical_communication", "candidates": ["간호사 언제 오나요"]}
+{"id": "TRAIN0145", "split": "train", "initials": "ㅎㄷㅍㅎㅁㄲㅈ", "requested_count": 12, "target": "휴대폰 화면 꺼줘", "category": "device_control", "candidates": ["휴대폰 화면 꺼줘"]}
+{"id": "TRAIN0146", "split": "train", "initials": "ㅁㅇㄴㅁㅇㅍ", "requested_count": 8, "target": "목이 너무 아파", "category": "pain_discomfort", "candidates": ["목이 너무 아파"]}
+{"id": "TRAIN0147", "split": "train", "initials": "ㅎㅎㅅㅌㅎㅇㅎㅈㅅㅇ", "requested_count": 8, "target": "호흡 상태 확인해주세요", "category": "medical_communication", "candidates": ["호흡 상태 확인해주세요"]}
+{"id": "TRAIN0148", "split": "train", "initials": "ㅇㄴㅈㄱㅇㄷ", "requested_count": 12, "target": "오늘 즐거웠다", "category": "social", "candidates": ["오늘 즐거웠다"]}
+{"id": "TRAIN0149", "split": "train", "initials": "ㄷㅇ", "requested_count": 6, "target": "더워", "category": "ambiguity", "candidates": ["더워", "닫아", "들어", "다음", "도와"]}
+{"id": "TRAIN0150", "split": "train", "initials": "ㅈㄱㄱㄷㄹㅈ", "requested_count": 16, "target": "조금 기다려줘", "category": "basic_request", "candidates": ["조금 기다려줘"]}
+{"id": "TRAIN0151", "split": "train", "initials": "ㄴㄹㅈㅅㅎㅈ", "requested_count": 8, "target": "노래 재생해줘", "category": "device_control", "candidates": ["노래 재생해줘"]}
+{"id": "TRAIN0152", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 8, "target": "다음 주", "category": "ambiguity", "candidates": ["다음 주", "도와줘", "들어줘", "다 있지", "더 있죠", "다 알지"]}
+{"id": "TRAIN0153", "split": "train", "initials": "ㅈㄱㄷㅇㅇㄱㅎㅈ", "requested_count": 8, "target": "조금 더 이야기하자", "category": "social", "candidates": ["조금 더 이야기하자"]}
+{"id": "TRAIN0154", "split": "train", "initials": "ㅇㅈㄱㅌㅇㅈ", "requested_count": 8, "target": "이전 곡 틀어줘", "category": "device_control", "candidates": ["이전 곡 틀어줘"]}
+{"id": "TRAIN0155", "split": "train", "initials": "ㅇㅂㅈㅇㅈㅇㄹㅈ", "requested_count": 6, "target": "이번 주 일정 알려줘", "category": "schedule_time", "candidates": ["이번 주 일정 알려줘"]}
+{"id": "TRAIN0156", "split": "train", "initials": "ㅊㄷㄹㅇㄹㅈ", "requested_count": 16, "target": "침대를 올려줘", "category": "positioning", "candidates": ["침대를 올려줘"]}
+{"id": "TRAIN0157", "split": "train", "initials": "ㅂㄱㅈㄴㅊㅈ", "requested_count": 12, "target": "베개 좀 낮춰줘", "category": "positioning", "candidates": ["베개 좀 낮춰줘"]}
+{"id": "TRAIN0158", "split": "train", "initials": "ㅈㄱㄴㅇㅈ", "requested_count": 12, "target": "저기 놓아줘", "category": "basic_request", "candidates": ["저기 놓아줘"]}
+{"id": "TRAIN0159", "split": "train", "initials": "ㄴㅇㅇㅈㅇㄹㅈ", "requested_count": 4, "target": "내일 일정 알려줘", "category": "schedule_time", "candidates": ["내일 일정 알려줘"]}
+{"id": "TRAIN0160", "split": "train", "initials": "ㅁㅇㄱㅇㄷㄹㅇㄱㅈ", "requested_count": 16, "target": "몸을 가운데로 옮겨줘", "category": "positioning", "candidates": ["몸을 가운데로 옮겨줘"]}
+{"id": "TRAIN0161", "split": "train", "initials": "ㄷㅇㅇㄸㅂㅈ", "requested_count": 8, "target": "다음에 또 보자", "category": "social", "candidates": ["다음에 또 보자"]}
+{"id": "TRAIN0162", "split": "train", "initials": "ㄷㄹㄱㄴㅁㅇㅍ", "requested_count": 6, "target": "다리가 너무 아파", "category": "pain_discomfort", "candidates": ["다리가 너무 아파"]}
+{"id": "TRAIN0163", "split": "train", "initials": "ㅈㅅㅈㅈ", "requested_count": 4, "target": "주스 좀 줘", "category": "food_drink", "candidates": ["주스 좀 줘"]}
+{"id": "TRAIN0164", "split": "train", "initials": "ㅅㅅㅍㅎㄷㅎㅇㅎㅈㅅㅇ", "requested_count": 6, "target": "산소포화도 확인해주세요", "category": "medical_communication", "candidates": ["산소포화도 확인해주세요"]}
+{"id": "TRAIN0165", "split": "train", "initials": "ㅈㄱㅋㄱㅁㅎㅈ", "requested_count": 4, "target": "조금 크게 말해줘", "category": "communication_control", "candidates": ["조금 크게 말해줘"]}
+{"id": "TRAIN0166", "split": "train", "initials": "ㅅㅇㅎㅁㅈ", "requested_count": 8, "target": "시원한 물 줘", "category": "food_drink", "candidates": ["시원한 물 줘"]}
+{"id": "TRAIN0167", "split": "train", "initials": "ㅈㄱㅇㄷㄷㅎㄱㅇㄹㅇ", "requested_count": 12, "target": "지금은 대답하기 어려워", "category": "communication_control", "candidates": ["지금은 대답하기 어려워"]}
+{"id": "TRAIN0168", "split": "train", "initials": "ㅇㅈㄱㅌㅇㅈ", "requested_count": 6, "target": "이전 곡 틀어줘", "category": "device_control", "candidates": ["이전 곡 틀어줘"]}
+{"id": "TRAIN0169", "split": "train", "initials": "ㅅㅍㄱㅈㅋㅈ", "requested_count": 6, "target": "선풍기 좀 켜줘", "category": "environment", "candidates": ["선풍기 좀 켜줘"]}
+{"id": "TRAIN0170", "split": "train", "initials": "ㅈㅈ", "requested_count": 12, "target": "좀 줘", "category": "ambiguity", "candidates": ["좀 줘", "잘 자", "자자"]}
+{"id": "TRAIN0171", "split": "train", "initials": "ㄴㄱㄱㅈㄱㅇ", "requested_count": 12, "target": "누가 가져갔어", "category": "questions_answers", "candidates": ["누가 가져갔어"]}
+{"id": "TRAIN0172", "split": "train", "initials": "ㅈㄱㄴㅇㅈ", "requested_count": 12, "target": "저기 놓아줘", "category": "basic_request", "candidates": ["저기 놓아줘"]}
+{"id": "TRAIN0173", "split": "train", "initials": "ㅁㅈㄷㅇㅈ", "requested_count": 8, "target": "문 좀 닫아줘", "category": "basic_request", "candidates": ["문 좀 닫아줘"]}
+{"id": "TRAIN0174", "split": "train", "initials": "ㅋㅈㅈ", "requested_count": 12, "target": "컵 좀 줘", "category": "food_drink", "candidates": ["컵 좀 줘"]}
+{"id": "TRAIN0175", "split": "train", "initials": "ㅅㅇㄴㄹㅈ", "requested_count": 8, "target": "손을 내려줘", "category": "positioning", "candidates": ["손을 내려줘"]}
+{"id": "TRAIN0176", "split": "train", "initials": "ㅎㄹㄱㅃㄱㅎ", "requested_count": 16, "target": "허리가 뻐근해", "category": "pain_discomfort", "candidates": ["허리가 뻐근해"]}
+{"id": "TRAIN0177", "split": "train", "initials": "ㅈㄲㅎㅈㅇㄱㅅㅇ", "requested_count": 8, "target": "잠깐 혼자 있고 싶어", "category": "emotion_needs", "candidates": ["잠깐 혼자 있고 싶어"]}
+{"id": "TRAIN0178", "split": "train", "initials": "ㅇㅇㅇㅈㅁㅁㅇㅇㅇ", "requested_count": 8, "target": "약을 아직 못 먹었어요", "category": "medical_communication", "candidates": ["약을 아직 못 먹었어요"]}
+{"id": "TRAIN0179", "split": "train", "initials": "ㅇㅂㅈㅇㅈㅇㄹㅈ", "requested_count": 4, "target": "이번 주 일정 알려줘", "category": "schedule_time", "candidates": ["이번 주 일정 알려줘"]}
+{"id": "TRAIN0180", "split": "train", "initials": "ㅈㄲㅎㅈㅇㄱㅅㅇ", "requested_count": 16, "target": "잠깐 혼자 있고 싶어", "category": "emotion_needs", "candidates": ["잠깐 혼자 있고 싶어"]}
+{"id": "TRAIN0181", "split": "train", "initials": "ㅊㅇㅂㅌㄷㅅㅎㄱ", "requested_count": 4, "target": "처음부터 다시 할게", "category": "communication_control", "candidates": ["처음부터 다시 할게"]}
+{"id": "TRAIN0182", "split": "train", "initials": "ㅂㄹㅈㄴㅊㅈ", "requested_count": 4, "target": "볼륨 좀 낮춰줘", "category": "environment", "candidates": ["볼륨 좀 낮춰줘"]}
+{"id": "TRAIN0183", "split": "train", "initials": "ㅈㄱㅇㄷㄷㅎㄱㅇㄹㅇ", "requested_count": 16, "target": "지금은 대답하기 어려워", "category": "communication_control", "candidates": ["지금은 대답하기 어려워"]}
+{"id": "TRAIN0184", "split": "train", "initials": "ㅈㄱㅇㅍㅇㅎ", "requested_count": 16, "target": "지금은 편안해", "category": "emotion_needs", "candidates": ["지금은 편안해"]}
+{"id": "TRAIN0185", "split": "train", "initials": "ㅅㅅㅍㅎㄷㅎㅇㅎㅈㅅㅇ", "requested_count": 6, "target": "산소포화도 확인해주세요", "category": "medical_communication", "candidates": ["산소포화도 확인해주세요"]}
+{"id": "TRAIN0186", "split": "train", "initials": "ㅇㅉㅂㅈ", "requested_count": 8, "target": "이쪽 봐줘", "category": "basic_request", "candidates": ["이쪽 봐줘"]}
+{"id": "TRAIN0187", "split": "train", "initials": "ㅋㅈㅈ", "requested_count": 8, "target": "컵 좀 줘", "category": "food_drink", "candidates": ["컵 좀 줘"]}
+{"id": "TRAIN0188", "split": "train", "initials": "ㄱㅇㅇㅇㄴ", "requested_count": 8, "target": "기억이 안 나", "category": "questions_answers", "candidates": ["기억이 안 나"]}
+{"id": "TRAIN0189", "split": "train", "initials": "ㅂㄱㅈㄴㅇㅈ", "requested_count": 8, "target": "베개 좀 높여줘", "category": "positioning", "candidates": ["베개 좀 높여줘"]}
+{"id": "TRAIN0190", "split": "train", "initials": "ㄴㄱㅇㅈㅇㄹㅈ", "requested_count": 6, "target": "누구인지 알려줘", "category": "questions_answers", "candidates": ["누구인지 알려줘"]}
+{"id": "TRAIN0191", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 12, "target": "그만요", "category": "ambiguity", "candidates": ["그만요", "귤 먹어", "고마워", "그 말이"]}
+{"id": "TRAIN0192", "split": "train", "initials": "ㅈㄱㅊㅊㅎㅎㅈ", "requested_count": 16, "target": "조금 천천히 해줘", "category": "basic_request", "candidates": ["조금 천천히 해줘"]}
+{"id": "TRAIN0193", "split": "train", "initials": "ㅅㄹㄹㅋㅇㅈ", "requested_count": 12, "target": "소리를 키워줘", "category": "device_control", "candidates": ["소리를 키워줘"]}
+{"id": "TRAIN0194", "split": "train", "initials": "ㅍㅈㅇㄹㅈ", "requested_count": 4, "target": "팔 좀 올려줘", "category": "positioning", "candidates": ["팔 좀 올려줘"]}
+{"id": "TRAIN0195", "split": "train", "initials": "ㄷㅇㅈㄱㅅㅇㅈ", "requested_count": 6, "target": "등을 조금 세워줘", "category": "positioning", "candidates": ["등을 조금 세워줘"]}
+{"id": "TRAIN0196", "split": "train", "initials": "ㄴㅇㄸㄱㅇ", "requested_count": 16, "target": "눈이 따가워", "category": "pain_discomfort", "candidates": ["눈이 따가워"]}
+{"id": "TRAIN0197", "split": "train", "initials": "ㅈㅈ", "requested_count": 16, "target": "잘 자", "category": "ambiguity", "candidates": ["잘 자", "자자", "좀 줘"]}
+{"id": "TRAIN0198", "split": "train", "initials": "ㅈㄱㅋㄱㅁㅎㅈ", "requested_count": 12, "target": "조금 크게 말해줘", "category": "communication_control", "candidates": ["조금 크게 말해줘"]}
+{"id": "TRAIN0199", "split": "train", "initials": "ㅇㄴㅇㅁㅅㅇㅇㅇㅇ", "requested_count": 4, "target": "오늘이 무슨 요일이야", "category": "schedule_time", "candidates": ["오늘이 무슨 요일이야"]}
+{"id": "TRAIN0200", "split": "train", "initials": "ㅁㅈㄷㅇㅈ", "requested_count": 8, "target": "문 좀 닫아줘", "category": "basic_request", "candidates": ["문 좀 닫아줘"]}
+{"id": "TRAIN0201", "split": "train", "initials": "ㄱㅇㅇㅇㄴ", "requested_count": 6, "target": "기억이 안 나", "category": "questions_answers", "candidates": ["기억이 안 나"]}
+{"id": "TRAIN0202", "split": "train", "initials": "ㅅㅇㄴㄹㅈ", "requested_count": 16, "target": "손을 내려줘", "category": "positioning", "candidates": ["손을 내려줘"]}
+{"id": "TRAIN0203", "split": "train", "initials": "ㅇㅇㅇㄴㅁㅁㄹ", "requested_count": 8, "target": "입안이 너무 말라", "category": "pain_discomfort", "candidates": ["입안이 너무 말라"]}
+{"id": "TRAIN0204", "split": "train", "initials": "ㅂㅈ", "requested_count": 4, "target": "부자", "category": "ambiguity", "candidates": ["부자", "밥 줘", "보자", "봐줘"]}
+{"id": "TRAIN0205", "split": "train", "initials": "ㅊㅁㅈㅇㅇㅈ", "requested_count": 16, "target": "창문 좀 열어줘", "category": "environment", "candidates": ["창문 좀 열어줘"]}
+{"id": "TRAIN0206", "split": "train", "initials": "ㅈㅅㄹㅎㅇㅎㅈㅅㅇ", "requested_count": 12, "target": "자세를 확인해주세요", "category": "medical_communication", "candidates": ["자세를 확인해주세요"]}
+{"id": "TRAIN0207", "split": "train", "initials": "ㅇㅂㅈㅁㅇㅁㅎ", "requested_count": 6, "target": "이번 주말에 뭐 해", "category": "schedule_time", "candidates": ["이번 주말에 뭐 해"]}
+{"id": "TRAIN0208", "split": "train", "initials": "ㅇㄷㄹㄱㄴㄱㅇ", "requested_count": 8, "target": "어디로 가는 거야", "category": "questions_answers", "candidates": ["어디로 가는 거야"]}
+{"id": "TRAIN0209", "split": "train", "initials": "ㄱㄷㅈ", "requested_count": 6, "target": "국 더 줘", "category": "food_drink", "candidates": ["국 더 줘"]}
+{"id": "TRAIN0210", "split": "train", "initials": "ㅁㅇㅈㄲㄸㄹ", "requested_count": 6, "target": "몸이 자꾸 떨려", "category": "pain_discomfort", "candidates": ["몸이 자꾸 떨려"]}
+{"id": "TRAIN0211", "split": "train", "initials": "ㅎㄹㄱㄴㅁㅇㅍ", "requested_count": 8, "target": "허리가 너무 아파", "category": "pain_discomfort", "candidates": ["허리가 너무 아파"]}
+{"id": "TRAIN0212", "split": "train", "initials": "ㅎㄱㅁㅇㄴ", "requested_count": 8, "target": "화가 많이 나", "category": "emotion_needs", "candidates": ["화가 많이 나"]}
+{"id": "TRAIN0213", "split": "train", "initials": "ㅎㄷㅍㅎㅁㄲㅈ", "requested_count": 6, "target": "휴대폰 화면 꺼줘", "category": "device_control", "candidates": ["휴대폰 화면 꺼줘"]}
+{"id": "TRAIN0214", "split": "train", "initials": "ㄱㅅㅇㄷㄷㅎ", "requested_count": 8, "target": "가슴이 답답해", "category": "pain_discomfort", "candidates": ["가슴이 답답해"]}
+{"id": "TRAIN0215", "split": "train", "initials": "ㅅㄹㄹㄴㅊㅈ", "requested_count": 16, "target": "소리를 낮춰줘", "category": "device_control", "candidates": ["소리를 낮춰줘"]}
+{"id": "TRAIN0216", "split": "train", "initials": "ㅈㅈㄴㅈ", "requested_count": 6, "target": "잘 지냈지", "category": "social", "candidates": ["잘 지냈지"]}
+{"id": "TRAIN0217", "split": "train", "initials": "ㅇㅇㅅㄱㅇㅁㅅㅇ", "requested_count": 4, "target": "예약 시간이 몇 시야", "category": "schedule_time", "candidates": ["예약 시간이 몇 시야"]}
+{"id": "TRAIN0218", "split": "train", "initials": "ㅈㄱㅅㅅㅎ", "requested_count": 4, "target": "조금 심심해", "category": "emotion_needs", "candidates": ["조금 심심해", "조금 속상해"]}
+{"id": "TRAIN0219", "split": "train", "initials": "ㅈㅎㅂㅇㅈ", "requested_count": 4, "target": "전화 받아줘", "category": "device_control", "candidates": ["전화 받아줘"]}
+{"id": "TRAIN0220", "split": "train", "initials": "ㅅㅅㄹㅈㄱㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "산소를 조금 올려주세요", "category": "medical_communication", "candidates": ["산소를 조금 올려주세요"]}
+{"id": "TRAIN0221", "split": "train", "initials": "ㅅㅅㅍㅎㄷㅎㅇㅎㅈㅅㅇ", "requested_count": 6, "target": "산소포화도 확인해주세요", "category": "medical_communication", "candidates": ["산소포화도 확인해주세요"]}
+{"id": "TRAIN0222", "split": "train", "initials": "ㅌㄹㅂㅈㅋㅈ", "requested_count": 8, "target": "텔레비전 켜줘", "category": "device_control", "candidates": ["텔레비전 켜줘"]}
+{"id": "TRAIN0223", "split": "train", "initials": "ㄱㅅㅇㄷㄷㅎ", "requested_count": 16, "target": "가슴이 답답해", "category": "pain_discomfort", "candidates": ["가슴이 답답해"]}
+{"id": "TRAIN0224", "split": "train", "initials": "ㅅㄹㅈㅈㅇㅈ", "requested_count": 16, "target": "소리 좀 줄여줘", "category": "environment", "candidates": ["소리 좀 줄여줘"]}
+{"id": "TRAIN0225", "split": "train", "initials": "ㅈㅁㅇㄴㅇㅈ", "requested_count": 6, "target": "조명을 높여줘", "category": "environment", "candidates": ["조명을 높여줘"]}
+{"id": "TRAIN0226", "split": "train", "initials": "ㄷㅇㅇㄸㅂㅈ", "requested_count": 8, "target": "다음에 또 보자", "category": "social", "candidates": ["다음에 또 보자"]}
+{"id": "TRAIN0227", "split": "train", "initials": "ㅈㅅㄹㅎㅇㅎㅈㅅㅇ", "requested_count": 12, "target": "자세를 확인해주세요", "category": "medical_communication", "candidates": ["자세를 확인해주세요"]}
+{"id": "TRAIN0228", "split": "train", "initials": "ㅅㅇㅆㄹ", "requested_count": 12, "target": "속이 쓰려", "category": "pain_discomfort", "candidates": ["속이 쓰려"]}
+{"id": "TRAIN0229", "split": "train", "initials": "ㅇㅇㅅㄱㅇㅁㅅㅇ", "requested_count": 16, "target": "예약 시간이 몇 시야", "category": "schedule_time", "candidates": ["예약 시간이 몇 시야"]}
+{"id": "TRAIN0230", "split": "train", "initials": "ㅃㄷㄴㅇㅈ", "requested_count": 16, "target": "빨대 넣어줘", "category": "food_drink", "candidates": ["빨대 넣어줘"]}
+{"id": "TRAIN0231", "split": "train", "initials": "ㅁㅈ", "requested_count": 4, "target": "문제", "category": "ambiguity", "candidates": ["문제", "맞지", "모자", "먼저"]}
+{"id": "TRAIN0232", "split": "train", "initials": "ㅊㅇㅂㅌㄷㅅㅎㄱ", "requested_count": 16, "target": "처음부터 다시 할게", "category": "communication_control", "candidates": ["처음부터 다시 할게"]}
+{"id": "TRAIN0233", "split": "train", "initials": "ㅇㄷㄹㄱㄴㄱㅇ", "requested_count": 12, "target": "어디로 가는 거야", "category": "questions_answers", "candidates": ["어디로 가는 거야"]}
+{"id": "TRAIN0234", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 12, "target": "고마워", "category": "ambiguity", "candidates": ["고마워", "그만요", "귤 먹어", "그 말이"]}
+{"id": "TRAIN0235", "split": "train", "initials": "ㅇㄴㄴㅁㅍㄱㅎ", "requested_count": 16, "target": "오늘 너무 피곤해", "category": "emotion_needs", "candidates": ["오늘 너무 피곤해"]}
+{"id": "TRAIN0236", "split": "train", "initials": "ㄴㄱㄱㅈㄱㅇ", "requested_count": 4, "target": "누가 가져갔어", "category": "questions_answers", "candidates": ["누가 가져갔어"]}
+{"id": "TRAIN0237", "split": "train", "initials": "ㅈㅁㅊㅎㅎ", "requested_count": 4, "target": "정말 축하해", "category": "social", "candidates": ["정말 축하해"]}
+{"id": "TRAIN0238", "split": "train", "initials": "ㅎㅂㅁㄷㅁㅎㅈ", "requested_count": 6, "target": "한 번만 더 말해줘", "category": "communication_control", "candidates": ["한 번만 더 말해줘"]}
+{"id": "TRAIN0239", "split": "train", "initials": "ㄱㄱㅈㄷㄹㅈ", "requested_count": 8, "target": "고개 좀 돌려줘", "category": "positioning", "candidates": ["고개 좀 돌려줘"]}
+{"id": "TRAIN0240", "split": "train", "initials": "ㅈㅅㅂㅇㄱㅇㅍㅇ", "requested_count": 4, "target": "주사 부위가 아파요", "category": "medical_communication", "candidates": ["주사 부위가 아파요"]}
+{"id": "TRAIN0241", "split": "train", "initials": "ㄷㄹㅈㄴㄹㅈ", "requested_count": 16, "target": "다리 좀 내려줘", "category": "positioning", "candidates": ["다리 좀 내려줘"]}
+{"id": "TRAIN0242", "split": "train", "initials": "ㅌㄹㅂㅈㅋㅈ", "requested_count": 4, "target": "텔레비전 켜줘", "category": "device_control", "candidates": ["텔레비전 켜줘"]}
+{"id": "TRAIN0243", "split": "train", "initials": "ㅁㅈ", "requested_count": 16, "target": "먹자", "category": "ambiguity", "candidates": ["먹자", "맥주", "뭐지", "모자", "물 좀", "문제", "만져", "물 줘", "맞지", "먼저"]}
+{"id": "TRAIN0244", "split": "train", "initials": "ㅅㄹㅈㅈㅇㅈ", "requested_count": 16, "target": "소리 좀 줄여줘", "category": "environment", "candidates": ["소리 좀 줄여줘"]}
+{"id": "TRAIN0245", "split": "train", "initials": "ㅈㅁㄹㄱㅇ", "requested_count": 16, "target": "잘 모르겠어", "category": "questions_answers", "candidates": ["잘 모르겠어"]}
+{"id": "TRAIN0246", "split": "train", "initials": "ㅈㅅㅂㅇㄱㅇㅍㅇ", "requested_count": 4, "target": "주사 부위가 아파요", "category": "medical_communication", "candidates": ["주사 부위가 아파요"]}
+{"id": "TRAIN0247", "split": "train", "initials": "ㅇㄱㅅㅇㄱㅂㅇㅇ", "requested_count": 16, "target": "울고 싶은 기분이야", "category": "emotion_needs", "candidates": ["울고 싶은 기분이야", "웃고 싶은 기분이야"]}
+{"id": "TRAIN0248", "split": "train", "initials": "ㄱㅅㅅㄱㅇㅇㅈㅇㅇ", "requested_count": 12, "target": "검사 시간이 언제예요", "category": "medical_communication", "candidates": ["검사 시간이 언제예요"]}
+{"id": "TRAIN0249", "split": "train", "initials": "ㅈㅁㅇㄴㅊㅈ", "requested_count": 12, "target": "조명을 낮춰줘", "category": "environment", "candidates": ["조명을 낮춰줘"]}
+{"id": "TRAIN0250", "split": "train", "initials": "ㅅㄹㅈㅈㅇㅈ", "requested_count": 16, "target": "소리 좀 줄여줘", "category": "environment", "candidates": ["소리 좀 줄여줘"]}
+{"id": "TRAIN0251", "split": "train", "initials": "ㅋㅇㄸㄹㅈ", "requested_count": 4, "target": "컵에 따라줘", "category": "food_drink", "candidates": ["컵에 따라줘"]}
+{"id": "TRAIN0252", "split": "train", "initials": "ㄷㄹㅈㄴㄹㅈ", "requested_count": 6, "target": "다리 좀 내려줘", "category": "positioning", "candidates": ["다리 좀 내려줘"]}
+{"id": "TRAIN0253", "split": "train", "initials": "ㅁㅇㅈㄱㄴㅎㅈ", "requested_count": 6, "target": "몸을 조금 눕혀줘", "category": "positioning", "candidates": ["몸을 조금 눕혀줘"]}
+{"id": "TRAIN0254", "split": "train", "initials": "ㅁㅇㅈㄲㄸㄹ", "requested_count": 8, "target": "몸이 자꾸 떨려", "category": "pain_discomfort", "candidates": ["몸이 자꾸 떨려"]}
+{"id": "TRAIN0255", "split": "train", "initials": "ㄴㅇㅇㅈㅇㄹㅈ", "requested_count": 6, "target": "내일 일정 알려줘", "category": "schedule_time", "candidates": ["내일 일정 알려줘"]}
+{"id": "TRAIN0256", "split": "train", "initials": "ㄴㄹㅈㅅㅎㅈ", "requested_count": 4, "target": "노래 재생해줘", "category": "device_control", "candidates": ["노래 재생해줘"]}
+{"id": "TRAIN0257", "split": "train", "initials": "ㅁㅈ", "requested_count": 6, "target": "뭐지", "category": "ambiguity", "candidates": ["뭐지", "문제", "물 줘", "맥주", "맞지", "물 좀"]}
+{"id": "TRAIN0258", "split": "train", "initials": "ㄴㄱㄱㅈㄱㅇ", "requested_count": 6, "target": "누가 가져갔어", "category": "questions_answers", "candidates": ["누가 가져갔어"]}
+{"id": "TRAIN0259", "split": "train", "initials": "ㅇㄴㅈㄱㅇㄷ", "requested_count": 12, "target": "오늘 즐거웠다", "category": "social", "candidates": ["오늘 즐거웠다"]}
+{"id": "TRAIN0260", "split": "train", "initials": "ㅅㅇ", "requested_count": 8, "target": "쉬어", "category": "ambiguity", "candidates": ["쉬어", "서요", "세워", "싫어", "사요"]}
+{"id": "TRAIN0261", "split": "train", "initials": "ㅈㄱㅅㅇㄷㅁㅈ", "requested_count": 8, "target": "조금 쉬었다 먹자", "category": "food_drink", "candidates": ["조금 쉬었다 먹자"]}
+{"id": "TRAIN0262", "split": "train", "initials": "ㅂㅈ", "requested_count": 12, "target": "보자", "category": "ambiguity", "candidates": ["보자", "바지", "부자", "봐줘", "밥 줘", "밥 좀"]}
+{"id": "TRAIN0263", "split": "train", "initials": "ㅅㅈㅈㅇㅈ", "requested_count": 4, "target": "손 좀 잡아줘", "category": "basic_request", "candidates": ["손 좀 잡아줘"]}
+{"id": "TRAIN0264", "split": "train", "initials": "ㅅㅇ", "requested_count": 16, "target": "서요", "category": "ambiguity", "candidates": ["서요", "싫어", "세워", "쉬어", "사요"]}
+{"id": "TRAIN0265", "split": "train", "initials": "ㅈㄴㅇㄴㄴㄱㅇ", "requested_count": 8, "target": "저녁에는 누가 와", "category": "schedule_time", "candidates": ["저녁에는 누가 와"]}
+{"id": "TRAIN0266", "split": "train", "initials": "ㄴㅁㅇㄹㅇ", "requested_count": 16, "target": "너무 외로워", "category": "emotion_needs", "candidates": ["너무 외로워"]}
+{"id": "TRAIN0267", "split": "train", "initials": "ㅅㅇㄴㄹㅈ", "requested_count": 12, "target": "손을 내려줘", "category": "positioning", "candidates": ["손을 내려줘"]}
+{"id": "TRAIN0268", "split": "train", "initials": "ㄴㄱㄱㄱㅇㅇㅇㅇㅁㅈㄱㅇ", "requested_count": 6, "target": "누군가 곁에 있었으면 좋겠어", "category": "emotion_needs", "candidates": ["누군가 곁에 있었으면 좋겠어"]}
+{"id": "TRAIN0269", "split": "train", "initials": "ㅇㄴㅂㅇㅇㅇ", "requested_count": 16, "target": "오늘 병원 있어", "category": "schedule_time", "candidates": ["오늘 병원 있어"]}
+{"id": "TRAIN0270", "split": "train", "initials": "ㅅㅈㅍㅈ", "requested_count": 4, "target": "손 좀 펴줘", "category": "positioning", "candidates": ["손 좀 펴줘"]}
+{"id": "TRAIN0271", "split": "train", "initials": "ㅂㄱㄷㅂㄹㅎ", "requested_count": 8, "target": "배가 더부룩해", "category": "pain_discomfort", "candidates": ["배가 더부룩해"]}
+{"id": "TRAIN0272", "split": "train", "initials": "ㄱㄱㄱㄴㅁㄱㅈㅎ", "requested_count": 8, "target": "공기가 너무 건조해", "category": "environment", "candidates": ["공기가 너무 건조해"]}
+{"id": "TRAIN0273", "split": "train", "initials": "ㅇㅎㅇㄴㅁㅎ", "requested_count": 12, "target": "오후에는 뭐 해", "category": "schedule_time", "candidates": ["오후에는 뭐 해"]}
+{"id": "TRAIN0274", "split": "train", "initials": "ㅈㅁㅇㄴㅇㅈ", "requested_count": 6, "target": "조명을 높여줘", "category": "environment", "candidates": ["조명을 높여줘"]}
+{"id": "TRAIN0275", "split": "train", "initials": "ㅈㅈ", "requested_count": 8, "target": "좀 줘", "category": "ambiguity", "candidates": ["좀 줘", "자자", "잘 자"]}
+{"id": "TRAIN0276", "split": "train", "initials": "ㅇㅈㄷㅎㅇ", "requested_count": 12, "target": "이제 다 했어", "category": "questions_answers", "candidates": ["이제 다 했어"]}
+{"id": "TRAIN0277", "split": "train", "initials": "ㅅㅇㄴㅁㅊ", "requested_count": 8, "target": "숨이 너무 차", "category": "pain_discomfort", "candidates": ["숨이 너무 차"]}
+{"id": "TRAIN0278", "split": "train", "initials": "ㄷㅇ", "requested_count": 4, "target": "들어", "category": "ambiguity", "candidates": ["들어", "닫아", "더워", "다음"]}
+{"id": "TRAIN0279", "split": "train", "initials": "ㄱㅂㅇㅈㄴㅇㅈㅇ", "requested_count": 12, "target": "기분이 좀 나아졌어", "category": "emotion_needs", "candidates": ["기분이 좀 나아졌어"]}
+{"id": "TRAIN0280", "split": "train", "initials": "ㅇㅅㅇㅈㅇㄴㅇ", "requested_count": 6, "target": "의사 언제 오나요", "category": "medical_communication", "candidates": ["의사 언제 오나요"]}
+{"id": "TRAIN0281", "split": "train", "initials": "ㅈㄱㅇㅇㄹㄷㄹㅈ", "requested_count": 4, "target": "조금 옆으로 돌려줘", "category": "positioning", "candidates": ["조금 옆으로 돌려줘"]}
+{"id": "TRAIN0282", "split": "train", "initials": "ㅂㅈ", "requested_count": 16, "target": "바지", "category": "ambiguity", "candidates": ["바지", "봐줘", "부자", "밥 좀", "보자", "밥 줘"]}
+{"id": "TRAIN0283", "split": "train", "initials": "ㄷㅇ", "requested_count": 4, "target": "도와", "category": "ambiguity", "candidates": ["도와", "들어", "더워", "다음"]}
+{"id": "TRAIN0284", "split": "train", "initials": "ㅇㄱㅁㅇ", "requested_count": 8, "target": "이게 뭐야", "category": "questions_answers", "candidates": ["이게 뭐야"]}
+{"id": "TRAIN0285", "split": "train", "initials": "ㅈㅈㄱㅈ", "requested_count": 8, "target": "죽 조금 줘", "category": "food_drink", "candidates": ["죽 조금 줘"]}
+{"id": "TRAIN0286", "split": "train", "initials": "ㅎㅇㅎㅂㅎㅈㅅㅇ", "requested_count": 16, "target": "흡인 한번 해주세요", "category": "medical_communication", "candidates": ["흡인 한번 해주세요"]}
+{"id": "TRAIN0287", "split": "train", "initials": "ㅅㅍㄱㅈㄲㅈ", "requested_count": 8, "target": "선풍기 좀 꺼줘", "category": "environment", "candidates": ["선풍기 좀 꺼줘"]}
+{"id": "TRAIN0288", "split": "train", "initials": "ㅌㅈㅇㅊㄹㅂㅈㅅㅇ", "requested_count": 4, "target": "통증 위치를 봐주세요", "category": "medical_communication", "candidates": ["통증 위치를 봐주세요"]}
+{"id": "TRAIN0289", "split": "train", "initials": "ㅊㅂㅉㄹㅎㄱ", "requested_count": 4, "target": "첫 번째로 할게", "category": "communication_control", "candidates": ["첫 번째로 할게"]}
+{"id": "TRAIN0290", "split": "train", "initials": "ㅁㅇㄱㅇㄷㄹㅇㄱㅈ", "requested_count": 6, "target": "몸을 가운데로 옮겨줘", "category": "positioning", "candidates": ["몸을 가운데로 옮겨줘"]}
+{"id": "TRAIN0291", "split": "train", "initials": "ㅈㅁㄹㄱㅇ", "requested_count": 8, "target": "잘 모르겠어", "category": "questions_answers", "candidates": ["잘 모르겠어"]}
+{"id": "TRAIN0292", "split": "train", "initials": "ㅂㅈ", "requested_count": 8, "target": "봐줘", "category": "ambiguity", "candidates": ["봐줘", "부자", "밥 줘", "바지", "보자", "밥 좀"]}
+{"id": "TRAIN0293", "split": "train", "initials": "ㅁㅇㅂㅇㅎ", "requested_count": 12, "target": "많이 불안해", "category": "emotion_needs", "candidates": ["많이 불안해"]}
+{"id": "TRAIN0294", "split": "train", "initials": "ㅇㅉㅇㄹㅇㄱㅈ", "requested_count": 4, "target": "이쪽으로 옮겨줘", "category": "basic_request", "candidates": ["이쪽으로 옮겨줘"]}
+{"id": "TRAIN0295", "split": "train", "initials": "ㅎㄷㅍㅎㅁㅋㅈ", "requested_count": 6, "target": "휴대폰 화면 켜줘", "category": "device_control", "candidates": ["휴대폰 화면 켜줘"]}
+{"id": "TRAIN0296", "split": "train", "initials": "ㅊㄷㄹㅇㄹㅈ", "requested_count": 8, "target": "침대를 올려줘", "category": "positioning", "candidates": ["침대를 올려줘"]}
+{"id": "TRAIN0297", "split": "train", "initials": "ㄷㅇ", "requested_count": 6, "target": "다음", "category": "ambiguity", "candidates": ["다음", "도와", "닫아", "더워", "들어"]}
+{"id": "TRAIN0298", "split": "train", "initials": "ㅇㅎㅇㄴㅁㅎ", "requested_count": 8, "target": "오후에는 뭐 해", "category": "schedule_time", "candidates": ["오후에는 뭐 해"]}
+{"id": "TRAIN0299", "split": "train", "initials": "ㅍㅈㅇㄹㅈ", "requested_count": 16, "target": "팔 좀 올려줘", "category": "positioning", "candidates": ["팔 좀 올려줘"]}
+{"id": "TRAIN0300", "split": "train", "initials": "ㅇㅇㅋㅈㄲㅈ", "requested_count": 16, "target": "에어컨 좀 꺼줘", "category": "environment", "candidates": ["에어컨 좀 꺼줘"]}
+{"id": "TRAIN0301", "split": "train", "initials": "ㄷㅇㄷㅇㅁㄴㅈ", "requested_count": 16, "target": "다음 달에 만나자", "category": "schedule_time", "candidates": ["다음 달에 만나자"]}
+{"id": "TRAIN0302", "split": "train", "initials": "ㅅㅇㄴㄹㅈ", "requested_count": 4, "target": "손을 내려줘", "category": "positioning", "candidates": ["손을 내려줘"]}
+{"id": "TRAIN0303", "split": "train", "initials": "ㅅㅅㅁㅊㅈ", "requested_count": 6, "target": "식사 멈춰줘", "category": "food_drink", "candidates": ["식사 멈춰줘"]}
+{"id": "TRAIN0304", "split": "train", "initials": "ㅇㅇㅇㅈㅁㅁㅇㅇㅇ", "requested_count": 8, "target": "약을 아직 못 먹었어요", "category": "medical_communication", "candidates": ["약을 아직 못 먹었어요"]}
+{"id": "TRAIN0305", "split": "train", "initials": "ㅇㅇㄹㅇㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "약 이름을 알려주세요", "category": "medical_communication", "candidates": ["약 이름을 알려주세요"]}
+{"id": "TRAIN0306", "split": "train", "initials": "ㅅㅇㅆㄹ", "requested_count": 4, "target": "속이 쓰려", "category": "pain_discomfort", "candidates": ["속이 쓰려"]}
+{"id": "TRAIN0307", "split": "train", "initials": "ㅁㅇ", "requested_count": 16, "target": "뭐야", "category": "ambiguity", "candidates": ["뭐야", "모여", "미안", "맞아", "매워"]}
+{"id": "TRAIN0308", "split": "train", "initials": "ㅁㅈ", "requested_count": 4, "target": "맞지", "category": "ambiguity", "candidates": ["맞지", "물 좀", "문제", "뭐지"]}
+{"id": "TRAIN0309", "split": "train", "initials": "ㅇㄱㅅㄹㄱㅇㅎㄱㄱㅇㅇ", "requested_count": 4, "target": "응급실로 가야 할 것 같아요", "category": "medical_communication", "candidates": ["응급실로 가야 할 것 같아요"]}
+{"id": "TRAIN0310", "split": "train", "initials": "ㅅㅌㅈㄹㄷㅅㅂㅇㅈ", "requested_count": 4, "target": "선택지를 다시 보여줘", "category": "communication_control", "candidates": ["선택지를 다시 보여줘"]}
+{"id": "TRAIN0311", "split": "train", "initials": "ㄷㄹㄱㄴㅁㅇㅍ", "requested_count": 16, "target": "다리가 너무 아파", "category": "pain_discomfort", "candidates": ["다리가 너무 아파"]}
+{"id": "TRAIN0312", "split": "train", "initials": "ㄱㅂㅇㅈㄴㅇㅈㅇ", "requested_count": 6, "target": "기분이 좀 나아졌어", "category": "emotion_needs", "candidates": ["기분이 좀 나아졌어"]}
+{"id": "TRAIN0313", "split": "train", "initials": "ㅇㄱㄴㅇㅈ", "requested_count": 12, "target": "여기 놓아줘", "category": "basic_request", "candidates": ["여기 놓아줘"]}
+{"id": "TRAIN0314", "split": "train", "initials": "ㄴㅂㅈㄲㅈ", "requested_count": 12, "target": "난방 좀 꺼줘", "category": "environment", "candidates": ["난방 좀 꺼줘"]}
+{"id": "TRAIN0315", "split": "train", "initials": "ㅊㅈㅈ", "requested_count": 12, "target": "차 좀 줘", "category": "food_drink", "candidates": ["차 좀 줘"]}
+{"id": "TRAIN0316", "split": "train", "initials": "ㅁㅈ", "requested_count": 6, "target": "맞지", "category": "ambiguity", "candidates": ["맞지", "문제", "모자", "먼저", "물 줘", "물 좀"]}
+{"id": "TRAIN0317", "split": "train", "initials": "ㅇㄱㅅㄹㄱㅇㅎㄱㄱㅇㅇ", "requested_count": 4, "target": "응급실로 가야 할 것 같아요", "category": "medical_communication", "candidates": ["응급실로 가야 할 것 같아요"]}
+{"id": "TRAIN0318", "split": "train", "initials": "ㅅㅅㅁㅊㅈ", "requested_count": 16, "target": "식사 멈춰줘", "category": "food_drink", "candidates": ["식사 멈춰줘"]}
+{"id": "TRAIN0319", "split": "train", "initials": "ㅅㅍㄱㅈㅋㅈ", "requested_count": 6, "target": "선풍기 좀 켜줘", "category": "environment", "candidates": ["선풍기 좀 켜줘"]}
+{"id": "TRAIN0320", "split": "train", "initials": "ㅇㅁㅈㅈㅇㅈ", "requested_count": 6, "target": "이 문장 지워줘", "category": "communication_control", "candidates": ["이 문장 지워줘"]}
+{"id": "TRAIN0321", "split": "train", "initials": "ㄴㅂㅈㅋㅈ", "requested_count": 4, "target": "난방 좀 켜줘", "category": "environment", "candidates": ["난방 좀 켜줘"]}
+{"id": "TRAIN0322", "split": "train", "initials": "ㅊㅈㄱㅇㄱㅎㅈ", "requested_count": 16, "target": "충전기 연결해줘", "category": "device_control", "candidates": ["충전기 연결해줘"]}
+{"id": "TRAIN0323", "split": "train", "initials": "ㅈㅈ", "requested_count": 4, "target": "자자", "category": "ambiguity", "candidates": ["자자", "좀 줘", "잘 자"]}
+{"id": "TRAIN0324", "split": "train", "initials": "ㅈㅅㅈㅈ", "requested_count": 6, "target": "주스 좀 줘", "category": "food_drink", "candidates": ["주스 좀 줘"]}
+{"id": "TRAIN0325", "split": "train", "initials": "ㅂㅎㅈㅇㄱㅇㄹㅎㅈㅅㅇ", "requested_count": 12, "target": "보호자에게 연락해주세요", "category": "medical_communication", "candidates": ["보호자에게 연락해주세요"]}
+{"id": "TRAIN0326", "split": "train", "initials": "ㅇㅈㄷㅎㅇ", "requested_count": 16, "target": "이제 다 했어", "category": "questions_answers", "candidates": ["이제 다 했어"]}
+{"id": "TRAIN0327", "split": "train", "initials": "ㄷㅇㅈㄱㅅㅇㅈ", "requested_count": 8, "target": "등을 조금 세워줘", "category": "positioning", "candidates": ["등을 조금 세워줘"]}
+{"id": "TRAIN0328", "split": "train", "initials": "ㄱㅎㅅㅇㅈㅇㄴㅇ", "requested_count": 8, "target": "간호사 언제 오나요", "category": "medical_communication", "candidates": ["간호사 언제 오나요"]}
+{"id": "TRAIN0329", "split": "train", "initials": "ㅂㅈ", "requested_count": 6, "target": "봐줘", "category": "ambiguity", "candidates": ["봐줘", "바지", "밥 줘", "보자", "부자", "밥 좀"]}
+{"id": "TRAIN0330", "split": "train", "initials": "ㅊㅈㄱㅇㄱㅎㅈ", "requested_count": 8, "target": "충전기 연결해줘", "category": "device_control", "candidates": ["충전기 연결해줘"]}
+{"id": "TRAIN0331", "split": "train", "initials": "ㅁㅇㅈㄲㄸㄹ", "requested_count": 4, "target": "몸이 자꾸 떨려", "category": "pain_discomfort", "candidates": ["몸이 자꾸 떨려"]}
+{"id": "TRAIN0332", "split": "train", "initials": "ㅇㅈㅇㄲㄴㅇ", "requested_count": 16, "target": "아직 안 끝났어", "category": "questions_answers", "candidates": ["아직 안 끝났어"]}
+{"id": "TRAIN0333", "split": "train", "initials": "ㅂㄱㄷㅂㄹㅎ", "requested_count": 12, "target": "배가 더부룩해", "category": "pain_discomfort", "candidates": ["배가 더부룩해"]}
+{"id": "TRAIN0334", "split": "train", "initials": "ㅇㄷㄹㅁㅎㅈ", "requested_count": 12, "target": "이대로 말해줘", "category": "communication_control", "candidates": ["이대로 말해줘"]}
+{"id": "TRAIN0335", "split": "train", "initials": "ㅇㄱㅁㅇ", "requested_count": 6, "target": "이게 뭐야", "category": "questions_answers", "candidates": ["이게 뭐야"]}
+{"id": "TRAIN0336", "split": "train", "initials": "ㅈㄱㅅㄱㅅㄷ", "requested_count": 4, "target": "조금 쉬고 싶다", "category": "emotion_needs", "candidates": ["조금 쉬고 싶다"]}
+{"id": "TRAIN0337", "split": "train", "initials": "ㄴㅁㄷㅇㅈ", "requested_count": 6, "target": "내 말 들어줘", "category": "basic_request", "candidates": ["내 말 들어줘"]}
+{"id": "TRAIN0338", "split": "train", "initials": "ㅁㅈ", "requested_count": 12, "target": "맥주", "category": "ambiguity", "candidates": ["맥주", "뭐지", "문제", "물 좀", "만져", "먼저", "맞지", "먹자", "물 줘", "모자"]}
+{"id": "TRAIN0339", "split": "train", "initials": "ㅅㄲㅇㅈㄹ", "requested_count": 8, "target": "손끝이 저려", "category": "pain_discomfort", "candidates": ["손끝이 저려"]}
+{"id": "TRAIN0340", "split": "train", "initials": "ㄴㅂㅈㅋㅈ", "requested_count": 4, "target": "난방 좀 켜줘", "category": "environment", "candidates": ["난방 좀 켜줘"]}
+{"id": "TRAIN0341", "split": "train", "initials": "ㅂㄱㄷㅂㄹㅎ", "requested_count": 6, "target": "배가 더부룩해", "category": "pain_discomfort", "candidates": ["배가 더부룩해"]}
+{"id": "TRAIN0342", "split": "train", "initials": "ㅅㄹㅈㅋㅇㅈ", "requested_count": 8, "target": "소리 좀 키워줘", "category": "environment", "candidates": ["소리 좀 키워줘"]}
+{"id": "TRAIN0343", "split": "train", "initials": "ㄱㅅㅇㄷㄷㅎ", "requested_count": 4, "target": "가슴이 답답해", "category": "pain_discomfort", "candidates": ["가슴이 답답해"]}
+{"id": "TRAIN0344", "split": "train", "initials": "ㅎㄹㄱㄴㅁㅇㅍ", "requested_count": 6, "target": "허리가 너무 아파", "category": "pain_discomfort", "candidates": ["허리가 너무 아파"]}
+{"id": "TRAIN0345", "split": "train", "initials": "ㅉㄱㅅㅁㅎㅈ", "requested_count": 8, "target": "짧게 설명해줘", "category": "communication_control", "candidates": ["짧게 설명해줘"]}
+{"id": "TRAIN0346", "split": "train", "initials": "ㅇㅅㅇㅈㅇㄴㅇ", "requested_count": 6, "target": "의사 언제 오나요", "category": "medical_communication", "candidates": ["의사 언제 오나요"]}
+{"id": "TRAIN0347", "split": "train", "initials": "ㅂㅈ", "requested_count": 12, "target": "밥 좀", "category": "ambiguity", "candidates": ["밥 좀", "밥 줘", "부자", "봐줘", "바지", "보자"]}
+{"id": "TRAIN0348", "split": "train", "initials": "ㅎㅎㅅㅌㅎㅇㅎㅈㅅㅇ", "requested_count": 8, "target": "호흡 상태 확인해주세요", "category": "medical_communication", "candidates": ["호흡 상태 확인해주세요"]}
+{"id": "TRAIN0349", "split": "train", "initials": "ㅈㅅㅇㅇㅈㅁㅇ", "requested_count": 4, "target": "점심은 언제 먹어", "category": "schedule_time", "candidates": ["점심은 언제 먹어"]}
+{"id": "TRAIN0350", "split": "train", "initials": "ㅁㅅㅇㅇㄱㅇ", "requested_count": 8, "target": "몇 시에 올 거야", "category": "schedule_time", "candidates": ["몇 시에 올 거야"]}
+{"id": "TRAIN0351", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 6, "target": "귤 먹어", "category": "ambiguity", "candidates": ["귤 먹어", "고마워", "그 말이", "그만요"]}
+{"id": "TRAIN0352", "split": "train", "initials": "ㄱㅎㅅㅇㅈㅇㄴㅇ", "requested_count": 8, "target": "간호사 언제 오나요", "category": "medical_communication", "candidates": ["간호사 언제 오나요"]}
+{"id": "TRAIN0353", "split": "train", "initials": "ㅁㅇ", "requested_count": 6, "target": "맞아", "category": "ambiguity", "candidates": ["맞아", "뭐야", "매워", "모여", "미안"]}
+{"id": "TRAIN0354", "split": "train", "initials": "ㅈㅈㄴㅈ", "requested_count": 6, "target": "잘 지냈지", "category": "social", "candidates": ["잘 지냈지"]}
+{"id": "TRAIN0355", "split": "train", "initials": "ㅅㄱㅅㅁㅎㅈ", "requested_count": 4, "target": "쉽게 설명해줘", "category": "communication_control", "candidates": ["쉽게 설명해줘"]}
+{"id": "TRAIN0356", "split": "train", "initials": "ㄷㅇ", "requested_count": 16, "target": "들어", "category": "ambiguity", "candidates": ["들어", "다음", "더워", "도와", "닫아"]}
+{"id": "TRAIN0357", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 8, "target": "다 알지", "category": "ambiguity", "candidates": ["다 알지", "더 있죠", "다음 주", "들어줘", "다 있지", "도와줘"]}
+{"id": "TRAIN0358", "split": "train", "initials": "ㅈㅎㅂㅇㅈ", "requested_count": 12, "target": "전화 받아줘", "category": "device_control", "candidates": ["전화 받아줘"]}
+{"id": "TRAIN0359", "split": "train", "initials": "ㅁㅈㄷㅇㅈ", "requested_count": 8, "target": "문 좀 닫아줘", "category": "basic_request", "candidates": ["문 좀 닫아줘"]}
+{"id": "TRAIN0360", "split": "train", "initials": "ㅈㄱㅅㄱㅅㄷ", "requested_count": 8, "target": "조금 쉬고 싶다", "category": "emotion_needs", "candidates": ["조금 쉬고 싶다"]}
+{"id": "TRAIN0361", "split": "train", "initials": "ㅎㅎㅅㅌㅎㅇㅎㅈㅅㅇ", "requested_count": 8, "target": "호흡 상태 확인해주세요", "category": "medical_communication", "candidates": ["호흡 상태 확인해주세요"]}
+{"id": "TRAIN0362", "split": "train", "initials": "ㅂㄱㅈㄴㅊㅈ", "requested_count": 8, "target": "베개 좀 낮춰줘", "category": "positioning", "candidates": ["베개 좀 낮춰줘"]}
+{"id": "TRAIN0363", "split": "train", "initials": "ㅂㅈㄱㅈ", "requested_count": 6, "target": "밥 조금 줘", "category": "food_drink", "candidates": ["밥 조금 줘"]}
+{"id": "TRAIN0364", "split": "train", "initials": "ㄴㅁㄷㅇㅈ", "requested_count": 6, "target": "내 말 들어줘", "category": "basic_request", "candidates": ["내 말 들어줘"]}
+{"id": "TRAIN0365", "split": "train", "initials": "ㅈㅁㅂㄱㅅㅇㅇ", "requested_count": 8, "target": "정말 보고 싶었어", "category": "social", "candidates": ["정말 보고 싶었어"]}
+{"id": "TRAIN0366", "split": "train", "initials": "ㅇㄹㅁㅊㅈ", "requested_count": 12, "target": "알람 맞춰줘", "category": "device_control", "candidates": ["알람 맞춰줘"]}
+{"id": "TRAIN0367", "split": "train", "initials": "ㄷㅅㅁㅇㅂㅈ", "requested_count": 4, "target": "다시 물어봐줘", "category": "questions_answers", "candidates": ["다시 물어봐줘"]}
+{"id": "TRAIN0368", "split": "train", "initials": "ㅊㅂㅉㄹㅎㄱ", "requested_count": 16, "target": "첫 번째로 할게", "category": "communication_control", "candidates": ["첫 번째로 할게"]}
+{"id": "TRAIN0369", "split": "train", "initials": "ㅂㄱㅈㄴㅇㅈ", "requested_count": 12, "target": "베개 좀 높여줘", "category": "positioning", "candidates": ["베개 좀 높여줘"]}
+{"id": "TRAIN0370", "split": "train", "initials": "ㅈㄱㄹㅈㅈ", "requested_count": 8, "target": "젓가락 좀 줘", "category": "food_drink", "candidates": ["젓가락 좀 줘"]}
+{"id": "TRAIN0371", "split": "train", "initials": "ㅈㅈ", "requested_count": 6, "target": "자자", "category": "ambiguity", "candidates": ["자자", "좀 줘", "잘 자"]}
+{"id": "TRAIN0372", "split": "train", "initials": "ㅇㅊㅇㄲㅇㅈㄹ", "requested_count": 16, "target": "아침에 깨워줄래", "category": "schedule_time", "candidates": ["아침에 깨워줄래"]}
+{"id": "TRAIN0373", "split": "train", "initials": "ㅎㄹㄱㄴㅁㅇㅍ", "requested_count": 12, "target": "허리가 너무 아파", "category": "pain_discomfort", "candidates": ["허리가 너무 아파"]}
+{"id": "TRAIN0374", "split": "train", "initials": "ㅇㅂㅈㅁㅇㅁㅎ", "requested_count": 8, "target": "이번 주말에 뭐 해", "category": "schedule_time", "candidates": ["이번 주말에 뭐 해"]}
+{"id": "TRAIN0375", "split": "train", "initials": "ㅂㄱㅁㄹㄱㅎㅇ", "requested_count": 6, "target": "방금 뭐라고 했어", "category": "questions_answers", "candidates": ["방금 뭐라고 했어"]}
+{"id": "TRAIN0376", "split": "train", "initials": "ㅋㅇㄸㄹㅈ", "requested_count": 8, "target": "컵에 따라줘", "category": "food_drink", "candidates": ["컵에 따라줘"]}
+{"id": "TRAIN0377", "split": "train", "initials": "ㅁㅇ", "requested_count": 16, "target": "매워", "category": "ambiguity", "candidates": ["매워", "맞아", "뭐야", "모여", "미안"]}
+{"id": "TRAIN0378", "split": "train", "initials": "ㅇㄴㅈㅁㅇㅇ", "requested_count": 16, "target": "오늘 재밌었어", "category": "social", "candidates": ["오늘 재밌었어"]}
+{"id": "TRAIN0379", "split": "train", "initials": "ㅅㅍㄱㅈㄲㅈ", "requested_count": 8, "target": "선풍기 좀 꺼줘", "category": "environment", "candidates": ["선풍기 좀 꺼줘"]}
+{"id": "TRAIN0380", "split": "train", "initials": "ㅈㅅㅈㅈ", "requested_count": 12, "target": "주스 좀 줘", "category": "food_drink", "candidates": ["주스 좀 줘"]}
+{"id": "TRAIN0381", "split": "train", "initials": "ㅌㄹㅂㅈㅋㅈ", "requested_count": 12, "target": "텔레비전 켜줘", "category": "device_control", "candidates": ["텔레비전 켜줘"]}
+{"id": "TRAIN0382", "split": "train", "initials": "ㅂㅇㅂㅊㅈ", "requested_count": 16, "target": "발을 받쳐줘", "category": "positioning", "candidates": ["발을 받쳐줘"]}
+{"id": "TRAIN0383", "split": "train", "initials": "ㅁㅇㄱㅇㄷㄹㅇㄱㅈ", "requested_count": 8, "target": "몸을 가운데로 옮겨줘", "category": "positioning", "candidates": ["몸을 가운데로 옮겨줘"]}
+{"id": "TRAIN0384", "split": "train", "initials": "ㅂㄱㅅㅌㅊㅅㅎㄱ", "requested_count": 16, "target": "방금 선택 취소할게", "category": "communication_control", "candidates": ["방금 선택 취소할게"]}
+{"id": "TRAIN0385", "split": "train", "initials": "ㅈㄱㄴㅇㅈ", "requested_count": 12, "target": "저기 놓아줘", "category": "basic_request", "candidates": ["저기 놓아줘"]}
+{"id": "TRAIN0386", "split": "train", "initials": "ㅎㄷㅍㄱㅈㅇㅈ", "requested_count": 8, "target": "휴대폰 가져와줘", "category": "basic_request", "candidates": ["휴대폰 가져와줘"]}
+{"id": "TRAIN0387", "split": "train", "initials": "ㅋㅌㅈㄷㅇㅈ", "requested_count": 4, "target": "커튼 좀 닫아줘", "category": "environment", "candidates": ["커튼 좀 닫아줘"]}
+{"id": "TRAIN0388", "split": "train", "initials": "ㅁㅈ", "requested_count": 6, "target": "문제", "category": "ambiguity", "candidates": ["문제", "물 좀", "먹자", "맥주", "먼저", "뭐지"]}
+{"id": "TRAIN0389", "split": "train", "initials": "ㄱㅅㅅㄱㅇㅇㅈㅇㅇ", "requested_count": 12, "target": "검사 시간이 언제예요", "category": "medical_communication", "candidates": ["검사 시간이 언제예요"]}
+{"id": "TRAIN0390", "split": "train", "initials": "ㅇㄹㅁㅇㄹㅂㄱㅇ", "requested_count": 6, "target": "오랜만이라 반가워", "category": "social", "candidates": ["오랜만이라 반가워"]}
+{"id": "TRAIN0391", "split": "train", "initials": "ㅇㄱㅅㄹㄱㅇㅎㄱㄱㅇㅇ", "requested_count": 4, "target": "응급실로 가야 할 것 같아요", "category": "medical_communication", "candidates": ["응급실로 가야 할 것 같아요"]}
+{"id": "TRAIN0392", "split": "train", "initials": "ㄷㄹㄱㄴㅁㅇㅍ", "requested_count": 12, "target": "다리가 너무 아파", "category": "pain_discomfort", "candidates": ["다리가 너무 아파"]}
+{"id": "TRAIN0393", "split": "train", "initials": "ㅁㅈ", "requested_count": 12, "target": "만져", "category": "ambiguity", "candidates": ["만져", "먹자", "물 좀", "물 줘", "문제", "먼저", "맥주", "모자", "맞지", "뭐지"]}
+{"id": "TRAIN0394", "split": "train", "initials": "ㅅㅇ", "requested_count": 6, "target": "사요", "category": "ambiguity", "candidates": ["사요", "쉬어", "세워", "서요", "싫어"]}
+{"id": "TRAIN0395", "split": "train", "initials": "ㅁㅈ", "requested_count": 16, "target": "먼저", "category": "ambiguity", "candidates": ["먼저", "먹자", "뭐지", "모자", "맥주", "물 좀", "물 줘", "문제", "만져", "맞지"]}
+{"id": "TRAIN0396", "split": "train", "initials": "ㅁㅇㅈㄱㄴㅎㅈ", "requested_count": 16, "target": "몸을 조금 눕혀줘", "category": "positioning", "candidates": ["몸을 조금 눕혀줘"]}
+{"id": "TRAIN0397", "split": "train", "initials": "ㅎㄹㄱㅃㄱㅎ", "requested_count": 8, "target": "허리가 뻐근해", "category": "pain_discomfort", "candidates": ["허리가 뻐근해"]}
+{"id": "TRAIN0398", "split": "train", "initials": "ㅎㄹㄹㅂㅊㅈ", "requested_count": 4, "target": "허리를 받쳐줘", "category": "positioning", "candidates": ["허리를 받쳐줘"]}
+{"id": "TRAIN0399", "split": "train", "initials": "ㅇㄴㅂㅇㅇㅇ", "requested_count": 8, "target": "오늘 병원 있어", "category": "schedule_time", "candidates": ["오늘 병원 있어"]}
+{"id": "TRAIN0400", "split": "train", "initials": "ㅌㅈㅇㅊㄹㅂㅈㅅㅇ", "requested_count": 4, "target": "통증 위치를 봐주세요", "category": "medical_communication", "candidates": ["통증 위치를 봐주세요"]}
+{"id": "TRAIN0401", "split": "train", "initials": "ㅅㅇㅆㄹ", "requested_count": 16, "target": "속이 쓰려", "category": "pain_discomfort", "candidates": ["속이 쓰려"]}
+{"id": "TRAIN0402", "split": "train", "initials": "ㅈㅁㄱㅁㅇㅇ", "requested_count": 6, "target": "정말 고마웠어", "category": "social", "candidates": ["정말 고마웠어"]}
+{"id": "TRAIN0403", "split": "train", "initials": "ㅎㅎㅅㅌㅎㅇㅎㅈㅅㅇ", "requested_count": 8, "target": "호흡 상태 확인해주세요", "category": "medical_communication", "candidates": ["호흡 상태 확인해주세요"]}
+{"id": "TRAIN0404", "split": "train", "initials": "ㅈㅅㄹㅎㅇㅎㅈㅅㅇ", "requested_count": 12, "target": "자세를 확인해주세요", "category": "medical_communication", "candidates": ["자세를 확인해주세요"]}
+{"id": "TRAIN0405", "split": "train", "initials": "ㅈㄱㅇㄷㄷㅎㄱㅇㄹㅇ", "requested_count": 8, "target": "지금은 대답하기 어려워", "category": "communication_control", "candidates": ["지금은 대답하기 어려워"]}
+{"id": "TRAIN0406", "split": "train", "initials": "ㅅㄱㅅㅁㅎㅈ", "requested_count": 16, "target": "쉽게 설명해줘", "category": "communication_control", "candidates": ["쉽게 설명해줘"]}
+{"id": "TRAIN0407", "split": "train", "initials": "ㅈㄱㅅㅇㄷㅁㅈ", "requested_count": 4, "target": "조금 쉬었다 먹자", "category": "food_drink", "candidates": ["조금 쉬었다 먹자"]}
+{"id": "TRAIN0408", "split": "train", "initials": "ㅎㄷㅍㅎㅁㅋㅈ", "requested_count": 16, "target": "휴대폰 화면 켜줘", "category": "device_control", "candidates": ["휴대폰 화면 켜줘"]}
+{"id": "TRAIN0409", "split": "train", "initials": "ㅁㅈ", "requested_count": 16, "target": "모자", "category": "ambiguity", "candidates": ["모자", "맥주", "먼저", "물 좀", "만져", "뭐지", "물 줘", "먹자", "맞지", "문제"]}
+{"id": "TRAIN0410", "split": "train", "initials": "ㅇㄴㅎㅂㅎ", "requested_count": 4, "target": "오늘 행복해", "category": "emotion_needs", "candidates": ["오늘 행복해"]}
+{"id": "TRAIN0411", "split": "train", "initials": "ㅇㄱㄱㅈㅇㅈ", "requested_count": 6, "target": "이거 가져와줘", "category": "basic_request", "candidates": ["이거 가져와줘"]}
+{"id": "TRAIN0412", "split": "train", "initials": "ㅈㄱㄹㅈㅈ", "requested_count": 16, "target": "젓가락 좀 줘", "category": "food_drink", "candidates": ["젓가락 좀 줘"]}
+{"id": "TRAIN0413", "split": "train", "initials": "ㅈㅈㄱㅈ", "requested_count": 16, "target": "죽 조금 줘", "category": "food_drink", "candidates": ["죽 조금 줘"]}
+{"id": "TRAIN0414", "split": "train", "initials": "ㅈㅅㅁㅊㅈ", "requested_count": 16, "target": "잠시 멈춰줘", "category": "basic_request", "candidates": ["잠시 멈춰줘"]}
+{"id": "TRAIN0415", "split": "train", "initials": "ㄱㄱㅈㄷㄹㅈ", "requested_count": 16, "target": "고개 좀 돌려줘", "category": "positioning", "candidates": ["고개 좀 돌려줘"]}
+{"id": "TRAIN0416", "split": "train", "initials": "ㅁㅇ", "requested_count": 4, "target": "뭐야", "category": "ambiguity", "candidates": ["뭐야", "미안", "모여", "맞아"]}
+{"id": "TRAIN0417", "split": "train", "initials": "ㅇㄱㅈㅈ", "requested_count": 12, "target": "안경 좀 줘", "category": "basic_request", "candidates": ["안경 좀 줘"]}
+{"id": "TRAIN0418", "split": "train", "initials": "ㅁㅇㅈㄲㄸㄹ", "requested_count": 12, "target": "몸이 자꾸 떨려", "category": "pain_discomfort", "candidates": ["몸이 자꾸 떨려"]}
+{"id": "TRAIN0419", "split": "train", "initials": "ㅂㄹㅈㄴㅇㅈ", "requested_count": 12, "target": "볼륨 좀 높여줘", "category": "environment", "candidates": ["볼륨 좀 높여줘"]}
+{"id": "TRAIN0420", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 4, "target": "조금 무서워", "category": "emotion_needs", "candidates": ["조금 무서워"]}
+{"id": "TRAIN0421", "split": "train", "initials": "ㅇㅉㅂㅈ", "requested_count": 8, "target": "이쪽 봐줘", "category": "basic_request", "candidates": ["이쪽 봐줘"]}
+{"id": "TRAIN0422", "split": "train", "initials": "ㅅㅈㅍㅈ", "requested_count": 6, "target": "손 좀 펴줘", "category": "positioning", "candidates": ["손 좀 펴줘"]}
+{"id": "TRAIN0423", "split": "train", "initials": "ㅇㅈㅊㅂㅎㄱㅇ", "requested_count": 12, "target": "언제 출발할 거야", "category": "schedule_time", "candidates": ["언제 출발할 거야"]}
+{"id": "TRAIN0424", "split": "train", "initials": "ㅈㅇㅃㄹㄱㄱㅅㅇ", "requested_count": 8, "target": "집에 빨리 가고 싶어", "category": "emotion_needs", "candidates": ["집에 빨리 가고 싶어"]}
+{"id": "TRAIN0425", "split": "train", "initials": "ㅁㅈ", "requested_count": 12, "target": "먹자", "category": "ambiguity", "candidates": ["먹자", "물 줘", "만져", "물 좀", "뭐지", "맥주", "모자", "맞지", "먼저", "문제"]}
+{"id": "TRAIN0426", "split": "train", "initials": "ㅅㄹㄹㅋㅇㅈ", "requested_count": 16, "target": "소리를 키워줘", "category": "device_control", "candidates": ["소리를 키워줘"]}
+{"id": "TRAIN0427", "split": "train", "initials": "ㅈㄱㅅㅅㅎ", "requested_count": 8, "target": "조금 심심해", "category": "emotion_needs", "candidates": ["조금 심심해", "조금 속상해"]}
+{"id": "TRAIN0428", "split": "train", "initials": "ㅇㄱㅁㅇ", "requested_count": 4, "target": "이게 뭐야", "category": "questions_answers", "candidates": ["이게 뭐야"]}
+{"id": "TRAIN0429", "split": "train", "initials": "ㅈㄱㅅㅅㅎ", "requested_count": 16, "target": "조금 속상해", "category": "emotion_needs", "candidates": ["조금 속상해", "조금 심심해"]}
+{"id": "TRAIN0430", "split": "train", "initials": "ㄷㅇㄷㅇㅁㄴㅈ", "requested_count": 4, "target": "다음 달에 만나자", "category": "schedule_time", "candidates": ["다음 달에 만나자"]}
+{"id": "TRAIN0431", "split": "train", "initials": "ㄹㅁㅋㄱㅈㅇㅈ", "requested_count": 6, "target": "리모컨 가져와줘", "category": "basic_request", "candidates": ["리모컨 가져와줘"]}
+{"id": "TRAIN0432", "split": "train", "initials": "ㅋㅇㄸㄹㅈ", "requested_count": 6, "target": "컵에 따라줘", "category": "food_drink", "candidates": ["컵에 따라줘"]}
+{"id": "TRAIN0433", "split": "train", "initials": "ㅊㅊㅎㅅㅁㅎㅈ", "requested_count": 6, "target": "천천히 설명해줘", "category": "communication_control", "candidates": ["천천히 설명해줘"]}
+{"id": "TRAIN0434", "split": "train", "initials": "ㅅㅇ", "requested_count": 8, "target": "사요", "category": "ambiguity", "candidates": ["사요", "세워", "서요", "쉬어", "싫어"]}
+{"id": "TRAIN0435", "split": "train", "initials": "ㅎㅂㅁㄷㅁㅎㅈ", "requested_count": 4, "target": "한 번만 더 말해줘", "category": "communication_control", "candidates": ["한 번만 더 말해줘"]}
+{"id": "TRAIN0436", "split": "train", "initials": "ㅅㅇㅆㄹ", "requested_count": 8, "target": "속이 쓰려", "category": "pain_discomfort", "candidates": ["속이 쓰려"]}
+{"id": "TRAIN0437", "split": "train", "initials": "ㅂㄱㅈㄴㅇㅈ", "requested_count": 4, "target": "베개 좀 높여줘", "category": "positioning", "candidates": ["베개 좀 높여줘"]}
+{"id": "TRAIN0438", "split": "train", "initials": "ㅈㅅㅂㅇㄱㅇㅍㅇ", "requested_count": 4, "target": "주사 부위가 아파요", "category": "medical_communication", "candidates": ["주사 부위가 아파요"]}
+{"id": "TRAIN0439", "split": "train", "initials": "ㅊㄱㅇㄱㅇㄹㅎㅈ", "requested_count": 4, "target": "친구에게 연락해줘", "category": "social", "candidates": ["친구에게 연락해줘"]}
+{"id": "TRAIN0440", "split": "train", "initials": "ㅂㄱㅅㅌㅊㅅㅎㄱ", "requested_count": 4, "target": "방금 선택 취소할게", "category": "communication_control", "candidates": ["방금 선택 취소할게"]}
+{"id": "TRAIN0441", "split": "train", "initials": "ㅅㅇㄴㅁㅊ", "requested_count": 4, "target": "숨이 너무 차", "category": "pain_discomfort", "candidates": ["숨이 너무 차"]}
+{"id": "TRAIN0442", "split": "train", "initials": "ㅇㄹㅁㅊㅈ", "requested_count": 4, "target": "알람 맞춰줘", "category": "device_control", "candidates": ["알람 맞춰줘"]}
+{"id": "TRAIN0443", "split": "train", "initials": "ㅈㅅㅂㅇㄱㅇㅍㅇ", "requested_count": 4, "target": "주사 부위가 아파요", "category": "medical_communication", "candidates": ["주사 부위가 아파요"]}
+{"id": "TRAIN0444", "split": "train", "initials": "ㅂㅈㄱㅈ", "requested_count": 12, "target": "밥 조금 줘", "category": "food_drink", "candidates": ["밥 조금 줘"]}
+{"id": "TRAIN0445", "split": "train", "initials": "ㅌㄹㅂㅈㄲㅈ", "requested_count": 4, "target": "텔레비전 꺼줘", "category": "device_control", "candidates": ["텔레비전 꺼줘"]}
+{"id": "TRAIN0446", "split": "train", "initials": "ㅅㅇ", "requested_count": 8, "target": "싫어", "category": "ambiguity", "candidates": ["싫어", "사요", "쉬어", "서요", "세워"]}
+{"id": "TRAIN0447", "split": "train", "initials": "ㅊㅁㅈㅇㅇㅈ", "requested_count": 16, "target": "창문 좀 열어줘", "category": "environment", "candidates": ["창문 좀 열어줘"]}
+{"id": "TRAIN0448", "split": "train", "initials": "ㅇㄱㅅㅇㄱㅂㅇㅇ", "requested_count": 12, "target": "웃고 싶은 기분이야", "category": "emotion_needs", "candidates": ["웃고 싶은 기분이야", "울고 싶은 기분이야"]}
+{"id": "TRAIN0449", "split": "train", "initials": "ㅁㅇ", "requested_count": 12, "target": "매워", "category": "ambiguity", "candidates": ["매워", "뭐야", "맞아", "모여", "미안"]}
+{"id": "TRAIN0450", "split": "train", "initials": "ㅎㄷㅍㄱㅈㅇㅈ", "requested_count": 8, "target": "휴대폰 가져와줘", "category": "basic_request", "candidates": ["휴대폰 가져와줘"]}
+{"id": "TRAIN0451", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 6, "target": "들어줘", "category": "ambiguity", "candidates": ["들어줘", "다 알지", "도와줘", "다 있지", "더 있죠", "다음 주"]}
+{"id": "TRAIN0452", "split": "train", "initials": "ㅇㅈㄷㅎㅇ", "requested_count": 4, "target": "이제 다 했어", "category": "questions_answers", "candidates": ["이제 다 했어"]}
+{"id": "TRAIN0453", "split": "train", "initials": "ㅃㄷㄴㅇㅈ", "requested_count": 8, "target": "빨대 넣어줘", "category": "food_drink", "candidates": ["빨대 넣어줘"]}
+{"id": "TRAIN0454", "split": "train", "initials": "ㅂㅇㅂㅊㅈ", "requested_count": 12, "target": "발을 받쳐줘", "category": "positioning", "candidates": ["발을 받쳐줘"]}
+{"id": "TRAIN0455", "split": "train", "initials": "ㄷㅇㅇㅈㅇㅁㅇ", "requested_count": 16, "target": "다음 일정이 뭐야", "category": "schedule_time", "candidates": ["다음 일정이 뭐야"]}
+{"id": "TRAIN0456", "split": "train", "initials": "ㄴㅁㄷㅇㅈ", "requested_count": 6, "target": "내 말 들어줘", "category": "basic_request", "candidates": ["내 말 들어줘"]}
+{"id": "TRAIN0457", "split": "train", "initials": "ㅎㄹㄹㅂㅊㅈ", "requested_count": 12, "target": "허리를 받쳐줘", "category": "positioning", "candidates": ["허리를 받쳐줘"]}
+{"id": "TRAIN0458", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 8, "target": "고마워", "category": "ambiguity", "candidates": ["고마워", "그만요", "그 말이", "귤 먹어"]}
+{"id": "TRAIN0459", "split": "train", "initials": "ㅈㅈ", "requested_count": 4, "target": "잘 자", "category": "ambiguity", "candidates": ["잘 자", "좀 줘", "자자"]}
+{"id": "TRAIN0460", "split": "train", "initials": "ㄱㄱㅈㄷㄹㅈ", "requested_count": 6, "target": "고개 좀 돌려줘", "category": "positioning", "candidates": ["고개 좀 돌려줘"]}
+{"id": "TRAIN0461", "split": "train", "initials": "ㄴㄱㅇㅈㅇㄹㅈ", "requested_count": 4, "target": "누구인지 알려줘", "category": "questions_answers", "candidates": ["누구인지 알려줘"]}
+{"id": "TRAIN0462", "split": "train", "initials": "ㅈㅁㄱㅁㅇㅇ", "requested_count": 6, "target": "정말 고마웠어", "category": "social", "candidates": ["정말 고마웠어"]}
+{"id": "TRAIN0463", "split": "train", "initials": "ㅁㄴㅅㅂㄱㅇ", "requested_count": 12, "target": "만나서 반가워", "category": "social", "candidates": ["만나서 반가워"]}
+{"id": "TRAIN0464", "split": "train", "initials": "ㅇㅇㅋㅈㄲㅈ", "requested_count": 16, "target": "에어컨 좀 꺼줘", "category": "environment", "candidates": ["에어컨 좀 꺼줘"]}
+{"id": "TRAIN0465", "split": "train", "initials": "ㅈㄱㅇㅇㄹㄷㄹㅈ", "requested_count": 16, "target": "조금 옆으로 돌려줘", "category": "positioning", "candidates": ["조금 옆으로 돌려줘"]}
+{"id": "TRAIN0466", "split": "train", "initials": "ㄱㅇㅇㅇㄴ", "requested_count": 16, "target": "기억이 안 나", "category": "questions_answers", "candidates": ["기억이 안 나"]}
+{"id": "TRAIN0467", "split": "train", "initials": "ㅇㅇㅇㅁㅁㅇㅇㅇ", "requested_count": 6, "target": "약을 이미 먹었어요", "category": "medical_communication", "candidates": ["약을 이미 먹었어요"]}
+{"id": "TRAIN0468", "split": "train", "initials": "ㅇㅇㅇㅁㅁㅇㅇㅇ", "requested_count": 6, "target": "약을 이미 먹었어요", "category": "medical_communication", "candidates": ["약을 이미 먹었어요"]}
+{"id": "TRAIN0469", "split": "train", "initials": "ㄷㅇㅈㄱㅅㅇㅈ", "requested_count": 12, "target": "등을 조금 세워줘", "category": "positioning", "candidates": ["등을 조금 세워줘"]}
+{"id": "TRAIN0470", "split": "train", "initials": "ㄷㅇ", "requested_count": 16, "target": "닫아", "category": "ambiguity", "candidates": ["닫아", "더워", "도와", "다음", "들어"]}
+{"id": "TRAIN0471", "split": "train", "initials": "ㅈㅁㄱㅁㅇㅇ", "requested_count": 6, "target": "정말 고마웠어", "category": "social", "candidates": ["정말 고마웠어"]}
+{"id": "TRAIN0472", "split": "train", "initials": "ㅅㅈㅍㅈ", "requested_count": 16, "target": "손 좀 펴줘", "category": "positioning", "candidates": ["손 좀 펴줘"]}
+{"id": "TRAIN0473", "split": "train", "initials": "ㅁㅈ", "requested_count": 4, "target": "먼저", "category": "ambiguity", "candidates": ["먼저", "물 줘", "먹자", "맞지"]}
+{"id": "TRAIN0474", "split": "train", "initials": "ㄴㄱㄲㄲㅈㅁㅎㄱ", "requested_count": 6, "target": "내가 끝까지 말할게", "category": "communication_control", "candidates": ["내가 끝까지 말할게"]}
+{"id": "TRAIN0475", "split": "train", "initials": "ㅇㅉㅇㄹㅇㄱㅈ", "requested_count": 4, "target": "이쪽으로 옮겨줘", "category": "basic_request", "candidates": ["이쪽으로 옮겨줘"]}
+{"id": "TRAIN0476", "split": "train", "initials": "ㅇㅇㅇㅁㅁㅇㅇㅇ", "requested_count": 6, "target": "약을 이미 먹었어요", "category": "medical_communication", "candidates": ["약을 이미 먹었어요"]}
+{"id": "TRAIN0477", "split": "train", "initials": "ㅎㄷㅍㅎㅁㄲㅈ", "requested_count": 16, "target": "휴대폰 화면 꺼줘", "category": "device_control", "candidates": ["휴대폰 화면 꺼줘"]}
+{"id": "TRAIN0478", "split": "train", "initials": "ㄴㄱㅊㅇ", "requested_count": 12, "target": "너 괜찮아", "category": "social", "candidates": ["너 괜찮아"]}
+{"id": "TRAIN0479", "split": "train", "initials": "ㅇㄱㄱㅈㅇㅈ", "requested_count": 6, "target": "이거 가져와줘", "category": "basic_request", "candidates": ["이거 가져와줘"]}
+{"id": "TRAIN0480", "split": "train", "initials": "ㅈㄱㅅㅇㄷㅁㅈ", "requested_count": 12, "target": "조금 쉬었다 먹자", "category": "food_drink", "candidates": ["조금 쉬었다 먹자"]}
+{"id": "TRAIN0481", "split": "train", "initials": "ㄱㄱㅈㄷㄹㅈ", "requested_count": 12, "target": "고개 좀 돌려줘", "category": "positioning", "candidates": ["고개 좀 돌려줘"]}
+{"id": "TRAIN0482", "split": "train", "initials": "ㄷㅇㅇㅈㅇㅁㅇ", "requested_count": 6, "target": "다음 일정이 뭐야", "category": "schedule_time", "candidates": ["다음 일정이 뭐야"]}
+{"id": "TRAIN0483", "split": "train", "initials": "ㅌㄹㅂㅈㄲㅈ", "requested_count": 12, "target": "텔레비전 꺼줘", "category": "device_control", "candidates": ["텔레비전 꺼줘"]}
+{"id": "TRAIN0484", "split": "train", "initials": "ㅁㅈ", "requested_count": 6, "target": "물 좀", "category": "ambiguity", "candidates": ["물 좀", "먹자", "만져", "먼저", "맞지", "뭐지"]}
+{"id": "TRAIN0485", "split": "train", "initials": "ㅁㅅㅈㅂㄴㅈ", "requested_count": 4, "target": "메시지 보내줘", "category": "device_control", "candidates": ["메시지 보내줘"]}
+{"id": "TRAIN0486", "split": "train", "initials": "ㅅㄱㅅㅁㅎㅈ", "requested_count": 6, "target": "쉽게 설명해줘", "category": "communication_control", "candidates": ["쉽게 설명해줘"]}
+{"id": "TRAIN0487", "split": "train", "initials": "ㅂㄹㅈㄴㅇㅈ", "requested_count": 12, "target": "볼륨 좀 높여줘", "category": "environment", "candidates": ["볼륨 좀 높여줘"]}
+{"id": "TRAIN0488", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 8, "target": "더 있죠", "category": "ambiguity", "candidates": ["더 있죠", "들어줘", "다 있지", "다음 주", "다 알지", "도와줘"]}
+{"id": "TRAIN0489", "split": "train", "initials": "ㅂㅈ", "requested_count": 12, "target": "밥 줘", "category": "ambiguity", "candidates": ["밥 줘", "봐줘", "보자", "부자", "바지", "밥 좀"]}
+{"id": "TRAIN0490", "split": "train", "initials": "ㅈㅈㄱㅈ", "requested_count": 6, "target": "죽 조금 줘", "category": "food_drink", "candidates": ["죽 조금 줘"]}
+{"id": "TRAIN0491", "split": "train", "initials": "ㅇㅇㅇㄴㅁㅁㄹ", "requested_count": 16, "target": "입안이 너무 말라", "category": "pain_discomfort", "candidates": ["입안이 너무 말라"]}
+{"id": "TRAIN0492", "split": "train", "initials": "ㅅㅅㅍㅎㄷㅎㅇㅎㅈㅅㅇ", "requested_count": 6, "target": "산소포화도 확인해주세요", "category": "medical_communication", "candidates": ["산소포화도 확인해주세요"]}
+{"id": "TRAIN0493", "split": "train", "initials": "ㅅㅇㅆㄹ", "requested_count": 6, "target": "속이 쓰려", "category": "pain_discomfort", "candidates": ["속이 쓰려"]}
+{"id": "TRAIN0494", "split": "train", "initials": "ㅈㅇㅃㄹㄱㄱㅅㅇ", "requested_count": 4, "target": "집에 빨리 가고 싶어", "category": "emotion_needs", "candidates": ["집에 빨리 가고 싶어"]}
+{"id": "TRAIN0495", "split": "train", "initials": "ㅅㅇㄴㅁㅊ", "requested_count": 12, "target": "숨이 너무 차", "category": "pain_discomfort", "candidates": ["숨이 너무 차"]}
+{"id": "TRAIN0496", "split": "train", "initials": "ㄴㅂㅈㄲㅈ", "requested_count": 12, "target": "난방 좀 꺼줘", "category": "environment", "candidates": ["난방 좀 꺼줘"]}
+{"id": "TRAIN0497", "split": "train", "initials": "ㅅㄹㅈㅋㅇㅈ", "requested_count": 8, "target": "소리 좀 키워줘", "category": "environment", "candidates": ["소리 좀 키워줘"]}
+{"id": "TRAIN0498", "split": "train", "initials": "ㅋㅇㄸㄹㅈ", "requested_count": 12, "target": "컵에 따라줘", "category": "food_drink", "candidates": ["컵에 따라줘"]}
+{"id": "TRAIN0499", "split": "train", "initials": "ㅇㅇㄹㅇㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "약 이름을 알려주세요", "category": "medical_communication", "candidates": ["약 이름을 알려주세요"]}
+{"id": "TRAIN0500", "split": "train", "initials": "ㄴㅂㅈㄲㅈ", "requested_count": 12, "target": "난방 좀 꺼줘", "category": "environment", "candidates": ["난방 좀 꺼줘"]}
+{"id": "TRAIN0501", "split": "train", "initials": "ㄱㄱㄱㄴㅁㄱㅈㅎ", "requested_count": 8, "target": "공기가 너무 건조해", "category": "environment", "candidates": ["공기가 너무 건조해"]}
+{"id": "TRAIN0502", "split": "train", "initials": "ㅉㄱㅅㅁㅎㅈ", "requested_count": 6, "target": "짧게 설명해줘", "category": "communication_control", "candidates": ["짧게 설명해줘"]}
+{"id": "TRAIN0503", "split": "train", "initials": "ㅇㄹㅁㅊㅈ", "requested_count": 8, "target": "알람 맞춰줘", "category": "device_control", "candidates": ["알람 맞춰줘"]}
+{"id": "TRAIN0504", "split": "train", "initials": "ㄱㅎㅅㅇㅈㅇㄴㅇ", "requested_count": 8, "target": "간호사 언제 오나요", "category": "medical_communication", "candidates": ["간호사 언제 오나요"]}
+{"id": "TRAIN0505", "split": "train", "initials": "ㄷㅅㅁㅇㅂㅈ", "requested_count": 6, "target": "다시 물어봐줘", "category": "questions_answers", "candidates": ["다시 물어봐줘"]}
+{"id": "TRAIN0506", "split": "train", "initials": "ㅅㅅㄹㅈㄱㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "산소를 조금 올려주세요", "category": "medical_communication", "candidates": ["산소를 조금 올려주세요"]}
+{"id": "TRAIN0507", "split": "train", "initials": "ㅊㅂㅉㄹㅎㄱ", "requested_count": 6, "target": "첫 번째로 할게", "category": "communication_control", "candidates": ["첫 번째로 할게"]}
+{"id": "TRAIN0508", "split": "train", "initials": "ㅇㄴㄱㅅㅎㅇ", "requested_count": 4, "target": "오늘 고생했어", "category": "social", "candidates": ["오늘 고생했어"]}
+{"id": "TRAIN0509", "split": "train", "initials": "ㅇㅇㅇㄴㅁㅁㄹ", "requested_count": 12, "target": "입안이 너무 말라", "category": "pain_discomfort", "candidates": ["입안이 너무 말라"]}
+{"id": "TRAIN0510", "split": "train", "initials": "ㅁㅇㅅㄹㅎ", "requested_count": 16, "target": "많이 사랑해", "category": "social", "candidates": ["많이 사랑해"]}
+{"id": "TRAIN0511", "split": "train", "initials": "ㄴㅇㅇㅈㅇㄹㅈ", "requested_count": 8, "target": "내일 일정 알려줘", "category": "schedule_time", "candidates": ["내일 일정 알려줘"]}
+{"id": "TRAIN0512", "split": "train", "initials": "ㅂㅇㅂㅊㅈ", "requested_count": 6, "target": "발을 받쳐줘", "category": "positioning", "candidates": ["발을 받쳐줘"]}
+{"id": "TRAIN0513", "split": "train", "initials": "ㅈㅁㄹㄱㅇ", "requested_count": 12, "target": "잘 모르겠어", "category": "questions_answers", "candidates": ["잘 모르겠어"]}
+{"id": "TRAIN0514", "split": "train", "initials": "ㅈㅁㅇㄴㅇㅈ", "requested_count": 6, "target": "조명을 높여줘", "category": "environment", "candidates": ["조명을 높여줘"]}
+{"id": "TRAIN0515", "split": "train", "initials": "ㅎㄷㅍㄱㅈㅇㅈ", "requested_count": 8, "target": "휴대폰 가져와줘", "category": "basic_request", "candidates": ["휴대폰 가져와줘"]}
+{"id": "TRAIN0516", "split": "train", "initials": "ㅁㅇㄱㅇㄷㄹㅇㄱㅈ", "requested_count": 12, "target": "몸을 가운데로 옮겨줘", "category": "positioning", "candidates": ["몸을 가운데로 옮겨줘"]}
+{"id": "TRAIN0517", "split": "train", "initials": "ㄴㅁㅇㄹㅇ", "requested_count": 6, "target": "너무 외로워", "category": "emotion_needs", "candidates": ["너무 외로워"]}
+{"id": "TRAIN0518", "split": "train", "initials": "ㄴㅇㄸㄱㅇ", "requested_count": 12, "target": "눈이 따가워", "category": "pain_discomfort", "candidates": ["눈이 따가워"]}
+{"id": "TRAIN0519", "split": "train", "initials": "ㅊㅁㅈㅇㅇㅈ", "requested_count": 16, "target": "창문 좀 열어줘", "category": "environment", "candidates": ["창문 좀 열어줘"]}
+{"id": "TRAIN0520", "split": "train", "initials": "ㅅㅇㅎㅁㅈ", "requested_count": 6, "target": "시원한 물 줘", "category": "food_drink", "candidates": ["시원한 물 줘"]}
+{"id": "TRAIN0521", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 6, "target": "더 있죠", "category": "ambiguity", "candidates": ["더 있죠", "들어줘", "다음 주", "다 알지", "도와줘", "다 있지"]}
+{"id": "TRAIN0522", "split": "train", "initials": "ㅁㄴㅅㅂㄱㅇ", "requested_count": 12, "target": "만나서 반가워", "category": "social", "candidates": ["만나서 반가워"]}
+{"id": "TRAIN0523", "split": "train", "initials": "ㅈㄴㅇㄴㄴㄱㅇ", "requested_count": 6, "target": "저녁에는 누가 와", "category": "schedule_time", "candidates": ["저녁에는 누가 와"]}
+{"id": "TRAIN0524", "split": "train", "initials": "ㄷㅇㅈ", "requested_count": 12, "target": "다 있지", "category": "ambiguity", "candidates": ["다 있지", "더 있죠", "다음 주", "도와줘", "들어줘", "다 알지"]}
+{"id": "TRAIN0525", "split": "train", "initials": "ㄷㄹㅈㄴㄹㅈ", "requested_count": 4, "target": "다리 좀 내려줘", "category": "positioning", "candidates": ["다리 좀 내려줘"]}
+{"id": "TRAIN0526", "split": "train", "initials": "ㅇㄱㄴㅇㅈ", "requested_count": 12, "target": "여기 놓아줘", "category": "basic_request", "candidates": ["여기 놓아줘"]}
+{"id": "TRAIN0527", "split": "train", "initials": "ㅅㅅㄹㅈㄱㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "산소를 조금 올려주세요", "category": "medical_communication", "candidates": ["산소를 조금 올려주세요"]}
+{"id": "TRAIN0528", "split": "train", "initials": "ㅇㄴㅂㅇㅇㅇ", "requested_count": 12, "target": "오늘 병원 있어", "category": "schedule_time", "candidates": ["오늘 병원 있어"]}
+{"id": "TRAIN0529", "split": "train", "initials": "ㅅㄹㄹㄴㅊㅈ", "requested_count": 6, "target": "소리를 낮춰줘", "category": "device_control", "candidates": ["소리를 낮춰줘"]}
+{"id": "TRAIN0530", "split": "train", "initials": "ㄷㄹㅈㅇㄹㅈ", "requested_count": 4, "target": "다리 좀 올려줘", "category": "positioning", "candidates": ["다리 좀 올려줘"]}
+{"id": "TRAIN0531", "split": "train", "initials": "ㅎㄹㄱㅃㄱㅎ", "requested_count": 4, "target": "허리가 뻐근해", "category": "pain_discomfort", "candidates": ["허리가 뻐근해"]}
+{"id": "TRAIN0532", "split": "train", "initials": "ㅁㅇ", "requested_count": 16, "target": "미안", "category": "ambiguity", "candidates": ["미안", "모여", "뭐야", "매워", "맞아"]}
+{"id": "TRAIN0533", "split": "train", "initials": "ㄱㄱㄱㄴㅁㄱㅈㅎ", "requested_count": 8, "target": "공기가 너무 건조해", "category": "environment", "candidates": ["공기가 너무 건조해"]}
+{"id": "TRAIN0534", "split": "train", "initials": "ㅈㄱㅁㅅㅇ", "requested_count": 12, "target": "조금 무서워", "category": "emotion_needs", "candidates": ["조금 무서워"]}
+{"id": "TRAIN0535", "split": "train", "initials": "ㅁㅇㄴㅁㅇㅍ", "requested_count": 16, "target": "목이 너무 아파", "category": "pain_discomfort", "candidates": ["목이 너무 아파"]}
+{"id": "TRAIN0536", "split": "train", "initials": "ㅇㄱㅅㅇㄱㅂㅇㅇ", "requested_count": 4, "target": "웃고 싶은 기분이야", "category": "emotion_needs", "candidates": ["웃고 싶은 기분이야", "울고 싶은 기분이야"]}
+{"id": "TRAIN0537", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 16, "target": "그 말이", "category": "ambiguity", "candidates": ["그 말이", "귤 먹어", "고마워", "그만요"]}
+{"id": "TRAIN0538", "split": "train", "initials": "ㅎㅇㅎㅂㅎㅈㅅㅇ", "requested_count": 16, "target": "흡인 한번 해주세요", "category": "medical_communication", "candidates": ["흡인 한번 해주세요"]}
+{"id": "TRAIN0539", "split": "train", "initials": "ㅁㅇㄴㅁㅇㅍ", "requested_count": 4, "target": "목이 너무 아파", "category": "pain_discomfort", "candidates": ["목이 너무 아파"]}
+{"id": "TRAIN0540", "split": "train", "initials": "ㅇㅅㅇㅈㅇㄴㅇ", "requested_count": 6, "target": "의사 언제 오나요", "category": "medical_communication", "candidates": ["의사 언제 오나요"]}
+{"id": "TRAIN0541", "split": "train", "initials": "ㅎㅇㅎㅂㅎㅈㅅㅇ", "requested_count": 16, "target": "흡인 한번 해주세요", "category": "medical_communication", "candidates": ["흡인 한번 해주세요"]}
+{"id": "TRAIN0542", "split": "train", "initials": "ㅇㄱㄱㅈㅇㅈ", "requested_count": 6, "target": "이거 가져와줘", "category": "basic_request", "candidates": ["이거 가져와줘"]}
+{"id": "TRAIN0543", "split": "train", "initials": "ㅂㄱㄷㅂㄹㅎ", "requested_count": 16, "target": "배가 더부룩해", "category": "pain_discomfort", "candidates": ["배가 더부룩해"]}
+{"id": "TRAIN0544", "split": "train", "initials": "ㅇㄱㅈㅈ", "requested_count": 12, "target": "안경 좀 줘", "category": "basic_request", "candidates": ["안경 좀 줘"]}
+{"id": "TRAIN0545", "split": "train", "initials": "ㅌㅈㅇㅊㄹㅂㅈㅅㅇ", "requested_count": 4, "target": "통증 위치를 봐주세요", "category": "medical_communication", "candidates": ["통증 위치를 봐주세요"]}
+{"id": "TRAIN0546", "split": "train", "initials": "ㅇㄴㅇㅁㅅㅇㅇㅇㅇ", "requested_count": 12, "target": "오늘이 무슨 요일이야", "category": "schedule_time", "candidates": ["오늘이 무슨 요일이야"]}
+{"id": "TRAIN0547", "split": "train", "initials": "ㅈㄲㅎㅈㅇㄱㅅㅇ", "requested_count": 4, "target": "잠깐 혼자 있고 싶어", "category": "emotion_needs", "candidates": ["잠깐 혼자 있고 싶어"]}
+{"id": "TRAIN0548", "split": "train", "initials": "ㅁㅇㅂㅇㅎ", "requested_count": 6, "target": "많이 불안해", "category": "emotion_needs", "candidates": ["많이 불안해"]}
+{"id": "TRAIN0549", "split": "train", "initials": "ㅁㅇㅎㅇ", "requested_count": 16, "target": "미안했어", "category": "social", "candidates": ["미안했어"]}
+{"id": "TRAIN0550", "split": "train", "initials": "ㅁㅈ", "requested_count": 16, "target": "물 줘", "category": "ambiguity", "candidates": ["물 줘", "문제", "먹자", "먼저", "맞지", "맥주", "모자", "뭐지", "물 좀", "만져"]}
+{"id": "TRAIN0551", "split": "train", "initials": "ㄱㅅㅇㄷㄷㅎ", "requested_count": 12, "target": "가슴이 답답해", "category": "pain_discomfort", "candidates": ["가슴이 답답해"]}
+{"id": "TRAIN0552", "split": "train", "initials": "ㅅㅇ", "requested_count": 4, "target": "서요", "category": "ambiguity", "candidates": ["서요", "사요", "세워", "싫어"]}
+{"id": "TRAIN0553", "split": "train", "initials": "ㅎㄷㅍㅎㅁㅋㅈ", "requested_count": 12, "target": "휴대폰 화면 켜줘", "category": "device_control", "candidates": ["휴대폰 화면 켜줘"]}
+{"id": "TRAIN0554", "split": "train", "initials": "ㄴㄹㅈㅅㅎㅈ", "requested_count": 16, "target": "노래 재생해줘", "category": "device_control", "candidates": ["노래 재생해줘"]}
+{"id": "TRAIN0555", "split": "train", "initials": "ㄷㄹㄱㄴㅁㅇㅍ", "requested_count": 4, "target": "다리가 너무 아파", "category": "pain_discomfort", "candidates": ["다리가 너무 아파"]}
+{"id": "TRAIN0556", "split": "train", "initials": "ㅊㅊㅎㅅㅁㅎㅈ", "requested_count": 4, "target": "천천히 설명해줘", "category": "communication_control", "candidates": ["천천히 설명해줘"]}
+{"id": "TRAIN0557", "split": "train", "initials": "ㅇㅇㅇㄴㅁㅁㄹ", "requested_count": 4, "target": "입안이 너무 말라", "category": "pain_discomfort", "candidates": ["입안이 너무 말라"]}
+{"id": "TRAIN0558", "split": "train", "initials": "ㅈㄱㄱㄷㄹㅈ", "requested_count": 16, "target": "조금 기다려줘", "category": "basic_request", "candidates": ["조금 기다려줘"]}
+{"id": "TRAIN0559", "split": "train", "initials": "ㅂㅈㄱㅈ", "requested_count": 16, "target": "밥 조금 줘", "category": "food_drink", "candidates": ["밥 조금 줘"]}
+{"id": "TRAIN0560", "split": "train", "initials": "ㅁㅇㅅㄹㅎ", "requested_count": 16, "target": "많이 사랑해", "category": "social", "candidates": ["많이 사랑해"]}
+{"id": "TRAIN0561", "split": "train", "initials": "ㅅㅈㅍㅈ", "requested_count": 8, "target": "손 좀 펴줘", "category": "positioning", "candidates": ["손 좀 펴줘"]}
+{"id": "TRAIN0562", "split": "train", "initials": "ㄱㅈㅇㅁㅇㄷ", "requested_count": 6, "target": "걱정이 많이 돼", "category": "emotion_needs", "candidates": ["걱정이 많이 돼"]}
+{"id": "TRAIN0563", "split": "train", "initials": "ㅂㅎㅈㅇㄱㅇㄹㅎㅈㅅㅇ", "requested_count": 12, "target": "보호자에게 연락해주세요", "category": "medical_communication", "candidates": ["보호자에게 연락해주세요"]}
+{"id": "TRAIN0564", "split": "train", "initials": "ㄷㄹㄱㄴㅁㅇㅍ", "requested_count": 8, "target": "다리가 너무 아파", "category": "pain_discomfort", "candidates": ["다리가 너무 아파"]}
+{"id": "TRAIN0565", "split": "train", "initials": "ㅂㄹㅈㄴㅊㅈ", "requested_count": 4, "target": "볼륨 좀 낮춰줘", "category": "environment", "candidates": ["볼륨 좀 낮춰줘"]}
+{"id": "TRAIN0566", "split": "train", "initials": "ㅇㅇㅇㅈㅁㅁㅇㅇㅇ", "requested_count": 8, "target": "약을 아직 못 먹었어요", "category": "medical_communication", "candidates": ["약을 아직 못 먹었어요"]}
+{"id": "TRAIN0567", "split": "train", "initials": "ㅅㄲㅇㅈㄹ", "requested_count": 12, "target": "손끝이 저려", "category": "pain_discomfort", "candidates": ["손끝이 저려"]}
+{"id": "TRAIN0568", "split": "train", "initials": "ㅎㅊㅂㅌㄴㄹㅈ", "requested_count": 8, "target": "호출 버튼 눌러줘", "category": "device_control", "candidates": ["호출 버튼 눌러줘"]}
+{"id": "TRAIN0569", "split": "train", "initials": "ㅊㅊㅎㅅㅁㅎㅈ", "requested_count": 8, "target": "천천히 설명해줘", "category": "communication_control", "candidates": ["천천히 설명해줘"]}
+{"id": "TRAIN0570", "split": "train", "initials": "ㄷㅇㅇㅈㅇㅁㅇ", "requested_count": 4, "target": "다음 일정이 뭐야", "category": "schedule_time", "candidates": ["다음 일정이 뭐야"]}
+{"id": "TRAIN0571", "split": "train", "initials": "ㅇㅈㅊㅂㅎㄱㅇ", "requested_count": 6, "target": "언제 출발할 거야", "category": "schedule_time", "candidates": ["언제 출발할 거야"]}
+{"id": "TRAIN0572", "split": "train", "initials": "ㅁㅈ", "requested_count": 4, "target": "뭐지", "category": "ambiguity", "candidates": ["뭐지", "먼저", "맥주", "맞지"]}
+{"id": "TRAIN0573", "split": "train", "initials": "ㅈㅁㅂㄱㅅㅇㅇ", "requested_count": 8, "target": "정말 보고 싶었어", "category": "social", "candidates": ["정말 보고 싶었어"]}
+{"id": "TRAIN0574", "split": "train", "initials": "ㅅㅅㅁㅊㅈ", "requested_count": 12, "target": "식사 멈춰줘", "category": "food_drink", "candidates": ["식사 멈춰줘"]}
+{"id": "TRAIN0575", "split": "train", "initials": "ㅇㅇㅇㅁㅁㅇㅇㅇ", "requested_count": 6, "target": "약을 이미 먹었어요", "category": "medical_communication", "candidates": ["약을 이미 먹었어요"]}
+{"id": "TRAIN0576", "split": "train", "initials": "ㅇㄱㅅㅇㄱㅂㅇㅇ", "requested_count": 8, "target": "울고 싶은 기분이야", "category": "emotion_needs", "candidates": ["울고 싶은 기분이야", "웃고 싶은 기분이야"]}
+{"id": "TRAIN0577", "split": "train", "initials": "ㅎㄷㅍㅎㅁㄲㅈ", "requested_count": 4, "target": "휴대폰 화면 꺼줘", "category": "device_control", "candidates": ["휴대폰 화면 꺼줘"]}
+{"id": "TRAIN0578", "split": "train", "initials": "ㅇㅇㄹㅇㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "약 이름을 알려주세요", "category": "medical_communication", "candidates": ["약 이름을 알려주세요"]}
+{"id": "TRAIN0579", "split": "train", "initials": "ㄱㄷㅈ", "requested_count": 16, "target": "국 더 줘", "category": "food_drink", "candidates": ["국 더 줘"]}
+{"id": "TRAIN0580", "split": "train", "initials": "ㅊㅁㅈㄷㅇㅈ", "requested_count": 6, "target": "창문 좀 닫아줘", "category": "environment", "candidates": ["창문 좀 닫아줘"]}
+{"id": "TRAIN0581", "split": "train", "initials": "ㅈㅁㅂㄱㅅㅇㅇ", "requested_count": 8, "target": "정말 보고 싶었어", "category": "social", "candidates": ["정말 보고 싶었어"]}
+{"id": "TRAIN0582", "split": "train", "initials": "ㄴㄱㄱㄱㅇㅇㅇㅇㅁㅈㄱㅇ", "requested_count": 12, "target": "누군가 곁에 있었으면 좋겠어", "category": "emotion_needs", "candidates": ["누군가 곁에 있었으면 좋겠어"]}
+{"id": "TRAIN0583", "split": "train", "initials": "ㄴㄱㅇㅈㅇㄹㅈ", "requested_count": 16, "target": "누구인지 알려줘", "category": "questions_answers", "candidates": ["누구인지 알려줘"]}
+{"id": "TRAIN0584", "split": "train", "initials": "ㅇㅇㅇㄴㅁㅁㄹ", "requested_count": 6, "target": "입안이 너무 말라", "category": "pain_discomfort", "candidates": ["입안이 너무 말라"]}
+{"id": "TRAIN0585", "split": "train", "initials": "ㅅㄲㅇㅈㄹ", "requested_count": 16, "target": "손끝이 저려", "category": "pain_discomfort", "candidates": ["손끝이 저려"]}
+{"id": "TRAIN0586", "split": "train", "initials": "ㅇㅈㅇㄲㄴㅇ", "requested_count": 12, "target": "아직 안 끝났어", "category": "questions_answers", "candidates": ["아직 안 끝났어"]}
+{"id": "TRAIN0587", "split": "train", "initials": "ㅈㄱㄱㄷㄹㅈ", "requested_count": 16, "target": "조금 기다려줘", "category": "basic_request", "candidates": ["조금 기다려줘"]}
+{"id": "TRAIN0588", "split": "train", "initials": "ㄴㄱㅊㅇ", "requested_count": 12, "target": "너 괜찮아", "category": "social", "candidates": ["너 괜찮아"]}
+{"id": "TRAIN0589", "split": "train", "initials": "ㄷㄹㅈㄴㄹㅈ", "requested_count": 12, "target": "다리 좀 내려줘", "category": "positioning", "candidates": ["다리 좀 내려줘"]}
+{"id": "TRAIN0590", "split": "train", "initials": "ㄷㅇ", "requested_count": 6, "target": "도와", "category": "ambiguity", "candidates": ["도와", "들어", "닫아", "다음", "더워"]}
+{"id": "TRAIN0591", "split": "train", "initials": "ㅅㅇㄴㅁㅊ", "requested_count": 6, "target": "숨이 너무 차", "category": "pain_discomfort", "candidates": ["숨이 너무 차"]}
+{"id": "TRAIN0592", "split": "train", "initials": "ㄱㅁㅇ", "requested_count": 16, "target": "그만요", "category": "ambiguity", "candidates": ["그만요", "귤 먹어", "그 말이", "고마워"]}
+{"id": "TRAIN0593", "split": "train", "initials": "ㅁㅇㅈㄱㄴㅎㅈ", "requested_count": 12, "target": "몸을 조금 눕혀줘", "category": "positioning", "candidates": ["몸을 조금 눕혀줘"]}
+{"id": "TRAIN0594", "split": "train", "initials": "ㅅㅅㄹㅈㄱㅇㄹㅈㅅㅇ", "requested_count": 16, "target": "산소를 조금 올려주세요", "category": "medical_communication", "candidates": ["산소를 조금 올려주세요"]}
+{"id": "TRAIN0595", "split": "train", "initials": "ㅇㄴㅈㅁㅇㅇ", "requested_count": 16, "target": "오늘 재밌었어", "category": "social", "candidates": ["오늘 재밌었어"]}
+{"id": "TRAIN0596", "split": "train", "initials": "ㅈㅎㅂㅇㅈ", "requested_count": 8, "target": "전화 받아줘", "category": "device_control", "candidates": ["전화 받아줘"]}
+{"id": "TRAIN0597", "split": "train", "initials": "ㅊㄷㄹㄴㄹㅈ", "requested_count": 6, "target": "침대를 내려줘", "category": "positioning", "candidates": ["침대를 내려줘"]}
+{"id": "TRAIN0598", "split": "train", "initials": "ㅁㅇㅎㅇ", "requested_count": 16, "target": "미안했어", "category": "social", "candidates": ["미안했어"]}
+{"id": "TRAIN0599", "split": "train", "initials": "ㅈㄱㅇㅇㄹㄷㄹㅈ", "requested_count": 8, "target": "조금 옆으로 돌려줘", "category": "positioning", "candidates": ["조금 옆으로 돌려줘"]}
+{"id": "TRAIN0600", "split": "train", "initials": "ㅁㅇㄴㅁㅇㅍ", "requested_count": 12, "target": "목이 너무 아파", "category": "pain_discomfort", "candidates": ["목이 너무 아파"]}

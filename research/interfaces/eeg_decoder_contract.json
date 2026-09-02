@@ -1,0 +1,19 @@
+{
+  "trial_id": "T001",
+  "score_type": "classifier_probability",
+  "hypotheses": [
+    {
+      "input": "ㄷㅇㅈ",
+      "decoder_score": 0.61
+    },
+    {
+      "input": "ㄷㅇㅊ",
+      "decoder_score": 0.22
+    },
+    {
+      "input": "ㅌㅇㅈ",
+      "decoder_score": 0.17
+    }
+  ],
+  "decoder_latency_ms": 180
+}

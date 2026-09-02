@@ -1,0 +1,45 @@
+from __future__ import annotations
+
+import json
+from app.llm.factory_v7 import get_language_model_client_v7
+from app.pipeline.service import BCILanguagePipeline
+from app.schemas import PredictionRequest
+
+
+CASES = [
+    ("도와줘", "ㄷㅇㅈ", "family", "positioning", ["자세가 불편해서 도움이 필요하다"]),
+    ("물 줘", "ㅁㅈ", "family", "meal", ["갈증이 난다"]),
+    ("간호사 불러줘", "ㄱㅎㅅㅂㄹㅈ", "medical_staff", "hospital", ["도움이 필요하다"]),
+]
+
+
+def main() -> None:
+    pipeline = BCILanguagePipeline(get_language_model_client_v7())
+    for target, initials, partner, situation, context in CASES:
+        res = pipeline.predict(
+            PredictionRequest(
+                bci_input=initials,
+                partner=partner,
+                situation=situation,
+                recent_context=context,
+                top_k=3,
+            )
+        )
+        print(json.dumps(
+            {
+                "target": target,
+                "input": initials,
+                "preds": [x.text for x in res.candidates],
+                "generator_model": res.generator_model,
+                "ranker_model": res.ranker_model,
+                "latency_ms": res.latency.total_ms,
+                "fallback": res.fallback,
+                "warnings": res.warnings,
+            },
+            ensure_ascii=False,
+            indent=2,
+        ))
+
+
+if __name__ == "__main__":
+    main()

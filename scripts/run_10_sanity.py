@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import re
+import unicodedata
+
 from app.pipeline.service import BCILanguagePipeline
 from app.schemas import PredictionRequest
+
 
 CASES = [
     ("도와줘", "ㄷㅇㅈ", "family", "positioning", "혼자 자세를 바꾸기 어렵다"),
@@ -17,24 +21,154 @@ CASES = [
 ]
 
 
+# ============================================================
+# 평가용 문자열 정규화
+# ============================================================
+
+def normalize_eval_text(text: str) -> str:
+    """
+    의미를 바꾸지 않는 표면 차이만 제거한다.
+
+    예:
+    "도와 줘" -> "도와줘"
+    "맞아."   -> "맞아"
+    "뭐야?"   -> "뭐야"
+    """
+    text = unicodedata.normalize("NFC", text or "")
+    text = text.strip()
+
+    # 모든 공백 제거
+    text = re.sub(r"\s+", "", text)
+
+    # 일반 문장부호 제거
+    text = re.sub(
+        r"""[.,!?~…'"“”‘’·:;()\[\]{}<>]""",
+        "",
+        text,
+    )
+
+    return text
+
+
+def normalized_rank(
+    target: str,
+    predictions: list[str],
+) -> int | None:
+    target_norm = normalize_eval_text(target)
+
+    for i, pred in enumerate(predictions, start=1):
+        if normalize_eval_text(pred) == target_norm:
+            return i
+
+    return None
+
+
+# ============================================================
+# Main
+# ============================================================
+
 def main() -> None:
     pipeline = BCILanguagePipeline()
-    hit1 = hit3 = 0
-    for i, (target, initials, partner, situation, context) in enumerate(CASES, 1):
-        res = pipeline.predict(PredictionRequest(
-            bci_input=initials,
-            partner=partner,
-            situation=situation,
-            recent_context=[context],
-            top_k=3,
-        ))
-        preds = [x.text for x in res.candidates]
-        rank = preds.index(target) + 1 if target in preds else None
-        hit1 += rank == 1
-        hit3 += rank is not None and rank <= 3
-        print(f"{i:02d}. {initials} target={target:<10} rank={rank} preds={preds} latency={res.latency.total_ms}ms fallback={res.fallback}")
-    print(f"Acc@1={hit1/len(CASES):.3f}")
-    print(f"Acc@3={hit3/len(CASES):.3f}")
+
+    strict_hit1 = 0
+    strict_hit3 = 0
+
+    normalized_hit1 = 0
+    normalized_hit3 = 0
+
+    for i, (
+        target,
+        initials,
+        partner,
+        situation,
+        context,
+    ) in enumerate(CASES, 1):
+
+        res = pipeline.predict(
+            PredictionRequest(
+                bci_input=initials,
+                partner=partner,
+                situation=situation,
+                recent_context=[context],
+                top_k=3,
+            )
+        )
+
+        preds = [
+            x.text
+            for x in res.candidates
+        ]
+
+        # ----------------------------------------------------
+        # Strict evaluation
+        # ----------------------------------------------------
+
+        strict_rank = (
+            preds.index(target) + 1
+            if target in preds
+            else None
+        )
+
+        # ----------------------------------------------------
+        # Normalized evaluation
+        # ----------------------------------------------------
+
+        norm_rank = normalized_rank(
+            target,
+            preds,
+        )
+
+        strict_hit1 += (
+            strict_rank == 1
+        )
+
+        strict_hit3 += (
+            strict_rank is not None
+            and strict_rank <= 3
+        )
+
+        normalized_hit1 += (
+            norm_rank == 1
+        )
+
+        normalized_hit3 += (
+            norm_rank is not None
+            and norm_rank <= 3
+        )
+
+        print(
+            f"{i:02d}. "
+            f"{initials} "
+            f"target={target:<10} "
+            f"strict_rank={strict_rank} "
+            f"norm_rank={norm_rank} "
+            f"preds={preds} "
+            f"latency={res.latency.total_ms}ms "
+            f"fallback={res.fallback}"
+        )
+
+    n = len(CASES)
+
+    print()
+    print("=" * 70)
+    print("SANITY SUMMARY")
+    print("=" * 70)
+
+    print(
+        f"Strict Acc@1={strict_hit1 / n:.3f}"
+    )
+
+    print(
+        f"Strict Acc@3={strict_hit3 / n:.3f}"
+    )
+
+    print(
+        f"Normalized Acc@1={normalized_hit1 / n:.3f}"
+    )
+
+    print(
+        f"Normalized Acc@3={normalized_hit3 / n:.3f}"
+    )
 
 
 if __name__ == "__main__":
