@@ -1,4 +1,5 @@
 from __future__ import annotations
+from local_ft.inference_final import LocalBCIGenerator
 
 from app.llm.openai_client import (
     OpenAILanguageModelClient,

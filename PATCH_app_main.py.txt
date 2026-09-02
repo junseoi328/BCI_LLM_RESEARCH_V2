@@ -1,0 +1,6 @@
+# app/main.py에 아직 없다면 다음 2줄 추가
+
+from app.api.speller_ui import router as speller_ui_router
+
+# app 생성/다른 router include 이후
+app.include_router(speller_ui_router)

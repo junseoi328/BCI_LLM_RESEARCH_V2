@@ -79,7 +79,35 @@ async function predict(){
 function commit(i){const c=latest[i];if(!c)return;committed=(committed?committed+" ":"")+c.text;initials="";latest=[];candidates.innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';render()}
 function speak(){if(!committed)return;const u=new SpeechSynthesisUtterance(committed);u.lang="ko-KR";speechSynthesis.cancel();speechSynthesis.speak(u)}
 function resetAll(){initials="";committed="";latest=[];context.value="";candidates.innerHTML='<div class="empty">초성을 입력하고 후보 생성을 누르세요.</div>';render()}
-async function health(){try{const r=await fetch("/health");status.textContent=r.ok?"Backend 연결됨":"Backend 오류"}catch{status.textContent="Backend 연결 안 됨"}}
+
+
+async function health() {
+
+    const statusEl =
+        document.getElementById("status");
+
+    try {
+
+        const response =
+            await fetch("/health");
+
+        if (response.ok) {
+
+            statusEl.textContent =
+                "Backend 연결됨";
+
+        } else {
+
+            statusEl.textContent =
+                "Backend 오류";
+        }
+
+    } catch (error) {
+
+        statusEl.textContent =
+            "Backend 연결 안 됨";
+    }
+}
 renderK();render();health();
 </script>
 </body></html>

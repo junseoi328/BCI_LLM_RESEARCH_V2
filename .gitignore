@@ -9,3 +9,11 @@ logs/
 eval/reports/*.csv
 eval/reports/*.json
 !eval/reports/.gitkeep
+.env
+.env.*
+!.env.production.example
+local_models/
+local_ft/
+__pycache__/
+*.pyc
+backup_before_render_merge/
