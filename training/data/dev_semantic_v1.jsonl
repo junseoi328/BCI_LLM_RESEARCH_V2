@@ -1,0 +1,80 @@
+{"id": "DEV0001", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["화장실 가고 싶어", "혼자서 걷고 싶어"], "catalog_size": 2}
+{"id": "DEV0002", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["안 괜찮아요", "약간 추워요", "요금 차이요", "인구 추이요"], "catalog_size": 4}
+{"id": "DEV0003", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["같이 보자", "공연 보자", "게임 보자"], "catalog_size": 3}
+{"id": "DEV0004", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음악 틀어줘", "음원 틀어줘", "이 약 타 와 줘"], "catalog_size": 3}
+{"id": "DEV0005", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["창문 열어줘", "침 맞아야죠", "치마 안 입죠"], "catalog_size": 3}
+{"id": "DEV0006", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["자세 바꿔줘", "좌석 바꿔줘", "장소 바꿔줘"], "catalog_size": 4}
+{"id": "DEV0007", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마실래", "커피 마시러", "커피만 사러"], "catalog_size": 3}
+{"id": "DEV0008", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["숨쉬기 힘들어", "사실 그 힘들어", "수술 건 힘들어"], "catalog_size": 3}
+{"id": "DEV0009", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["약 주세요", "언제 사요", "이제 사요", "아주 세요"], "catalog_size": 4}
+{"id": "DEV0010", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["천천히 말해줘", "차츰 하면 하지", "차차 하면 하지", "최초 한 말 하지"], "catalog_size": 4}
+{"id": "DEV0011", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["혼자서 걷고 싶어", "화장실 가고 싶어"], "catalog_size": 2}
+{"id": "DEV0012", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["약간 추워요", "요금 차이요", "인구 추이요", "안 괜찮아요"], "catalog_size": 4}
+{"id": "DEV0013", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["공연 보자", "게임 보자", "같이 보자"], "catalog_size": 3}
+{"id": "DEV0014", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음원 틀어줘", "이 약 타 와 줘", "음악 틀어줘"], "catalog_size": 3}
+{"id": "DEV0015", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["침 맞아야죠", "치마 안 입죠", "창문 열어줘"], "catalog_size": 3}
+{"id": "DEV0016", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["좌석 바꿔줘", "장소 바꿔줘", "잠시 불 꺼줘"], "catalog_size": 4}
+{"id": "DEV0017", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마시러", "커피만 사러", "커피 마실래"], "catalog_size": 3}
+{"id": "DEV0018", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["사실 그 힘들어", "수술 건 힘들어", "숨쉬기 힘들어"], "catalog_size": 3}
+{"id": "DEV0019", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["언제 사요", "이제 사요", "아주 세요", "약 주세요"], "catalog_size": 4}
+{"id": "DEV0020", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["차츰 하면 하지", "차차 하면 하지", "최초 한 말 하지", "천천히 말해줘"], "catalog_size": 4}
+{"id": "DEV0021", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["화장실 가고 싶어", "혼자서 걷고 싶어"], "catalog_size": 2}
+{"id": "DEV0022", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["인구 추이요", "약간 추워요", "요금 차이요", "안 괜찮아요"], "catalog_size": 4}
+{"id": "DEV0023", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["게임 보자", "같이 보자", "공연 보자"], "catalog_size": 3}
+{"id": "DEV0024", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음원 틀어줘", "음악 틀어줘", "이 약 타 와 줘"], "catalog_size": 3}
+{"id": "DEV0025", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["치마 안 입죠", "창문 열어줘", "침 맞아야죠"], "catalog_size": 3}
+{"id": "DEV0026", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["장소 바꿔줘", "잠시 불 꺼줘", "자세 바꿔줘"], "catalog_size": 4}
+{"id": "DEV0027", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마시러", "커피만 사러", "커피 마실래"], "catalog_size": 3}
+{"id": "DEV0028", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["사실 그 힘들어", "수술 건 힘들어", "숨쉬기 힘들어"], "catalog_size": 3}
+{"id": "DEV0029", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["아주 세요", "약 주세요", "언제 사요", "이제 사요"], "catalog_size": 4}
+{"id": "DEV0030", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["차차 하면 하지", "천천히 말해줘", "차츰 하면 하지", "최초 한 말 하지"], "catalog_size": 4}
+{"id": "DEV0031", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["혼자서 걷고 싶어", "화장실 가고 싶어"], "catalog_size": 2}
+{"id": "DEV0032", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["인구 추이요", "안 괜찮아요", "약간 추워요", "요금 차이요"], "catalog_size": 4}
+{"id": "DEV0033", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["같이 보자", "공연 보자", "게임 보자"], "catalog_size": 3}
+{"id": "DEV0034", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음악 틀어줘", "음원 틀어줘", "이 약 타 와 줘"], "catalog_size": 3}
+{"id": "DEV0035", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["창문 열어줘", "침 맞아야죠", "치마 안 입죠"], "catalog_size": 3}
+{"id": "DEV0036", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["잠시 불 꺼줘", "자세 바꿔줘", "좌석 바꿔줘"], "catalog_size": 4}
+{"id": "DEV0037", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마실래", "커피 마시러", "커피만 사러"], "catalog_size": 3}
+{"id": "DEV0038", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["숨쉬기 힘들어", "사실 그 힘들어", "수술 건 힘들어"], "catalog_size": 3}
+{"id": "DEV0039", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["아주 세요", "약 주세요", "언제 사요", "이제 사요"], "catalog_size": 4}
+{"id": "DEV0040", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["최초 한 말 하지", "천천히 말해줘", "차츰 하면 하지", "차차 하면 하지"], "catalog_size": 4}
+{"id": "DEV0041", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["화장실 가고 싶어", "혼자서 걷고 싶어"], "catalog_size": 2}
+{"id": "DEV0042", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["안 괜찮아요", "약간 추워요", "요금 차이요", "인구 추이요"], "catalog_size": 4}
+{"id": "DEV0043", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["공연 보자", "게임 보자", "같이 보자"], "catalog_size": 3}
+{"id": "DEV0044", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음원 틀어줘", "이 약 타 와 줘", "음악 틀어줘"], "catalog_size": 3}
+{"id": "DEV0045", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["침 맞아야죠", "치마 안 입죠", "창문 열어줘"], "catalog_size": 3}
+{"id": "DEV0046", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["자세 바꿔줘", "좌석 바꿔줘", "장소 바꿔줘"], "catalog_size": 4}
+{"id": "DEV0047", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마시러", "커피만 사러", "커피 마실래"], "catalog_size": 3}
+{"id": "DEV0048", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["사실 그 힘들어", "수술 건 힘들어", "숨쉬기 힘들어"], "catalog_size": 3}
+{"id": "DEV0049", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["약 주세요", "언제 사요", "이제 사요", "아주 세요"], "catalog_size": 4}
+{"id": "DEV0050", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["천천히 말해줘", "차츰 하면 하지", "차차 하면 하지", "최초 한 말 하지"], "catalog_size": 4}
+{"id": "DEV0051", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["혼자서 걷고 싶어", "화장실 가고 싶어"], "catalog_size": 2}
+{"id": "DEV0052", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["인구 추이요", "약간 추워요", "요금 차이요", "안 괜찮아요"], "catalog_size": 4}
+{"id": "DEV0053", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["게임 보자", "공연 보자", "같이 보자"], "catalog_size": 3}
+{"id": "DEV0054", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음원 틀어줘", "이 약 타 와 줘", "음악 틀어줘"], "catalog_size": 3}
+{"id": "DEV0055", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["치마 안 입죠", "침 맞아야죠", "창문 열어줘"], "catalog_size": 3}
+{"id": "DEV0056", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["잠시 불 꺼줘", "자세 바꿔줘", "장소 바꿔줘"], "catalog_size": 4}
+{"id": "DEV0057", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마시러", "커피만 사러", "커피 마실래"], "catalog_size": 3}
+{"id": "DEV0058", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["사실 그 힘들어", "수술 건 힘들어", "숨쉬기 힘들어"], "catalog_size": 3}
+{"id": "DEV0059", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["언제 사요", "아주 세요", "약 주세요", "이제 사요"], "catalog_size": 4}
+{"id": "DEV0060", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["차차 하면 하지", "최초 한 말 하지", "천천히 말해줘", "차츰 하면 하지"], "catalog_size": 4}
+{"id": "DEV0061", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["화장실 가고 싶어", "혼자서 걷고 싶어"], "catalog_size": 2}
+{"id": "DEV0062", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["요금 차이요", "인구 추이요", "안 괜찮아요", "약간 추워요"], "catalog_size": 4}
+{"id": "DEV0063", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["같이 보자", "공연 보자", "게임 보자"], "catalog_size": 3}
+{"id": "DEV0064", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음악 틀어줘", "음원 틀어줘", "이 약 타 와 줘"], "catalog_size": 3}
+{"id": "DEV0065", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["창문 열어줘", "침 맞아야죠", "치마 안 입죠"], "catalog_size": 3}
+{"id": "DEV0066", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["장소 바꿔줘", "잠시 불 꺼줘", "자세 바꿔줘"], "catalog_size": 4}
+{"id": "DEV0067", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마실래", "커피 마시러", "커피만 사러"], "catalog_size": 3}
+{"id": "DEV0068", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["숨쉬기 힘들어", "사실 그 힘들어", "수술 건 힘들어"], "catalog_size": 3}
+{"id": "DEV0069", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["이제 사요", "아주 세요", "약 주세요", "언제 사요"], "catalog_size": 4}
+{"id": "DEV0070", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["차차 하면 하지", "최초 한 말 하지", "천천히 말해줘", "차츰 하면 하지"], "catalog_size": 4}
+{"id": "DEV0071", "split": "dev", "initials": "ㅎㅈㅅㄱㄱㅅㅇ", "requested_count": 3, "candidates": ["혼자서 걷고 싶어", "화장실 가고 싶어"], "catalog_size": 2}
+{"id": "DEV0072", "split": "dev", "initials": "ㅇㄱㅊㅇㅇ", "requested_count": 5, "candidates": ["인구 추이요", "안 괜찮아요", "약간 추워요", "요금 차이요"], "catalog_size": 4}
+{"id": "DEV0073", "split": "dev", "initials": "ㄱㅇㅂㅈ", "requested_count": 8, "candidates": ["공연 보자", "게임 보자", "같이 보자"], "catalog_size": 3}
+{"id": "DEV0074", "split": "dev", "initials": "ㅇㅇㅌㅇㅈ", "requested_count": 12, "candidates": ["음원 틀어줘", "이 약 타 와 줘", "음악 틀어줘"], "catalog_size": 3}
+{"id": "DEV0075", "split": "dev", "initials": "ㅊㅁㅇㅇㅈ", "requested_count": 16, "candidates": ["침 맞아야죠", "치마 안 입죠", "창문 열어줘"], "catalog_size": 3}
+{"id": "DEV0076", "split": "dev", "initials": "ㅈㅅㅂㄲㅈ", "requested_count": 3, "candidates": ["잠시 불 꺼줘", "자세 바꿔줘", "좌석 바꿔줘"], "catalog_size": 4}
+{"id": "DEV0077", "split": "dev", "initials": "ㅋㅍㅁㅅㄹ", "requested_count": 5, "candidates": ["커피 마시러", "커피만 사러", "커피 마실래"], "catalog_size": 3}
+{"id": "DEV0078", "split": "dev", "initials": "ㅅㅅㄱㅎㄷㅇ", "requested_count": 8, "candidates": ["사실 그 힘들어", "수술 건 힘들어", "숨쉬기 힘들어"], "catalog_size": 3}
+{"id": "DEV0079", "split": "dev", "initials": "ㅇㅈㅅㅇ", "requested_count": 12, "candidates": ["아주 세요", "약 주세요", "언제 사요", "이제 사요"], "catalog_size": 4}
+{"id": "DEV0080", "split": "dev", "initials": "ㅊㅊㅎㅁㅎㅈ", "requested_count": 16, "candidates": ["최초 한 말 하지", "천천히 말해줘", "차츰 하면 하지", "차차 하면 하지"], "catalog_size": 4}

@@ -1,0 +1,8 @@
+{
+  "base_model": "local_models/base/Qwen2.5-0.5B-Instruct",
+  "device": "Intel(R) Arc(TM) Graphics",
+  "epochs": 3,
+  "max_length": 512,
+  "best_eval_loss": 1.622797939479351,
+  "best_adapter": "local_models\\bci_generator_lora_final\\best_adapter"
+}

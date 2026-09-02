@@ -6,10 +6,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
+
+from app.api.speller_ui import router as speller_ui_router
 from app.api.autotoggle import router as autotoggle_router
 from app.api.predict import router as predict_router
 from app.api.session import router as session_router
 from app.config import ROOT_DIR, settings
+from app.api.model_lab import router as model_lab_router
 
 app = FastAPI(
     title="BCI Korean Language Prediction API",
@@ -26,10 +29,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(model_lab_router)
 app.include_router(predict_router, tags=["prediction"])
 app.include_router(autotoggle_router, tags=["auto-toggle"])
 app.include_router(session_router, tags=["session"])
-
+app.include_router(speller_ui_router)
 
 @app.get("/")
 def root():

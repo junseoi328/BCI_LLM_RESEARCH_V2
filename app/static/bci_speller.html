@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이심전심 BCI Speller</title>
+<style>
+:root{--bg:#07111f;--panel:#0c1a2d;--line:#223a58;--text:#f2f6fb;--muted:#9fb1c8;--accent:#5cd6c0;--accent2:#79a8ff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,"Noto Sans KR",sans-serif;background:radial-gradient(circle at top,#102440,#07111f 48%,#050b13);color:var(--text)}
+.wrap{max-width:1180px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.top h1{margin:0;font-size:24px}.top p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.status{border:1px solid var(--line);border-radius:99px;padding:8px 12px}.grid{display:grid;grid-template-columns:1.4fr .8fr;gap:16px;margin-top:16px}
+.card{background:rgba(12,26,45,.95);border:1px solid var(--line);border-radius:18px;padding:18px}.buffer{min-height:74px;background:#07111f;border:1px solid var(--line);border-radius:14px;padding:15px;font-size:24px}
+.pending{color:var(--accent);border-bottom:2px solid var(--accent)}.row{display:flex;gap:10px;margin-top:12px}.field{flex:1}label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+input,select,textarea,button{font:inherit}select,textarea{width:100%;background:#081522;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px}
+.initials{text-align:center;font-weight:800;font-size:32px;letter-spacing:6px;margin:16px 0}.keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.key,.btn{background:#10233b;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 8px;cursor:pointer}.key:hover,.btn:hover{border-color:var(--accent2)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.primary{background:#2457b8}.accent{background:#177767}.danger{border-color:#7f3b49}
+.candidate{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;background:#081522;border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px;cursor:pointer}
+.rank{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#142c49;font-weight:800}.ct{font-size:20px;font-weight:700}.meta{font-size:11px;color:var(--muted)}
+.empty{padding:28px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.metric{padding:10px;border:1px solid var(--line);border-radius:10px;background:#081522}.metric b{display:block;margin-top:4px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.keyboard{grid-template-columns:repeat(5,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><div><h1>이심전심 · Korean Hybrid BCI Speller</h1><p>P300 초성 → Fine-tuned Local Generator → Context Ranker → Top-3 → SSVEP</p></div><div class="status" id="status">Backend 확인 중</div></div>
+<div class="grid">
+<section class="card">
+<h3>문장 버퍼</h3>
+<div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span></div>
+<div class="row">
+<div class="field"><label>상대</label><select id="partner"><option>family</option><option>caregiver</option><option>medical_staff</option><option>friend</option><option>other</option></select></div>
+<div class="field"><label>상황</label><select id="situation"><option>home</option><option>positioning</option><option>meal</option><option>pain</option><option>schedule</option><option>general</option><option>emergency</option></select></div>
+</div>
+<div style="margin-top:10px"><label>최근 문맥</label><textarea id="context" rows="3" placeholder="예: 목이 말라서 물을 마시고 싶다"></textarea></div>
+<h3 style="margin-top:16px">P300 초성 입력 시뮬레이터</h3>
+<div id="initials" class="initials">—</div>
+<div id="keyboard" class="keyboard"></div>
+<div class="actions">
+<button class="btn" onclick="back()">초성 지우기</button>
+<button class="btn" onclick="clearIni()">초성 초기화</button>
+<button class="btn primary" onclick="predict()">후보 생성</button>
+<button class="btn danger" onclick="resetAll()">전체 초기화</button>
+<button class="btn accent" onclick="speak()">문장 말하기</button>
+</div>
+</section>
+<aside class="card">
+<h3>Top-3 후보 · SSVEP 선택</h3>
+<div id="candidates"><div class="empty">초성을 입력하고 후보 생성을 누르세요.</div></div>
+<div class="metrics">
+<div class="metric">Generator<b id="model">-</b></div>
+<div class="metric">Ranker<b id="ranker">-</b></div>
+<div class="metric">Latency<b id="latency">-</b></div>
+<div class="metric">Fallback<b id="fallback">-</b></div>
+</div>
+</aside>
+</div>
+</div>
+<script>
+const J=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+let initials="",committed="",latest=[];
+function renderK(){document.getElementById("keyboard").innerHTML=J.map(x=>`<button class="key" onclick="add('${x}')">${x}</button>`).join("")}
+function render(){document.getElementById("initials").textContent=initials||"—";document.getElementById("committed").textContent=committed;document.getElementById("pending").textContent=initials?` [${initials}]`:""}
+function add(x){initials+=x;render()}function back(){initials=initials.slice(0,-1);render()}function clearIni(){initials="";render()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function predict(){
+ if(!initials){alert("초성을 입력하세요.");return}
+ document.getElementById("candidates").innerHTML='<div class="empty">후보 생성 중...</div>';
+ const body={input_mode:"initials",bci_input:initials,partner:partner.value,situation:situation.value,current_sentence:committed,recent_context:context.value.trim()?[context.value.trim()]:[],top_k:3};
+ try{
+  const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const d=await r.json(); if(!r.ok)throw new Error(d.detail||JSON.stringify(d));
+  latest=d.candidates||[];
+  candidates.innerHTML=latest.length?latest.slice(0,3).map((c,i)=>`<div class="candidate" onclick="commit(${i})"><div class="rank">${i+1}</div><div class="ct">${esc(c.text)}</div><div class="meta">score<br>${(c.final_score??c.context_score??"-")}</div></div>`).join(""):'<div class="empty">유효 후보 없음</div>';
+  model.textContent=d.generator_model||d.model||"-";ranker.textContent=d.ranker_model||"-";latency.textContent=((d.latency?.total_ms??d.latency_ms??"-")+" ms");fallback.textContent=d.fallback||"none";
+ }catch(e){candidates.innerHTML=`<div class="empty">오류: ${esc(e.message)}</div>`}
+}
+function commit(i){const c=latest[i];if(!c)return;committed=(committed?committed+" ":"")+c.text;initials="";latest=[];candidates.innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';render()}
+function speak(){if(!committed)return;const u=new SpeechSynthesisUtterance(committed);u.lang="ko-KR";speechSynthesis.cancel();speechSynthesis.speak(u)}
+function resetAll(){initials="";committed="";latest=[];context.value="";candidates.innerHTML='<div class="empty">초성을 입력하고 후보 생성을 누르세요.</div>';render()}
+async function health(){try{const r=await fetch("/health");status.textContent=r.ok?"Backend 연결됨":"Backend 오류"}catch{status.textContent="Backend 연결 안 됨"}}
+renderK();render();health();
+</script>
+</body></html>

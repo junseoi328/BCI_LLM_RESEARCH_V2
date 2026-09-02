@@ -1,0 +1,8 @@
+<!doctype html><html><meta charset='utf-8'><title>BCI Training</title><style>body{font-family:Arial;max-width:900px;margin:40px auto}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:8px}pre{background:#eee;padding:15px}</style><h1>BCI Local LoRA Training</h1><pre>{
+  "base_model": "local_models/base/Qwen2.5-0.5B-Instruct",
+  "device": "Intel(R) Arc(TM) Graphics",
+  "epochs": 3,
+  "max_length": 512,
+  "best_eval_loss": 1.622797939479351,
+  "best_adapter": "local_models\\bci_generator_lora_final\\best_adapter"
+}</pre><table><tr><th>Epoch</th><th>Step</th><th>Train loss</th><th>Eval loss</th><th>sec</th></tr><tr><td>1</td><td>75</td><td>1.2374</td><td>1.6228</td><td>806.8</td></tr><tr><td>2</td><td>150</td><td>0.3904</td><td>1.6362</td><td>884.9</td></tr><tr><td>3</td><td>225</td><td>0.2008</td><td>1.7044</td><td>898.8</td></tr></table></html>

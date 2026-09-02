@@ -1,0 +1,26 @@
+{
+  "seed_phrases_before_benchmark_exclusion": 296,
+  "benchmark_excluded": 15,
+  "usable_phrases": 281,
+  "train_phrases": 214,
+  "dev_phrases": 67,
+  "unique_initial_groups": 234,
+  "train_initial_groups": 176,
+  "dev_initial_groups": 58,
+  "category_counts": {
+    "basic_request": 19,
+    "food_drink": 17,
+    "environment": 20,
+    "positioning": 18,
+    "pain_discomfort": 16,
+    "medical_communication": 20,
+    "schedule_time": 18,
+    "social": 18,
+    "questions_answers": 19,
+    "emotion_needs": 20,
+    "communication_control": 20,
+    "device_control": 20,
+    "ambiguity": 56
+  },
+  "review_csv": "training_v2/reviews/candidate_pool_review_v2.csv"
+}

@@ -1,0 +1,100 @@
+{"id": "DEV0001", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 4, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0002", "split": "dev", "initials": "ㅇㄹㄲㅈ", "requested_count": 16, "target": "알람 꺼줘", "category": "device_control", "candidates": ["알람 꺼줘"]}
+{"id": "DEV0003", "split": "dev", "initials": "ㅇㅇㄹㅇㅈ", "requested_count": 6, "target": "옆으로 와줘", "category": "basic_request", "candidates": ["옆으로 와줘"]}
+{"id": "DEV0004", "split": "dev", "initials": "ㅅㅁㅇㄷㅅㅎㅈㅅㅇ", "requested_count": 12, "target": "설명을 다시 해주세요", "category": "medical_communication", "candidates": ["설명을 다시 해주세요"]}
+{"id": "DEV0005", "split": "dev", "initials": "ㄱㅊㅇㄱㅅㄴㅇ", "requested_count": 8, "target": "기침이 계속 나와", "category": "pain_discomfort", "candidates": ["기침이 계속 나와"]}
+{"id": "DEV0006", "split": "dev", "initials": "ㅅㄱㄹㅈㅈ", "requested_count": 16, "target": "숟가락 좀 줘", "category": "food_drink", "candidates": ["숟가락 좀 줘"]}
+{"id": "DEV0007", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 12, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0008", "split": "dev", "initials": "ㅍㅇㄴㅁㅇㅍ", "requested_count": 6, "target": "팔이 너무 아파", "category": "pain_discomfort", "candidates": ["팔이 너무 아파"]}
+{"id": "DEV0009", "split": "dev", "initials": "ㅇㄷㅇㅇㄴㄱㅇ", "requested_count": 12, "target": "어디에 있는 거야", "category": "questions_answers", "candidates": ["어디에 있는 거야"]}
+{"id": "DEV0010", "split": "dev", "initials": "ㄱㅅㄱㄱㄹㅇㄹㅈㅅㅇ", "requested_count": 6, "target": "검사 결과를 알려주세요", "category": "medical_communication", "candidates": ["검사 결과를 알려주세요"]}
+{"id": "DEV0011", "split": "dev", "initials": "ㅁㅅㅈㅇㅇㅈ", "requested_count": 6, "target": "메시지 읽어줘", "category": "device_control", "candidates": ["메시지 읽어줘"]}
+{"id": "DEV0012", "split": "dev", "initials": "ㅇㄴㅇㄱㅂㅇㅇㅈㅇ", "requested_count": 16, "target": "오늘은 기분이 안 좋아", "category": "emotion_needs", "candidates": ["오늘은 기분이 안 좋아"]}
+{"id": "DEV0013", "split": "dev", "initials": "ㄱㅊㅇㄱㅅㄴㅇ", "requested_count": 12, "target": "기침이 계속 나와", "category": "pain_discomfort", "candidates": ["기침이 계속 나와"]}
+{"id": "DEV0014", "split": "dev", "initials": "ㅇㅇㄹㅇㅈ", "requested_count": 8, "target": "옆으로 와줘", "category": "basic_request", "candidates": ["옆으로 와줘"]}
+{"id": "DEV0015", "split": "dev", "initials": "ㄱㅇㅈㅈ", "requested_count": 8, "target": "과일 좀 줘", "category": "food_drink", "candidates": ["과일 좀 줘"]}
+{"id": "DEV0016", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 6, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0017", "split": "dev", "initials": "ㅎㅁㅇㄴㄱㅈ", "requested_count": 4, "target": "화면을 넘겨줘", "category": "device_control", "candidates": ["화면을 넘겨줘"]}
+{"id": "DEV0018", "split": "dev", "initials": "ㅈㅉㅇㄱㄷ", "requested_count": 16, "target": "진짜 웃기다", "category": "social", "candidates": ["진짜 웃기다"]}
+{"id": "DEV0019", "split": "dev", "initials": "ㅈㅇ", "requested_count": 6, "target": "줘요", "category": "ambiguity", "candidates": ["줘요", "자요", "좋아", "주워", "저요", "지워"]}
+{"id": "DEV0020", "split": "dev", "initials": "ㅈㄱㅈㄱㅁㅎㅈ", "requested_count": 12, "target": "조금 작게 말해줘", "category": "communication_control", "candidates": ["조금 작게 말해줘"]}
+{"id": "DEV0021", "split": "dev", "initials": "ㅇㄴ", "requested_count": 16, "target": "안내", "category": "ambiguity", "candidates": ["안내", "아니", "오늘", "언니", "안녕"]}
+{"id": "DEV0022", "split": "dev", "initials": "ㅈㅇ", "requested_count": 8, "target": "지워", "category": "ambiguity", "candidates": ["지워", "좋아", "저요", "줘요", "자요", "주워"]}
+{"id": "DEV0023", "split": "dev", "initials": "ㅈㅇ", "requested_count": 6, "target": "좋아", "category": "ambiguity", "candidates": ["좋아", "주워", "자요", "지워", "줘요", "저요"]}
+{"id": "DEV0024", "split": "dev", "initials": "ㅇㄴ", "requested_count": 8, "target": "오늘", "category": "ambiguity", "candidates": ["오늘", "안녕", "언니", "아니", "안내"]}
+{"id": "DEV0025", "split": "dev", "initials": "ㅇㅈㄷㅅㅇㄱㅇ", "requested_count": 4, "target": "언제 다시 올 거야", "category": "schedule_time", "candidates": ["언제 다시 올 거야"]}
+{"id": "DEV0026", "split": "dev", "initials": "ㅇㄴ", "requested_count": 12, "target": "안녕", "category": "ambiguity", "candidates": ["안녕", "오늘", "아니", "안내", "언니"]}
+{"id": "DEV0027", "split": "dev", "initials": "ㅈㄱㅈㅇㅎㅎㅈ", "requested_count": 16, "target": "조금 조용히 해줘", "category": "environment", "candidates": ["조금 조용히 해줘"]}
+{"id": "DEV0028", "split": "dev", "initials": "ㄱㅇㅈㅈ", "requested_count": 8, "target": "과일 좀 줘", "category": "food_drink", "candidates": ["과일 좀 줘"]}
+{"id": "DEV0029", "split": "dev", "initials": "ㅈㄱㅇㄷㄱㅎㅈ", "requested_count": 12, "target": "조금 있다가 하자", "category": "schedule_time", "candidates": ["조금 있다가 하자"]}
+{"id": "DEV0030", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 8, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0031", "split": "dev", "initials": "ㅈㅎㄲㅇㅈ", "requested_count": 8, "target": "전화 끊어줘", "category": "device_control", "candidates": ["전화 끊어줘"]}
+{"id": "DEV0032", "split": "dev", "initials": "ㅎㅇㄷㅅㅈㅈㅅㅇ", "requested_count": 8, "target": "혈압 다시 재주세요", "category": "medical_communication", "candidates": ["혈압 다시 재주세요"]}
+{"id": "DEV0033", "split": "dev", "initials": "ㅁㄹㄱㅇㅈㄹㅇ", "requested_count": 4, "target": "머리가 어지러워", "category": "pain_discomfort", "candidates": ["머리가 어지러워"]}
+{"id": "DEV0034", "split": "dev", "initials": "ㄱㄱㅇㄴㄱㄱㅇ", "requested_count": 4, "target": "그건 아닌 것 같아", "category": "questions_answers", "candidates": ["그건 아닌 것 같아"]}
+{"id": "DEV0035", "split": "dev", "initials": "ㅇㅇㄴㅇㄹㅁㅇㅂㅈ", "requested_count": 16, "target": "예 아니오로 물어봐줘", "category": "communication_control", "candidates": ["예 아니오로 물어봐줘"]}
+{"id": "DEV0036", "split": "dev", "initials": "ㅇㄴ", "requested_count": 8, "target": "안내", "category": "ambiguity", "candidates": ["안내", "언니", "안녕", "오늘", "아니"]}
+{"id": "DEV0037", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 6, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0038", "split": "dev", "initials": "ㄷㅇㄱㅌㅇㅈ", "requested_count": 6, "target": "다음 곡 틀어줘", "category": "device_control", "candidates": ["다음 곡 틀어줘"]}
+{"id": "DEV0039", "split": "dev", "initials": "ㅁㅇㅇㅍㅎㅈㅇ", "requested_count": 16, "target": "마음이 편해졌어", "category": "emotion_needs", "candidates": ["마음이 편해졌어"]}
+{"id": "DEV0040", "split": "dev", "initials": "ㅅㅁㅇㄷㅅㅎㅈㅅㅇ", "requested_count": 12, "target": "설명을 다시 해주세요", "category": "medical_communication", "candidates": ["설명을 다시 해주세요"]}
+{"id": "DEV0041", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 16, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0042", "split": "dev", "initials": "ㅈㄱㄷㄹㄱㅈ", "requested_count": 4, "target": "조금 뒤로 가줘", "category": "basic_request", "candidates": ["조금 뒤로 가줘"]}
+{"id": "DEV0043", "split": "dev", "initials": "ㅈㅉㅇㄱㄷ", "requested_count": 8, "target": "진짜 웃기다", "category": "social", "candidates": ["진짜 웃기다"]}
+{"id": "DEV0044", "split": "dev", "initials": "ㄴㅁㅇㄱㄷㄹㅈ", "requested_count": 4, "target": "내 말을 기다려줘", "category": "communication_control", "candidates": ["내 말을 기다려줘"]}
+{"id": "DEV0045", "split": "dev", "initials": "ㅁㄹㄱㅇㅈㄹㅇ", "requested_count": 6, "target": "머리가 어지러워", "category": "pain_discomfort", "candidates": ["머리가 어지러워"]}
+{"id": "DEV0046", "split": "dev", "initials": "ㅊㅇㄷㅅㅈㅈㅅㅇ", "requested_count": 16, "target": "체온 다시 재주세요", "category": "medical_communication", "candidates": ["체온 다시 재주세요"]}
+{"id": "DEV0047", "split": "dev", "initials": "ㅇㄲㄱㅃㄱㅎ", "requested_count": 12, "target": "어깨가 뻐근해", "category": "pain_discomfort", "candidates": ["어깨가 뻐근해"]}
+{"id": "DEV0048", "split": "dev", "initials": "ㅍㅇㄴㅁㅇㅍ", "requested_count": 4, "target": "팔이 너무 아파", "category": "pain_discomfort", "candidates": ["팔이 너무 아파"]}
+{"id": "DEV0049", "split": "dev", "initials": "ㅇㄲㄱㅃㄱㅎ", "requested_count": 16, "target": "어깨가 뻐근해", "category": "pain_discomfort", "candidates": ["어깨가 뻐근해"]}
+{"id": "DEV0050", "split": "dev", "initials": "ㅋㅍㅈㅈ", "requested_count": 6, "target": "커피 좀 줘", "category": "food_drink", "candidates": ["커피 좀 줘"]}
+{"id": "DEV0051", "split": "dev", "initials": "ㅇㅇㅈㅈ", "requested_count": 12, "target": "우유 좀 줘", "category": "food_drink", "candidates": ["우유 좀 줘"]}
+{"id": "DEV0052", "split": "dev", "initials": "ㅈㅇ", "requested_count": 4, "target": "자요", "category": "ambiguity", "candidates": ["자요", "좋아", "저요", "줘요"]}
+{"id": "DEV0053", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 8, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0054", "split": "dev", "initials": "ㅇㅇㅋㅈㅋㅈ", "requested_count": 12, "target": "에어컨 좀 켜줘", "category": "environment", "candidates": ["에어컨 좀 켜줘"]}
+{"id": "DEV0055", "split": "dev", "initials": "ㅁㅇㅇㄷㄷㅎ", "requested_count": 4, "target": "마음이 답답해", "category": "emotion_needs", "candidates": ["마음이 답답해"]}
+{"id": "DEV0056", "split": "dev", "initials": "ㅊㄴㅂㄲㅈ", "requested_count": 12, "target": "채널 바꿔줘", "category": "device_control", "candidates": ["채널 바꿔줘"]}
+{"id": "DEV0057", "split": "dev", "initials": "ㅎㄱㅈㅅㅋㅈ", "requested_count": 8, "target": "환기 좀 시켜줘", "category": "environment", "candidates": ["환기 좀 시켜줘"]}
+{"id": "DEV0058", "split": "dev", "initials": "ㅇㄴㅇㅈㅇㄹㅈ", "requested_count": 8, "target": "오늘 일정 알려줘", "category": "schedule_time", "candidates": ["오늘 일정 알려줘"]}
+{"id": "DEV0059", "split": "dev", "initials": "ㅋㅌㅈㅇㅇㅈ", "requested_count": 4, "target": "커튼 좀 열어줘", "category": "environment", "candidates": ["커튼 좀 열어줘"]}
+{"id": "DEV0060", "split": "dev", "initials": "ㄱㄲㅇㅇㅈ", "requested_count": 4, "target": "가까이 와줘", "category": "basic_request", "candidates": ["가까이 와줘"]}
+{"id": "DEV0061", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 12, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0062", "split": "dev", "initials": "ㅇㅇㅈㅈ", "requested_count": 12, "target": "우유 좀 줘", "category": "food_drink", "candidates": ["우유 좀 줘"]}
+{"id": "DEV0063", "split": "dev", "initials": "ㅅㅈㅈㅂㅇㅈ", "requested_count": 12, "target": "사진 좀 보여줘", "category": "social", "candidates": ["사진 좀 보여줘"]}
+{"id": "DEV0064", "split": "dev", "initials": "ㅇㄸㄱㅎㅁㄷ", "requested_count": 6, "target": "어떻게 하면 돼", "category": "questions_answers", "candidates": ["어떻게 하면 돼"]}
+{"id": "DEV0065", "split": "dev", "initials": "ㅍㅇㄴㅁㅇㅍ", "requested_count": 16, "target": "팔이 너무 아파", "category": "pain_discomfort", "candidates": ["팔이 너무 아파"]}
+{"id": "DEV0066", "split": "dev", "initials": "ㅁㅇㅇㅍㅎㅈㅇ", "requested_count": 8, "target": "마음이 편해졌어", "category": "emotion_needs", "candidates": ["마음이 편해졌어"]}
+{"id": "DEV0067", "split": "dev", "initials": "ㅊㅇㄷㅅㅈㅈㅅㅇ", "requested_count": 16, "target": "체온 다시 재주세요", "category": "medical_communication", "candidates": ["체온 다시 재주세요"]}
+{"id": "DEV0068", "split": "dev", "initials": "ㅌㅈㅇㄷㅅㅎㅈㅇㅇ", "requested_count": 4, "target": "통증이 더 심해졌어요", "category": "medical_communication", "candidates": ["통증이 더 심해졌어요"]}
+{"id": "DEV0069", "split": "dev", "initials": "ㄱㅇㅇㅇㅈ", "requested_count": 8, "target": "곁에 있어줘", "category": "social", "candidates": ["곁에 있어줘"]}
+{"id": "DEV0070", "split": "dev", "initials": "ㅈㅁㅇㄷㅅㅎㅈ", "requested_count": 8, "target": "질문을 다시 해줘", "category": "communication_control", "candidates": ["질문을 다시 해줘"]}
+{"id": "DEV0071", "split": "dev", "initials": "ㅂㅇㄴㅁㄷㄷㅎ", "requested_count": 6, "target": "방이 너무 답답해", "category": "environment", "candidates": ["방이 너무 답답해"]}
+{"id": "DEV0072", "split": "dev", "initials": "ㅇㄴ", "requested_count": 12, "target": "언니", "category": "ambiguity", "candidates": ["언니", "안녕", "안내", "아니", "오늘"]}
+{"id": "DEV0073", "split": "dev", "initials": "ㄱㅇㅇㅇㅈ", "requested_count": 4, "target": "곁에 있어줘", "category": "social", "candidates": ["곁에 있어줘"]}
+{"id": "DEV0074", "split": "dev", "initials": "ㅅㅈㅈㅂㅇㅈ", "requested_count": 6, "target": "사진 좀 보여줘", "category": "social", "candidates": ["사진 좀 보여줘"]}
+{"id": "DEV0075", "split": "dev", "initials": "ㅇㄴㅇㅈㅇㄹㅈ", "requested_count": 6, "target": "오늘 일정 알려줘", "category": "schedule_time", "candidates": ["오늘 일정 알려줘"]}
+{"id": "DEV0076", "split": "dev", "initials": "ㅇㅈㄷㅅㅇㄱㅇ", "requested_count": 6, "target": "언제 다시 올 거야", "category": "schedule_time", "candidates": ["언제 다시 올 거야"]}
+{"id": "DEV0077", "split": "dev", "initials": "ㅁㅇㅇㄷㄷㅎ", "requested_count": 12, "target": "마음이 답답해", "category": "emotion_needs", "candidates": ["마음이 답답해"]}
+{"id": "DEV0078", "split": "dev", "initials": "ㅈㄱㅊㅇㅈ", "requested_count": 12, "target": "저거 치워줘", "category": "basic_request", "candidates": ["저거 치워줘"]}
+{"id": "DEV0079", "split": "dev", "initials": "ㅈㅇ", "requested_count": 16, "target": "주워", "category": "ambiguity", "candidates": ["주워", "좋아", "자요", "저요", "지워", "줘요"]}
+{"id": "DEV0080", "split": "dev", "initials": "ㄱㅅㄱㄱㄹㅇㄹㅈㅅㅇ", "requested_count": 6, "target": "검사 결과를 알려주세요", "category": "medical_communication", "candidates": ["검사 결과를 알려주세요"]}
+{"id": "DEV0081", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 16, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0082", "split": "dev", "initials": "ㅎㅇㄷㅅㅈㅈㅅㅇ", "requested_count": 8, "target": "혈압 다시 재주세요", "category": "medical_communication", "candidates": ["혈압 다시 재주세요"]}
+{"id": "DEV0083", "split": "dev", "initials": "ㅇㅈㅇㄴㄱㅇ", "requested_count": 16, "target": "언제 오는 거야", "category": "questions_answers", "candidates": ["언제 오는 거야"]}
+{"id": "DEV0084", "split": "dev", "initials": "ㄷㅂㅉㄹㅎㄱ", "requested_count": 6, "target": "두 번째로 할게", "category": "communication_control", "candidates": ["두 번째로 할게"]}
+{"id": "DEV0085", "split": "dev", "initials": "ㄷㄹㅅㅌㅈㅂㅇㅈ", "requested_count": 4, "target": "다른 선택지 보여줘", "category": "communication_control", "candidates": ["다른 선택지 보여줘"]}
+{"id": "DEV0086", "split": "dev", "initials": "ㅈㄱㄷㄹㄱㅈ", "requested_count": 6, "target": "조금 뒤로 가줘", "category": "basic_request", "candidates": ["조금 뒤로 가줘"]}
+{"id": "DEV0087", "split": "dev", "initials": "ㅁㄹㄱㅇㅈㄹㅇ", "requested_count": 8, "target": "머리가 어지러워", "category": "pain_discomfort", "candidates": ["머리가 어지러워"]}
+{"id": "DEV0088", "split": "dev", "initials": "ㅈㄱㅈㅇㅎㅎㅈ", "requested_count": 16, "target": "조금 조용히 해줘", "category": "environment", "candidates": ["조금 조용히 해줘"]}
+{"id": "DEV0089", "split": "dev", "initials": "ㅈㅇ", "requested_count": 16, "target": "저요", "category": "ambiguity", "candidates": ["저요", "좋아", "줘요", "주워", "지워", "자요"]}
+{"id": "DEV0090", "split": "dev", "initials": "ㅇㄴㅇㅇ", "requested_count": 8, "target": "왜 늦었어", "category": "questions_answers", "candidates": ["왜 늦었어"]}
+{"id": "DEV0091", "split": "dev", "initials": "ㅎㅇㅁㅈ", "requested_count": 4, "target": "한 입만 줘", "category": "food_drink", "candidates": ["한 입만 줘"]}
+{"id": "DEV0092", "split": "dev", "initials": "ㄴㅇㅇㅅㅇㅈ", "requested_count": 16, "target": "내일 약속 있지", "category": "schedule_time", "candidates": ["내일 약속 있지"]}
+{"id": "DEV0093", "split": "dev", "initials": "ㅍㅈㄴㄹㅈ", "requested_count": 4, "target": "팔 좀 내려줘", "category": "positioning", "candidates": ["팔 좀 내려줘"]}
+{"id": "DEV0094", "split": "dev", "initials": "ㅇㄱㄹㄱㅇ", "requested_count": 12, "target": "왜 그런 거야", "category": "questions_answers", "candidates": ["왜 그런 거야"]}
+{"id": "DEV0095", "split": "dev", "initials": "ㅇㄴ", "requested_count": 12, "target": "아니", "category": "ambiguity", "candidates": ["아니", "안내", "안녕", "언니", "오늘"]}
+{"id": "DEV0096", "split": "dev", "initials": "ㄱㄲㅇㅇㅈ", "requested_count": 16, "target": "가까이 와줘", "category": "basic_request", "candidates": ["가까이 와줘"]}
+{"id": "DEV0097", "split": "dev", "initials": "ㅈㅉ", "requested_count": 4, "target": "저쪽", "category": "ambiguity", "candidates": ["저쪽"]}
+{"id": "DEV0098", "split": "dev", "initials": "ㅌㅈㅇㄷㅅㅎㅈㅇㅇ", "requested_count": 4, "target": "통증이 더 심해졌어요", "category": "medical_communication", "candidates": ["통증이 더 심해졌어요"]}
+{"id": "DEV0099", "split": "dev", "initials": "ㅋㅌㅈㅇㅇㅈ", "requested_count": 4, "target": "커튼 좀 열어줘", "category": "environment", "candidates": ["커튼 좀 열어줘"]}
+{"id": "DEV0100", "split": "dev", "initials": "ㅇㄴㅇㄱㅂㅇㅇㅈㅇ", "requested_count": 6, "target": "오늘은 기분이 안 좋아", "category": "emotion_needs", "candidates": ["오늘은 기분이 안 좋아"]}

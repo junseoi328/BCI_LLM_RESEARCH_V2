@@ -9,7 +9,7 @@ from app.config import settings
 from app.context.manager import build_context
 from app.errors import LLMServiceError
 from app.llm.diversity_generator import generate_diversity_candidates
-from app.llm.factory import get_language_model_client
+from app.llm.factory_final import get_language_model_client_final as get_language_model_client
 from app.llm.pricing import estimate_cost_usd
 from app.llm.types import LanguageModelClient, TokenUsage
 from app.logging.experiment_logger import log_prediction
