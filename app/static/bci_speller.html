@@ -202,7 +202,7 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 .candidate{
   display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;
   background:#fbfcfe;border:1.5px solid var(--line);border-radius:var(--radius-sm);
-  padding:13px 14px;cursor:pointer;transition:all .12s ease;position:relative;
+  padding:13px 14px;transition:all .12s ease;position:relative;
 }
 .candidate:hover{border-color:var(--blue);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
 .candidate:active{transform:translateY(0)}
@@ -212,7 +212,8 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 }
 .candidate:nth-child(1) .rank{background:linear-gradient(135deg,var(--blue),#6ba0ff);color:#fff}
 .candidate .ct{font-size:17px;font-weight:700}
-.candidate .ct .unit{border-radius:5px;padding:0 1px;cursor:pointer}
+.candidate .ct .unit{border:0;background:transparent;color:inherit;font:inherit;border-radius:5px;padding:3px 2px;cursor:pointer}
+.candidate .commit-candidate{grid-column:2 / -1;justify-self:end;border:1px solid var(--blue);border-radius:8px;padding:7px 12px;background:var(--blue-soft);color:var(--blue-dark);font-weight:700;cursor:pointer}
 .candidate .ct .unit:hover{background:var(--blue-soft);color:var(--blue-dark);outline:1.5px dashed var(--blue)}
 .candidate .meta{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.5;font-variant-numeric:tabular-nums}
 .candidate .freq{font-size:9.5px;color:var(--blue-dark);opacity:.75}
@@ -377,7 +378,7 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
         <h3>Top-3 후보 <span class="tag">SSVEP 선택</span></h3>
         <div id="nudgeBox"></div>
         <div class="cand-list" id="candidates"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div></div>
-        <div class="unit-hint" id="unitHint" hidden>💡 후보의 글자를 탭하면 그 글자만 바꾼 대안을 볼 수 있어요 (FillMask)</div>
+        <div class="unit-hint" id="unitHint" hidden>💡 글자를 누르면 해당 글자의 대안을 찾습니다 (FillMask). 문장 추가는 ‘문장 확정’ 버튼 또는 숫자 키 1·2·3을 사용하세요.</div>
         <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding-left:0">🔎 원하는 표현이 없어요 → 직접 입력하기</button>
         <div class="recovery" id="recoveryPanel" hidden>
           <div class="recovery-head">
@@ -446,6 +447,7 @@ let state={
   jamoMedial:null,     // medial chosen so far for jamoTarget (before jong/commit)
   fillMaskFor:null,    // {referenceText, targetIndex} while showing FillMask alternatives
 };
+let predictionVersion=0;
 
 function el(id){return document.getElementById(id)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -506,6 +508,7 @@ function partnerLabel(v){ return (PARTNERS.find(p=>p.v===v)||{}).label || v; }
 function situationLabel(v){ return (SITUATIONS.find(s=>s.v===v)||{}).label || v; }
 
 function resetToStart(){
+  predictionVersion++;
   state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[],
     habitual:[],spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null};
   try{ localStorage.removeItem("bci_session_id"); }catch(e){}
@@ -605,12 +608,19 @@ el("btnSpeak").onclick=()=>{
 el("btnPredict").onclick=()=>predict({});
 
 function clearRecoveryState(){
+  predictionVersion++;
+  state.latest=[];
   state.spelled={}; state.jamoTarget=null; state.jamoMedial=null; state.fillMaskFor=null;
+  el("btnPredict").disabled=false;
+  renderCandidatesEmpty();
 }
 
 /* ---------------- predict (base + recovery variants) ---------------- */
 async function predict(extra){
   if(!state.initials){ el("candidates").innerHTML='<div class="empty">먼저 초성을 선택해주세요.</div>'; return; }
+  const version=++predictionVersion;
+  state.latest=[];
+  if(extra?.fill_mask_reference_text===undefined) hideFillmaskBox();
   el("candidates").innerHTML='<div class="empty">후보 생성 중…</div>';
   el("nudgeBox").innerHTML=""; el("unitHint").hidden=true; el("btnOpenRecovery").style.display="none";
   el("btnPredict").disabled=true;
@@ -625,15 +635,20 @@ async function predict(extra){
   try{
     const url = state.sessionId ? `/session/${state.sessionId}/predict` : "/predict";
     const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-    const d=await r.json();
+    let d=await r.json();
+    if(version!==predictionVersion) return;
     if(!r.ok) throw new Error((d.detail&&(d.detail.message||JSON.stringify(d.detail)))||JSON.stringify(d));
+    if(extra?.fill_mask_reference_text!==undefined){
+      d={...d,candidates:(d.candidates||[]).filter(c=>c.text!==extra.fill_mask_reference_text)};
+    }
     state.latest=d.candidates||[];
     renderCandidates(d);
     return d;
   }catch(e){
+    if(version!==predictionVersion) return;
     el("candidates").innerHTML=`<div class="empty">오류: ${esc(e.message||e)}</div>`;
   }finally{
-    el("btnPredict").disabled=false;
+    if(version===predictionVersion) el("btnPredict").disabled=false;
   }
 }
 
@@ -648,10 +663,11 @@ function renderCandidates(d){
         <div class="rank">${i+1}</div>
         <div class="ct">${renderCandidateUnits(c.text)}</div>
         <div class="meta">score ${(c.final_score??c.context_score??0).toFixed?.(2) ?? c.final_score}<div class="freq">${FREQS[i]||""}</div></div>
+        <button type="button" class="commit-candidate">문장 확정 ${i+1}</button>
       </div>`).join("");
     [...el("candidates").children].forEach(node=>{
       const i=parseInt(node.dataset.i,10);
-      node.onclick=(ev)=>{ if(ev.target.closest(".unit")) return; commit(i); };
+      node.querySelector(".commit-candidate").onclick=()=>commit(i);
       [...node.querySelectorAll(".unit")].forEach(span=>{
         span.onclick=(ev)=>{
           ev.stopPropagation();
@@ -680,7 +696,7 @@ function renderCandidateUnits(text){
   for(const ch of String(text)){
     if(/\s/.test(ch)){ html+=" "; continue; }
     if(isHangulSyllable(ch) || CHO.includes(ch)){
-      html += `<span class="unit" data-u="${idx}" title="탭하면 이 글자만 바꾼 대안 보기">${esc(ch)}</span>`;
+      html += `<button type="button" class="unit" data-u="${idx}" aria-label="${esc(ch)} 글자 대안 찾기" title="탭하면 이 글자만 바꾼 대안 보기">${esc(ch)}</button>`;
       idx++;
     } else {
       html += esc(ch);
@@ -752,7 +768,9 @@ function renderJamoPicker(){
 
 /* ---------------- FillMask recovery ---------------- */
 async function openFillMask(referenceText, targetIndex){
-  state.fillMaskFor={referenceText, targetIndex};
+  if(!state.initials) return;
+  const selection={referenceText, targetIndex};
+  state.fillMaskFor=selection;
   el("recoveryPanel").hidden=false;
   el("jamoPicker").hidden=true;
   const box=el("fillmaskBox");
@@ -764,18 +782,20 @@ async function openFillMask(referenceText, targetIndex){
     fill_mask_target_index: targetIndex,
     top_k: 5,
   });
-  if(!d) return;
-  const alts=(d.candidates||[]).filter(c=>c.text!==referenceText);
+  if(state.fillMaskFor!==selection) return;
+  if(!d){
+    el("fillmaskAlts").innerHTML = `<div class="empty">대안 조회에 실패했습니다. 후보를 다시 생성해주세요.</div>`;
+    return;
+  }
+  const alts=d.candidates||[];
   if(!alts.length){
     el("fillmaskAlts").innerHTML = `<div class="empty" style="padding:10px">대안을 찾지 못했습니다. 위 KeywordAE로 직접 입력해보세요.</div>`;
     return;
   }
-  el("fillmaskAlts").innerHTML = alts.map((c,i)=>`<div class="alt" data-i="${i}">${esc(c.text)}</div>`).join("");
+  el("fillmaskAlts").innerHTML = alts.map((c,i)=>`<button type="button" class="alt" data-i="${i}"><span>${esc(c.text)}</span><span>문장 확정</span></button>`).join("");
   [...el("fillmaskAlts").children].forEach(node=>{
     node.onclick=()=>commit(parseInt(node.dataset.i,10));
   });
-  // re-point state.latest so commit(i) selects out of the alt list, not the old top-3
-  state.latest = alts;
 }
 function hideFillmaskBox(){
   state.fillMaskFor=null;
