@@ -2,112 +2,572 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>이심전심 BCI Speller</title>
 <style>
-:root{--bg:#07111f;--panel:#0c1a2d;--line:#223a58;--text:#f2f6fb;--muted:#9fb1c8;--accent:#5cd6c0;--accent2:#79a8ff}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,"Noto Sans KR",sans-serif;background:radial-gradient(circle at top,#102440,#07111f 48%,#050b13);color:var(--text)}
-.wrap{max-width:1180px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.top h1{margin:0;font-size:24px}.top p{margin:5px 0 0;color:var(--muted);font-size:13px}
-.status{border:1px solid var(--line);border-radius:99px;padding:8px 12px}.grid{display:grid;grid-template-columns:1.4fr .8fr;gap:16px;margin-top:16px}
-.card{background:rgba(12,26,45,.95);border:1px solid var(--line);border-radius:18px;padding:18px}.buffer{min-height:74px;background:#07111f;border:1px solid var(--line);border-radius:14px;padding:15px;font-size:24px}
-.pending{color:var(--accent);border-bottom:2px solid var(--accent)}.row{display:flex;gap:10px;margin-top:12px}.field{flex:1}label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
-input,select,textarea,button{font:inherit}select,textarea{width:100%;background:#081522;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px}
-.initials{text-align:center;font-weight:800;font-size:32px;letter-spacing:6px;margin:16px 0}.keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
-.key,.btn{background:#10233b;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 8px;cursor:pointer}.key:hover,.btn:hover{border-color:var(--accent2)}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.primary{background:#2457b8}.accent{background:#177767}.danger{border-color:#7f3b49}
-.candidate{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;background:#081522;border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px;cursor:pointer}
-.rank{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#142c49;font-weight:800}.ct{font-size:20px;font-weight:700}.meta{font-size:11px;color:var(--muted)}
-.empty{padding:28px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.metric{padding:10px;border:1px solid var(--line);border-radius:10px;background:#081522}.metric b{display:block;margin-top:4px}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.keyboard{grid-template-columns:repeat(5,1fr)}}
+:root{
+  --blue:#2f6fed; --blue-dark:#1d4ed8; --blue-soft:#eaf0ff;
+  --bg:#f3f6fc; --card:#ffffff; --ink:#141c2b; --muted:#69748a;
+  --line:#e3e8f2; --line-soft:#edf1f9; --radius:22px; --radius-sm:14px;
+  --shadow:0 14px 34px -16px rgba(30,64,175,.28);
+  --shadow-sm:0 4px 14px -8px rgba(30,64,175,.22);
+  --ok:#16a34a; --warn:#e2711d; --danger:#dc2626;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family:"Pretendard","Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  background:
+    radial-gradient(1100px 480px at 15% -10%, #dbe6ff 0%, transparent 60%),
+    radial-gradient(900px 420px at 110% 10%, #e7f7ef 0%, transparent 55%),
+    var(--bg);
+  display:flex; flex-direction:column;
+}
+a{color:inherit}
+button{font:inherit}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px; gap:12px;
+}
+.brand{display:flex; align-items:center; gap:10px}
+.brand .mark{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),#6ba0ff);
+  display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;
+  box-shadow:var(--shadow-sm);
+}
+.brand .name{font-weight:800;font-size:16px;letter-spacing:-.01em}
+.brand .sub{font-size:11.5px;color:var(--muted);margin-top:1px}
+.health{
+  display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);
+  background:var(--card);border:1px solid var(--line);border-radius:99px;padding:7px 13px;
+  box-shadow:var(--shadow-sm);
+}
+.health .dot{width:8px;height:8px;border-radius:99px;background:#c8ceda;transition:background .2s}
+.health.ok .dot{background:var(--ok)}
+.health.bad .dot{background:var(--danger)}
+
+/* ---------- shell / steps ---------- */
+.shell{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 16px 28px}
+.step-wrap{width:100%;max-width:720px;margin:0 auto}
+.step-wrap.wide{max-width:1180px}
+
+.badge-row{display:flex;align-items:center;gap:10px;margin:6px 2px 18px;flex-wrap:wrap}
+.badge{
+  display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--blue-dark);
+  background:var(--blue-soft);border-radius:99px;padding:6px 14px 6px 8px;
+}
+.badge .num{
+  width:20px;height:20px;border-radius:99px;background:var(--blue);color:#fff;
+  display:grid;place-items:center;font-size:11px;font-weight:800;
+}
+.badge-row .arrow{color:#b7c3dc;font-size:13px}
+.badge.done{color:var(--ok);background:#e8f9ef}
+.badge.done .num{background:var(--ok)}
+.badge.todo{color:var(--muted);background:#eef1f6}
+.badge.todo .num{background:#c3cbdb}
+
+.headline{margin:0 2px 22px}
+.headline h1{margin:0 0 6px;font-size:23px;font-weight:800;letter-spacing:-.01em}
+.headline p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.55}
+
+/* ---------- selection cards (step 1 / 2) ---------- */
+.pick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pick-card{
+  background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  padding:18px 10px 14px;text-align:center;cursor:pointer;user-select:none;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.pick-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:#c9d6f5}
+.pick-card:active{transform:translateY(0)}
+.pick-card.sel{border-color:var(--blue);background:var(--blue-soft);box-shadow:var(--shadow-sm)}
+.pick-card .ico{font-size:28px;line-height:1}
+.pick-card .lb{font-size:13.5px;font-weight:700}
+.pick-card .hint{font-size:11px;color:var(--muted)}
+.pick-card.sel .hint{color:var(--blue-dark)}
+
+.step-actions{display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:10px}
+.ghost-btn{
+  background:transparent;border:none;color:var(--muted);font-size:13px;font-weight:600;
+  padding:10px 6px;cursor:pointer;border-radius:10px;
+}
+.ghost-btn:hover{color:var(--ink)}
+
+.big-cta{
+  border:none;border-radius:99px;padding:15px 30px;font-size:15px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--blue),#6ba0ff);cursor:pointer;
+  box-shadow:0 12px 26px -10px rgba(47,111,237,.55);
+  transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.big-cta:hover{transform:translateY(-1px)}
+.big-cta:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
+
+/* ---------- start hero (before step1, optional circular start) ---------- */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 10px 6px}
+.hero .ring-btn{
+  width:150px;height:150px;border-radius:50%;border:none;cursor:pointer;color:#fff;
+  background:linear-gradient(160deg,var(--blue),#7db0ff);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  box-shadow:0 22px 44px -14px rgba(47,111,237,.55), inset 0 -6px 14px rgba(0,0,0,.08);
+  font-size:19px;font-weight:800;letter-spacing:.04em;
+  transition:transform .15s ease;
+}
+.hero .ring-btn:hover{transform:scale(1.035)}
+.hero .ring-btn small{font-size:11px;font-weight:600;opacity:.85;letter-spacing:.02em}
+.hero .cap{margin-top:16px;color:var(--muted);font-size:12.5px}
+.freqline{display:flex;gap:14px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+.freqline span{
+  font-size:11px;color:var(--blue-dark);background:var(--blue-soft);padding:5px 11px;border-radius:99px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- speller screen (step 3) ---------- */
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+.card h3{margin:0 0 12px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:7px}
+.card h3 .tag{font-size:10.5px;font-weight:700;color:var(--blue-dark);background:var(--blue-soft);padding:3px 8px;border-radius:99px}
+
+.ctx-pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.ctx-pill{
+  font-size:12px;font-weight:700;color:var(--blue-dark);background:var(--blue-soft);
+  border-radius:99px;padding:6px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;border:1px solid transparent;
+}
+.ctx-pill:hover{border-color:#c9d6f5}
+.ctx-pill .x{color:var(--muted);font-weight:400}
+
+.buffer{
+  min-height:70px;background:var(--line-soft);border:1.5px dashed var(--line);border-radius:var(--radius-sm);
+  padding:16px 18px;font-size:21px;line-height:1.5;font-weight:600;word-break:keep-all;
+}
+.buffer .pending{color:var(--blue);border-bottom:2.5px solid var(--blue);padding-bottom:1px}
+.buffer .ph{color:#aab2c3;font-weight:500;font-size:14px}
+
+.recent-box{margin-top:12px}
+.recent-box label{display:block;font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:6px}
+textarea{
+  width:100%;background:#fbfcfe;color:var(--ink);border:1.5px solid var(--line);border-radius:12px;
+  padding:11px 13px;font-size:13px;resize:vertical;min-height:52px;
+}
+textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
+
+.ini-row{display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px}
+.ini-row .lb{font-size:12.5px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:7px}
+.ini-display{
+  font-weight:800;font-size:26px;letter-spacing:.18em;color:var(--blue-dark);
+  background:var(--blue-soft);border-radius:12px;padding:9px 16px;min-width:120px;text-align:center;
+}
+.ini-display.empty{color:#aab2c3;background:var(--line-soft);font-size:14px;letter-spacing:0;font-weight:600}
+
+.keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.key{
+  background:#fbfcfe;border:1.5px solid var(--line);border-radius:12px;padding:13px 6px;cursor:pointer;
+  font-size:16px;font-weight:700;color:var(--ink);transition:all .1s ease;
+}
+.key:hover{border-color:var(--blue);color:var(--blue-dark);background:var(--blue-soft)}
+.key:active{transform:scale(.94)}
+
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{
+  border:1.5px solid var(--line);background:#fbfcfe;color:var(--ink);border-radius:12px;
+  padding:12px 15px;font-size:13px;font-weight:700;cursor:pointer;transition:all .1s ease;
+}
+.btn:hover{border-color:#c9d6f5;background:var(--blue-soft)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,var(--blue),#6ba0ff);border-color:transparent;color:#fff;box-shadow:0 10px 22px -10px rgba(47,111,237,.55)}
+.btn.primary:hover{filter:brightness(1.04)}
+.btn.accent{background:#0f9d78;border-color:transparent;color:#fff}
+.btn.danger{border-color:#f3c9c9;color:var(--danger)}
+.btn.danger:hover{background:#fdecec}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* candidates / SSVEP panel */
+.cand-list{display:flex;flex-direction:column;gap:10px}
+.candidate{
+  display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;
+  background:#fbfcfe;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  padding:13px 14px;cursor:pointer;transition:all .12s ease;position:relative;
+}
+.candidate:hover{border-color:var(--blue);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+.candidate:active{transform:translateY(0)}
+.candidate .rank{
+  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:13px;
+  background:var(--blue-soft);color:var(--blue-dark);
+}
+.candidate:nth-child(1) .rank{background:linear-gradient(135deg,var(--blue),#6ba0ff);color:#fff}
+.candidate .ct{font-size:17px;font-weight:700}
+.candidate .meta{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.5;font-variant-numeric:tabular-nums}
+.candidate .freq{font-size:9.5px;color:var(--blue-dark);opacity:.75}
+.key-hint{
+  position:absolute;top:-7px;left:-7px;width:20px;height:20px;border-radius:99px;background:var(--ink);color:#fff;
+  font-size:10px;font-weight:800;display:grid;place-items:center;box-shadow:var(--shadow-sm);
+}
+.empty{padding:26px 12px;text-align:center;color:var(--muted);font-size:13px;border:1.5px dashed var(--line);border-radius:var(--radius-sm)}
+
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.metric{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fbfcfe}
+.metric span{display:block;font-size:10.5px;color:var(--muted);font-weight:700}
+.metric b{display:block;margin-top:3px;font-size:13px;font-weight:800;word-break:break-all}
+
+.footer-note{margin:22px auto 4px;max-width:1180px;width:100%;text-align:center}
+.footer-note p{margin:0;font-size:11px;color:#9aa4b8;line-height:1.7}
+
+@media(max-width:850px){
+  .pick-grid{grid-template-columns:repeat(2,1fr)}
+  .keyboard{grid-template-columns:repeat(5,1fr)}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="top"><div><h1>이심전심 · Korean Hybrid BCI Speller</h1><p>P300 초성 → Fine-tuned Local Generator → Context Ranker → Top-3 → SSVEP</p></div><div class="status" id="status">Backend 확인 중</div></div>
-<div class="grid">
-<section class="card">
-<h3>문장 버퍼</h3>
-<div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span></div>
-<div class="row">
-<div class="field"><label>상대</label><select id="partner"><option>family</option><option>caregiver</option><option>medical_staff</option><option>friend</option><option>other</option></select></div>
-<div class="field"><label>상황</label><select id="situation"><option>home</option><option>positioning</option><option>meal</option><option>pain</option><option>schedule</option><option>general</option><option>emergency</option></select></div>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="mark">심</div>
+    <div>
+      <div class="name">이심전심 · BCI Speller</div>
+      <div class="sub">Korean Hybrid BCI-AAC prototype</div>
+    </div>
+  </div>
+  <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
 </div>
-<div style="margin-top:10px"><label>최근 문맥</label><textarea id="context" rows="3" placeholder="예: 목이 말라서 물을 마시고 싶다"></textarea></div>
-<h3 style="margin-top:16px">P300 초성 입력 시뮬레이터</h3>
-<div id="initials" class="initials">—</div>
-<div id="keyboard" class="keyboard"></div>
-<div class="actions">
-<button class="btn" onclick="back()">초성 지우기</button>
-<button class="btn" onclick="clearIni()">초성 초기화</button>
-<button class="btn primary" onclick="predict()">후보 생성</button>
-<button class="btn danger" onclick="resetAll()">전체 초기화</button>
-<button class="btn accent" onclick="speak()">문장 말하기</button>
+
+<div class="shell">
+
+  <!-- STEP 0: hero / start -->
+  <section class="step-wrap" id="view-start">
+    <div class="hero">
+      <button class="ring-btn" id="btnStart">START<small>시작하려면 응시·클릭</small></button>
+      <div class="cap">약 2~3초 응시하면 시작합니다 · 대화 상대와 상황을 먼저 고릅니다</div>
+      <div class="freqline"><span>P300 초성 입력</span><span>SSVEP Top-3 선택</span><span>문맥 기반 후보 생성</span></div>
+    </div>
+  </section>
+
+  <!-- STEP 1: partner -->
+  <section class="step-wrap" id="view-partner" hidden>
+    <div class="badge-row">
+      <div class="badge"><span class="num">1</span>대화 상대</div>
+      <span class="arrow">›</span>
+      <div class="badge todo"><span class="num">2</span>상황</div>
+      <span class="arrow">›</span>
+      <div class="badge todo"><span class="num">3</span>대화 시작</div>
+    </div>
+    <div class="headline">
+      <h1>누구와 대화하시나요?</h1>
+      <p>선택한 상대에 맞춰 말투와 후보 문장의 우선순위가 자동으로 조정됩니다.</p>
+    </div>
+    <div class="pick-grid" id="partnerGrid"></div>
+    <div class="step-actions">
+      <span></span>
+      <button class="big-cta" id="toStep2" disabled>다음 · 상황 선택</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: situation -->
+  <section class="step-wrap" id="view-situation" hidden>
+    <div class="badge-row">
+      <div class="badge done"><span class="num">✓</span>대화 상대</div>
+      <span class="arrow">›</span>
+      <div class="badge"><span class="num">2</span>상황</div>
+      <span class="arrow">›</span>
+      <div class="badge todo"><span class="num">3</span>대화 시작</div>
+    </div>
+    <div class="headline">
+      <h1>지금 어떤 상황인가요?</h1>
+      <p>상황 정보는 후보 문장을 더 정확하게 좁히는 데 사용됩니다.</p>
+    </div>
+    <div class="pick-grid" id="situationGrid"></div>
+    <div class="step-actions">
+      <button class="ghost-btn" id="backTo1">‹ 이전</button>
+      <button class="big-cta" id="toStep3" disabled>대화 시작하기</button>
+    </div>
+  </section>
+
+  <!-- STEP 3: speller -->
+  <section class="step-wrap wide" id="view-speller" hidden>
+    <div class="badge-row">
+      <div class="badge done" id="partnerBadge" style="cursor:pointer"><span class="num">✓</span>가족</div>
+      <span class="arrow">›</span>
+      <div class="badge done" id="situationBadge" style="cursor:pointer"><span class="num">✓</span>일반</div>
+      <span class="arrow">›</span>
+      <div class="badge"><span class="num">3</span>대화 중</div>
+      <button class="ghost-btn" id="btnNewSession" style="margin-left:auto">↺ 새 대화 시작</button>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h3>문장 버퍼 <span class="tag">세션 문맥 자동 반영</span></h3>
+        <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
+        <div class="recent-box">
+          <label>최근 대화 (선택 시 자동으로 문맥에 추가됨)</label>
+          <div class="ctx-pill-row" id="historyPills"></div>
+          <textarea id="context" rows="2" placeholder="예: 목이 말라서 물을 마시고 싶다 (선택 입력)"></textarea>
+        </div>
+
+        <div class="ini-row">
+          <span class="lb">P300 초성 입력 시뮬레이터</span>
+        </div>
+        <div class="ini-display empty" id="iniDisplay">초성을 선택하세요</div>
+        <div class="keyboard" id="keyboard"></div>
+        <div class="actions">
+          <button class="btn" id="btnBack">⌫ 지우기</button>
+          <button class="btn" id="btnClear">초성 초기화</button>
+          <button class="btn primary" id="btnPredict">후보 생성</button>
+          <button class="btn danger" id="btnReset">전체 초기화</button>
+          <button class="btn accent" id="btnSpeak">🔊 문장 말하기</button>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h3>Top-3 후보 <span class="tag">SSVEP 선택</span></h3>
+        <div class="cand-list" id="candidates"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div></div>
+        <div class="metrics">
+          <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
+          <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
+          <div class="metric"><span>지연시간</span><b id="mLat">-</b></div>
+          <div class="metric"><span>폴백</span><b id="mFallback">-</b></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
 </div>
-</section>
-<aside class="card">
-<h3>Top-3 후보 · SSVEP 선택</h3>
-<div id="candidates"><div class="empty">초성을 입력하고 후보 생성을 누르세요.</div></div>
-<div class="metrics">
-<div class="metric">Generator<b id="model">-</b></div>
-<div class="metric">Ranker<b id="ranker">-</b></div>
-<div class="metric">Latency<b id="latency">-</b></div>
-<div class="metric">Fallback<b id="fallback">-</b></div>
+
+<div class="footer-note">
+  <p>P300 초성 → phrase memory + 로컬 파인튜닝 생성기 → 클라우드 문맥 랭커 → Top-3 → SSVEP 선택 &nbsp;·&nbsp; 이심전심(以心傳心) 연구용 프로토타입</p>
 </div>
-</aside>
-</div>
-</div>
+
 <script>
-const J=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-let initials="",committed="",latest=[];
-function renderK(){document.getElementById("keyboard").innerHTML=J.map(x=>`<button class="key" onclick="add('${x}')">${x}</button>`).join("")}
-function render(){document.getElementById("initials").textContent=initials||"—";document.getElementById("committed").textContent=committed;document.getElementById("pending").textContent=initials?` [${initials}]`:""}
-function add(x){initials+=x;render()}function back(){initials=initials.slice(0,-1);render()}function clearIni(){initials="";render()}
+const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+const FREQS=["8Hz","10Hz","12Hz","15Hz"];
+
+const PARTNERS=[
+  {v:"family",icon:"👪",label:"가족",hint:"편안한 말투"},
+  {v:"caregiver",icon:"🤝",label:"보호자·간병인",hint:"짧고 명확하게"},
+  {v:"medical_staff",icon:"🏥",label:"의료진",hint:"정중하고 정확하게"},
+  {v:"friend",icon:"😊",label:"친구",hint:"자연스러운 일상체"},
+  {v:"other",icon:"👤",label:"기타",hint:"일반적인 대화"},
+];
+const SITUATIONS=[
+  {v:"general",icon:"💬",label:"일반 대화"},
+  {v:"home",icon:"🏠",label:"집·일상"},
+  {v:"positioning",icon:"🛏️",label:"자세·위치"},
+  {v:"meal",icon:"🍽️",label:"식사·음료"},
+  {v:"pain",icon:"⚠️",label:"통증·불편"},
+  {v:"schedule",icon:"📅",label:"일정·약속"},
+  {v:"entertainment",icon:"🎵",label:"TV·음악·여가"},
+  {v:"hospital",icon:"🩺",label:"병원"},
+  {v:"emergency",icon:"🚨",label:"긴급 도움"},
+];
+
+let state={
+  partner:null, situation:null,
+  sessionId: null,
+  initials:"", committed:"", latest:[], history:[],
+};
+
+function el(id){return document.getElementById(id)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+/* ---------------- view switching ---------------- */
+function showView(name){
+  ["start","partner","situation","speller"].forEach(v=>{
+    el("view-"+v).hidden = (v!==name);
+  });
+}
+
+/* ---------------- step 1: partner ---------------- */
+function renderPartnerGrid(){
+  el("partnerGrid").innerHTML = PARTNERS.map(p=>`
+    <div class="pick-card${state.partner===p.v?" sel":""}" data-v="${p.v}">
+      <div class="ico">${p.icon}</div>
+      <div class="lb">${p.label}</div>
+      <div class="hint">${p.hint}</div>
+    </div>`).join("");
+  [...el("partnerGrid").children].forEach(node=>{
+    node.onclick=()=>{ state.partner=node.dataset.v; renderPartnerGrid(); el("toStep2").disabled=false; };
+  });
+}
+function renderSituationGrid(){
+  el("situationGrid").innerHTML = SITUATIONS.map(s=>`
+    <div class="pick-card${state.situation===s.v?" sel":""}" data-v="${s.v}">
+      <div class="ico">${s.icon}</div>
+      <div class="lb">${s.label}</div>
+    </div>`).join("");
+  [...el("situationGrid").children].forEach(node=>{
+    node.onclick=()=>{ state.situation=node.dataset.v; renderSituationGrid(); el("toStep3").disabled=false; };
+  });
+}
+
+el("btnStart").onclick=()=>{ showView("partner"); };
+el("toStep2").onclick=()=>{ showView("situation"); };
+el("backTo1").onclick=()=>{ showView("partner"); };
+el("toStep3").onclick=async ()=>{ await startSession(); showView("speller"); };
+el("btnNewSession").onclick=()=>{ resetToStart(); };
+
+function partnerLabel(v){ return (PARTNERS.find(p=>p.v===v)||{}).label || v; }
+function situationLabel(v){ return (SITUATIONS.find(s=>s.v===v)||{}).label || v; }
+
+function resetToStart(){
+  state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[]};
+  try{ localStorage.removeItem("bci_session_id"); }catch(e){}
+  renderPartnerGrid(); renderSituationGrid();
+  el("toStep2").disabled=true; el("toStep3").disabled=true;
+  showView("start");
+}
+
+/* ---------------- step 3: session + speller ---------------- */
+async function startSession(){
+  try{
+    const r=await fetch("/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({partner:state.partner,situation:state.situation})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.detail||JSON.stringify(d));
+    state.sessionId=d.session_id;
+    try{ localStorage.setItem("bci_session_id", d.session_id); }catch(e){}
+  }catch(e){
+    // 세션 시작 실패해도 speller 자체는 세션 없이 동작하도록 폴백
+    state.sessionId=null;
+    console.warn("session start failed, falling back to stateless /predict", e);
+  }
+  el("partnerBadge").innerHTML = `<span class="num">✓</span>${esc(partnerLabel(state.partner))}`;
+  el("situationBadge").innerHTML = `<span class="num">✓</span>${esc(situationLabel(state.situation))}`;
+  state.committed=""; state.initials=""; state.latest=[]; state.history=[];
+  renderKeyboard(); renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
+}
+
+el("partnerBadge").onclick=()=>showView("partner");
+el("situationBadge").onclick=()=>showView("situation");
+
+function renderKeyboard(){
+  el("keyboard").innerHTML = CHO.map(c=>`<button class="key" data-c="${c}">${c}</button>`).join("");
+  [...el("keyboard").children].forEach(btn=>{
+    btn.onclick=()=>{ state.initials+=btn.dataset.c; renderBuffer(); };
+  });
+}
+function renderBuffer(){
+  el("committed").textContent=state.committed;
+  el("pending").textContent = state.initials ? " ["+state.initials+"]" : "";
+  el("bufferPh").style.display = (state.committed || state.initials) ? "none" : "inline";
+  const id=el("iniDisplay");
+  if(state.initials){ id.textContent=state.initials; id.classList.remove("empty"); }
+  else{ id.textContent="초성을 선택하세요"; id.classList.add("empty"); }
+}
+function renderHistoryPills(){
+  el("historyPills").innerHTML = state.history.slice(-5).map(h=>`<span class="ctx-pill">${esc(h)}</span>`).join("")
+    || `<span class="ctx-pill" style="opacity:.5;cursor:default">아직 대화 기록 없음</span>`;
+}
+function renderCandidatesEmpty(){
+  el("candidates").innerHTML='<div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div>';
+  el("mGen").textContent="-"; el("mRank").textContent="-"; el("mLat").textContent="-"; el("mFallback").textContent="-";
+}
+
+el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); renderBuffer(); };
+el("btnClear").onclick=()=>{ state.initials=""; renderBuffer(); };
+el("btnReset").onclick=async ()=>{
+  state.initials=""; state.committed=""; state.latest=[]; state.history=[];
+  el("context").value="";
+  if(state.sessionId){ try{ await fetch(`/session/${state.sessionId}/reset`,{method:"POST"}); }catch(e){} }
+  renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
+};
+el("btnSpeak").onclick=()=>{
+  if(!state.committed) return;
+  const u=new SpeechSynthesisUtterance(state.committed); u.lang="ko-KR";
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+};
+el("btnPredict").onclick=predict;
+
 async function predict(){
- if(!initials){alert("초성을 입력하세요.");return}
- document.getElementById("candidates").innerHTML='<div class="empty">후보 생성 중...</div>';
- const body={input_mode:"initials",bci_input:initials,partner:partner.value,situation:situation.value,current_sentence:committed,recent_context:context.value.trim()?[context.value.trim()]:[],top_k:3};
- try{
-  const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-  const d=await r.json(); if(!r.ok)throw new Error(d.detail||JSON.stringify(d));
-  latest=d.candidates||[];
-  candidates.innerHTML=latest.length?latest.slice(0,3).map((c,i)=>`<div class="candidate" onclick="commit(${i})"><div class="rank">${i+1}</div><div class="ct">${esc(c.text)}</div><div class="meta">score<br>${(c.final_score??c.context_score??"-")}</div></div>`).join(""):'<div class="empty">유효 후보 없음</div>';
-  model.textContent=d.generator_model||d.model||"-";ranker.textContent=d.ranker_model||"-";latency.textContent=((d.latency?.total_ms??d.latency_ms??"-")+" ms");fallback.textContent=d.fallback||"none";
- }catch(e){candidates.innerHTML=`<div class="empty">오류: ${esc(e.message)}</div>`}
+  if(!state.initials){ el("candidates").innerHTML='<div class="empty">먼저 초성을 선택해주세요.</div>'; return; }
+  el("candidates").innerHTML='<div class="empty">후보 생성 중…</div>';
+  el("btnPredict").disabled=true;
+  const manualCtx = el("context").value.trim();
+  const body={
+    input_mode:"initials", bci_input:state.initials, top_k:3,
+    partner: state.partner || "other", situation: state.situation || "general",
+    current_sentence: state.committed,
+    recent_context: manualCtx ? [manualCtx] : [],
+  };
+  try{
+    const url = state.sessionId ? `/session/${state.sessionId}/predict` : "/predict";
+    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(!r.ok) throw new Error((d.detail&&(d.detail.message||JSON.stringify(d.detail)))||JSON.stringify(d));
+    state.latest=d.candidates||[];
+    renderCandidates(d);
+  }catch(e){
+    el("candidates").innerHTML=`<div class="empty">오류: ${esc(e.message||e)}</div>`;
+  }finally{
+    el("btnPredict").disabled=false;
+  }
 }
-function commit(i){const c=latest[i];if(!c)return;committed=(committed?committed+" ":"")+c.text;initials="";latest=[];candidates.innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';render()}
-function speak(){if(!committed)return;const u=new SpeechSynthesisUtterance(committed);u.lang="ko-KR";speechSynthesis.cancel();speechSynthesis.speak(u)}
-function resetAll(){initials="";committed="";latest=[];context.value="";candidates.innerHTML='<div class="empty">초성을 입력하고 후보 생성을 누르세요.</div>';render()}
 
-
-async function health() {
-
-    const statusEl =
-        document.getElementById("status");
-
-    try {
-
-        const response =
-            await fetch("/health");
-
-        if (response.ok) {
-
-            statusEl.textContent =
-                "Backend 연결됨";
-
-        } else {
-
-            statusEl.textContent =
-                "Backend 오류";
-        }
-
-    } catch (error) {
-
-        statusEl.textContent =
-            "Backend 연결 안 됨";
-    }
+function renderCandidates(d){
+  const list=state.latest.slice(0,3);
+  if(!list.length){ el("candidates").innerHTML='<div class="empty">유효한 후보가 없습니다. 초성을 다시 입력해보세요.</div>'; }
+  else{
+    el("candidates").innerHTML = list.map((c,i)=>`
+      <div class="candidate" data-i="${i}">
+        <span class="key-hint">${i+1}</span>
+        <div class="rank">${i+1}</div>
+        <div class="ct">${esc(c.text)}</div>
+        <div class="meta">score ${(c.final_score??c.context_score??0).toFixed?.(2) ?? c.final_score}<div class="freq">${FREQS[i]||""}</div></div>
+      </div>`).join("");
+    [...el("candidates").children].forEach(node=>{
+      node.onclick=()=>commit(parseInt(node.dataset.i,10));
+    });
+  }
+  el("mGen").textContent=d.generator_model||"-";
+  el("mRank").textContent=d.ranker_model||"-";
+  el("mLat").textContent=((d.latency&&d.latency.total_ms)??"-")+" ms";
+  el("mFallback").textContent=d.fallback||"none";
 }
-renderK();render();health();
+
+async function commit(i){
+  const c=state.latest[i]; if(!c) return;
+  if(state.sessionId){
+    try{
+      const r=await fetch(`/session/${state.sessionId}/select`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({candidate_id:c.candidate_id})});
+      const d=await r.json();
+      if(r.ok){ state.committed=d.sentence; state.history=d.history||[]; }
+      else{ state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text); }
+    }catch(e){ state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text); }
+  }else{
+    state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text);
+  }
+  state.initials=""; state.latest=[];
+  el("candidates").innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';
+  renderBuffer(); renderHistoryPills();
+}
+
+document.addEventListener("keydown",(e)=>{
+  if(el("view-speller").hidden) return;
+  if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT") return;
+  if(["1","2","3"].includes(e.key)){
+    const idx=parseInt(e.key,10)-1;
+    if(state.latest[idx]) commit(idx);
+  }
+});
+
+/* ---------------- health check ---------------- */
+async function health(){
+  const h=el("health"), t=el("healthText");
+  try{
+    const r=await fetch("/health");
+    if(r.ok){ h.className="health ok"; t.textContent="Backend 연결됨"; }
+    else{ h.className="health bad"; t.textContent="Backend 오류"; }
+  }catch(e){ h.className="health bad"; t.textContent="Backend 연결 안 됨"; }
+}
+
+renderPartnerGrid();
+renderSituationGrid();
+health();
+setInterval(health, 20000);
 </script>
-</body></html>
+</body>
+</html>

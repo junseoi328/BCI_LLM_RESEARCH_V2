@@ -5,8 +5,8 @@ from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
 
 router=APIRouter(tags=["model-lab"])
-D=Path("local_models/bci_generator_lora_final")
-E=Path("eval_v2/reports/local_lora_generator_final.json")
+D=Path("local_models/bci_generator_lora_final_v2")
+E=Path("eval_v2/reports/local_lora_generator_final_v2_fixed.json")
 
 @router.get("/model/status")
 def model_status():
