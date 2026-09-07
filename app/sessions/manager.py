@@ -50,6 +50,23 @@ class InMemorySessionManager:
             s.last_candidates = []
             return s.model_copy(deep=True)
 
+    def append_text(self, session_id: str, text: str) -> SessionState:
+        """Same buffer/history bookkeeping as select(), but for free text that
+        did not come from a /predict candidate (e.g. a habitual-phrase
+        quick-chip). Also clears last_candidates, matching select()'s
+        contract that a commit ends the current candidate round."""
+        text = text.strip()
+        with self._lock:
+            s = self._sessions[session_id]
+            if not text:
+                return s.model_copy(deep=True)
+            if s.sentence and not s.sentence.endswith(" "):
+                s.sentence += " "
+            s.sentence += text
+            s.history.append(text)
+            s.last_candidates = []
+            return s.model_copy(deep=True)
+
     def undo(self, session_id: str) -> tuple[SessionState, str | None]:
         with self._lock:
             s = self._sessions[session_id]

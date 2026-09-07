@@ -11,7 +11,7 @@
   --line:#e3e8f2; --line-soft:#edf1f9; --radius:22px; --radius-sm:14px;
   --shadow:0 14px 34px -16px rgba(30,64,175,.28);
   --shadow-sm:0 4px 14px -8px rgba(30,64,175,.22);
-  --ok:#16a34a; --warn:#e2711d; --danger:#dc2626;
+  --ok:#16a34a; --warn:#e2711d; --danger:#dc2626; --amber:#b45309; --amber-soft:#fef3e0;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -141,6 +141,16 @@ button{font:inherit}
 .ctx-pill:hover{border-color:#c9d6f5}
 .ctx-pill .x{color:var(--muted);font-weight:400}
 
+/* 익숙하게 쓰는 표현 (habitual phrases) quick-access row */
+.habitual-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.habitual-chip{
+  font-size:12.5px;font-weight:700;color:#0f9d78;background:#e7f9f2;border:1px solid #cdf0e2;
+  border-radius:99px;padding:7px 13px;cursor:pointer;transition:all .1s ease;
+}
+.habitual-chip:hover{background:#d9f5e9;transform:translateY(-1px)}
+.habitual-chip .n{opacity:.6;font-weight:600;margin-left:4px;font-size:10.5px}
+.habitual-empty{font-size:11.5px;color:var(--muted)}
+
 .buffer{
   min-height:70px;background:var(--line-soft);border:1.5px dashed var(--line);border-radius:var(--radius-sm);
   padding:16px 18px;font-size:21px;line-height:1.5;font-weight:600;word-break:keep-all;
@@ -185,6 +195,7 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 .btn.danger{border-color:#f3c9c9;color:var(--danger)}
 .btn.danger:hover{background:#fdecec}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.sm{padding:8px 11px;font-size:12px}
 
 /* candidates / SSVEP panel */
 .cand-list{display:flex;flex-direction:column;gap:10px}
@@ -201,13 +212,46 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 }
 .candidate:nth-child(1) .rank{background:linear-gradient(135deg,var(--blue),#6ba0ff);color:#fff}
 .candidate .ct{font-size:17px;font-weight:700}
+.candidate .ct .unit{border-radius:5px;padding:0 1px;cursor:pointer}
+.candidate .ct .unit:hover{background:var(--blue-soft);color:var(--blue-dark);outline:1.5px dashed var(--blue)}
 .candidate .meta{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.5;font-variant-numeric:tabular-nums}
 .candidate .freq{font-size:9.5px;color:var(--blue-dark);opacity:.75}
 .key-hint{
   position:absolute;top:-7px;left:-7px;width:20px;height:20px;border-radius:99px;background:var(--ink);color:#fff;
   font-size:10px;font-weight:800;display:grid;place-items:center;box-shadow:var(--shadow-sm);
 }
+.unit-hint{margin:2px 0 10px;font-size:10.5px;color:var(--muted)}
 .empty{padding:26px 12px;text-align:center;color:var(--muted);font-size:13px;border:1.5px dashed var(--line);border-radius:var(--radius-sm)}
+
+.nudge{
+  display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--amber);
+  background:var(--amber-soft);border:1px solid #fbe1b6;border-radius:12px;padding:9px 12px;margin-bottom:10px;
+}
+
+/* recovery panel: KeywordAE (spell it out) + FillMask (근접 대안) */
+.recovery{margin-top:14px;border:1.5px dashed #c9d6f5;border-radius:var(--radius-sm);padding:14px;background:#f7faff}
+.recovery-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.recovery-head span{font-size:12.5px;font-weight:800;color:var(--blue-dark)}
+.recovery-blocks{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.rblock{
+  min-width:38px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+  font-weight:800;font-size:15px;text-align:center;cursor:pointer;color:var(--muted);
+}
+.rblock.filled{border-color:var(--ok);color:var(--ok);background:#eefbf3}
+.rblock.active{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.jamo-picker{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+.jamo-picker .row-lb{font-size:10.5px;color:var(--muted);font-weight:700;margin:2px 0 6px}
+.jamo-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:8px}
+.jamo-btn{background:#fbfcfe;border:1.5px solid var(--line);border-radius:9px;padding:9px 4px;font-size:14px;font-weight:700;cursor:pointer}
+.jamo-btn:hover{border-color:var(--blue);background:var(--blue-soft)}
+.fillmask-box{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.fillmask-box .lb{font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.alt-list{display:flex;flex-direction:column;gap:6px}
+.alt{
+  display:flex;justify-content:space-between;align-items:center;background:#fff;border:1.5px solid var(--line);
+  border-radius:10px;padding:9px 12px;cursor:pointer;font-size:14px;font-weight:700;
+}
+.alt:hover{border-color:var(--ok);background:#eefbf3}
 
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
 .metric{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fbfcfe}
@@ -220,6 +264,7 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 @media(max-width:850px){
   .pick-grid{grid-template-columns:repeat(2,1fr)}
   .keyboard{grid-template-columns:repeat(5,1fr)}
+  .jamo-grid{grid-template-columns:repeat(6,1fr)}
 }
 </style>
 </head>
@@ -302,6 +347,12 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
       <section class="card">
         <h3>문장 버퍼 <span class="tag">세션 문맥 자동 반영</span></h3>
         <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
+
+        <div class="recent-box">
+          <label>자주 쓰는 표현 (탭하면 바로 입력됨)</label>
+          <div class="habitual-row" id="habitualRow"></div>
+        </div>
+
         <div class="recent-box">
           <label>최근 대화 (선택 시 자동으로 문맥에 추가됨)</label>
           <div class="ctx-pill-row" id="historyPills"></div>
@@ -324,12 +375,31 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 
       <aside class="card">
         <h3>Top-3 후보 <span class="tag">SSVEP 선택</span></h3>
+        <div id="nudgeBox"></div>
         <div class="cand-list" id="candidates"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div></div>
+        <div class="unit-hint" id="unitHint" hidden>💡 후보의 글자를 탭하면 그 글자만 바꾼 대안을 볼 수 있어요 (FillMask)</div>
+        <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding-left:0">🔎 원하는 표현이 없어요 → 직접 입력하기</button>
+        <div class="recovery" id="recoveryPanel" hidden>
+          <div class="recovery-head">
+            <span>글자를 직접 완성해서 다시 찾기 (KeywordAE)</span>
+            <button class="ghost-btn" id="btnRecoveryClose">닫기</button>
+          </div>
+          <div class="recovery-blocks" id="recoveryBlocks"></div>
+          <div class="jamo-picker" id="jamoPicker" hidden></div>
+          <div class="actions" style="margin-top:0">
+            <button class="btn primary sm" id="btnRecoveryPredict">이 글자로 다시 찾기</button>
+            <button class="btn sm" id="btnRecoveryReset">초기화</button>
+          </div>
+          <div class="fillmask-box" id="fillmaskBox" hidden>
+            <div class="lb" id="fillmaskLabel"></div>
+            <div class="alt-list" id="fillmaskAlts"></div>
+          </div>
+        </div>
         <div class="metrics">
           <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
           <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
           <div class="metric"><span>지연시간</span><b id="mLat">-</b></div>
-          <div class="metric"><span>폴백</span><b id="mFallback">-</b></div>
+          <div class="metric"><span>모드</span><b id="mMode">-</b></div>
         </div>
       </aside>
     </div>
@@ -338,11 +408,13 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 </div>
 
 <div class="footer-note">
-  <p>P300 초성 → phrase memory + 로컬 파인튜닝 생성기 → 클라우드 문맥 랭커 → Top-3 → SSVEP 선택 &nbsp;·&nbsp; 이심전심(以心傳心) 연구용 프로토타입</p>
+  <p>P300 초성 → phrase memory + 로컬 파인튜닝 생성기 → 클라우드 문맥 랭커 → Top-3 → SSVEP 선택 &nbsp;·&nbsp; 확신도가 낮으면 KeywordAE/FillMask 복구 제안 &nbsp;·&nbsp; 이심전심(以心傳心) 연구용 프로토타입</p>
 </div>
 
 <script>
 const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
+const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
 const FREQS=["8Hz","10Hz","12Hz","15Hz"];
 
 const PARTNERS=[
@@ -368,10 +440,31 @@ let state={
   partner:null, situation:null,
   sessionId: null,
   initials:"", committed:"", latest:[], history:[],
+  habitual:[],
+  spelled:{},          // KeywordAE: {unitIndex: composedSyllable}
+  jamoTarget:null,     // index currently being spelled in the jamo picker
+  jamoMedial:null,     // medial chosen so far for jamoTarget (before jong/commit)
+  fillMaskFor:null,    // {referenceText, targetIndex} while showing FillMask alternatives
 };
 
 function el(id){return document.getElementById(id)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+/* ---------------- Korean unit helpers (mirror app/korean/initials.py) ---------------- */
+function isHangulSyllable(ch){ const c=ch.codePointAt(0); return c>=0xAC00 && c<=0xD7A3; }
+function unitsOf(text){
+  const out=[];
+  for(const ch of String(text||"")){
+    if(/\s/.test(ch)) continue;
+    if(isHangulSyllable(ch) || CHO.includes(ch)) out.push(ch);
+  }
+  return out;
+}
+function composeSyllableJS(cho,jung,jong){
+  const ci=CHO.indexOf(cho), ji=JUNG.indexOf(jung), fi=JONG.indexOf(jong||"");
+  if(ci<0||ji<0||fi<0) return null;
+  return String.fromCodePoint(0xAC00 + (ci*21+ji)*28 + fi);
+}
 
 /* ---------------- view switching ---------------- */
 function showView(name){
@@ -413,7 +506,8 @@ function partnerLabel(v){ return (PARTNERS.find(p=>p.v===v)||{}).label || v; }
 function situationLabel(v){ return (SITUATIONS.find(s=>s.v===v)||{}).label || v; }
 
 function resetToStart(){
-  state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[]};
+  state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[],
+    habitual:[],spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null};
   try{ localStorage.removeItem("bci_session_id"); }catch(e){}
   renderPartnerGrid(); renderSituationGrid();
   el("toStep2").disabled=true; el("toStep3").disabled=true;
@@ -438,6 +532,7 @@ async function startSession(){
   el("situationBadge").innerHTML = `<span class="num">✓</span>${esc(situationLabel(state.situation))}`;
   state.committed=""; state.initials=""; state.latest=[]; state.history=[];
   renderKeyboard(); renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
+  refreshHabitual();
 }
 
 el("partnerBadge").onclick=()=>showView("partner");
@@ -446,7 +541,7 @@ el("situationBadge").onclick=()=>showView("situation");
 function renderKeyboard(){
   el("keyboard").innerHTML = CHO.map(c=>`<button class="key" data-c="${c}">${c}</button>`).join("");
   [...el("keyboard").children].forEach(btn=>{
-    btn.onclick=()=>{ state.initials+=btn.dataset.c; renderBuffer(); };
+    btn.onclick=()=>{ state.initials+=btn.dataset.c; clearRecoveryState(); renderBuffer(); };
   });
 }
 function renderBuffer(){
@@ -463,14 +558,42 @@ function renderHistoryPills(){
 }
 function renderCandidatesEmpty(){
   el("candidates").innerHTML='<div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div>';
-  el("mGen").textContent="-"; el("mRank").textContent="-"; el("mLat").textContent="-"; el("mFallback").textContent="-";
+  el("mGen").textContent="-"; el("mRank").textContent="-"; el("mLat").textContent="-"; el("mMode").textContent="-";
+  el("nudgeBox").innerHTML=""; el("unitHint").hidden=true;
+  el("btnOpenRecovery").style.display="none";
+  closeRecoveryPanel();
 }
 
-el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); renderBuffer(); };
-el("btnClear").onclick=()=>{ state.initials=""; renderBuffer(); };
+/* ---------------- 자주 쓰는 표현 (habitual phrases) ---------------- */
+async function refreshHabitual(){
+  if(!state.sessionId){ state.habitual=[]; renderHabitual(); return; }
+  try{
+    const r=await fetch(`/session/${state.sessionId}/habitual?limit=6`);
+    const d=await r.json();
+    state.habitual = (r.ok && d.phrases) ? d.phrases : [];
+  }catch(e){ state.habitual=[]; }
+  renderHabitual();
+}
+function renderHabitual(){
+  if(!state.habitual.length){
+    el("habitualRow").innerHTML = `<span class="habitual-empty">아직 자주 쓰는 표현이 없습니다 · 문장을 선택할수록 여기에 채워집니다</span>`;
+    return;
+  }
+  el("habitualRow").innerHTML = state.habitual.map(p=>
+    `<span class="habitual-chip" data-t="${esc(p.text)}">${esc(p.text)}<span class="n">×${p.count}</span></span>`
+  ).join("");
+  [...el("habitualRow").children].forEach(node=>{
+    if(!node.dataset.t) return;
+    node.onclick=()=>commitText(node.dataset.t);
+  });
+}
+
+el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); clearRecoveryState(); renderBuffer(); };
+el("btnClear").onclick=()=>{ state.initials=""; clearRecoveryState(); renderBuffer(); };
 el("btnReset").onclick=async ()=>{
   state.initials=""; state.committed=""; state.latest=[]; state.history=[];
   el("context").value="";
+  clearRecoveryState();
   if(state.sessionId){ try{ await fetch(`/session/${state.sessionId}/reset`,{method:"POST"}); }catch(e){} }
   renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
 };
@@ -479,19 +602,26 @@ el("btnSpeak").onclick=()=>{
   const u=new SpeechSynthesisUtterance(state.committed); u.lang="ko-KR";
   speechSynthesis.cancel(); speechSynthesis.speak(u);
 };
-el("btnPredict").onclick=predict;
+el("btnPredict").onclick=()=>predict({});
 
-async function predict(){
+function clearRecoveryState(){
+  state.spelled={}; state.jamoTarget=null; state.jamoMedial=null; state.fillMaskFor=null;
+}
+
+/* ---------------- predict (base + recovery variants) ---------------- */
+async function predict(extra){
   if(!state.initials){ el("candidates").innerHTML='<div class="empty">먼저 초성을 선택해주세요.</div>'; return; }
   el("candidates").innerHTML='<div class="empty">후보 생성 중…</div>';
+  el("nudgeBox").innerHTML=""; el("unitHint").hidden=true; el("btnOpenRecovery").style.display="none";
   el("btnPredict").disabled=true;
   const manualCtx = el("context").value.trim();
-  const body={
+  const body=Object.assign({
     input_mode:"initials", bci_input:state.initials, top_k:3,
+    experiment_mode:"hybrid",
     partner: state.partner || "other", situation: state.situation || "general",
     current_sentence: state.committed,
     recent_context: manualCtx ? [manualCtx] : [],
-  };
+  }, extra||{});
   try{
     const url = state.sessionId ? `/session/${state.sessionId}/predict` : "/predict";
     const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
@@ -499,6 +629,7 @@ async function predict(){
     if(!r.ok) throw new Error((d.detail&&(d.detail.message||JSON.stringify(d.detail)))||JSON.stringify(d));
     state.latest=d.candidates||[];
     renderCandidates(d);
+    return d;
   }catch(e){
     el("candidates").innerHTML=`<div class="empty">오류: ${esc(e.message||e)}</div>`;
   }finally{
@@ -508,28 +639,174 @@ async function predict(){
 
 function renderCandidates(d){
   const list=state.latest.slice(0,3);
-  if(!list.length){ el("candidates").innerHTML='<div class="empty">유효한 후보가 없습니다. 초성을 다시 입력해보세요.</div>'; }
-  else{
+  if(!list.length){
+    el("candidates").innerHTML='<div class="empty">유효한 후보가 없습니다. 아래에서 직접 입력해보세요.</div>';
+  }else{
     el("candidates").innerHTML = list.map((c,i)=>`
       <div class="candidate" data-i="${i}">
         <span class="key-hint">${i+1}</span>
         <div class="rank">${i+1}</div>
-        <div class="ct">${esc(c.text)}</div>
+        <div class="ct">${renderCandidateUnits(c.text)}</div>
         <div class="meta">score ${(c.final_score??c.context_score??0).toFixed?.(2) ?? c.final_score}<div class="freq">${FREQS[i]||""}</div></div>
       </div>`).join("");
     [...el("candidates").children].forEach(node=>{
-      node.onclick=()=>commit(parseInt(node.dataset.i,10));
+      const i=parseInt(node.dataset.i,10);
+      node.onclick=(ev)=>{ if(ev.target.closest(".unit")) return; commit(i); };
+      [...node.querySelectorAll(".unit")].forEach(span=>{
+        span.onclick=(ev)=>{
+          ev.stopPropagation();
+          openFillMask(list[i].text, parseInt(span.dataset.u,10));
+        };
+      });
     });
+    el("unitHint").hidden=false;
   }
+
   el("mGen").textContent=d.generator_model||"-";
   el("mRank").textContent=d.ranker_model||"-";
   el("mLat").textContent=((d.latency&&d.latency.total_ms)??"-")+" ms";
-  el("mFallback").textContent=d.fallback||"none";
+  el("mMode").textContent = d.recovery_mode && d.recovery_mode!=="none" ? d.recovery_mode : (d.hybrid_action||"-");
+
+  el("btnOpenRecovery").style.display="inline-block";
+
+  if(d.hybrid_action==="need_more_input"){
+    el("nudgeBox").innerHTML = `<div class="nudge">🤔 확신도가 낮아요. 아래 "직접 입력하기"로 정확한 글자를 알려주면 훨씬 정확해져요.</div>`;
+    openRecoveryPanel();
+  }
+}
+
+function renderCandidateUnits(text){
+  let idx=0, html="";
+  for(const ch of String(text)){
+    if(/\s/.test(ch)){ html+=" "; continue; }
+    if(isHangulSyllable(ch) || CHO.includes(ch)){
+      html += `<span class="unit" data-u="${idx}" title="탭하면 이 글자만 바꾼 대안 보기">${esc(ch)}</span>`;
+      idx++;
+    } else {
+      html += esc(ch);
+    }
+  }
+  return html;
+}
+
+/* ---------------- KeywordAE recovery panel ---------------- */
+el("btnOpenRecovery").onclick=()=>openRecoveryPanel();
+el("btnRecoveryClose").onclick=()=>closeRecoveryPanel();
+el("btnRecoveryReset").onclick=()=>{ clearRecoveryState(); renderRecoveryBlocks(); el("jamoPicker").hidden=true; hideFillmaskBox(); };
+el("btnRecoveryPredict").onclick=async ()=>{
+  if(!Object.keys(state.spelled).length){ return; }
+  await predict({ spelled_syllables: state.spelled });
+};
+
+function openRecoveryPanel(){
+  el("recoveryPanel").hidden=false;
+  renderRecoveryBlocks();
+}
+function closeRecoveryPanel(){
+  el("recoveryPanel").hidden=true;
+  el("jamoPicker").hidden=true;
+  hideFillmaskBox();
+}
+
+function renderRecoveryBlocks(){
+  const chars=[...state.initials];
+  el("recoveryBlocks").innerHTML = chars.map((c,i)=>{
+    const spelled=state.spelled[i];
+    const cls = spelled ? "rblock filled" : (state.jamoTarget===i ? "rblock active" : "rblock");
+    return `<div class="${cls}" data-i="${i}">${esc(spelled||c)}</div>`;
+  }).join("");
+  [...el("recoveryBlocks").children].forEach(node=>{
+    node.onclick=()=>openJamoPicker(parseInt(node.dataset.i,10));
+  });
+}
+
+function openJamoPicker(index){
+  state.jamoTarget=index; state.jamoMedial=null;
+  renderRecoveryBlocks();
+  renderJamoPicker();
+}
+function renderJamoPicker(){
+  const box=el("jamoPicker");
+  if(state.jamoTarget===null){ box.hidden=true; return; }
+  box.hidden=false;
+  const cho=state.initials[state.jamoTarget];
+  if(!state.jamoMedial){
+    box.innerHTML = `<div class="row-lb">${esc(cho)} · 중성(모음)을 선택하세요</div>
+      <div class="jamo-grid">${JUNG.map(j=>`<button class="jamo-btn" data-j="${j}">${j}</button>`).join("")}</div>`;
+    [...box.querySelectorAll(".jamo-btn")].forEach(btn=>{
+      btn.onclick=()=>{ state.jamoMedial=btn.dataset.j; renderJamoPicker(); };
+    });
+  }else{
+    box.innerHTML = `<div class="row-lb">${esc(cho+state.jamoMedial)} · 받침을 선택하세요 (없으면 첫 번째)</div>
+      <div class="jamo-grid">${JONG.map(j=>`<button class="jamo-btn" data-j="${j}">${j||"없음"}</button>`).join("")}</div>`;
+    [...box.querySelectorAll(".jamo-btn")].forEach(btn=>{
+      btn.onclick=()=>{
+        const syll=composeSyllableJS(cho, state.jamoMedial, btn.dataset.j);
+        if(syll){ state.spelled[state.jamoTarget]=syll; }
+        state.jamoTarget=null; state.jamoMedial=null;
+        renderRecoveryBlocks(); renderJamoPicker();
+      };
+    });
+  }
+}
+
+/* ---------------- FillMask recovery ---------------- */
+async function openFillMask(referenceText, targetIndex){
+  state.fillMaskFor={referenceText, targetIndex};
+  el("recoveryPanel").hidden=false;
+  el("jamoPicker").hidden=true;
+  const box=el("fillmaskBox");
+  box.hidden=false;
+  el("fillmaskLabel").textContent = `"${referenceText}" 중 "${unitsOf(referenceText)[targetIndex]||"?"}" 대신 다른 글자로 (FillMask)`;
+  el("fillmaskAlts").innerHTML = `<div class="empty" style="padding:10px">대안 찾는 중…</div>`;
+  const d = await predict({
+    fill_mask_reference_text: referenceText,
+    fill_mask_target_index: targetIndex,
+    top_k: 5,
+  });
+  if(!d) return;
+  const alts=(d.candidates||[]).filter(c=>c.text!==referenceText);
+  if(!alts.length){
+    el("fillmaskAlts").innerHTML = `<div class="empty" style="padding:10px">대안을 찾지 못했습니다. 위 KeywordAE로 직접 입력해보세요.</div>`;
+    return;
+  }
+  el("fillmaskAlts").innerHTML = alts.map((c,i)=>`<div class="alt" data-i="${i}">${esc(c.text)}</div>`).join("");
+  [...el("fillmaskAlts").children].forEach(node=>{
+    node.onclick=()=>commit(parseInt(node.dataset.i,10));
+  });
+  // re-point state.latest so commit(i) selects out of the alt list, not the old top-3
+  state.latest = alts;
+}
+function hideFillmaskBox(){
+  state.fillMaskFor=null;
+  el("fillmaskBox").hidden=true;
+  el("fillmaskAlts").innerHTML="";
+}
+
+/* ---------------- commit ---------------- */
+async function commitText(text){
+  if(!text) return;
+  if(state.sessionId){
+    try{
+      const r=await fetch(`/session/${state.sessionId}/select_text`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({text})});
+      const d=await r.json();
+      if(r.ok){ state.committed=d.sentence; state.history=d.history||[]; }
+      else{ state.committed=(state.committed?state.committed+" ":"")+text; state.history.push(text); }
+    }catch(e){ state.committed=(state.committed?state.committed+" ":"")+text; state.history.push(text); }
+  }else{
+    state.committed=(state.committed?state.committed+" ":"")+text; state.history.push(text);
+  }
+  state.initials=""; state.latest=[];
+  clearRecoveryState();
+  el("candidates").innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';
+  renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
+  refreshHabitual();
 }
 
 async function commit(i){
   const c=state.latest[i]; if(!c) return;
-  if(state.sessionId){
+  if(state.sessionId && c.candidate_id){
     try{
       const r=await fetch(`/session/${state.sessionId}/select`,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({candidate_id:c.candidate_id})});
@@ -541,8 +818,10 @@ async function commit(i){
     state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text);
   }
   state.initials=""; state.latest=[];
+  clearRecoveryState();
   el("candidates").innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';
-  renderBuffer(); renderHistoryPills();
+  renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
+  refreshHabitual();
 }
 
 document.addEventListener("keydown",(e)=>{

@@ -43,6 +43,13 @@ class LocalGeneratorCloudRankerClient:
 
     로컬 생성기가 어떤 이유로든 실패해도(드라이버 문제 등) 예외를 삼키고
     phrase memory만으로 계속 응답한다 - 절대 요청 전체를 실패시키지 않는다.
+
+    Recovery (KeywordAE / FillMask):
+        Top-K 초성열 매칭이 실패했을 때만 발동하는 별도 경로다. 이 시점에는
+        "얼마나 빨리" 보다 "얼마나 정확히"가 훨씬 중요하므로 (SpeakFaster
+        논문에서도 LLM 지연시간보다 사람의 검토 시간이 압도적으로 크다고
+        보고한다), 로컬 생성기로는 시도조차 하지 않고 곧바로 문맥 인지가
+        가능한 cloud_ranker에게 위임한다.
     """
 
     def __init__(self) -> None:
@@ -104,6 +111,29 @@ class LocalGeneratorCloudRankerClient:
         return GenerationCallResult(
             candidates=merged,
             usage=TokenUsage(input_tokens=0, output_tokens=0),
+        )
+
+    # ============================================
+    # RECOVERY (KeywordAE / FillMask, always cloud)
+    # ============================================
+
+    def generate_recovery_candidates(
+        self,
+        initials: str,
+        count: int,
+        *,
+        spelled: dict[int, str] | None = None,
+        reference_text: str | None = None,
+        target_index: int | None = None,
+        context: str = "",
+    ) -> GenerationCallResult:
+        return self.cloud_ranker.generate_recovery_candidates(
+            initials,
+            count,
+            spelled=spelled,
+            reference_text=reference_text,
+            target_index=target_index,
+            context=context,
         )
 
     # ============================================

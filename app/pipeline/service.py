@@ -8,6 +8,7 @@ from collections import Counter
 from app.config import settings
 from app.context.manager import build_context
 from app.errors import LLMServiceError
+from app.korean.initials import fill_mask_constraint_match
 from app.llm.diversity_generator import generate_diversity_candidates
 from app.llm.factory_final import get_language_model_client_final as get_language_model_client
 from app.llm.pricing import estimate_cost_usd
@@ -86,6 +87,20 @@ def _diversity_count() -> int:
             8,
         ),
     )
+
+
+def _recovery_mode(request: PredictionRequest) -> str:
+    """KeywordAE takes priority over FillMask per the team's own stated
+    priority ("KeywordAE >> FillMask") if a caller somehow sets both."""
+    if request.spelled_syllables:
+        return "keyword_ae"
+    if request.fill_mask_reference_text is not None and request.fill_mask_target_index is not None:
+        return "fill_mask"
+    return "none"
+
+
+def _recovery_count() -> int:
+    return max(3, _env_int("RECOVERY_GENERATION_COUNT", 12))
 
 
 def _first_token_ratio(
@@ -235,6 +250,8 @@ class BCILanguagePipeline:
             request
         )
 
+        recovery_mode = _recovery_mode(request)
+
         generation_ms = 0
         ranking_ms = 0
 
@@ -260,331 +277,429 @@ class BCILanguagePipeline:
         any_diversity_used = False
 
         # ====================================================
-        # EEG hypothesis별 generation
+        # Recovery generation (KeywordAE / FillMask)
+        #
+        # These run instead of the normal EEG-hypothesis / ensemble
+        # generation loop below: they are a single, explicit, user-directed
+        # request ("this is what I actually meant"), not a broad blind
+        # search, so the ensemble/diversity machinery does not apply.
         # ====================================================
 
-        for (
-            initials,
-            eeg_score,
-        ) in normalized_eeg_hypotheses(
-            request
-        ):
+        if recovery_mode != "none":
 
-            hypothesis_count += 1
-
+            hypothesis_count = 1
             gen_start = time.perf_counter()
 
-            base_success = False
+            recovery_fn = getattr(
+                self.model_client,
+                "generate_recovery_candidates",
+                None,
+            )
 
-            # ------------------------------------------------
-            # 1. BASE GENERATOR
-            # ------------------------------------------------
+            raw_texts: list[str] = []
 
-            try:
-                gen_result = (
-                    self.model_client
-                    .generate_candidates(
-                        initials,
-                        settings.generation_count,
+            if recovery_fn is None:
+                warnings.append("recovery_unsupported_by_generator")
+                try:
+                    broad = self.model_client.generate_candidates(
+                        request.bci_input,
+                        max(settings.generation_count * 2, _recovery_count()),
                     )
-                )
-
-                usage = _usage_add(
-                    usage,
-                    gen_result.usage,
-                )
-
-                base_raw = [
-                    GeneratedCandidate(
-                        candidate_id=(
-                            f"c{next_id + i}"
-                        ),
-                        text=text,
-                        source_initials=initials,
-                        generation_order=i + 1,
-                        eeg_score=eeg_score,
+                    usage = _usage_add(usage, broad.usage)
+                    raw_texts = broad.candidates
+                except LLMServiceError as exc:
+                    warnings.append(f"generator:{exc.code}")
+            else:
+                try:
+                    recovery_result = recovery_fn(
+                        request.bci_input,
+                        _recovery_count(),
+                        spelled=request.spelled_syllables,
+                        reference_text=request.fill_mask_reference_text,
+                        target_index=request.fill_mask_target_index,
+                        context=context,
                     )
-                    for (
-                        i,
-                        text,
-                    ) in enumerate(
-                        gen_result.candidates
-                    )
-                ]
+                    usage = _usage_add(usage, recovery_result.usage)
+                    raw_texts = recovery_result.candidates
+                except LLMServiceError as exc:
+                    warnings.append(f"recovery_generator:{exc.code}")
 
-                next_id += len(
-                    base_raw
+            base_raw = [
+                GeneratedCandidate(
+                    candidate_id=f"c{next_id + i}",
+                    text=text,
+                    source_initials=request.bci_input,
+                    generation_order=i + 1,
+                    eeg_score=None,
                 )
-
-                base_success = True
-
-            except LLMServiceError as exc:
-
-                if not settings.allow_local_fallback:
-                    raise
-
-                warnings.append(
-                    f"generator:{exc.code}"
-                )
-
-                fallback = "local_phrase_bank"
-
-                base_raw = local_candidates(
-                    initials,
-                    eeg_score,
-                    next_id,
-                )
-
-                next_id += len(
-                    base_raw
-                )
+                for i, text in enumerate(raw_texts)
+            ]
+            next_id += len(base_raw)
 
             base_valid = filter_candidates(
                 base_raw,
-                initials,
+                request.bci_input,
+                spelled=request.spelled_syllables,
             )
 
-            pooled.extend(
-                base_valid
-            )
-
-            # ------------------------------------------------
-            # 2. CONTEXT QUALITY PROBE
-            # ------------------------------------------------
-
-            probe_rows = None
-            probe_context_max = None
-            probe_intent_max = None
-
-            if (
-                _ensemble_mode() == "context_quality"
-                and base_valid
-                and settings.use_llm_ranker
-            ):
-
-                try:
-                    probe_result = (
-                        self.model_client
-                        .rank_candidates(
-                            base_valid,
-                            context,
-                        )
+            if recovery_mode == "fill_mask":
+                base_valid = [
+                    c
+                    for c in base_valid
+                    if fill_mask_constraint_match(
+                        c.text,
+                        request.fill_mask_reference_text,
+                        request.fill_mask_target_index,
                     )
+                ]
 
-                    usage = _usage_add(
-                        usage,
-                        probe_result.usage,
-                    )
-
-                    probe_rows = (
-                        probe_result.scores
-                    )
-
-                    if probe_rows:
-
-                        probe_context_max = max(
-                            row.context_score
-                            for row in probe_rows
-                        )
-
-                        probe_intent_max = max(
-                            row.intent_score
-                            for row in probe_rows
-                        )
-
-                    reusable_probe_rows = (
-                        probe_rows
-                    )
-
-                    reusable_probe_candidate_ids = {
-                        c.candidate_id
-                        for c in base_valid
-                    }
-
-                except LLMServiceError as exc:
-
-                    warnings.append(
-                        f"context_probe:{exc.code}"
-                    )
+            pooled.extend(base_valid)
 
             if settings.debug_mode:
-
                 debug_generation.append(
                     {
-                        "source": "base",
-                        "initials": initials,
-                        "eeg_score": eeg_score,
-                        "raw_count": len(
-                            base_raw
-                        ),
-                        "valid_count": len(
-                            base_valid
-                        ),
-                        "probe_context_max":
-                            probe_context_max,
-                        "probe_intent_max":
-                            probe_intent_max,
-                        "raw": [
-                            c.text
-                            for c in base_raw
-                        ],
-                        "valid": [
-                            c.text
-                            for c in base_valid
-                        ],
+                        "source": f"recovery:{recovery_mode}",
+                        "initials": request.bci_input,
+                        "spelled": request.spelled_syllables,
+                        "fill_mask_reference_text": request.fill_mask_reference_text,
+                        "fill_mask_target_index": request.fill_mask_target_index,
+                        "raw_count": len(base_raw),
+                        "valid_count": len(base_valid),
+                        "raw": [c.text for c in base_raw],
+                        "valid": [c.text for c in base_valid],
                     }
                 )
 
-            # ------------------------------------------------
-            # 3. DIVERSITY GENERATOR
-            # ------------------------------------------------
+            generation_ms += int((time.perf_counter() - gen_start) * 1000)
 
-            diversity_used = False
+        else:
 
-            if (
-                base_success
-                and _supports_diversity_generator(
-                    self.model_client
-                )
-                and _need_diversity(
-                    base_valid,
-                    probe_context_max,
-                    probe_intent_max,
-                )
-                and _diversity_count() > 0
+            # ====================================================
+            # EEG hypothesis별 generation
+            # ====================================================
+
+            for (
+                initials,
+                eeg_score,
+            ) in normalized_eeg_hypotheses(
+                request
             ):
 
-                diversity_used = True
-                any_diversity_used = True
+                hypothesis_count += 1
+
+                gen_start = time.perf_counter()
+
+                base_success = False
+
+                # ------------------------------------------------
+                # 1. BASE GENERATOR
+                # ------------------------------------------------
 
                 try:
-                    diversity_result = (
-                        generate_diversity_candidates(
-                            model_client=
-                                self.model_client,
-                            initials=initials,
-                            count=
-                                _diversity_count(),
-                            existing_candidates=[
-                                c.text
-                                for c in base_raw
-                            ],
-                            context=context,
+                    gen_result = (
+                        self.model_client
+                        .generate_candidates(
+                            initials,
+                            settings.generation_count,
                         )
                     )
 
                     usage = _usage_add(
                         usage,
-                        diversity_result.usage,
+                        gen_result.usage,
                     )
 
-                    diversity_raw = [
+                    base_raw = [
                         GeneratedCandidate(
                             candidate_id=(
                                 f"c{next_id + i}"
                             ),
                             text=text,
                             source_initials=initials,
-                            generation_order=(
-                                len(base_raw)
-                                + i
-                                + 1
-                            ),
+                            generation_order=i + 1,
                             eeg_score=eeg_score,
                         )
                         for (
                             i,
                             text,
                         ) in enumerate(
-                            diversity_result.candidates
+                            gen_result.candidates
                         )
                     ]
 
                     next_id += len(
-                        diversity_raw
+                        base_raw
                     )
 
-                    diversity_valid = (
-                        filter_candidates(
-                            diversity_raw,
-                            initials,
-                        )
-                    )
-
-                    pooled.extend(
-                        diversity_valid
-                    )
-
-                    if settings.debug_mode:
-
-                        debug_generation.append(
-                            {
-                                "source":
-                                    "diversity",
-                                "initials":
-                                    initials,
-                                "eeg_score":
-                                    eeg_score,
-                                "raw_count":
-                                    len(
-                                        diversity_raw
-                                    ),
-                                "valid_count":
-                                    len(
-                                        diversity_valid
-                                    ),
-                                "raw": [
-                                    c.text
-                                    for c
-                                    in diversity_raw
-                                ],
-                                "valid": [
-                                    c.text
-                                    for c
-                                    in diversity_valid
-                                ],
-                            }
-                        )
+                    base_success = True
 
                 except LLMServiceError as exc:
 
+                    if not settings.allow_local_fallback:
+                        raise
+
                     warnings.append(
-                        "diversity_generator:"
-                        + exc.code
+                        f"generator:{exc.code}"
                     )
 
-            if (
-                settings.debug_mode
-                and not diversity_used
-            ):
+                    fallback = "local_phrase_bank"
 
-                debug_generation.append(
-                    {
-                        "source": "diversity",
-                        "initials": initials,
-                        "skipped": True,
-                        "ensemble_mode":
-                            _ensemble_mode(),
-                        "base_valid_count":
-                            len(base_valid),
-                        "first_token_ratio":
-                            _first_token_ratio(
+                    base_raw = local_candidates(
+                        initials,
+                        eeg_score,
+                        next_id,
+                    )
+
+                    next_id += len(
+                        base_raw
+                    )
+
+                base_valid = filter_candidates(
+                    base_raw,
+                    initials,
+                )
+
+                pooled.extend(
+                    base_valid
+                )
+
+                # ------------------------------------------------
+                # 2. CONTEXT QUALITY PROBE
+                # ------------------------------------------------
+
+                probe_rows = None
+                probe_context_max = None
+                probe_intent_max = None
+
+                if (
+                    _ensemble_mode() == "context_quality"
+                    and base_valid
+                    and settings.use_llm_ranker
+                ):
+
+                    try:
+                        probe_result = (
+                            self.model_client
+                            .rank_candidates(
+                                base_valid,
+                                context,
+                            )
+                        )
+
+                        usage = _usage_add(
+                            usage,
+                            probe_result.usage,
+                        )
+
+                        probe_rows = (
+                            probe_result.scores
+                        )
+
+                        if probe_rows:
+
+                            probe_context_max = max(
+                                row.context_score
+                                for row in probe_rows
+                            )
+
+                            probe_intent_max = max(
+                                row.intent_score
+                                for row in probe_rows
+                            )
+
+                        reusable_probe_rows = (
+                            probe_rows
+                        )
+
+                        reusable_probe_candidate_ids = {
+                            c.candidate_id
+                            for c in base_valid
+                        }
+
+                    except LLMServiceError as exc:
+
+                        warnings.append(
+                            f"context_probe:{exc.code}"
+                        )
+
+                if settings.debug_mode:
+
+                    debug_generation.append(
+                        {
+                            "source": "base",
+                            "initials": initials,
+                            "eeg_score": eeg_score,
+                            "raw_count": len(
+                                base_raw
+                            ),
+                            "valid_count": len(
                                 base_valid
                             ),
-                        "probe_context_max":
-                            probe_context_max,
-                        "probe_intent_max":
-                            probe_intent_max,
-                    }
-                )
+                            "probe_context_max":
+                                probe_context_max,
+                            "probe_intent_max":
+                                probe_intent_max,
+                            "raw": [
+                                c.text
+                                for c in base_raw
+                            ],
+                            "valid": [
+                                c.text
+                                for c in base_valid
+                            ],
+                        }
+                    )
 
-            generation_ms += int(
-                (
-                    time.perf_counter()
-                    - gen_start
+                # ------------------------------------------------
+                # 3. DIVERSITY GENERATOR
+                # ------------------------------------------------
+
+                diversity_used = False
+
+                if (
+                    base_success
+                    and _supports_diversity_generator(
+                        self.model_client
+                    )
+                    and _need_diversity(
+                        base_valid,
+                        probe_context_max,
+                        probe_intent_max,
+                    )
+                    and _diversity_count() > 0
+                ):
+
+                    diversity_used = True
+                    any_diversity_used = True
+
+                    try:
+                        diversity_result = (
+                            generate_diversity_candidates(
+                                model_client=
+                                    self.model_client,
+                                initials=initials,
+                                count=
+                                    _diversity_count(),
+                                existing_candidates=[
+                                    c.text
+                                    for c in base_raw
+                                ],
+                                context=context,
+                            )
+                        )
+
+                        usage = _usage_add(
+                            usage,
+                            diversity_result.usage,
+                        )
+
+                        diversity_raw = [
+                            GeneratedCandidate(
+                                candidate_id=(
+                                    f"c{next_id + i}"
+                                ),
+                                text=text,
+                                source_initials=initials,
+                                generation_order=(
+                                    len(base_raw)
+                                    + i
+                                    + 1
+                                ),
+                                eeg_score=eeg_score,
+                            )
+                            for (
+                                i,
+                                text,
+                            ) in enumerate(
+                                diversity_result.candidates
+                            )
+                        ]
+
+                        next_id += len(
+                            diversity_raw
+                        )
+
+                        diversity_valid = (
+                            filter_candidates(
+                                diversity_raw,
+                                initials,
+                            )
+                        )
+
+                        pooled.extend(
+                            diversity_valid
+                        )
+
+                        if settings.debug_mode:
+
+                            debug_generation.append(
+                                {
+                                    "source":
+                                        "diversity",
+                                    "initials":
+                                        initials,
+                                    "eeg_score":
+                                        eeg_score,
+                                    "raw_count":
+                                        len(
+                                            diversity_raw
+                                        ),
+                                    "valid_count":
+                                        len(
+                                            diversity_valid
+                                        ),
+                                    "raw": [
+                                        c.text
+                                        for c
+                                        in diversity_raw
+                                    ],
+                                    "valid": [
+                                        c.text
+                                        for c
+                                        in diversity_valid
+                                    ],
+                                }
+                            )
+
+                    except LLMServiceError as exc:
+
+                        warnings.append(
+                            "diversity_generator:"
+                            + exc.code
+                        )
+
+                if (
+                    settings.debug_mode
+                    and not diversity_used
+                ):
+
+                    debug_generation.append(
+                        {
+                            "source": "diversity",
+                            "initials": initials,
+                            "skipped": True,
+                            "ensemble_mode":
+                                _ensemble_mode(),
+                            "base_valid_count":
+                                len(base_valid),
+                            "first_token_ratio":
+                                _first_token_ratio(
+                                    base_valid
+                                ),
+                            "probe_context_max":
+                                probe_context_max,
+                            "probe_intent_max":
+                                probe_intent_max,
+                        }
+                    )
+
+                generation_ms += int(
+                    (
+                        time.perf_counter()
+                        - gen_start
+                    )
+                    * 1000
                 )
-                * 1000
-            )
 
         # ====================================================
         # Cross-hypothesis duplicate handling
@@ -658,6 +773,7 @@ class BCILanguagePipeline:
                 candidates=[],
                 fallback="reinput",
                 hybrid_action="need_more_input",
+                recovery_mode=recovery_mode,
                 latency=LatencyBreakdown(
                     generation_ms=
                         generation_ms,
@@ -900,6 +1016,7 @@ class BCILanguagePipeline:
             candidates=top,
             fallback=fallback,
             hybrid_action=action,
+            recovery_mode=recovery_mode,
             latency=LatencyBreakdown(
                 generation_ms=
                     generation_ms,

@@ -7,7 +7,11 @@ from app.errors import LLMServiceError
 from app.llm.prompts import (
     GENERATOR_INSTRUCTIONS,
     RANKER_INSTRUCTIONS,
+    RECOVERY_FILLMASK_INSTRUCTIONS,
+    RECOVERY_KEYWORD_INSTRUCTIONS,
+    build_fill_mask_input,
     build_generator_input,
+    build_keyword_ae_input,
     build_ranker_input,
 )
 from app.llm.types import CandidateScore, GenerationCallResult, RankingCallResult, TokenUsage
@@ -176,6 +180,63 @@ class OpenAILanguageModelClient:
             candidates = [str(x).strip() for x in data.get("candidates", []) if str(x).strip()]
             return GenerationCallResult(candidates=candidates[:count], usage=self._usage(response))
         except Exception as exc:  # converted to app-safe errors; no secret leakage
+            if isinstance(exc, LLMServiceError):
+                raise
+            self._raise_clean_error(exc)
+            raise AssertionError("unreachable")
+
+    def generate_recovery_candidates(
+        self,
+        initials: str,
+        count: int,
+        *,
+        spelled: dict[int, str] | None = None,
+        reference_text: str | None = None,
+        target_index: int | None = None,
+        context: str = "",
+    ) -> GenerationCallResult:
+        """KeywordAE (spelled given) or FillMask (reference_text+target_index given).
+
+        Runs only on the recovery path (Top-K already failed once), so it is worth
+        spending one extra, context-aware cloud call to get a much higher hit-rate
+        than blindly resampling the base generator would.
+        """
+        if spelled:
+            instructions = RECOVERY_KEYWORD_INSTRUCTIONS
+            prompt_input = build_keyword_ae_input(initials, spelled, count, context)
+            stage = "keyword_ae_recovery"
+        elif reference_text is not None and target_index is not None:
+            instructions = RECOVERY_FILLMASK_INSTRUCTIONS
+            prompt_input = build_fill_mask_input(initials, reference_text, target_index, count, context)
+            stage = "fill_mask_recovery"
+        else:
+            raise LLMServiceError(
+                "recovery_missing_constraint",
+                "generate_recovery_candidates에는 spelled 또는 (reference_text, target_index)가 필요합니다.",
+            )
+
+        try:
+            response = self.client.responses.create(
+                model=self.generator_model_name,
+                instructions=instructions,
+                input=prompt_input,
+                reasoning={"effort": settings.reasoning_effort},
+                max_output_tokens=settings.max_output_tokens,
+                text={
+                    "verbosity": "low",
+                    "format": {
+                        "type": "json_schema",
+                        "name": "bci_recovery_generation",
+                        "strict": True,
+                        "schema": self._generator_schema(),
+                    },
+                },
+                store=False,
+            )
+            data = _parse_structured_json_response(response, stage)
+            candidates = [str(x).strip() for x in data.get("candidates", []) if str(x).strip()]
+            return GenerationCallResult(candidates=candidates[:count], usage=self._usage(response))
+        except Exception as exc:
             if isinstance(exc, LLMServiceError):
                 raise
             self._raise_clean_error(exc)

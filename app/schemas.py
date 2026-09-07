@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import Enum
 from typing import Any
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class InputMode(str, Enum):
@@ -71,10 +71,54 @@ class PredictionRequest(BaseModel):
     eeg_score_type: EEGScoreType = EEGScoreType.normalized_evidence
     top_k: int = Field(default=3, ge=1, le=5)
 
+    # ------------------------------------------------------------------
+    # Recovery interactions (SpeakFaster KeywordAE / FillMask, see
+    # app/pipeline/recovery.py for the pipeline-side handling).
+    #
+    # KeywordAE: the user has directly spelled out one or more syllable
+    # positions (via the Auto Toggle jamo keyboard) because none of the
+    # initials-only Top-K candidates were the intended phrase. Keys are
+    # 0-indexed positions aligned with app.korean.initials.extract_units(),
+    # values are the exact composed syllable text for that position.
+    #
+    # FillMask: the user picked a candidate that was almost right (one
+    # wrong syllable/word) and wants alternatives for just that position.
+    # fill_mask_reference_text is the almost-right candidate text,
+    # fill_mask_target_index is the position (same indexing) to vary.
+    #
+    # Only one of the two recovery modes is meaningful per request; if both
+    # are provided KeywordAE takes priority (it is the team's stated
+    # priority: "KeywordAE >> FillMask").
+    # ------------------------------------------------------------------
+    spelled_syllables: dict[int, str] | None = Field(default=None, max_length=20)
+    fill_mask_reference_text: str | None = Field(default=None, max_length=80)
+    fill_mask_target_index: int | None = Field(default=None, ge=0)
+
     @field_validator("recent_context")
     @classmethod
     def validate_context_items(cls, values: list[str]) -> list[str]:
         return [v.strip()[:300] for v in values if v and v.strip()]
+
+    @field_validator("spelled_syllables")
+    @classmethod
+    def validate_spelled_syllables(cls, value: dict[int, str] | None) -> dict[int, str] | None:
+        if not value:
+            return None
+        cleaned: dict[int, str] = {}
+        for index, text in value.items():
+            text = str(text).strip()
+            if not text or index < 0:
+                continue
+            cleaned[int(index)] = text[:4]
+        return cleaned or None
+
+    @model_validator(mode="after")
+    def validate_recovery_shape(self) -> "PredictionRequest":
+        if self.fill_mask_target_index is not None and not self.fill_mask_reference_text:
+            raise ValueError("fill_mask_target_index를 사용하려면 fill_mask_reference_text가 필요합니다.")
+        if self.fill_mask_reference_text and self.fill_mask_target_index is None:
+            raise ValueError("fill_mask_reference_text를 사용하려면 fill_mask_target_index가 필요합니다.")
+        return self
 
 
 class GeneratedCandidate(BaseModel):
@@ -118,6 +162,7 @@ class PredictionResponse(BaseModel):
     candidates: list[RankedCandidate]
     fallback: str = "none"
     hybrid_action: str = "show_candidates"
+    recovery_mode: str = "none"
     latency: LatencyBreakdown
     generator_model: str
     ranker_model: str
@@ -169,3 +214,12 @@ class SessionSelectRequest(BaseModel):
 class SessionUndoResponse(BaseModel):
     session: SessionState
     undone: str | None = None
+
+
+class HabitualPhrase(BaseModel):
+    text: str
+    count: int
+
+
+class HabitualPhraseResponse(BaseModel):
+    phrases: list[HabitualPhrase]

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from app.korean.initials import extract_units, fill_mask_constraint_match, spelled_constraint_match
 from app.llm.types import (
     CandidateScore,
     GenerationCallResult,
@@ -65,6 +66,48 @@ class MockLanguageModelClient:
     def generate_candidates(self, initials: str, count: int) -> GenerationCallResult:
         return GenerationCallResult(
             candidates=list(MOCK_BANK.get(initials, []))[:count],
+            usage=TokenUsage(input_tokens=0, output_tokens=0),
+        )
+
+    def generate_recovery_candidates(
+        self,
+        initials: str,
+        count: int,
+        *,
+        spelled: dict[int, str] | None = None,
+        reference_text: str | None = None,
+        target_index: int | None = None,
+        context: str = "",
+    ) -> GenerationCallResult:
+        """Best-effort deterministic recovery so MOCK_MODE stays fully clickable
+        in local dev/demo without any network calls. Real accuracy comes from the
+        cloud recovery path in OpenAILanguageModelClient; this only needs to keep
+        the UI from dead-ending during offline demos."""
+        pool = list(MOCK_BANK.get(initials, []))
+
+        if spelled:
+            pool = [t for t in pool if spelled_constraint_match(t, spelled)]
+            if not pool:
+                # Synthesize a single trivially-matching candidate so KeywordAE
+                # demos still show *something* even when the tiny mock bank has
+                # no natural match for this initials+spelling combination.
+                units = list(initials)
+                for index, syllable in spelled.items():
+                    if 0 <= index < len(units):
+                        units[index] = syllable
+                pool = ["".join(units)]
+
+        if reference_text is not None and target_index is not None:
+            pool = [t for t in pool if fill_mask_constraint_match(t, reference_text, target_index)]
+            if not pool:
+                ref_units = extract_units(reference_text)
+                if 0 <= target_index < len(ref_units):
+                    swapped = list(ref_units)
+                    swapped[target_index] = "?"
+                    pool = ["".join(swapped)]
+
+        return GenerationCallResult(
+            candidates=pool[:count],
             usage=TokenUsage(input_tokens=0, output_tokens=0),
         )
 

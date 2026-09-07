@@ -33,6 +33,45 @@ RANKER_INSTRUCTIONS = """
 5. 모든 candidate_id를 정확히 한 번씩 평가한다.
 """.strip()
 
+# ---------------------------------------------------------------------------
+# Recovery prompts (SpeakFaster KeywordAE / FillMask; Cai et al. 2024,
+# Nature Communications, "Using large language models to accelerate
+# communication for eye gaze typing users with ALS"). These only fire when
+# the initials-only Top-K failed to contain the intended phrase, so they run
+# far less often than the base generator/ranker and can afford to spend more
+# effort per call for much higher hit-rate.
+# ---------------------------------------------------------------------------
+
+RECOVERY_KEYWORD_INSTRUCTIONS = """
+너는 한국어 BCI 의사소통 시스템의 'KeywordAE 복구 생성기'다.
+사용자는 처음에 초성열만으로 입력했지만 원하는 표현이 Top 후보에 없어서,
+Auto Toggle 자모 키보드로 특정 음절 위치의 정확한 글자를 직접 완성해 밝혔다.
+(SpeakFaster 논문의 KeywordAE와 동일한 복구 방식이며, 사용자가 abbreviation의
+일부를 직접 spelling out 한 상황이다.)
+
+규칙:
+1. 입력에 명시된 '고정 음절'은 절대 다른 글자로 바꾸지 않고 정확히 그 글자를 해당 위치에 사용한다.
+2. 고정되지 않은 나머지 위치는 주어진 초성열에 정확히 대응해야 한다.
+3. 문맥에 맞는 실제 대화 표현만 생성한다.
+4. 서로 다른 표현을 넓게 생성한다 (같은 표현 반복 금지).
+5. 설명 없이 구조화된 후보 배열만 반환한다.
+6. 최종 검증(초성 exact match + 고정 음절 일치)은 Python 코드가 담당한다.
+""".strip()
+
+RECOVERY_FILLMASK_INSTRUCTIONS = """
+너는 한국어 BCI 의사소통 시스템의 'FillMask 복구 생성기'다.
+사용자가 선택하려던 문구는 거의 맞지만 정확히 한 음절(또는 한 단어) 위치만
+틀렸다고 판단해서, 그 위치만 바꾼 대안들을 요청했다.
+(SpeakFaster 논문의 FillMask와 동일한 near-miss 복구 방식이다.)
+
+규칙:
+1. '기준 문장'에서 지정된 위치를 제외한 모든 음절/글자는 절대 바꾸지 않는다.
+2. 지정된 위치만 자연스러운 다른 단어/음절로 교체한 서로 다른 후보를 여러 개 만든다.
+3. 교체하는 위치도 주어진 전체 초성열의 해당 위치 초성과 정확히 일치해야 한다.
+4. 문맥에 맞고 실제로 쓰일 법한 표현만 생성한다.
+5. 설명 없이 구조화된 후보 배열만 반환한다.
+""".strip()
+
 
 def build_generator_input(initials: str, count: int) -> str:
     return (
@@ -50,4 +89,28 @@ def build_ranker_input(candidates: list[tuple[str, str]], context: str) -> str:
         "평가할 후보:\n"
         + "\n".join(lines)
         + "\n\n각 candidate_id의 점수를 반환하라."
+    )
+
+
+def build_keyword_ae_input(initials: str, spelled: dict[int, str], count: int, context: str) -> str:
+    fixed_desc = ", ".join(f"{i + 1}번째 글자='{ch}'" for i, ch in sorted(spelled.items()))
+    return (
+        f"전체 초성열: {initials}\n"
+        f"고정 음절(사용자가 직접 입력함): {fixed_desc}\n"
+        f"생성 후보 수: {count}\n"
+        f"대화 문맥:\n{context}\n\n"
+        "위 고정 음절을 반드시 그대로 포함하고, 나머지 위치는 전체 초성열에 맞는 "
+        "서로 다른 실제 대화 표현 후보를 생성하라."
+    )
+
+
+def build_fill_mask_input(initials: str, reference_text: str, target_index: int, count: int, context: str) -> str:
+    return (
+        f"전체 초성열: {initials}\n"
+        f"기준 문장(거의 맞지만 한 곳이 틀림): {reference_text}\n"
+        f"바꿔야 할 위치(0-indexed, 공백 제외 음절 기준): {target_index}\n"
+        f"대안 후보 수: {count}\n"
+        f"대화 문맥:\n{context}\n\n"
+        "기준 문장에서 지정된 위치의 글자/단어만 바꾼 대안들을 생성하라. "
+        "그 외 위치는 기준 문장과 절대 다르게 만들지 않는다."
     )
