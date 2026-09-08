@@ -45,7 +45,7 @@ def normalize_request(request: PredictionRequest) -> PredictionRequest:
         for index, syllable in request.spelled_syllables.items():
             syllable = normalize_text(syllable)
             if not syllable or index >= bci_len:
-                continue
+                raise HTTPException(status_code=422, detail="고정 글자의 위치가 초성열 범위를 벗어났습니다.")
             expected_initial = request.bci_input[index]
             if extract_initials(syllable) != expected_initial:
                 raise HTTPException(
@@ -65,7 +65,8 @@ def normalize_request(request: PredictionRequest) -> PredictionRequest:
     # ------------------------------------------------------------------
     if request.fill_mask_reference_text is not None and request.fill_mask_target_index is not None:
         ref_units = extract_units(request.fill_mask_reference_text)
-        if len(ref_units) != len(request.bci_input) or request.fill_mask_target_index >= len(ref_units):
+        if (extract_initials(request.fill_mask_reference_text) != request.bci_input
+                or request.fill_mask_target_index >= len(ref_units)):
             raise HTTPException(
                 status_code=422,
                 detail="fill_mask_reference_text가 현재 초성열 길이와 맞지 않습니다.",

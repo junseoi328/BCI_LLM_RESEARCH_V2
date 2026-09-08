@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
 
-from app.api.predict import pipeline
+from app.api.predict import predict as run_prediction
 from app.llm.habitual_store import habitual_store
 from app.schemas import (
     HabitualPhraseResponse,
@@ -41,9 +41,8 @@ def habitual_phrases(session_id: str, limit: int = 6) -> HabitualPhraseResponse:
     if not session:
         raise HTTPException(status_code=404, detail="session not found")
     limit = max(1, min(limit, 12))
-    ranked = habitual_store.top_tiered(
-        partner=session.partner.value,
-        situation=session.situation.value,
+    ranked = habitual_store.top(
+        partner=f"{session_id}:{session.partner.value}",
         limit=limit,
     )
     return HabitualPhraseResponse(
@@ -61,11 +60,11 @@ def session_predict(session_id: str, request: PredictionRequest) -> PredictionRe
             "session_id": session_id,
             "partner": session.partner,
             "situation": session.situation,
-            "current_sentence": session.sentence,
-            "recent_context": session.history[-5:],
+            "current_sentence": session.sentence[-300:],
+            "recent_context": list(dict.fromkeys(session.history[-5:] + request.recent_context))[-5:],
         }
     )
-    response = pipeline.predict(patched)
+    response = run_prediction(patched)
     session_manager.set_candidates(session_id, response.candidates)
     return response
 
@@ -84,7 +83,7 @@ def select_candidate(session_id: str, request: SessionSelectRequest) -> SessionS
     except KeyError as exc:
         raise HTTPException(status_code=422, detail="candidate_id is not in the latest candidate list") from exc
     if committed is not None:
-        habitual_store.record(session.partner.value, session.situation.value, committed.text)
+        habitual_store.record(f"{session_id}:{session.partner.value}", session.situation.value, committed.text)
     return updated
 
 
@@ -104,7 +103,7 @@ def select_text(session_id: str, request: dict) -> SessionState:
     if not text:
         raise HTTPException(status_code=422, detail="text is required")
     updated = session_manager.append_text(session_id, text)
-    habitual_store.record(session.partner.value, session.situation.value, text)
+    habitual_store.record(f"{session_id}:{session.partner.value}", session.situation.value, text)
     return updated
 
 

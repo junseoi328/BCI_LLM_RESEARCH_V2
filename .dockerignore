@@ -1,4 +1,10 @@
 .venv
+.test-deps
+node_modules
+test-results
+data
+logs
+BCI_RENDER_DEPLOY_FINAL
 venv
 __pycache__
 *.pyc

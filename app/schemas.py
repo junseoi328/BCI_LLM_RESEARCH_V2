@@ -53,7 +53,7 @@ class EEGScoreType(str, Enum):
 
 class EEGHypothesis(BaseModel):
     initials: str = Field(min_length=1, max_length=20)
-    score: float
+    score: float = Field(allow_inf_nan=False)
 
 
 class PredictionRequest(BaseModel):
@@ -67,7 +67,7 @@ class PredictionRequest(BaseModel):
     current_sentence: str = Field(default="", max_length=300)
     recent_context: list[str] = Field(default_factory=list, max_length=5)
     context_level: ContextLevel = ContextLevel.full
-    eeg_hypotheses: list[EEGHypothesis] | None = None
+    eeg_hypotheses: list[EEGHypothesis] | None = Field(default=None, max_length=20)
     eeg_score_type: EEGScoreType = EEGScoreType.normalized_evidence
     top_k: int = Field(default=3, ge=1, le=5)
 

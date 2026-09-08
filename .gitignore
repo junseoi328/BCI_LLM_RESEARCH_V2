@@ -1,5 +1,8 @@
 .env
 .venv/
+.test-deps/
+node_modules/
+test-results/
 venv/
 __pycache__/
 .pytest_cache/

@@ -20,6 +20,7 @@ class TokenUsage:
 class GenerationCallResult:
     candidates: list[str]
     usage: TokenUsage
+    fallback: str = "none"
 
 
 @dataclass
@@ -35,6 +36,7 @@ class CandidateScore:
 class RankingCallResult:
     scores: list[CandidateScore]
     usage: TokenUsage
+    fallback: str = "none"
 
 
 class LanguageModelClient(Protocol):

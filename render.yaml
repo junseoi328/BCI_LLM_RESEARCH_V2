@@ -33,7 +33,7 @@ services:
         value: "45"
 
       - key: OPENAI_MAX_RETRIES
-        value: "2"
+        value: "0"
 
       - key: ALLOW_LOCAL_FALLBACK
         value: "true"
@@ -42,7 +42,7 @@ services:
         value: "false"
 
       - key: PIPELINE_VERSION
-        value: "0.6.0-web-deploy"
+        value: "0.7.0-web-deploy"
 
       - key: GENERATOR_PROMPT_VERSION
         value: "generator-v2+context-diversity-v2"

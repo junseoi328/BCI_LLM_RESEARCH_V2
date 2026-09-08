@@ -320,6 +320,9 @@ class BCILanguagePipeline:
                         context=context,
                     )
                     usage = _usage_add(usage, recovery_result.usage)
+                    if recovery_result.fallback != "none":
+                        fallback = recovery_result.fallback
+                        warnings.append(f"recovery:{fallback}")
                     raw_texts = recovery_result.candidates
                 except LLMServiceError as exc:
                     warnings.append(f"recovery_generator:{exc.code}")
@@ -396,18 +399,19 @@ class BCILanguagePipeline:
                 # ------------------------------------------------
 
                 try:
-                    gen_result = (
-                        self.model_client
-                        .generate_candidates(
-                            initials,
-                            settings.generation_count,
-                        )
-                    )
+                    contextual = getattr(self.model_client, "generate_candidates_with_context", None)
+                    if contextual and os.getenv("ENABLE_CONTEXTUAL_GENERATION", "false").lower() == "true":
+                        gen_result = contextual(initials, settings.generation_count, context)
+                    else:
+                        gen_result = self.model_client.generate_candidates(initials, settings.generation_count)
 
                     usage = _usage_add(
                         usage,
                         gen_result.usage,
                     )
+                    if gen_result.fallback != "none":
+                        fallback = gen_result.fallback
+                        warnings.append(f"generator:{fallback}")
 
                     base_raw = [
                         GeneratedCandidate(
@@ -879,6 +883,10 @@ class BCILanguagePipeline:
                         usage,
                         rank_result.usage,
                     )
+                    if rank_result.fallback != "none":
+                        warnings.append(f"ranker:{rank_result.fallback}")
+                        if fallback == "none":
+                            fallback = rank_result.fallback
 
                     rank_rows = (
                         rank_result.scores

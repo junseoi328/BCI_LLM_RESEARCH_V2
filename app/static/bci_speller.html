@@ -4,16 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>이심전심 BCI Speller</title>
+<meta name="description" content="한국어 초성 입력, 글자 수정, 직접 입력을 함께 지원하는 BCI·AAC 의사소통 연구용 스펠러">
 <style>
 :root{
   --blue:#2f6fed; --blue-dark:#1d4ed8; --blue-soft:#eaf0ff;
-  --bg:#f3f6fc; --card:#ffffff; --ink:#141c2b; --muted:#69748a;
+  --bg:#f3f6fc; --card:#ffffff; --ink:#141c2b; --muted:#56647a;
   --line:#e3e8f2; --line-soft:#edf1f9; --radius:22px; --radius-sm:14px;
   --shadow:0 14px 34px -16px rgba(30,64,175,.28);
   --shadow-sm:0 4px 14px -8px rgba(30,64,175,.22);
   --ok:#16a34a; --warn:#e2711d; --danger:#dc2626; --amber:#b45309; --amber-soft:#fef3e0;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
+button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
+button{touch-action:manipulation}
+button:disabled{opacity:.5;cursor:not-allowed}
+summary{cursor:pointer;padding:10px 0;min-height:44px;font-weight:700}
+select{font:inherit;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:8px;background:white}
+.card{min-width:0}
+.candidate .ct{overflow-wrap:anywhere}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+@media(max-width:480px){.candidate{grid-template-columns:30px 1fr!important;gap:8px!important}.candidate .meta{display:none}.topbar{flex-wrap:wrap}.brand .sub{display:none}}
 html,body{height:100%}
 body{
   margin:0; min-height:100vh; color:var(--ink);
@@ -212,8 +223,8 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 }
 .candidate:nth-child(1) .rank{background:linear-gradient(135deg,var(--blue),#6ba0ff);color:#fff}
 .candidate .ct{font-size:17px;font-weight:700}
-.candidate .ct .unit{border:0;background:transparent;color:inherit;font:inherit;border-radius:5px;padding:3px 2px;cursor:pointer}
-.candidate .commit-candidate{grid-column:2 / -1;justify-self:end;border:1px solid var(--blue);border-radius:8px;padding:7px 12px;background:var(--blue-soft);color:var(--blue-dark);font-weight:700;cursor:pointer}
+.candidate .ct .unit{border:1px solid #cbd5e1;background:#fff;color:inherit;font:inherit;border-radius:8px;min-width:38px;min-height:44px;margin:2px;padding:5px;cursor:pointer}
+.candidate .commit-candidate{grid-column:2 / -1;justify-self:stretch;min-height:44px;border:1px solid var(--blue);border-radius:8px;padding:7px 12px;background:var(--blue-soft);color:var(--blue-dark);font-weight:700;cursor:pointer}
 .candidate .ct .unit:hover{background:var(--blue-soft);color:var(--blue-dark);outline:1.5px dashed var(--blue)}
 .candidate .meta{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.5;font-variant-numeric:tabular-nums}
 .candidate .freq{font-size:9.5px;color:var(--blue-dark);opacity:.75}
@@ -346,7 +357,8 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 
     <div class="grid">
       <section class="card">
-        <h3>문장 버퍼 <span class="tag">세션 문맥 자동 반영</span></h3>
+        <h3>내가 전할 말 <span class="tag">확정한 문장만 추가</span></h3>
+        <div id="notice" role="status" aria-live="polite" class="unit-hint"></div>
         <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
 
         <div class="recent-box">
@@ -357,7 +369,8 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
         <div class="recent-box">
           <label>최근 대화 (선택 시 자동으로 문맥에 추가됨)</label>
           <div class="ctx-pill-row" id="historyPills"></div>
-          <textarea id="context" rows="2" placeholder="예: 목이 말라서 물을 마시고 싶다 (선택 입력)"></textarea>
+          <label for="context">상대방의 말 · 지금 상황 (선택)</label>
+          <textarea id="context" rows="2" maxlength="300" placeholder="예: 상대방이 ‘무엇을 도와줄까?’라고 물었어요"></textarea>
         </div>
 
         <div class="ini-row">
@@ -369,16 +382,35 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
           <button class="btn" id="btnBack">⌫ 지우기</button>
           <button class="btn" id="btnClear">초성 초기화</button>
           <button class="btn primary" id="btnPredict">후보 생성</button>
+          <button class="btn" id="btnCancel" hidden>조회 취소</button>
+          <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
           <button class="btn danger" id="btnReset">전체 초기화</button>
           <button class="btn accent" id="btnSpeak">🔊 문장 말하기</button>
+          <button class="btn" id="btnStopSpeak">말하기 중지</button>
         </div>
+        <details class="recovery" id="directPanel">
+          <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
+          <label for="directText">예측 없이 입력한 문장을 그대로 사용합니다</label>
+          <textarea id="directText" rows="2" maxlength="300" placeholder="전하고 싶은 문장을 입력하세요"></textarea>
+          <button class="btn primary" id="btnDirectCommit">입력한 문장 확정</button>
+        </details>
+        <details class="recovery">
+          <summary>입력 설정 · 이 탭의 기록</summary>
+          <label><input type="checkbox" id="autoPredict"> 입력을 멈추면 자동으로 후보 조회</label>
+          <p class="unit-hint">자동 조회는 1.2초 후 실행됩니다. 문장 확정은 항상 직접 선택합니다.</p>
+          <label for="candidateCount">표시할 후보 수</label>
+          <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
+          <p class="unit-hint">문장과 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 문맥이 서버·언어 모델로 전달됩니다.</p>
+          <button class="btn" id="btnExportMetrics">사용 지표 내려받기</button>
+          <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
+        </details>
       </section>
 
       <aside class="card">
-        <h3>Top-3 후보 <span class="tag">SSVEP 선택</span></h3>
+        <h3>추천 표현 <span class="tag">직접 선택</span></h3>
         <div id="nudgeBox"></div>
-        <div class="cand-list" id="candidates"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div></div>
-        <div class="unit-hint" id="unitHint" hidden>💡 글자를 누르면 해당 글자의 대안을 찾습니다 (FillMask). 문장 추가는 ‘문장 확정’ 버튼 또는 숫자 키 1·2·3을 사용하세요.</div>
+        <div class="cand-list" id="candidates" aria-live="polite" aria-busy="false"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 숫자로도 선택할 수 있어요.</div></div>
+        <div class="unit-hint" id="unitHint" hidden>💡 글자를 누르면 해당 글자의 대안을 찾습니다 (FillMask). 문장 추가는 ‘문장 확정’ 버튼 또는 표시된 후보의 숫자 키를 사용하세요.</div>
         <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding-left:0">🔎 원하는 표현이 없어요 → 직접 입력하기</button>
         <div class="recovery" id="recoveryPanel" hidden>
           <div class="recovery-head">
@@ -396,12 +428,12 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
             <div class="alt-list" id="fillmaskAlts"></div>
           </div>
         </div>
-        <div class="metrics">
+        <details><summary>응답 정보</summary><div class="metrics">
           <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
           <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
           <div class="metric"><span>지연시간</span><b id="mLat">-</b></div>
           <div class="metric"><span>모드</span><b id="mMode">-</b></div>
-        </div>
+        </div></details>
       </aside>
     </div>
   </section>
@@ -409,14 +441,13 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 </div>
 
 <div class="footer-note">
-  <p>P300 초성 → phrase memory + 로컬 파인튜닝 생성기 → 클라우드 문맥 랭커 → Top-3 → SSVEP 선택 &nbsp;·&nbsp; 확신도가 낮으면 KeywordAE/FillMask 복구 제안 &nbsp;·&nbsp; 이심전심(以心傳心) 연구용 프로토타입</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 웹에서는 클릭·키보드 입력을 사용합니다. EEG 측정·SSVEP 자극은 활성화되어 있지 않습니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v0.7.0</p>
 </div>
 
 <script>
 const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
 const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
 const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-const FREQS=["8Hz","10Hz","12Hz","15Hz"];
 
 const PARTNERS=[
   {v:"family",icon:"👪",label:"가족",hint:"편안한 말투"},
@@ -448,6 +479,41 @@ let state={
   fillMaskFor:null,    // {referenceText, targetIndex} while showing FillMask alternatives
 };
 let predictionVersion=0;
+let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
+let metrics={version:"0.7.0",actions:0,commits:0,undos:0,requests:0,errors:0,latencies_ms:[]};
+function announce(message){ el("notice").textContent=message; }
+function saveDraft(){
+  try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
+    partner:state.partner,situation:state.situation,initials:state.initials,
+    committed:state.committed,history:state.history.slice(-100),habitual:state.habitual.slice(0,100),
+    context:el("context").value,autoPredict:el("autoPredict").checked,
+    candidateCount:el("candidateCount").value,
+  })); }catch(e){}
+}
+function cancelPending(){
+  clearTimeout(autoTimer);
+  if(pendingController) pendingController.abort();
+  pendingController=null;
+  predictionVersion++;
+  el("btnCancel").hidden=true;
+  el("candidates").setAttribute("aria-busy","false");
+}
+function schedulePrediction(){
+  clearTimeout(autoTimer);
+  if(el("autoPredict").checked && state.initials.length>=2){
+    autoTimer=setTimeout(()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {}),1200);
+  }
+}
+function recordHabitual(text){
+  const found=state.habitual.find(p=>p.text===text);
+  if(found) found.count++; else state.habitual.push({text,count:1});
+  state.habitual.sort((a,b)=>b.count-a.count);
+  state.habitual=state.habitual.slice(0,100);
+}
+function rememberUndo(){
+  undoStack.push({committed:state.committed,history:[...state.history],habitual:state.habitual.map(p=>({...p}))});
+  if(undoStack.length>50) undoStack.shift();
+}
 
 function el(id){return document.getElementById(id)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -478,21 +544,21 @@ function showView(name){
 /* ---------------- step 1: partner ---------------- */
 function renderPartnerGrid(){
   el("partnerGrid").innerHTML = PARTNERS.map(p=>`
-    <div class="pick-card${state.partner===p.v?" sel":""}" data-v="${p.v}">
+    <button type="button" class="pick-card${state.partner===p.v?" sel":""}" data-v="${p.v}" aria-pressed="${state.partner===p.v}">
       <div class="ico">${p.icon}</div>
       <div class="lb">${p.label}</div>
       <div class="hint">${p.hint}</div>
-    </div>`).join("");
+    </button>`).join("");
   [...el("partnerGrid").children].forEach(node=>{
     node.onclick=()=>{ state.partner=node.dataset.v; renderPartnerGrid(); el("toStep2").disabled=false; };
   });
 }
 function renderSituationGrid(){
   el("situationGrid").innerHTML = SITUATIONS.map(s=>`
-    <div class="pick-card${state.situation===s.v?" sel":""}" data-v="${s.v}">
+    <button type="button" class="pick-card${state.situation===s.v?" sel":""}" data-v="${s.v}" aria-pressed="${state.situation===s.v}">
       <div class="ico">${s.icon}</div>
       <div class="lb">${s.label}</div>
-    </div>`).join("");
+    </button>`).join("");
   [...el("situationGrid").children].forEach(node=>{
     node.onclick=()=>{ state.situation=node.dataset.v; renderSituationGrid(); el("toStep3").disabled=false; };
   });
@@ -508,9 +574,13 @@ function partnerLabel(v){ return (PARTNERS.find(p=>p.v===v)||{}).label || v; }
 function situationLabel(v){ return (SITUATIONS.find(s=>s.v===v)||{}).label || v; }
 
 function resetToStart(){
-  predictionVersion++;
+  cancelPending();
+  const personal=state.habitual;
   state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[],
-    habitual:[],spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null};
+    habitual:personal,spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null};
+  undoStack=[];
+  el("context").value="";
+  saveDraft();
   try{ localStorage.removeItem("bci_session_id"); }catch(e){}
   renderPartnerGrid(); renderSituationGrid();
   el("toStep2").disabled=true; el("toStep3").disabled=true;
@@ -519,18 +589,10 @@ function resetToStart(){
 
 /* ---------------- step 3: session + speller ---------------- */
 async function startSession(){
-  try{
-    const r=await fetch("/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({partner:state.partner,situation:state.situation})});
-    const d=await r.json();
-    if(!r.ok) throw new Error(d.detail||JSON.stringify(d));
-    state.sessionId=d.session_id;
-    try{ localStorage.setItem("bci_session_id", d.session_id); }catch(e){}
-  }catch(e){
-    // 세션 시작 실패해도 speller 자체는 세션 없이 동작하도록 폴백
-    state.sessionId=null;
-    console.warn("session start failed, falling back to stateless /predict", e);
-  }
+  // The tab owns its conversation. Server sessions remain available to API clients.
+  cancelPending();
+  state.sessionId=null;
+  undoStack=[];
   el("partnerBadge").innerHTML = `<span class="num">✓</span>${esc(partnerLabel(state.partner))}`;
   el("situationBadge").innerHTML = `<span class="num">✓</span>${esc(situationLabel(state.situation))}`;
   state.committed=""; state.initials=""; state.latest=[]; state.history=[];
@@ -544,10 +606,16 @@ el("situationBadge").onclick=()=>showView("situation");
 function renderKeyboard(){
   el("keyboard").innerHTML = CHO.map(c=>`<button class="key" data-c="${c}">${c}</button>`).join("");
   [...el("keyboard").children].forEach(btn=>{
-    btn.onclick=()=>{ state.initials+=btn.dataset.c; clearRecoveryState(); renderBuffer(); };
+    btn.onclick=()=>{
+      if(state.initials.length>=20){ announce("한 번에 최대 20글자까지 입력할 수 있어요. 문장을 나누어 입력해주세요."); return; }
+      state.initials+=btn.dataset.c; clearRecoveryState(); renderBuffer(); schedulePrediction();
+    };
   });
 }
 function renderBuffer(){
+  saveDraft();
+  el("btnUndo").disabled=undoStack.length===0;
+  el("btnSpeak").disabled=!state.committed;
   el("committed").textContent=state.committed;
   el("pending").textContent = state.initials ? " ["+state.initials+"]" : "";
   el("bufferPh").style.display = (state.committed || state.initials) ? "none" : "inline";
@@ -569,12 +637,6 @@ function renderCandidatesEmpty(){
 
 /* ---------------- 자주 쓰는 표현 (habitual phrases) ---------------- */
 async function refreshHabitual(){
-  if(!state.sessionId){ state.habitual=[]; renderHabitual(); return; }
-  try{
-    const r=await fetch(`/session/${state.sessionId}/habitual?limit=6`);
-    const d=await r.json();
-    state.habitual = (r.ok && d.phrases) ? d.phrases : [];
-  }catch(e){ state.habitual=[]; }
   renderHabitual();
 }
 function renderHabitual(){
@@ -582,8 +644,8 @@ function renderHabitual(){
     el("habitualRow").innerHTML = `<span class="habitual-empty">아직 자주 쓰는 표현이 없습니다 · 문장을 선택할수록 여기에 채워집니다</span>`;
     return;
   }
-  el("habitualRow").innerHTML = state.habitual.map(p=>
-    `<span class="habitual-chip" data-t="${esc(p.text)}">${esc(p.text)}<span class="n">×${p.count}</span></span>`
+  el("habitualRow").innerHTML = state.habitual.slice(0,6).map(p=>
+    `<button type="button" class="habitual-chip" data-t="${esc(p.text)}">${esc(p.text)}<span class="n">×${p.count}</span></button>`
   ).join("");
   [...el("habitualRow").children].forEach(node=>{
     if(!node.dataset.t) return;
@@ -591,9 +653,10 @@ function renderHabitual(){
   });
 }
 
-el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); clearRecoveryState(); renderBuffer(); };
+el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); clearRecoveryState(); renderBuffer(); schedulePrediction(); };
 el("btnClear").onclick=()=>{ state.initials=""; clearRecoveryState(); renderBuffer(); };
 el("btnReset").onclick=async ()=>{
+  rememberUndo();
   state.initials=""; state.committed=""; state.latest=[]; state.history=[];
   el("context").value="";
   clearRecoveryState();
@@ -602,13 +665,43 @@ el("btnReset").onclick=async ()=>{
 };
 el("btnSpeak").onclick=()=>{
   if(!state.committed) return;
+  if(!("speechSynthesis" in window)){ announce("이 브라우저는 음성 읽기를 지원하지 않습니다."); return; }
   const u=new SpeechSynthesisUtterance(state.committed); u.lang="ko-KR";
   speechSynthesis.cancel(); speechSynthesis.speak(u);
 };
 el("btnPredict").onclick=()=>predict({});
+el("btnCancel").onclick=()=>{ clearRecoveryState(); announce("조회를 취소했습니다. 입력한 초성은 유지됩니다."); };
+el("btnStopSpeak").onclick=()=>{ if("speechSynthesis" in window) speechSynthesis.cancel(); };
+el("btnUndo").onclick=()=>{
+  const snapshot=undoStack.pop(); if(!snapshot) return;
+  cancelPending(); state.sessionId=null;
+  Object.assign(state,snapshot); state.initials=""; metrics.undos++;
+  clearRecoveryState(); renderBuffer(); renderHistoryPills(); renderHabitual();
+  announce("마지막 문장 확정을 되돌렸습니다.");
+};
+el("btnDirectCommit").onclick=async ()=>{
+  const text=el("directText").value.trim();
+  if(!text){ announce("전하고 싶은 문장을 먼저 입력해주세요."); return; }
+  await commitText(text); el("directText").value="";
+};
+el("context").oninput=()=>{ clearRecoveryState(); saveDraft(); schedulePrediction(); };
+el("autoPredict").onchange=()=>{ saveDraft(); schedulePrediction(); };
+el("candidateCount").onchange=()=>{ clearRecoveryState(); saveDraft(); };
+el("btnForget").onclick=()=>{
+  state.habitual=[]; resetToStart();
+  try{ sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
+};
+el("btnExportMetrics").onclick=()=>{
+  const blob=new Blob([JSON.stringify({...metrics,note:"UI action counts and request latency only; no EEG ITR or clinical validation."},null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url;a.download="bci-interaction-metrics.json";a.click();URL.revokeObjectURL(url);
+};
+document.addEventListener("click",e=>{
+  if(!el("view-speller").hidden && e.target.closest("button")) metrics.actions++;
+});
 
 function clearRecoveryState(){
-  predictionVersion++;
+  cancelPending();
   state.latest=[];
   state.spelled={}; state.jamoTarget=null; state.jamoMedial=null; state.fillMaskFor=null;
   el("btnPredict").disabled=false;
@@ -618,42 +711,69 @@ function clearRecoveryState(){
 /* ---------------- predict (base + recovery variants) ---------------- */
 async function predict(extra){
   if(!state.initials){ el("candidates").innerHTML='<div class="empty">먼저 초성을 선택해주세요.</div>'; return; }
+  cancelPending();
+  const controller=new AbortController(); pendingController=controller;
+  const timeout=setTimeout(()=>controller.abort(),60000);
+  const started=performance.now(); metrics.requests++;
   const version=++predictionVersion;
   state.latest=[];
   if(extra?.fill_mask_reference_text===undefined) hideFillmaskBox();
   el("candidates").innerHTML='<div class="empty">후보 생성 중…</div>';
   el("nudgeBox").innerHTML=""; el("unitHint").hidden=true; el("btnOpenRecovery").style.display="none";
   el("btnPredict").disabled=true;
+  el("btnCancel").hidden=false;
+  el("candidates").setAttribute("aria-busy","true");
   const manualCtx = el("context").value.trim();
   const body=Object.assign({
-    input_mode:"initials", bci_input:state.initials, top_k:3,
+    input_mode:"initials", bci_input:state.initials, top_k:Number(el("candidateCount").value),
     experiment_mode:"hybrid",
     partner: state.partner || "other", situation: state.situation || "general",
-    current_sentence: state.committed,
-    recent_context: manualCtx ? [manualCtx] : [],
+    current_sentence: state.committed.slice(-300),
+    recent_context: [...state.history.slice(-5), ...(manualCtx ? [manualCtx] : [])].slice(-5),
   }, extra||{});
   try{
-    const url = state.sessionId ? `/session/${state.sessionId}/predict` : "/predict";
-    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const sessionId=state.sessionId;
+    const url = sessionId ? `/session/${sessionId}/predict` : "/predict";
+    const options={method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:controller.signal};
+    let r=await fetch(url,options);
     let d=await r.json();
     if(version!==predictionVersion) return;
+    // A restarted server loses its in-memory sessions. Continue using the
+    // browser's sentence/history, without clearing input or replaying commits.
+    if(sessionId && r.status===404 && d.detail==="session not found"){
+      state.sessionId=null;
+      try{ localStorage.removeItem("bci_session_id"); }catch(e){}
+      r=await fetch("/predict",options);
+      d=await r.json();
+      if(version!==predictionVersion) return;
+    }
     if(!r.ok) throw new Error((d.detail&&(d.detail.message||JSON.stringify(d.detail)))||JSON.stringify(d));
     if(extra?.fill_mask_reference_text!==undefined){
       d={...d,candidates:(d.candidates||[]).filter(c=>c.text!==extra.fill_mask_reference_text)};
     }
     state.latest=d.candidates||[];
+    metrics.latencies_ms.push(Math.round(performance.now()-started));
+    metrics.latencies_ms=metrics.latencies_ms.slice(-100);
     renderCandidates(d);
+    if(d.fallback && d.fallback!=="none") announce("현재 대체 후보를 표시하고 있습니다. 원하는 말이 없으면 직접 입력해주세요.");
+    else announce("원하는 표현을 확인하고 확정해주세요.");
     return d;
   }catch(e){
     if(version!==predictionVersion) return;
-    el("candidates").innerHTML=`<div class="empty">오류: ${esc(e.message||e)}</div>`;
+    metrics.errors++;
+    el("candidates").innerHTML=`<div class="empty">${e.name==="AbortError" ? "응답이 늦어 조회를 중지했습니다." : "후보를 불러오지 못했습니다."}<br>다시 조회하거나 ‘문장을 직접 입력하기’를 이용해주세요.</div>`;
+    announce(e.name==="AbortError" ? "조회 시간이 초과됐습니다. 입력은 유지됩니다." : "서버 연결을 확인해주세요. 직접 입력과 문장 말하기는 계속 사용할 수 있습니다.");
   }finally{
-    if(version===predictionVersion) el("btnPredict").disabled=false;
+    clearTimeout(timeout);
+    if(version===predictionVersion){
+      pendingController=null; el("btnPredict").disabled=false; el("btnCancel").hidden=true;
+      el("candidates").setAttribute("aria-busy","false");
+    }
   }
 }
 
 function renderCandidates(d){
-  const list=state.latest.slice(0,3);
+  const list=state.latest.slice(0,5);
   if(!list.length){
     el("candidates").innerHTML='<div class="empty">유효한 후보가 없습니다. 아래에서 직접 입력해보세요.</div>';
   }else{
@@ -662,7 +782,7 @@ function renderCandidates(d){
         <span class="key-hint">${i+1}</span>
         <div class="rank">${i+1}</div>
         <div class="ct">${renderCandidateUnits(c.text)}</div>
-        <div class="meta">score ${(c.final_score??c.context_score??0).toFixed?.(2) ?? c.final_score}<div class="freq">${FREQS[i]||""}</div></div>
+        <div class="meta">후보 ${i+1}</div>
         <button type="button" class="commit-candidate">문장 확정 ${i+1}</button>
       </div>`).join("");
     [...el("candidates").children].forEach(node=>{
@@ -686,7 +806,7 @@ function renderCandidates(d){
   el("btnOpenRecovery").style.display="inline-block";
 
   if(d.hybrid_action==="need_more_input"){
-    el("nudgeBox").innerHTML = `<div class="nudge">🤔 확신도가 낮아요. 아래 "직접 입력하기"로 정확한 글자를 알려주면 훨씬 정확해져요.</div>`;
+    el("nudgeBox").innerHTML = `<div class="nudge">원하는 말이 없나요? 글자를 완성해 다시 찾거나 문장을 직접 입력할 수 있어요.</div>`;
     openRecoveryPanel();
   }
 }
@@ -711,6 +831,10 @@ el("btnRecoveryClose").onclick=()=>closeRecoveryPanel();
 el("btnRecoveryReset").onclick=()=>{ clearRecoveryState(); renderRecoveryBlocks(); el("jamoPicker").hidden=true; hideFillmaskBox(); };
 el("btnRecoveryPredict").onclick=async ()=>{
   if(!Object.keys(state.spelled).length){ return; }
+  if([...state.initials].every((_,i)=>state.spelled[i])){
+    await commitText([...state.initials].map((_,i)=>state.spelled[i]).join(""));
+    return;
+  }
   await predict({ spelled_syllables: state.spelled });
 };
 
@@ -726,10 +850,12 @@ function closeRecoveryPanel(){
 
 function renderRecoveryBlocks(){
   const chars=[...state.initials];
+  el("btnRecoveryPredict").textContent=chars.length && chars.every((_,i)=>state.spelled[i]) ? "완성한 글자 확정" : "이 글자로 다시 찾기";
+  el("btnRecoveryPredict").disabled=Object.keys(state.spelled).length===0;
   el("recoveryBlocks").innerHTML = chars.map((c,i)=>{
     const spelled=state.spelled[i];
     const cls = spelled ? "rblock filled" : (state.jamoTarget===i ? "rblock active" : "rblock");
-    return `<div class="${cls}" data-i="${i}">${esc(spelled||c)}</div>`;
+    return `<button type="button" class="${cls}" data-i="${i}" aria-label="${i+1}번째 글자 완성">${esc(spelled||c)}</button>`;
   }).join("");
   [...el("recoveryBlocks").children].forEach(node=>{
     node.onclick=()=>openJamoPicker(parseInt(node.dataset.i,10));
@@ -805,51 +931,58 @@ function hideFillmaskBox(){
 
 /* ---------------- commit ---------------- */
 async function commitText(text){
-  if(!text) return;
-  if(state.sessionId){
-    try{
-      const r=await fetch(`/session/${state.sessionId}/select_text`,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({text})});
-      const d=await r.json();
-      if(r.ok){ state.committed=d.sentence; state.history=d.history||[]; }
-      else{ state.committed=(state.committed?state.committed+" ":"")+text; state.history.push(text); }
-    }catch(e){ state.committed=(state.committed?state.committed+" ":"")+text; state.history.push(text); }
-  }else{
-    state.committed=(state.committed?state.committed+" ":"")+text; state.history.push(text);
-  }
-  state.initials=""; state.latest=[];
-  clearRecoveryState();
-  el("candidates").innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';
-  renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
-  refreshHabitual();
+  return commitValue(String(text||"").trim());
 }
 
 async function commit(i){
   const c=state.latest[i]; if(!c) return;
-  if(state.sessionId && c.candidate_id){
-    try{
-      const r=await fetch(`/session/${state.sessionId}/select`,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({candidate_id:c.candidate_id})});
-      const d=await r.json();
-      if(r.ok){ state.committed=d.sentence; state.history=d.history||[]; }
-      else{ state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text); }
-    }catch(e){ state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text); }
-  }else{
-    state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text);
+  return commitValue(c.text,c.candidate_id);
+}
+async function commitValue(text,candidateId){
+  if(!text || commitBusy) return;
+  commitBusy=true;
+  cancelPending();
+  const version=predictionVersion;
+  try{
+    let updated=null;
+    if(state.sessionId){
+      try{
+        const r=await fetch(`/session/${state.sessionId}/${candidateId ? "select" : "select_text"}`,{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify(candidateId ? {candidate_id:candidateId} : {text}),
+          signal:AbortSignal.timeout(10000),
+        });
+        if(version!==predictionVersion) return;
+        if(r.ok) updated=await r.json();
+        else if(r.status===404) state.sessionId=null;
+        else{ announce("선택 정보를 확인할 수 없습니다. 후보를 다시 조회해주세요."); return; }
+      }catch(e){
+        if(version!==predictionVersion) return;
+        state.sessionId=null;
+      }
+    }
+    if(version!==predictionVersion) return;
+    rememberUndo();
+    state.committed=updated ? updated.sentence : (state.committed ? state.committed+" " : "")+text;
+    state.history=updated ? updated.history||[] : [...state.history,text];
+    state.history=state.history.slice(-100);
+    recordHabitual(text); metrics.commits++;
+    state.initials=""; state.latest=[];
+    clearRecoveryState(); renderBuffer(); renderHistoryPills(); refreshHabitual();
+    announce("문장을 추가했습니다. 잘못 선택했다면 ‘마지막 문장 취소’를 눌러주세요.");
+  }finally{
+    commitBusy=false;
   }
-  state.initials=""; state.latest=[];
-  clearRecoveryState();
-  el("candidates").innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';
-  renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
-  refreshHabitual();
 }
 
 document.addEventListener("keydown",(e)=>{
   if(el("view-speller").hidden) return;
-  if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT") return;
-  if(["1","2","3"].includes(e.key)){
+  if(e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(["TEXTAREA","INPUT","SELECT"].includes(e.target.tagName)) return;
+  if(e.key==="Escape"){ el("btnCancel").click(); return; }
+  if(["1","2","3","4","5"].includes(e.key)){
     const idx=parseInt(e.key,10)-1;
-    if(state.latest[idx]) commit(idx);
+    if(state.latest[idx]){ e.preventDefault(); metrics.actions++; commit(idx); }
   }
 });
 
@@ -857,16 +990,35 @@ document.addEventListener("keydown",(e)=>{
 async function health(){
   const h=el("health"), t=el("healthText");
   try{
-    const r=await fetch("/health");
+    const r=await fetch("/health",{signal:AbortSignal.timeout(8000)});
     if(r.ok){ h.className="health ok"; t.textContent="Backend 연결됨"; }
     else{ h.className="health bad"; t.textContent="Backend 오류"; }
   }catch(e){ h.className="health bad"; t.textContent="Backend 연결 안 됨"; }
 }
 
+function restoreDraft(){
+  try{
+    const draft=JSON.parse(sessionStorage.getItem("bci_draft_v1")||"null");
+    if(!draft || !PARTNERS.some(p=>p.v===draft.partner) || !SITUATIONS.some(s=>s.v===draft.situation)) return;
+    state.partner=draft.partner;state.situation=draft.situation;state.sessionId=null;
+    state.committed=String(draft.committed||"").slice(-30000);
+    state.initials=[...String(draft.initials||"")].filter(c=>CHO.includes(c)).slice(0,20).join("");
+    state.history=Array.isArray(draft.history) ? draft.history.filter(x=>typeof x==="string").slice(-100) : [];
+    state.habitual=Array.isArray(draft.habitual) ? draft.habitual.filter(p=>typeof p.text==="string" && p.text.length<=300 && Number.isFinite(p.count) && p.count>0).slice(0,100) : [];
+    el("context").value=String(draft.context||"").slice(0,300);
+    el("autoPredict").checked=draft.autoPredict===true;
+    el("candidateCount").value=draft.candidateCount==="5" ? "5" : "3";
+    el("partnerBadge").textContent=partnerLabel(state.partner);
+    el("situationBadge").textContent=situationLabel(state.situation);
+    renderKeyboard();renderBuffer();renderHistoryPills();renderHabitual();renderCandidatesEmpty();showView("speller");
+    announce("이 탭의 대화를 복원했습니다. 후보는 새로 조회해주세요.");
+  }catch(e){}
+}
 renderPartnerGrid();
 renderSituationGrid();
+restoreDraft();
 health();
-setInterval(health, 20000);
+setInterval(()=>{ if(!document.hidden) health(); },60000);
 </script>
 </body>
 </html>

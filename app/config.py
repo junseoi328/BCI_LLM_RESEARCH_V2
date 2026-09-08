@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -30,9 +30,9 @@ class Settings:
     debug_mode: bool = _bool("DEBUG_MODE", False)
     mock_mode: bool = _bool("MOCK_MODE", True)
 
-    openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
-    generator_model: str = os.getenv("OPENAI_GENERATOR_MODEL", os.getenv("OPENAI_MODEL", "gpt-5.6-luna"))
-    ranker_model: str = os.getenv("OPENAI_RANKER_MODEL", os.getenv("OPENAI_MODEL", "gpt-5.6-luna"))
+    openai_api_key: str | None = field(default=os.getenv("OPENAI_API_KEY"), repr=False)
+    generator_model: str = os.getenv("OPENAI_GENERATOR_MODEL", os.getenv("GENERATOR_MODEL", os.getenv("OPENAI_MODEL", "gpt-5.6-luna")))
+    ranker_model: str = os.getenv("OPENAI_RANKER_MODEL", os.getenv("RANKER_MODEL", os.getenv("OPENAI_MODEL", "gpt-5.6-luna")))
     reasoning_effort: str = os.getenv("OPENAI_REASONING_EFFORT", "low")
     openai_timeout_sec: float = _float("OPENAI_TIMEOUT_SEC", 45.0)
     openai_max_retries: int = _int("OPENAI_MAX_RETRIES", 0)

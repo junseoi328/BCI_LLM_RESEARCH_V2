@@ -5,6 +5,10 @@ import uvicorn
 
 
 def main() -> None:
+    os.environ.setdefault("APP_ENV", "production")
+    os.environ.setdefault("ENABLE_EXPERIMENT_LOG", "false")
+    os.environ.setdefault("ENABLE_CONTEXTUAL_GENERATION", "true")
+    os.environ.setdefault("OPENAI_MAX_RETRIES", "0")
     port = int(os.getenv("PORT", "10000"))
     uvicorn.run(
         "app.main:app",

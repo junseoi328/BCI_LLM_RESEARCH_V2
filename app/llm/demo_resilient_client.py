@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 from app.errors import LLMServiceError
 from app.llm.mock_client import MockLanguageModelClient
 from app.llm.openai_client import OpenAILanguageModelClient
@@ -31,7 +33,31 @@ class DemoResilientLanguageModelClient:
         except LLMServiceError as exc:
             print(f"[BCI_DEMO] generator fallback: {exc.code}")
 
-        return self.mock.generate_candidates(initials, count)
+        return replace(self.mock.generate_candidates(initials, count), fallback="demo_phrase_bank")
+
+    def generate_candidates_with_context(self, initials: str, count: int, context: str) -> GenerationCallResult:
+        try:
+            result = self.live.generate_candidates_with_context(initials, count, context)
+            if result.candidates:
+                return result
+        except LLMServiceError as exc:
+            print(f"[BCI_DEMO] contextual generator fallback: {exc.code}")
+        return replace(self.mock.generate_candidates(initials, count), fallback="demo_phrase_bank")
+
+    def generate_recovery_candidates(
+        self, initials: str, count: int, *, spelled=None,
+        reference_text=None, target_index=None, context: str = "",
+    ) -> GenerationCallResult:
+        constraints = dict(spelled=spelled, reference_text=reference_text,
+                           target_index=target_index, context=context)
+        try:
+            return self.live.generate_recovery_candidates(initials, count, **constraints)
+        except LLMServiceError as exc:
+            print(f"[BCI_DEMO] recovery fallback: {exc.code}")
+            return replace(
+                self.mock.generate_recovery_candidates(initials, count, **constraints),
+                fallback="demo_phrase_bank",
+            )
 
     def rank_candidates(
         self,
@@ -42,4 +68,4 @@ class DemoResilientLanguageModelClient:
             return self.live.rank_candidates(candidates, context)
         except LLMServiceError as exc:
             print(f"[BCI_DEMO] ranker fallback: {exc.code}")
-            return self.mock.rank_candidates(candidates, context)
+            return replace(self.mock.rank_candidates(candidates, context), fallback="local_ranker")

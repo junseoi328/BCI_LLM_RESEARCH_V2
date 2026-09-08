@@ -26,7 +26,8 @@ def normalized_eeg_hypotheses(request: PredictionRequest) -> list[tuple[str, flo
     if not request.eeg_hypotheses:
         return [(request.bci_input, None)]
 
-    hyps = request.eeg_hypotheses[: settings.max_eeg_hypotheses]
+    # Decoder outputs need not arrive sorted; truncate only after ranking.
+    hyps = sorted(request.eeg_hypotheses, key=lambda h: h.score, reverse=True)[: settings.max_eeg_hypotheses]
     raw = [float(h.score) for h in hyps]
 
     if request.eeg_score_type == EEGScoreType.probability:

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import threading
 import uuid
+import time
+from collections import OrderedDict
 
 from app.schemas import Partner, RankedCandidate, SessionState, Situation
 
@@ -12,23 +14,48 @@ class InMemorySessionManager:
     This is intentionally in-memory. Replace with Redis/DB before multi-worker or production use.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, *, max_sessions: int = 1000, ttl_seconds: float = 86400, clock=time.monotonic) -> None:
+        if max_sessions < 1 or ttl_seconds <= 0:
+            raise ValueError("Session capacity and TTL must be positive")
         self._lock = threading.Lock()
-        self._sessions: dict[str, SessionState] = {}
+        self._sessions: OrderedDict[str, SessionState] = OrderedDict()
+        self._access: OrderedDict[str, float] = OrderedDict()
+        self._max_sessions = max_sessions
+        self._ttl = ttl_seconds
+        self._clock = clock
+
+    def _prune(self) -> None:
+        cutoff = self._clock() - self._ttl
+        while self._access and next(iter(self._access.values())) <= cutoff:
+            sid, _ = self._access.popitem(last=False)
+            self._sessions.pop(sid, None)
+
+    def _touch(self, sid: str) -> None:
+        self._access[sid] = self._clock()
+        self._access.move_to_end(sid)
+        self._sessions.move_to_end(sid)
 
     def start(self, partner: Partner, situation: Situation) -> SessionState:
         session = SessionState(
-            session_id=f"s_{uuid.uuid4().hex[:12]}",
+            session_id=f"s_{uuid.uuid4().hex}",
             partner=partner,
             situation=situation,
         )
         with self._lock:
+            self._prune()
+            while len(self._sessions) >= self._max_sessions:
+                sid, _ = self._sessions.popitem(last=False)
+                self._access.pop(sid, None)
             self._sessions[session.session_id] = session
+            self._touch(session.session_id)
         return session.model_copy(deep=True)
 
     def get(self, session_id: str) -> SessionState | None:
         with self._lock:
+            self._prune()
             value = self._sessions.get(session_id)
+            if value:
+                self._touch(session_id)
             return value.model_copy(deep=True) if value else None
 
     def set_candidates(self, session_id: str, candidates: list[RankedCandidate]) -> SessionState:

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import os
 
-from local_ft.inference_final import LocalBCIGenerator
-
 from app.korean.initials import extract_initials, normalize_text
 from app.llm.openai_client import OpenAILanguageModelClient
 from app.llm.phrase_memory_v2 import PhraseMemoryV2
@@ -53,6 +51,8 @@ class LocalGeneratorCloudRankerClient:
     """
 
     def __init__(self) -> None:
+        from local_ft.inference_final import LocalBCIGenerator
+
         self.local_generator = LocalBCIGenerator()
         self.cloud_ranker = OpenAILanguageModelClient()
 
@@ -80,13 +80,10 @@ class LocalGeneratorCloudRankerClient:
     # ============================================
 
     def generate_candidates(self, initials: str, count: int) -> GenerationCallResult:
-        memory_candidates = self.memory.candidates(initials, limit=self.memory_limit)
+        if count <= 0:
+            return GenerationCallResult(candidates=[], usage=TokenUsage(0, 0))
 
-        try:
-            local_candidates = self.local_generator.generate(initials=initials, count=count)
-        except Exception as exc:  # local model/driver hiccup must not break the request
-            local_candidates = []
-            print(f"[HYBRID_GENERATOR] local generator error: {type(exc).__name__}: {exc}")
+        memory_candidates = self.memory.candidates(initials, limit=self.memory_limit)
 
         # phrase memory(사람이 검수, 안전/자연스러움 보장)를 먼저 넣고
         # 로컬 모델 생성으로 다양성을 보충한다. (memory_augmented_client.py의
@@ -94,7 +91,15 @@ class LocalGeneratorCloudRankerClient:
         merged: list[str] = []
         seen: set[str] = set()
 
-        for text in list(memory_candidates) + list(local_candidates):
+        def candidate_stream():
+            yield from memory_candidates
+            # Only run inference if valid memory entries have not filled the request.
+            try:
+                yield from self.local_generator.generate(initials=initials, count=count)
+            except Exception as exc:  # local model/driver hiccup must not break the request
+                print(f"[HYBRID_GENERATOR] local generator error: {type(exc).__name__}: {exc}")
+
+        for text in candidate_stream():
             text = str(text).strip()
             if not text:
                 continue
