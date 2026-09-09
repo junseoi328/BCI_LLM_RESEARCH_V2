@@ -279,6 +279,34 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
   .jamo-grid{grid-template-columns:repeat(6,1fr)}
 }
 </style>
+<style id="calm-design">
+:root{--blue:#2458b8;--blue-dark:#17448f;--blue-soft:#edf2fc;--bg:#f4f7f8;--ink:#172b3a;--muted:#506575;--line:#cbd6df;--line-soft:#f2f5f8;--ok:#19714f;--radius:20px;--shadow-sm:0 6px 24px -16px #23435440}
+body{background:var(--bg);font-size:16px;line-height:1.6}
+button,a,summary,select{touch-action:manipulation}
+:focus-visible{outline:3px solid var(--blue-dark);outline-offset:4px}
+.topbar{padding:20px max(24px,calc((100vw - 1280px)/2));background:#fff;border-bottom:1px solid var(--line);gap:20px}
+.brand .mark{background:#174c48;width:46px;height:46px;border-radius:15px;font-size:20px;box-shadow:none}
+.brand .name{font-size:18px}.brand .sub{font-size:12px}.top-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top-tools .btn{font-size:14px;padding:10px 15px;min-height:46px}.health{box-shadow:none;background:#f4f7f8;font-size:12px;border:0}
+.shell{padding:28px 24px 40px}.step-wrap.wide{max-width:1280px}.step-wrap{max-width:800px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.13em;color:#316459}
+.hero{padding:54px 0 30px}.hero h1{font-size:clamp(32px,4.6vw,52px);line-height:1.35;letter-spacing:-.045em;margin:20px 0}.hero em{font-style:normal;color:#276358}
+.hero-copy{font-size:18px;color:var(--muted);line-height:1.9;margin:0 0 28px}
+.hero .ring-btn{width:auto;height:auto;border-radius:14px;padding:18px 34px;flex-direction:row;gap:28px;background:#2458b8;box-shadow:0 8px 22px -12px #2458b866;font-size:18px;letter-spacing:0}
+.hero .ring-btn:hover{transform:none;background:#17448f}.hero .cap{font-size:14px}.start-steps{display:flex;gap:26px;margin:36px 0 24px;flex-wrap:wrap;justify-content:center;font-size:14px}.start-steps b{color:#306559;margin-right:8px}
+.hero-example{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;padding:22px 30px;border:1px solid var(--line);background:#fff;border-radius:18px}.hero-example span{font-size:13px;color:var(--muted)}.hero-example strong{font-size:26px}.hero-example span:last-child{flex-basis:100%;font-size:12px}
+.headline h1{font-size:30px}.headline p{font-size:16px}.pick-card{padding:26px 14px;border-color:var(--line);gap:12px}.pick-card .lb{font-size:18px}.pick-card .hint{font-size:14px}.big-cta{background:var(--blue);border-radius:12px;box-shadow:none;font-size:17px}.badge{border:0;min-height:38px;font-size:13px}.badge.done{background:#e6f2eb;color:#216046}.badge-row{margin-bottom:20px}.ghost-btn{font-size:14px;min-height:44px}
+.workspace-intro{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:22px}.workspace-intro h1{font-size:28px;letter-spacing:-.035em;margin:4px 0 0}.workspace-intro p{margin:0;color:var(--muted);font-size:14px}
+.grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px}.card{padding:26px;border-color:#d9e1e7;box-shadow:var(--shadow-sm)}.conversation-card{grid-column:1/-1;border-top:4px solid #276358}.card h3{font-size:18px;gap:10px;flex-wrap:wrap;margin-bottom:14px}.card h3 .tag{font-size:11px;padding:3px 9px}.section-number{display:grid;place-items:center;border-radius:9px;background:#eaf1f5;color:#39566c;width:32px;height:32px;font-size:13px}.section-copy{font-size:14px;color:var(--muted);margin:-4px 0 18px}
+.buffer{min-height:92px;background:#f4f8f5;border:1px solid #cdded2;font-size:28px;padding:20px;overflow-wrap:anywhere;word-break:normal}.buffer .ph{font-size:19px;color:#5b7163}.speech-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.speech-actions #btnUndo{margin-left:auto}
+.btn{background:#fff;font-size:15px;min-height:48px;padding:11px 16px;box-shadow:none}.btn.primary{background:var(--blue);box-shadow:none}.btn.accent{background:#216548}.btn.danger{color:#a32121;border-color:#d4b2b2}.btn.sm{font-size:14px;min-height:44px}.btn:disabled{opacity:.55}.actions #btnPredict{order:-1;flex-basis:100%;font-size:17px}.actions{gap:10px}.context-details{margin-bottom:18px;border-bottom:1px solid var(--line)}summary{font-size:15px;padding:12px 0}.recent-box label{font-size:14px}.habitual-chip,.ctx-pill{font-size:14px;min-height:44px}.habitual-chip{color:#216548}.habitual-empty{font-size:13px}.ini-row{margin-top:0}.ini-row .lb{font-size:14px}.ini-display{font-size:30px;min-height:64px;overflow-wrap:anywhere;letter-spacing:.12em;padding:12px;margin-bottom:14px}.ini-display.empty{font-size:17px;color:var(--muted);display:grid;place-items:center}.keyboard{gap:10px}.key{min-height:58px;font-size:22px;background:#fff;border-color:#bacbd8}.key:hover{transform:none}.candidate:hover{transform:none}.candidate{padding:18px;grid-template-columns:34px minmax(0,1fr);gap:12px;border-color:#d1dce5;background:#fff}.candidate .rank{width:32px;height:32px;background:#edf2fc;color:#17448f;font-size:15px}.candidate .meta{grid-column:2;font-size:11px}.candidate .ct{font-size:24px;line-height:1.9}.candidate .commit-candidate{grid-column:1/-1;background:var(--blue);color:#fff;border:0;min-height:50px;border-radius:10px;font-size:16px}.candidate .unit{min-width:44px;min-height:48px;border:1px solid #c8d5e1;border-radius:8px;margin:2px;background:#f7f9fc;color:#172b3a;font-size:inherit;padding:3px 7px}.candidate .unit:hover{background:#e8effb;border-color:var(--blue)}
+.empty{background:#f7f9fb;border:1px dashed #a9bdcb;padding:36px 20px;font-size:16px;line-height:1.9;color:var(--muted);border-radius:14px}.unit-hint{font-size:13px;line-height:1.7;color:var(--muted)}#notice:empty{display:none}#notice:not(:empty){padding:10px 14px;background:#edf4ef;border-radius:10px;margin-bottom:12px;color:#24543a}.recovery{background:#f5f8fc;border-color:#bdcede;padding:16px}.recovery-head{font-size:15px}.recovery-block,.jamo-btn,.alt{min-width:44px;min-height:48px}.nudge{font-size:14px}textarea{font:inherit;font-size:16px;background:#fff;border-color:#a8bccb;padding:14px}.footer-note{padding:0 24px 20px}.footer-note p{font-size:12px;color:#5d6e7d}
+dialog.guide{width:min(880px,calc(100% - 32px));max-height:88vh;max-height:88dvh;padding:0;border:1px solid var(--line);border-radius:22px;color:var(--ink);background:#fff;box-shadow:0 20px 80px #172b3a33;overscroll-behavior:contain}dialog::backdrop{background:#162d3b80}.guide-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 28px;background:#fff;border-bottom:1px solid var(--line)}.guide-head h2{font-size:22px;margin:0}.guide-body{padding:24px 28px 32px}.guide-lead{font-size:20px;margin:0 0 8px;font-weight:700}.guide-body p,.guide-body li{font-size:16px;line-height:1.85}.guide-nav{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.guide-nav a{background:#edf2f6;padding:10px 14px;border-radius:10px;font-size:14px;text-decoration:none}.guide-body section{scroll-margin-top:100px;border-top:1px solid var(--line);padding-top:18px;margin-top:24px}.guide-body h3{font-size:20px;margin:0 0 12px}.guide-body h4{font-size:17px;margin-bottom:4px}.guide-body ol,.guide-body ul{padding-left:24px}.guide-callout{border-left:4px solid #276358;background:#f0f6f2;padding:14px 18px;border-radius:8px}.guide-body kbd{border:1px solid #9caeba;border-bottom-width:2px;border-radius:4px;padding:2px 7px;background:#f4f7f8}.guide-body details{border-bottom:1px solid var(--line)}.guide-body a{color:var(--blue-dark)}
+body.large-text .buffer{font-size:36px}body.large-text .candidate .ct{font-size:30px}body.large-text .key{font-size:28px;min-height:64px}body.large-text .btn,body.large-text summary,body.large-text .guide-body p,body.large-text .guide-body li{font-size:19px}body.large-text .section-copy{font-size:17px}body.large-text .candidate .commit-candidate{font-size:20px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.candidate-card{grid-row:3}.workspace-intro{display:block}.workspace-intro p{margin-top:8px}.topbar{padding:16px 20px;flex-wrap:wrap}.top-tools{gap:8px}.conversation-card{grid-column:auto}.keyboard{grid-template-columns:repeat(7,minmax(0,1fr))}.health{padding:7px 10px}}
+@media(max-width:540px){.shell{padding:20px 12px 28px}.card{padding:18px}.grid{gap:16px}.hero{padding:28px 4px}.hero-copy{font-size:16px}.hero-example{padding:18px;gap:12px}.topbar{gap:12px;padding:14px 16px}.top-tools{width:100%}.top-tools .btn{padding:8px 11px}.health{margin-left:auto;font-size:11px}.brand .name{font-size:17px}.keyboard{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.key{min-height:54px}.speech-actions .btn{flex:1 1 auto}.speech-actions #btnUndo{margin-left:0}.buffer{font-size:24px;padding:16px}.candidate .ct{font-size:22px}.candidate .meta{display:block}.workspace-intro h1{font-size:25px}.start-steps{gap:12px;font-size:12px}.guide-head{padding:16px}.guide-body{padding:18px}.guide-head h2{font-size:19px}.guide-nav a{flex:1 1 auto;text-align:center}.pick-card .lb{font-size:16px}}
+@media print{body:has(dialog[open])>*:not(dialog){display:none!important}dialog.guide[open]{position:static;max-height:none;width:100%;border:0;box-shadow:none}.guide-head{position:static}.guide-nav,#btnGuideClose{display:none}}
+</style>
 </head>
 <body>
 
@@ -290,7 +318,11 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
       <div class="sub">Korean Hybrid BCI-AAC prototype</div>
     </div>
   </div>
-  <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
+  <nav class="top-tools" aria-label="화면 도구">
+    <button class="btn" id="btnLargeText" aria-pressed="false">가 큰 글씨</button>
+    <button class="btn" id="btnGuide" aria-haspopup="dialog">사용 설명서</button>
+    <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
+  </nav>
 </div>
 
 <div class="shell">
@@ -298,9 +330,13 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
   <!-- STEP 0: hero / start -->
   <section class="step-wrap" id="view-start">
     <div class="hero">
-      <button class="ring-btn" id="btnStart">START<small>시작하려면 응시·클릭</small></button>
-      <div class="cap">약 2~3초 응시하면 시작합니다 · 대화 상대와 상황을 먼저 고릅니다</div>
-      <div class="freqline"><span>P300 초성 입력</span><span>SSVEP Top-3 선택</span><span>문맥 기반 후보 생성</span></div>
+      <span class="eyebrow">이심전심 · 나의 속도로, 나의 말로</span>
+      <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
+      <p class="hero-copy">초성으로 시작하고, 내 뜻에 맞는 문장을 골라보세요.<br>원하는 말이 될 때까지 직접 고치고 완성할 수 있어요.</p>
+      <button class="ring-btn" id="btnStart">대화 시작하기 <span aria-hidden="true">→</span></button>
+      <div class="cap">대화 상대와 상황을 고른 뒤 시작합니다.</div>
+      <div class="start-steps"><span><b>01</b> 초성 입력</span><span><b>02</b> 표현 선택·수정</span><span><b>03</b> 확정하고 말하기</span></div>
+      <div class="hero-example" aria-label="입력 예시"><span>이렇게 시작해요</span><strong>ㅁ ㅈ</strong><span aria-hidden="true">→</span><strong>물 줘</strong><span>후보 예시 · 결과는 달라질 수 있어요</span></div>
     </div>
   </section>
 
@@ -347,34 +383,44 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
   <!-- STEP 3: speller -->
   <section class="step-wrap wide" id="view-speller" hidden>
     <div class="badge-row">
-      <div class="badge done" id="partnerBadge" style="cursor:pointer"><span class="num">✓</span>가족</div>
+      <button class="badge done" id="partnerBadge" type="button"><span class="num">✓</span>가족</button>
       <span class="arrow">›</span>
-      <div class="badge done" id="situationBadge" style="cursor:pointer"><span class="num">✓</span>일반</div>
+      <button class="badge done" id="situationBadge" type="button"><span class="num">✓</span>일반</button>
       <span class="arrow">›</span>
       <div class="badge"><span class="num">3</span>대화 중</div>
       <button class="ghost-btn" id="btnNewSession" style="margin-left:auto">↺ 새 대화 시작</button>
     </div>
 
+    <div class="workspace-intro"><div><span class="eyebrow">MY CONVERSATION</span><h1>지금, 전하고 싶은 말</h1></div><p>초성 입력 → 표현 확인 → 문장 확정</p></div>
     <div class="grid">
-      <section class="card">
+      <section class="card conversation-card">
         <h3>내가 전할 말 <span class="tag">확정한 문장만 추가</span></h3>
         <div id="notice" role="status" aria-live="polite" class="unit-hint"></div>
         <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
+        <div class="speech-actions">
+          <button class="btn accent" id="btnSpeak">문장 말하기</button>
+          <button class="btn" id="btnStopSpeak">말하기 중지</button>
+          <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
+        </div>
+      </section>
+      <section class="card input-card">
+        <h3><span class="section-number">01</span> 초성으로 시작하기</h3>
+        <p class="section-copy">말하고 싶은 글자의 첫 자음을 차례로 눌러주세요.</p>
 
-        <div class="recent-box">
+        <details class="context-details"><summary>자주 쓰는 표현 · 대화 문맥</summary><div class="recent-box">
           <label>자주 쓰는 표현 (탭하면 바로 입력됨)</label>
           <div class="habitual-row" id="habitualRow"></div>
         </div>
 
         <div class="recent-box">
-          <label>최근 대화 (선택 시 자동으로 문맥에 추가됨)</label>
+          <label>최근 대화 (후보 조회에 자동 반영)</label>
           <div class="ctx-pill-row" id="historyPills"></div>
           <label for="context">상대방의 말 · 지금 상황 (선택)</label>
           <textarea id="context" rows="2" maxlength="300" placeholder="예: 상대방이 ‘무엇을 도와줄까?’라고 물었어요"></textarea>
-        </div>
+        </div></details>
 
         <div class="ini-row">
-          <span class="lb">P300 초성 입력 시뮬레이터</span>
+          <span class="lb">입력 중인 초성</span><span class="unit-hint">최대 20글자</span>
         </div>
         <div class="ini-display empty" id="iniDisplay">초성을 선택하세요</div>
         <div class="keyboard" id="keyboard"></div>
@@ -383,10 +429,7 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
           <button class="btn" id="btnClear">초성 초기화</button>
           <button class="btn primary" id="btnPredict">후보 생성</button>
           <button class="btn" id="btnCancel" hidden>조회 취소</button>
-          <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
           <button class="btn danger" id="btnReset">전체 초기화</button>
-          <button class="btn accent" id="btnSpeak">🔊 문장 말하기</button>
-          <button class="btn" id="btnStopSpeak">말하기 중지</button>
         </div>
         <details class="recovery" id="directPanel">
           <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
@@ -406,8 +449,9 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
         </details>
       </section>
 
-      <aside class="card">
-        <h3>추천 표현 <span class="tag">직접 선택</span></h3>
+      <aside class="card candidate-card">
+        <h3><span class="section-number">02</span> 내 뜻에 맞는 표현 <span class="tag">직접 선택</span></h3>
+        <p class="section-copy">글자를 누르면 수정, ‘문장 확정’을 누르면 추가돼요.</p>
         <div id="nudgeBox"></div>
         <div class="cand-list" id="candidates" aria-live="polite" aria-busy="false"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 숫자로도 선택할 수 있어요.</div></div>
         <div class="unit-hint" id="unitHint" hidden>💡 글자를 누르면 해당 글자의 대안을 찾습니다 (FillMask). 문장 추가는 ‘문장 확정’ 버튼 또는 표시된 후보의 숫자 키를 사용하세요.</div>
@@ -444,6 +488,20 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
   <p>한국어 BCI·AAC 연구용 스펠러 · 웹에서는 클릭·키보드 입력을 사용합니다. EEG 측정·SSVEP 자극은 활성화되어 있지 않습니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v0.7.0</p>
 </div>
 
+<dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
+  <header class="guide-head"><h2 id="guideTitle">이심전심 사용 설명서</h2><button class="btn" id="btnGuideClose" autofocus>닫기</button></header>
+  <div class="guide-body">
+    <p class="guide-lead">내가 원하는 말을, 나의 속도로.</p>
+    <p>초성으로 문장을 찾고, 뜻에 맞게 고친 다음 상대방에게 보여주거나 소리로 전하세요. 설명서를 닫으면 작성 중이던 화면으로 돌아갑니다.</p>
+    <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a></nav>
+    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> 예를 들어 ‘물 줘’는 <strong>ㅁ → ㅈ</strong>을 누르고 ‘후보 생성’을 선택합니다. 띄어쓰기와 문장 부호는 입력하지 않습니다. 한 번에 최대 20글자까지 입력할 수 있습니다.</li><li><strong>추천 표현 확인:</strong> 원하는 문장이면 ‘문장 확정’을 누릅니다. 확정한 문장은 위쪽 ‘내가 전할 말’에 추가됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
+    <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
+    <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>마지막 문장 취소:</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>지우기 / 초성 초기화:</strong> 마지막 초성 하나 / 입력한 초성 전체를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>5</kbd>는 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
+    <section id="guide-settings"><h3>4. 나에게 맞게 조절하기</h3><ul><li><strong>큰 글씨:</strong> 화면 위쪽 ‘가 큰 글씨’로 입력·후보·주요 버튼을 확대합니다. 같은 버튼으로 기본 크기로 돌아옵니다.</li><li><strong>자동 후보 조회:</strong> ‘입력 설정 · 이 탭의 기록’에서 켭니다. 초성 2개 이상 입력 후 1.2초 동안 입력을 멈추면 조회합니다. 문장은 자동 확정되지 않습니다.</li><li><strong>후보 수:</strong> 3개 또는 5개로 선택합니다.</li><li><strong>대화 문맥:</strong> ‘자주 쓰는 표현 · 대화 문맥’을 열어 상대방의 말이나 상황을 적으면 조회에 참고합니다. 최근 대화도 자동 반영됩니다.</li><li><strong>자주 쓰는 표현:</strong> 확정한 표현이 모입니다. 이 버튼은 누르면 바로 문장에 추가됩니다.</li></ul><h4>내 대화는 어디에 저장되나요?</h4><p>작성 중인 문장과 최근 대화, 자주 쓰는 표현은 현재 브라우저 탭의 세션 저장소에 보관되어 새로고침 뒤 복원됩니다. 후보 조회 시 초성·문맥 등 필요한 입력이 서버와 언어 모델로 전송됩니다. 탭 복원 기능에 따라 기록이 다시 열릴 수 있으므로 공용 기기에서는 ‘이 탭의 기록 삭제’를 사용하세요.</p><p>‘사용 지표 내려받기’는 입력 횟수·조회 지연시간 등의 JSON 파일을 저장합니다. 문장 원문은 포함하지 않습니다. 실제 EEG 정확도나 의사소통 성능을 측정하는 기능은 아닙니다.</p></section>
+    <section id="guide-trouble"><h3>5. 잘 안 될 때</h3><details><summary>후보가 늦게 나오거나 연결 오류가 보여요</summary><p>서버가 절전 상태에서 깨어나는 데 시간이 걸릴 수 있습니다. 잠시 후 ‘후보 생성’을 다시 눌러보세요. 입력은 유지됩니다. ‘조회 취소’로 중단하거나, 기다리지 않고 문장 전체를 직접 입력할 수도 있습니다.</p></details><details><summary>원하는 표현이 없거나 초성을 잘못 눌렀어요</summary><p>‘지우기’로 잘못 입력한 초성을 수정하세요. 글자 하나의 대안은 FillMask, 일부 글자를 지정하는 것은 KeywordAE, 정확한 문장을 알고 있을 때는 전체 직접 입력을 사용하세요.</p></details><details><summary>눈으로 바라보면 선택되나요?</summary><p>현재 웹 버전은 클릭·터치·키보드로 조작하는 연구용 인터페이스입니다. EEG 측정, 시선 추적, P300/SSVEP 자극 및 실제 뇌파 선택 기능은 활성화되어 있지 않습니다.</p></details><details><summary>새 대화와 기록 삭제는 어떻게 다른가요?</summary><p>‘새 대화 시작’은 상대와 상황을 다시 선택하며 현재 대화를 초기화합니다. 자주 쓰는 표현은 유지됩니다. 개인 기록까지 비우려면 ‘입력 설정 · 이 탭의 기록’의 ‘이 탭의 기록 삭제’를 선택하세요.</p></details></section>
+    <p class="unit-hint">디자인 기준: 읽기 쉬운 대비, 큰 조작 영역, 키보드 초점 표시. <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">WCAG 2.2 참고</a> · 실제 사용자 평가를 통한 추가 개선이 필요합니다.</p>
+  </div>
+</dialog>
 <script>
 const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
 const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
@@ -976,6 +1034,7 @@ async function commitValue(text,candidateId){
 }
 
 document.addEventListener("keydown",(e)=>{
+  if(el("guideDialog").open) return;
   if(el("view-speller").hidden) return;
   if(e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
   if(["TEXTAREA","INPUT","SELECT"].includes(e.target.tagName)) return;
@@ -985,6 +1044,16 @@ document.addEventListener("keydown",(e)=>{
     if(state.latest[idx]){ e.preventDefault(); metrics.actions++; commit(idx); }
   }
 });
+
+el("btnGuide").onclick=()=>{el("guideDialog").showModal();};
+el("btnGuideClose").onclick=()=>el("guideDialog").close();
+el("guideDialog").addEventListener("close",()=>el("btnGuide").focus());
+el("btnLargeText").onclick=()=>{
+  const enabled=document.body.classList.toggle("large-text");
+  el("btnLargeText").setAttribute("aria-pressed",String(enabled));
+  try{sessionStorage.setItem("bci_large_text",String(enabled));}catch(e){}
+};
+try{if(sessionStorage.getItem("bci_large_text")==="true"){document.body.classList.add("large-text");el("btnLargeText").setAttribute("aria-pressed","true");}}catch(e){}
 
 /* ---------------- health check ---------------- */
 async function health(){

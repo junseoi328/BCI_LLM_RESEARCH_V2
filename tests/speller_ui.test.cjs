@@ -5,6 +5,43 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
+test('Guide isolates keyboard shortcuts, restores focus and supports large text on mobile', {timeout:60000}, async()=>{
+  const browser=await chromium.launch({headless:true,...(process.env.BCI_TEST_BROWSER?{executablePath:process.env.BCI_TEST_BROWSER}:{})});
+  try{
+    const page=await browser.newPage({viewport:{width:390,height:844}});
+    const html=fs.readFileSync(path.join(__dirname,'../app/static/bci_speller.html'),'utf8');
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>route.fulfill(new URL(route.request().url()).pathname==='/speller'?{contentType:'text/html',body:html}:{json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';state.initials='ㅁㅈ';state.latest=[{candidate_id:'a',text:'물 줘'}];showView('speller');renderKeyboard();renderBuffer();renderCandidates({});});
+    await page.locator('#btnGuide').click();
+    assert.equal(await page.locator('#guideDialog').evaluate(d=>d.open),true);
+    await page.keyboard.press('1');
+    assert.equal(await page.locator('#committed').textContent(),'');
+    assert.equal(await page.evaluate(()=>state.initials),'ㅁㅈ');
+    for(let i=0;i<25;i++){
+      await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(()=>el('guideDialog').contains(document.activeElement)),true);
+    }
+    await page.locator('.guide-nav a[href="#guide-edit"]').click();
+    assert.match(await page.locator('#guide-edit').textContent(),/FillMask/);
+    assert.equal(await page.locator('#guideDialog').evaluate(d=>d.scrollWidth<=d.clientWidth),true);
+    if(process.env.BCI_SCREENSHOT_DIR){fs.mkdirSync(process.env.BCI_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.BCI_SCREENSHOT_DIR,'speller-guide-mobile.png')});}
+    await page.keyboard.press('Escape');
+    assert.equal(await page.evaluate(()=>document.activeElement.id),'btnGuide');
+    await page.locator('#btnLargeText').click();
+    assert.equal(await page.locator('#btnLargeText').getAttribute('aria-pressed'),'true');
+    for(const width of [320,390,768,1440]){
+      await page.setViewportSize({width,height:900});
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`no overflow at ${width}px`);
+      assert.equal(await page.locator('.key').first().evaluate(n=>n.getBoundingClientRect().height>=44),true);
+    }
+    await page.reload();
+    assert.equal(await page.locator('#btnLargeText').getAttribute('aria-pressed'),'true');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
 test('Automatic lookup debounces input and fully spelled text commits without a model', { timeout: 60000 }, async () => {
   const browser=await chromium.launch({headless:true,
     ...(process.env.BCI_TEST_BROWSER ? {executablePath:process.env.BCI_TEST_BROWSER} : {}),
@@ -69,6 +106,7 @@ test('Public UI works offline, restores a draft, undoes commits and fits mobile'
     assert.equal(await page.evaluate(()=>state.habitual.length),0);
     await page.locator('#directText').fill('다른 이야기를 하고 싶어요.');
     await page.locator('#btnDirectCommit').click();
+    await page.locator('.context-details summary').click();
     await page.locator('#context').fill('오늘 하루는 어땠어?');
     await page.locator('#keyboard [data-c="ㄷ"]').click();
     await page.locator('#keyboard [data-c="ㅇ"]').click();
