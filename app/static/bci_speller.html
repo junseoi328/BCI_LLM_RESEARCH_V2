@@ -4,27 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>이심전심 BCI Speller</title>
-<meta name="description" content="한국어 초성 입력, 글자 수정, 직접 입력을 함께 지원하는 BCI·AAC 의사소통 연구용 스펠러">
 <style>
 :root{
   --blue:#2f6fed; --blue-dark:#1d4ed8; --blue-soft:#eaf0ff;
-  --bg:#f3f6fc; --card:#ffffff; --ink:#141c2b; --muted:#56647a;
+  --bg:#f3f6fc; --card:#ffffff; --ink:#141c2b; --muted:#69748a;
   --line:#e3e8f2; --line-soft:#edf1f9; --radius:22px; --radius-sm:14px;
   --shadow:0 14px 34px -16px rgba(30,64,175,.28);
   --shadow-sm:0 4px 14px -8px rgba(30,64,175,.22);
-  --ok:#16a34a; --warn:#e2711d; --danger:#dc2626; --amber:#b45309; --amber-soft:#fef3e0;
+  --ok:#16a34a; --warn:#e2711d; --danger:#dc2626;
 }
 *{box-sizing:border-box}
-[hidden]{display:none!important}
-button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
-button{touch-action:manipulation}
-button:disabled{opacity:.5;cursor:not-allowed}
-summary{cursor:pointer;padding:10px 0;min-height:44px;font-weight:700}
-select{font:inherit;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:8px;background:white}
-.card{min-width:0}
-.candidate .ct{overflow-wrap:anywhere}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
-@media(max-width:480px){.candidate{grid-template-columns:30px 1fr!important;gap:8px!important}.candidate .meta{display:none}.topbar{flex-wrap:wrap}.brand .sub{display:none}}
 html,body{height:100%}
 body{
   margin:0; min-height:100vh; color:var(--ink);
@@ -152,16 +141,6 @@ button{font:inherit}
 .ctx-pill:hover{border-color:#c9d6f5}
 .ctx-pill .x{color:var(--muted);font-weight:400}
 
-/* 익숙하게 쓰는 표현 (habitual phrases) quick-access row */
-.habitual-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.habitual-chip{
-  font-size:12.5px;font-weight:700;color:#0f9d78;background:#e7f9f2;border:1px solid #cdf0e2;
-  border-radius:99px;padding:7px 13px;cursor:pointer;transition:all .1s ease;
-}
-.habitual-chip:hover{background:#d9f5e9;transform:translateY(-1px)}
-.habitual-chip .n{opacity:.6;font-weight:600;margin-left:4px;font-size:10.5px}
-.habitual-empty{font-size:11.5px;color:var(--muted)}
-
 .buffer{
   min-height:70px;background:var(--line-soft);border:1.5px dashed var(--line);border-radius:var(--radius-sm);
   padding:16px 18px;font-size:21px;line-height:1.5;font-weight:600;word-break:keep-all;
@@ -206,14 +185,13 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 .btn.danger{border-color:#f3c9c9;color:var(--danger)}
 .btn.danger:hover{background:#fdecec}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.btn.sm{padding:8px 11px;font-size:12px}
 
 /* candidates / SSVEP panel */
 .cand-list{display:flex;flex-direction:column;gap:10px}
 .candidate{
   display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;
   background:#fbfcfe;border:1.5px solid var(--line);border-radius:var(--radius-sm);
-  padding:13px 14px;transition:all .12s ease;position:relative;
+  padding:13px 14px;cursor:pointer;transition:all .12s ease;position:relative;
 }
 .candidate:hover{border-color:var(--blue);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
 .candidate:active{transform:translateY(0)}
@@ -223,47 +201,13 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 }
 .candidate:nth-child(1) .rank{background:linear-gradient(135deg,var(--blue),#6ba0ff);color:#fff}
 .candidate .ct{font-size:17px;font-weight:700}
-.candidate .ct .unit{border:1px solid #cbd5e1;background:#fff;color:inherit;font:inherit;border-radius:8px;min-width:38px;min-height:44px;margin:2px;padding:5px;cursor:pointer}
-.candidate .commit-candidate{grid-column:2 / -1;justify-self:stretch;min-height:44px;border:1px solid var(--blue);border-radius:8px;padding:7px 12px;background:var(--blue-soft);color:var(--blue-dark);font-weight:700;cursor:pointer}
-.candidate .ct .unit:hover{background:var(--blue-soft);color:var(--blue-dark);outline:1.5px dashed var(--blue)}
 .candidate .meta{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.5;font-variant-numeric:tabular-nums}
 .candidate .freq{font-size:9.5px;color:var(--blue-dark);opacity:.75}
 .key-hint{
   position:absolute;top:-7px;left:-7px;width:20px;height:20px;border-radius:99px;background:var(--ink);color:#fff;
   font-size:10px;font-weight:800;display:grid;place-items:center;box-shadow:var(--shadow-sm);
 }
-.unit-hint{margin:2px 0 10px;font-size:10.5px;color:var(--muted)}
 .empty{padding:26px 12px;text-align:center;color:var(--muted);font-size:13px;border:1.5px dashed var(--line);border-radius:var(--radius-sm)}
-
-.nudge{
-  display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--amber);
-  background:var(--amber-soft);border:1px solid #fbe1b6;border-radius:12px;padding:9px 12px;margin-bottom:10px;
-}
-
-/* recovery panel: KeywordAE (spell it out) + FillMask (근접 대안) */
-.recovery{margin-top:14px;border:1.5px dashed #c9d6f5;border-radius:var(--radius-sm);padding:14px;background:#f7faff}
-.recovery-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.recovery-head span{font-size:12.5px;font-weight:800;color:var(--blue-dark)}
-.recovery-blocks{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.rblock{
-  min-width:38px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
-  font-weight:800;font-size:15px;text-align:center;cursor:pointer;color:var(--muted);
-}
-.rblock.filled{border-color:var(--ok);color:var(--ok);background:#eefbf3}
-.rblock.active{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
-.jamo-picker{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
-.jamo-picker .row-lb{font-size:10.5px;color:var(--muted);font-weight:700;margin:2px 0 6px}
-.jamo-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:8px}
-.jamo-btn{background:#fbfcfe;border:1.5px solid var(--line);border-radius:9px;padding:9px 4px;font-size:14px;font-weight:700;cursor:pointer}
-.jamo-btn:hover{border-color:var(--blue);background:var(--blue-soft)}
-.fillmask-box{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
-.fillmask-box .lb{font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:8px}
-.alt-list{display:flex;flex-direction:column;gap:6px}
-.alt{
-  display:flex;justify-content:space-between;align-items:center;background:#fff;border:1.5px solid var(--line);
-  border-radius:10px;padding:9px 12px;cursor:pointer;font-size:14px;font-weight:700;
-}
-.alt:hover{border-color:var(--ok);background:#eefbf3}
 
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
 .metric{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fbfcfe}
@@ -276,36 +220,7 @@ textarea:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
 @media(max-width:850px){
   .pick-grid{grid-template-columns:repeat(2,1fr)}
   .keyboard{grid-template-columns:repeat(5,1fr)}
-  .jamo-grid{grid-template-columns:repeat(6,1fr)}
 }
-</style>
-<style id="calm-design">
-:root{--blue:#2458b8;--blue-dark:#17448f;--blue-soft:#edf2fc;--bg:#f4f7f8;--ink:#172b3a;--muted:#506575;--line:#cbd6df;--line-soft:#f2f5f8;--ok:#19714f;--radius:20px;--shadow-sm:0 6px 24px -16px #23435440}
-body{background:var(--bg);font-size:16px;line-height:1.6}
-button,a,summary,select{touch-action:manipulation}
-:focus-visible{outline:3px solid var(--blue-dark);outline-offset:4px}
-.topbar{padding:20px max(24px,calc((100vw - 1280px)/2));background:#fff;border-bottom:1px solid var(--line);gap:20px}
-.brand .mark{background:#174c48;width:46px;height:46px;border-radius:15px;font-size:20px;box-shadow:none}
-.brand .name{font-size:18px}.brand .sub{font-size:12px}.top-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.top-tools .btn{font-size:14px;padding:10px 15px;min-height:46px}.health{box-shadow:none;background:#f4f7f8;font-size:12px;border:0}
-.shell{padding:28px 24px 40px}.step-wrap.wide{max-width:1280px}.step-wrap{max-width:800px}
-.eyebrow{font-size:12px;font-weight:800;letter-spacing:.13em;color:#316459}
-.hero{padding:54px 0 30px}.hero h1{font-size:clamp(32px,4.6vw,52px);line-height:1.35;letter-spacing:-.045em;margin:20px 0}.hero em{font-style:normal;color:#276358}
-.hero-copy{font-size:18px;color:var(--muted);line-height:1.9;margin:0 0 28px}
-.hero .ring-btn{width:auto;height:auto;border-radius:14px;padding:18px 34px;flex-direction:row;gap:28px;background:#2458b8;box-shadow:0 8px 22px -12px #2458b866;font-size:18px;letter-spacing:0}
-.hero .ring-btn:hover{transform:none;background:#17448f}.hero .cap{font-size:14px}.start-steps{display:flex;gap:26px;margin:36px 0 24px;flex-wrap:wrap;justify-content:center;font-size:14px}.start-steps b{color:#306559;margin-right:8px}
-.hero-example{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;padding:22px 30px;border:1px solid var(--line);background:#fff;border-radius:18px}.hero-example span{font-size:13px;color:var(--muted)}.hero-example strong{font-size:26px}.hero-example span:last-child{flex-basis:100%;font-size:12px}
-.headline h1{font-size:30px}.headline p{font-size:16px}.pick-card{padding:26px 14px;border-color:var(--line);gap:12px}.pick-card .lb{font-size:18px}.pick-card .hint{font-size:14px}.big-cta{background:var(--blue);border-radius:12px;box-shadow:none;font-size:17px}.badge{border:0;min-height:38px;font-size:13px}.badge.done{background:#e6f2eb;color:#216046}.badge-row{margin-bottom:20px}.ghost-btn{font-size:14px;min-height:44px}
-.workspace-intro{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:22px}.workspace-intro h1{font-size:28px;letter-spacing:-.035em;margin:4px 0 0}.workspace-intro p{margin:0;color:var(--muted);font-size:14px}
-.grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px}.card{padding:26px;border-color:#d9e1e7;box-shadow:var(--shadow-sm)}.conversation-card{grid-column:1/-1;border-top:4px solid #276358}.card h3{font-size:18px;gap:10px;flex-wrap:wrap;margin-bottom:14px}.card h3 .tag{font-size:11px;padding:3px 9px}.section-number{display:grid;place-items:center;border-radius:9px;background:#eaf1f5;color:#39566c;width:32px;height:32px;font-size:13px}.section-copy{font-size:14px;color:var(--muted);margin:-4px 0 18px}
-.buffer{min-height:92px;background:#f4f8f5;border:1px solid #cdded2;font-size:28px;padding:20px;overflow-wrap:anywhere;word-break:normal}.buffer .ph{font-size:19px;color:#5b7163}.speech-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.speech-actions #btnUndo{margin-left:auto}
-.btn{background:#fff;font-size:15px;min-height:48px;padding:11px 16px;box-shadow:none}.btn.primary{background:var(--blue);box-shadow:none}.btn.accent{background:#216548}.btn.danger{color:#a32121;border-color:#d4b2b2}.btn.sm{font-size:14px;min-height:44px}.btn:disabled{opacity:.55}.actions #btnPredict{order:-1;flex-basis:100%;font-size:17px}.actions{gap:10px}.context-details{margin-bottom:18px;border-bottom:1px solid var(--line)}summary{font-size:15px;padding:12px 0}.recent-box label{font-size:14px}.habitual-chip,.ctx-pill{font-size:14px;min-height:44px}.habitual-chip{color:#216548}.habitual-empty{font-size:13px}.ini-row{margin-top:0}.ini-row .lb{font-size:14px}.ini-display{font-size:30px;min-height:64px;overflow-wrap:anywhere;letter-spacing:.12em;padding:12px;margin-bottom:14px}.ini-display.empty{font-size:17px;color:var(--muted);display:grid;place-items:center}.keyboard{gap:10px}.key{min-height:58px;font-size:22px;background:#fff;border-color:#bacbd8}.key:hover{transform:none}.candidate:hover{transform:none}.candidate{padding:18px;grid-template-columns:34px minmax(0,1fr);gap:12px;border-color:#d1dce5;background:#fff}.candidate .rank{width:32px;height:32px;background:#edf2fc;color:#17448f;font-size:15px}.candidate .meta{grid-column:2;font-size:11px}.candidate .ct{font-size:24px;line-height:1.9}.candidate .commit-candidate{grid-column:1/-1;background:var(--blue);color:#fff;border:0;min-height:50px;border-radius:10px;font-size:16px}.candidate .unit{min-width:44px;min-height:48px;border:1px solid #c8d5e1;border-radius:8px;margin:2px;background:#f7f9fc;color:#172b3a;font-size:inherit;padding:3px 7px}.candidate .unit:hover{background:#e8effb;border-color:var(--blue)}
-.empty{background:#f7f9fb;border:1px dashed #a9bdcb;padding:36px 20px;font-size:16px;line-height:1.9;color:var(--muted);border-radius:14px}.unit-hint{font-size:13px;line-height:1.7;color:var(--muted)}#notice:empty{display:none}#notice:not(:empty){padding:10px 14px;background:#edf4ef;border-radius:10px;margin-bottom:12px;color:#24543a}.recovery{background:#f5f8fc;border-color:#bdcede;padding:16px}.recovery-head{font-size:15px}.recovery-block,.jamo-btn,.alt{min-width:44px;min-height:48px}.nudge{font-size:14px}textarea{font:inherit;font-size:16px;background:#fff;border-color:#a8bccb;padding:14px}.footer-note{padding:0 24px 20px}.footer-note p{font-size:12px;color:#5d6e7d}
-dialog.guide{width:min(880px,calc(100% - 32px));max-height:88vh;max-height:88dvh;padding:0;border:1px solid var(--line);border-radius:22px;color:var(--ink);background:#fff;box-shadow:0 20px 80px #172b3a33;overscroll-behavior:contain}dialog::backdrop{background:#162d3b80}.guide-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 28px;background:#fff;border-bottom:1px solid var(--line)}.guide-head h2{font-size:22px;margin:0}.guide-body{padding:24px 28px 32px}.guide-lead{font-size:20px;margin:0 0 8px;font-weight:700}.guide-body p,.guide-body li{font-size:16px;line-height:1.85}.guide-nav{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.guide-nav a{background:#edf2f6;padding:10px 14px;border-radius:10px;font-size:14px;text-decoration:none}.guide-body section{scroll-margin-top:100px;border-top:1px solid var(--line);padding-top:18px;margin-top:24px}.guide-body h3{font-size:20px;margin:0 0 12px}.guide-body h4{font-size:17px;margin-bottom:4px}.guide-body ol,.guide-body ul{padding-left:24px}.guide-callout{border-left:4px solid #276358;background:#f0f6f2;padding:14px 18px;border-radius:8px}.guide-body kbd{border:1px solid #9caeba;border-bottom-width:2px;border-radius:4px;padding:2px 7px;background:#f4f7f8}.guide-body details{border-bottom:1px solid var(--line)}.guide-body a{color:var(--blue-dark)}
-body.large-text .buffer{font-size:36px}body.large-text .candidate .ct{font-size:30px}body.large-text .key{font-size:28px;min-height:64px}body.large-text .btn,body.large-text summary,body.large-text .guide-body p,body.large-text .guide-body li{font-size:19px}body.large-text .section-copy{font-size:17px}body.large-text .candidate .commit-candidate{font-size:20px}
-@media(max-width:900px){.grid{grid-template-columns:1fr}.candidate-card{grid-row:3}.workspace-intro{display:block}.workspace-intro p{margin-top:8px}.topbar{padding:16px 20px;flex-wrap:wrap}.top-tools{gap:8px}.conversation-card{grid-column:auto}.keyboard{grid-template-columns:repeat(7,minmax(0,1fr))}.health{padding:7px 10px}}
-@media(max-width:540px){.shell{padding:20px 12px 28px}.card{padding:18px}.grid{gap:16px}.hero{padding:28px 4px}.hero-copy{font-size:16px}.hero-example{padding:18px;gap:12px}.topbar{gap:12px;padding:14px 16px}.top-tools{width:100%}.top-tools .btn{padding:8px 11px}.health{margin-left:auto;font-size:11px}.brand .name{font-size:17px}.keyboard{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.key{min-height:54px}.speech-actions .btn{flex:1 1 auto}.speech-actions #btnUndo{margin-left:0}.buffer{font-size:24px;padding:16px}.candidate .ct{font-size:22px}.candidate .meta{display:block}.workspace-intro h1{font-size:25px}.start-steps{gap:12px;font-size:12px}.guide-head{padding:16px}.guide-body{padding:18px}.guide-head h2{font-size:19px}.guide-nav a{flex:1 1 auto;text-align:center}.pick-card .lb{font-size:16px}}
-@media print{body:has(dialog[open])>*:not(dialog){display:none!important}dialog.guide[open]{position:static;max-height:none;width:100%;border:0;box-shadow:none}.guide-head{position:static}.guide-nav,#btnGuideClose{display:none}}
 </style>
 </head>
 <body>
@@ -318,11 +233,7 @@ body.large-text .buffer{font-size:36px}body.large-text .candidate .ct{font-size:
       <div class="sub">Korean Hybrid BCI-AAC prototype</div>
     </div>
   </div>
-  <nav class="top-tools" aria-label="화면 도구">
-    <button class="btn" id="btnLargeText" aria-pressed="false">가 큰 글씨</button>
-    <button class="btn" id="btnGuide" aria-haspopup="dialog">사용 설명서</button>
-    <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
-  </nav>
+  <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
 </div>
 
 <div class="shell">
@@ -330,13 +241,9 @@ body.large-text .buffer{font-size:36px}body.large-text .candidate .ct{font-size:
   <!-- STEP 0: hero / start -->
   <section class="step-wrap" id="view-start">
     <div class="hero">
-      <span class="eyebrow">이심전심 · 나의 속도로, 나의 말로</span>
-      <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
-      <p class="hero-copy">초성으로 시작하고, 내 뜻에 맞는 문장을 골라보세요.<br>원하는 말이 될 때까지 직접 고치고 완성할 수 있어요.</p>
-      <button class="ring-btn" id="btnStart">대화 시작하기 <span aria-hidden="true">→</span></button>
-      <div class="cap">대화 상대와 상황을 고른 뒤 시작합니다.</div>
-      <div class="start-steps"><span><b>01</b> 초성 입력</span><span><b>02</b> 표현 선택·수정</span><span><b>03</b> 확정하고 말하기</span></div>
-      <div class="hero-example" aria-label="입력 예시"><span>이렇게 시작해요</span><strong>ㅁ ㅈ</strong><span aria-hidden="true">→</span><strong>물 줘</strong><span>후보 예시 · 결과는 달라질 수 있어요</span></div>
+      <button class="ring-btn" id="btnStart">START<small>시작하려면 응시·클릭</small></button>
+      <div class="cap">약 2~3초 응시하면 시작합니다 · 대화 상대와 상황을 먼저 고릅니다</div>
+      <div class="freqline"><span>P300 초성 입력</span><span>SSVEP Top-3 선택</span><span>문맥 기반 후보 생성</span></div>
     </div>
   </section>
 
@@ -383,44 +290,26 @@ body.large-text .buffer{font-size:36px}body.large-text .candidate .ct{font-size:
   <!-- STEP 3: speller -->
   <section class="step-wrap wide" id="view-speller" hidden>
     <div class="badge-row">
-      <button class="badge done" id="partnerBadge" type="button"><span class="num">✓</span>가족</button>
+      <div class="badge done" id="partnerBadge" style="cursor:pointer"><span class="num">✓</span>가족</div>
       <span class="arrow">›</span>
-      <button class="badge done" id="situationBadge" type="button"><span class="num">✓</span>일반</button>
+      <div class="badge done" id="situationBadge" style="cursor:pointer"><span class="num">✓</span>일반</div>
       <span class="arrow">›</span>
       <div class="badge"><span class="num">3</span>대화 중</div>
       <button class="ghost-btn" id="btnNewSession" style="margin-left:auto">↺ 새 대화 시작</button>
     </div>
 
-    <div class="workspace-intro"><div><span class="eyebrow">MY CONVERSATION</span><h1>지금, 전하고 싶은 말</h1></div><p>초성 입력 → 표현 확인 → 문장 확정</p></div>
     <div class="grid">
-      <section class="card conversation-card">
-        <h3>내가 전할 말 <span class="tag">확정한 문장만 추가</span></h3>
-        <div id="notice" role="status" aria-live="polite" class="unit-hint"></div>
+      <section class="card">
+        <h3>문장 버퍼 <span class="tag">세션 문맥 자동 반영</span></h3>
         <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
-        <div class="speech-actions">
-          <button class="btn accent" id="btnSpeak">문장 말하기</button>
-          <button class="btn" id="btnStopSpeak">말하기 중지</button>
-          <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
-        </div>
-      </section>
-      <section class="card input-card">
-        <h3><span class="section-number">01</span> 초성으로 시작하기</h3>
-        <p class="section-copy">말하고 싶은 글자의 첫 자음을 차례로 눌러주세요.</p>
-
-        <details class="context-details"><summary>자주 쓰는 표현 · 대화 문맥</summary><div class="recent-box">
-          <label>자주 쓰는 표현 (탭하면 바로 입력됨)</label>
-          <div class="habitual-row" id="habitualRow"></div>
-        </div>
-
         <div class="recent-box">
-          <label>최근 대화 (후보 조회에 자동 반영)</label>
+          <label>최근 대화 (선택 시 자동으로 문맥에 추가됨)</label>
           <div class="ctx-pill-row" id="historyPills"></div>
-          <label for="context">상대방의 말 · 지금 상황 (선택)</label>
-          <textarea id="context" rows="2" maxlength="300" placeholder="예: 상대방이 ‘무엇을 도와줄까?’라고 물었어요"></textarea>
-        </div></details>
+          <textarea id="context" rows="2" placeholder="예: 목이 말라서 물을 마시고 싶다 (선택 입력)"></textarea>
+        </div>
 
         <div class="ini-row">
-          <span class="lb">입력 중인 초성</span><span class="unit-hint">최대 20글자</span>
+          <span class="lb">P300 초성 입력 시뮬레이터</span>
         </div>
         <div class="ini-display empty" id="iniDisplay">초성을 선택하세요</div>
         <div class="keyboard" id="keyboard"></div>
@@ -428,56 +317,20 @@ body.large-text .buffer{font-size:36px}body.large-text .candidate .ct{font-size:
           <button class="btn" id="btnBack">⌫ 지우기</button>
           <button class="btn" id="btnClear">초성 초기화</button>
           <button class="btn primary" id="btnPredict">후보 생성</button>
-          <button class="btn" id="btnCancel" hidden>조회 취소</button>
           <button class="btn danger" id="btnReset">전체 초기화</button>
+          <button class="btn accent" id="btnSpeak">🔊 문장 말하기</button>
         </div>
-        <details class="recovery" id="directPanel">
-          <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
-          <label for="directText">예측 없이 입력한 문장을 그대로 사용합니다</label>
-          <textarea id="directText" rows="2" maxlength="300" placeholder="전하고 싶은 문장을 입력하세요"></textarea>
-          <button class="btn primary" id="btnDirectCommit">입력한 문장 확정</button>
-        </details>
-        <details class="recovery">
-          <summary>입력 설정 · 이 탭의 기록</summary>
-          <label><input type="checkbox" id="autoPredict"> 입력을 멈추면 자동으로 후보 조회</label>
-          <p class="unit-hint">자동 조회는 1.2초 후 실행됩니다. 문장 확정은 항상 직접 선택합니다.</p>
-          <label for="candidateCount">표시할 후보 수</label>
-          <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
-          <p class="unit-hint">문장과 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 문맥이 서버·언어 모델로 전달됩니다.</p>
-          <button class="btn" id="btnExportMetrics">사용 지표 내려받기</button>
-          <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
-        </details>
       </section>
 
-      <aside class="card candidate-card">
-        <h3><span class="section-number">02</span> 내 뜻에 맞는 표현 <span class="tag">직접 선택</span></h3>
-        <p class="section-copy">글자를 누르면 수정, ‘문장 확정’을 누르면 추가돼요.</p>
-        <div id="nudgeBox"></div>
-        <div class="cand-list" id="candidates" aria-live="polite" aria-busy="false"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 숫자로도 선택할 수 있어요.</div></div>
-        <div class="unit-hint" id="unitHint" hidden>💡 글자를 누르면 해당 글자의 대안을 찾습니다 (FillMask). 문장 추가는 ‘문장 확정’ 버튼 또는 표시된 후보의 숫자 키를 사용하세요.</div>
-        <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding-left:0">🔎 원하는 표현이 없어요 → 직접 입력하기</button>
-        <div class="recovery" id="recoveryPanel" hidden>
-          <div class="recovery-head">
-            <span>글자를 직접 완성해서 다시 찾기 (KeywordAE)</span>
-            <button class="ghost-btn" id="btnRecoveryClose">닫기</button>
-          </div>
-          <div class="recovery-blocks" id="recoveryBlocks"></div>
-          <div class="jamo-picker" id="jamoPicker" hidden></div>
-          <div class="actions" style="margin-top:0">
-            <button class="btn primary sm" id="btnRecoveryPredict">이 글자로 다시 찾기</button>
-            <button class="btn sm" id="btnRecoveryReset">초기화</button>
-          </div>
-          <div class="fillmask-box" id="fillmaskBox" hidden>
-            <div class="lb" id="fillmaskLabel"></div>
-            <div class="alt-list" id="fillmaskAlts"></div>
-          </div>
-        </div>
-        <details><summary>응답 정보</summary><div class="metrics">
+      <aside class="card">
+        <h3>Top-3 후보 <span class="tag">SSVEP 선택</span></h3>
+        <div class="cand-list" id="candidates"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div></div>
+        <div class="metrics">
           <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
           <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
           <div class="metric"><span>지연시간</span><b id="mLat">-</b></div>
-          <div class="metric"><span>모드</span><b id="mMode">-</b></div>
-        </div></details>
+          <div class="metric"><span>폴백</span><b id="mFallback">-</b></div>
+        </div>
       </aside>
     </div>
   </section>
@@ -485,27 +338,12 @@ body.large-text .buffer{font-size:36px}body.large-text .candidate .ct{font-size:
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 웹에서는 클릭·키보드 입력을 사용합니다. EEG 측정·SSVEP 자극은 활성화되어 있지 않습니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v0.7.0</p>
+  <p>P300 초성 → phrase memory + 로컬 파인튜닝 생성기 → 클라우드 문맥 랭커 → Top-3 → SSVEP 선택 &nbsp;·&nbsp; 이심전심(以心傳心) 연구용 프로토타입</p>
 </div>
 
-<dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
-  <header class="guide-head"><h2 id="guideTitle">이심전심 사용 설명서</h2><button class="btn" id="btnGuideClose" autofocus>닫기</button></header>
-  <div class="guide-body">
-    <p class="guide-lead">내가 원하는 말을, 나의 속도로.</p>
-    <p>초성으로 문장을 찾고, 뜻에 맞게 고친 다음 상대방에게 보여주거나 소리로 전하세요. 설명서를 닫으면 작성 중이던 화면으로 돌아갑니다.</p>
-    <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a></nav>
-    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> 예를 들어 ‘물 줘’는 <strong>ㅁ → ㅈ</strong>을 누르고 ‘후보 생성’을 선택합니다. 띄어쓰기와 문장 부호는 입력하지 않습니다. 한 번에 최대 20글자까지 입력할 수 있습니다.</li><li><strong>추천 표현 확인:</strong> 원하는 문장이면 ‘문장 확정’을 누릅니다. 확정한 문장은 위쪽 ‘내가 전할 말’에 추가됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
-    <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
-    <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>마지막 문장 취소:</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>지우기 / 초성 초기화:</strong> 마지막 초성 하나 / 입력한 초성 전체를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>5</kbd>는 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
-    <section id="guide-settings"><h3>4. 나에게 맞게 조절하기</h3><ul><li><strong>큰 글씨:</strong> 화면 위쪽 ‘가 큰 글씨’로 입력·후보·주요 버튼을 확대합니다. 같은 버튼으로 기본 크기로 돌아옵니다.</li><li><strong>자동 후보 조회:</strong> ‘입력 설정 · 이 탭의 기록’에서 켭니다. 초성 2개 이상 입력 후 1.2초 동안 입력을 멈추면 조회합니다. 문장은 자동 확정되지 않습니다.</li><li><strong>후보 수:</strong> 3개 또는 5개로 선택합니다.</li><li><strong>대화 문맥:</strong> ‘자주 쓰는 표현 · 대화 문맥’을 열어 상대방의 말이나 상황을 적으면 조회에 참고합니다. 최근 대화도 자동 반영됩니다.</li><li><strong>자주 쓰는 표현:</strong> 확정한 표현이 모입니다. 이 버튼은 누르면 바로 문장에 추가됩니다.</li></ul><h4>내 대화는 어디에 저장되나요?</h4><p>작성 중인 문장과 최근 대화, 자주 쓰는 표현은 현재 브라우저 탭의 세션 저장소에 보관되어 새로고침 뒤 복원됩니다. 후보 조회 시 초성·문맥 등 필요한 입력이 서버와 언어 모델로 전송됩니다. 탭 복원 기능에 따라 기록이 다시 열릴 수 있으므로 공용 기기에서는 ‘이 탭의 기록 삭제’를 사용하세요.</p><p>‘사용 지표 내려받기’는 입력 횟수·조회 지연시간 등의 JSON 파일을 저장합니다. 문장 원문은 포함하지 않습니다. 실제 EEG 정확도나 의사소통 성능을 측정하는 기능은 아닙니다.</p></section>
-    <section id="guide-trouble"><h3>5. 잘 안 될 때</h3><details><summary>후보가 늦게 나오거나 연결 오류가 보여요</summary><p>서버가 절전 상태에서 깨어나는 데 시간이 걸릴 수 있습니다. 잠시 후 ‘후보 생성’을 다시 눌러보세요. 입력은 유지됩니다. ‘조회 취소’로 중단하거나, 기다리지 않고 문장 전체를 직접 입력할 수도 있습니다.</p></details><details><summary>원하는 표현이 없거나 초성을 잘못 눌렀어요</summary><p>‘지우기’로 잘못 입력한 초성을 수정하세요. 글자 하나의 대안은 FillMask, 일부 글자를 지정하는 것은 KeywordAE, 정확한 문장을 알고 있을 때는 전체 직접 입력을 사용하세요.</p></details><details><summary>눈으로 바라보면 선택되나요?</summary><p>현재 웹 버전은 클릭·터치·키보드로 조작하는 연구용 인터페이스입니다. EEG 측정, 시선 추적, P300/SSVEP 자극 및 실제 뇌파 선택 기능은 활성화되어 있지 않습니다.</p></details><details><summary>새 대화와 기록 삭제는 어떻게 다른가요?</summary><p>‘새 대화 시작’은 상대와 상황을 다시 선택하며 현재 대화를 초기화합니다. 자주 쓰는 표현은 유지됩니다. 개인 기록까지 비우려면 ‘입력 설정 · 이 탭의 기록’의 ‘이 탭의 기록 삭제’를 선택하세요.</p></details></section>
-    <p class="unit-hint">디자인 기준: 읽기 쉬운 대비, 큰 조작 영역, 키보드 초점 표시. <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">WCAG 2.2 참고</a> · 실제 사용자 평가를 통한 추가 개선이 필요합니다.</p>
-  </div>
-</dialog>
 <script>
 const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
-const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+const FREQS=["8Hz","10Hz","12Hz","15Hz"];
 
 const PARTNERS=[
   {v:"family",icon:"👪",label:"가족",hint:"편안한 말투"},
@@ -530,67 +368,10 @@ let state={
   partner:null, situation:null,
   sessionId: null,
   initials:"", committed:"", latest:[], history:[],
-  habitual:[],
-  spelled:{},          // KeywordAE: {unitIndex: composedSyllable}
-  jamoTarget:null,     // index currently being spelled in the jamo picker
-  jamoMedial:null,     // medial chosen so far for jamoTarget (before jong/commit)
-  fillMaskFor:null,    // {referenceText, targetIndex} while showing FillMask alternatives
 };
-let predictionVersion=0;
-let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"0.7.0",actions:0,commits:0,undos:0,requests:0,errors:0,latencies_ms:[]};
-function announce(message){ el("notice").textContent=message; }
-function saveDraft(){
-  try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
-    partner:state.partner,situation:state.situation,initials:state.initials,
-    committed:state.committed,history:state.history.slice(-100),habitual:state.habitual.slice(0,100),
-    context:el("context").value,autoPredict:el("autoPredict").checked,
-    candidateCount:el("candidateCount").value,
-  })); }catch(e){}
-}
-function cancelPending(){
-  clearTimeout(autoTimer);
-  if(pendingController) pendingController.abort();
-  pendingController=null;
-  predictionVersion++;
-  el("btnCancel").hidden=true;
-  el("candidates").setAttribute("aria-busy","false");
-}
-function schedulePrediction(){
-  clearTimeout(autoTimer);
-  if(el("autoPredict").checked && state.initials.length>=2){
-    autoTimer=setTimeout(()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {}),1200);
-  }
-}
-function recordHabitual(text){
-  const found=state.habitual.find(p=>p.text===text);
-  if(found) found.count++; else state.habitual.push({text,count:1});
-  state.habitual.sort((a,b)=>b.count-a.count);
-  state.habitual=state.habitual.slice(0,100);
-}
-function rememberUndo(){
-  undoStack.push({committed:state.committed,history:[...state.history],habitual:state.habitual.map(p=>({...p}))});
-  if(undoStack.length>50) undoStack.shift();
-}
 
 function el(id){return document.getElementById(id)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-
-/* ---------------- Korean unit helpers (mirror app/korean/initials.py) ---------------- */
-function isHangulSyllable(ch){ const c=ch.codePointAt(0); return c>=0xAC00 && c<=0xD7A3; }
-function unitsOf(text){
-  const out=[];
-  for(const ch of String(text||"")){
-    if(/\s/.test(ch)) continue;
-    if(isHangulSyllable(ch) || CHO.includes(ch)) out.push(ch);
-  }
-  return out;
-}
-function composeSyllableJS(cho,jung,jong){
-  const ci=CHO.indexOf(cho), ji=JUNG.indexOf(jung), fi=JONG.indexOf(jong||"");
-  if(ci<0||ji<0||fi<0) return null;
-  return String.fromCodePoint(0xAC00 + (ci*21+ji)*28 + fi);
-}
 
 /* ---------------- view switching ---------------- */
 function showView(name){
@@ -602,21 +383,21 @@ function showView(name){
 /* ---------------- step 1: partner ---------------- */
 function renderPartnerGrid(){
   el("partnerGrid").innerHTML = PARTNERS.map(p=>`
-    <button type="button" class="pick-card${state.partner===p.v?" sel":""}" data-v="${p.v}" aria-pressed="${state.partner===p.v}">
+    <div class="pick-card${state.partner===p.v?" sel":""}" data-v="${p.v}">
       <div class="ico">${p.icon}</div>
       <div class="lb">${p.label}</div>
       <div class="hint">${p.hint}</div>
-    </button>`).join("");
+    </div>`).join("");
   [...el("partnerGrid").children].forEach(node=>{
     node.onclick=()=>{ state.partner=node.dataset.v; renderPartnerGrid(); el("toStep2").disabled=false; };
   });
 }
 function renderSituationGrid(){
   el("situationGrid").innerHTML = SITUATIONS.map(s=>`
-    <button type="button" class="pick-card${state.situation===s.v?" sel":""}" data-v="${s.v}" aria-pressed="${state.situation===s.v}">
+    <div class="pick-card${state.situation===s.v?" sel":""}" data-v="${s.v}">
       <div class="ico">${s.icon}</div>
       <div class="lb">${s.label}</div>
-    </button>`).join("");
+    </div>`).join("");
   [...el("situationGrid").children].forEach(node=>{
     node.onclick=()=>{ state.situation=node.dataset.v; renderSituationGrid(); el("toStep3").disabled=false; };
   });
@@ -632,13 +413,7 @@ function partnerLabel(v){ return (PARTNERS.find(p=>p.v===v)||{}).label || v; }
 function situationLabel(v){ return (SITUATIONS.find(s=>s.v===v)||{}).label || v; }
 
 function resetToStart(){
-  cancelPending();
-  const personal=state.habitual;
-  state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[],
-    habitual:personal,spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null};
-  undoStack=[];
-  el("context").value="";
-  saveDraft();
+  state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[]};
   try{ localStorage.removeItem("bci_session_id"); }catch(e){}
   renderPartnerGrid(); renderSituationGrid();
   el("toStep2").disabled=true; el("toStep3").disabled=true;
@@ -647,15 +422,22 @@ function resetToStart(){
 
 /* ---------------- step 3: session + speller ---------------- */
 async function startSession(){
-  // The tab owns its conversation. Server sessions remain available to API clients.
-  cancelPending();
-  state.sessionId=null;
-  undoStack=[];
+  try{
+    const r=await fetch("/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({partner:state.partner,situation:state.situation})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.detail||JSON.stringify(d));
+    state.sessionId=d.session_id;
+    try{ localStorage.setItem("bci_session_id", d.session_id); }catch(e){}
+  }catch(e){
+    // 세션 시작 실패해도 speller 자체는 세션 없이 동작하도록 폴백
+    state.sessionId=null;
+    console.warn("session start failed, falling back to stateless /predict", e);
+  }
   el("partnerBadge").innerHTML = `<span class="num">✓</span>${esc(partnerLabel(state.partner))}`;
   el("situationBadge").innerHTML = `<span class="num">✓</span>${esc(situationLabel(state.situation))}`;
   state.committed=""; state.initials=""; state.latest=[]; state.history=[];
   renderKeyboard(); renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
-  refreshHabitual();
 }
 
 el("partnerBadge").onclick=()=>showView("partner");
@@ -664,16 +446,10 @@ el("situationBadge").onclick=()=>showView("situation");
 function renderKeyboard(){
   el("keyboard").innerHTML = CHO.map(c=>`<button class="key" data-c="${c}">${c}</button>`).join("");
   [...el("keyboard").children].forEach(btn=>{
-    btn.onclick=()=>{
-      if(state.initials.length>=20){ announce("한 번에 최대 20글자까지 입력할 수 있어요. 문장을 나누어 입력해주세요."); return; }
-      state.initials+=btn.dataset.c; clearRecoveryState(); renderBuffer(); schedulePrediction();
-    };
+    btn.onclick=()=>{ state.initials+=btn.dataset.c; renderBuffer(); };
   });
 }
 function renderBuffer(){
-  saveDraft();
-  el("btnUndo").disabled=undoStack.length===0;
-  el("btnSpeak").disabled=!state.committed;
   el("committed").textContent=state.committed;
   el("pending").textContent = state.initials ? " ["+state.initials+"]" : "";
   el("bufferPh").style.display = (state.committed || state.initials) ? "none" : "inline";
@@ -687,407 +463,111 @@ function renderHistoryPills(){
 }
 function renderCandidatesEmpty(){
   el("candidates").innerHTML='<div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div>';
-  el("mGen").textContent="-"; el("mRank").textContent="-"; el("mLat").textContent="-"; el("mMode").textContent="-";
-  el("nudgeBox").innerHTML=""; el("unitHint").hidden=true;
-  el("btnOpenRecovery").style.display="none";
-  closeRecoveryPanel();
+  el("mGen").textContent="-"; el("mRank").textContent="-"; el("mLat").textContent="-"; el("mFallback").textContent="-";
 }
 
-/* ---------------- 자주 쓰는 표현 (habitual phrases) ---------------- */
-async function refreshHabitual(){
-  renderHabitual();
-}
-function renderHabitual(){
-  if(!state.habitual.length){
-    el("habitualRow").innerHTML = `<span class="habitual-empty">아직 자주 쓰는 표현이 없습니다 · 문장을 선택할수록 여기에 채워집니다</span>`;
-    return;
-  }
-  el("habitualRow").innerHTML = state.habitual.slice(0,6).map(p=>
-    `<button type="button" class="habitual-chip" data-t="${esc(p.text)}">${esc(p.text)}<span class="n">×${p.count}</span></button>`
-  ).join("");
-  [...el("habitualRow").children].forEach(node=>{
-    if(!node.dataset.t) return;
-    node.onclick=()=>commitText(node.dataset.t);
-  });
-}
-
-el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); clearRecoveryState(); renderBuffer(); schedulePrediction(); };
-el("btnClear").onclick=()=>{ state.initials=""; clearRecoveryState(); renderBuffer(); };
+el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); renderBuffer(); };
+el("btnClear").onclick=()=>{ state.initials=""; renderBuffer(); };
 el("btnReset").onclick=async ()=>{
-  rememberUndo();
   state.initials=""; state.committed=""; state.latest=[]; state.history=[];
   el("context").value="";
-  clearRecoveryState();
   if(state.sessionId){ try{ await fetch(`/session/${state.sessionId}/reset`,{method:"POST"}); }catch(e){} }
   renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
 };
 el("btnSpeak").onclick=()=>{
   if(!state.committed) return;
-  if(!("speechSynthesis" in window)){ announce("이 브라우저는 음성 읽기를 지원하지 않습니다."); return; }
   const u=new SpeechSynthesisUtterance(state.committed); u.lang="ko-KR";
   speechSynthesis.cancel(); speechSynthesis.speak(u);
 };
-el("btnPredict").onclick=()=>predict({});
-el("btnCancel").onclick=()=>{ clearRecoveryState(); announce("조회를 취소했습니다. 입력한 초성은 유지됩니다."); };
-el("btnStopSpeak").onclick=()=>{ if("speechSynthesis" in window) speechSynthesis.cancel(); };
-el("btnUndo").onclick=()=>{
-  const snapshot=undoStack.pop(); if(!snapshot) return;
-  cancelPending(); state.sessionId=null;
-  Object.assign(state,snapshot); state.initials=""; metrics.undos++;
-  clearRecoveryState(); renderBuffer(); renderHistoryPills(); renderHabitual();
-  announce("마지막 문장 확정을 되돌렸습니다.");
-};
-el("btnDirectCommit").onclick=async ()=>{
-  const text=el("directText").value.trim();
-  if(!text){ announce("전하고 싶은 문장을 먼저 입력해주세요."); return; }
-  await commitText(text); el("directText").value="";
-};
-el("context").oninput=()=>{ clearRecoveryState(); saveDraft(); schedulePrediction(); };
-el("autoPredict").onchange=()=>{ saveDraft(); schedulePrediction(); };
-el("candidateCount").onchange=()=>{ clearRecoveryState(); saveDraft(); };
-el("btnForget").onclick=()=>{
-  state.habitual=[]; resetToStart();
-  try{ sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
-};
-el("btnExportMetrics").onclick=()=>{
-  const blob=new Blob([JSON.stringify({...metrics,note:"UI action counts and request latency only; no EEG ITR or clinical validation."},null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url;a.download="bci-interaction-metrics.json";a.click();URL.revokeObjectURL(url);
-};
-document.addEventListener("click",e=>{
-  if(!el("view-speller").hidden && e.target.closest("button")) metrics.actions++;
-});
+el("btnPredict").onclick=predict;
 
-function clearRecoveryState(){
-  cancelPending();
-  state.latest=[];
-  state.spelled={}; state.jamoTarget=null; state.jamoMedial=null; state.fillMaskFor=null;
-  el("btnPredict").disabled=false;
-  renderCandidatesEmpty();
-}
-
-/* ---------------- predict (base + recovery variants) ---------------- */
-async function predict(extra){
+async function predict(){
   if(!state.initials){ el("candidates").innerHTML='<div class="empty">먼저 초성을 선택해주세요.</div>'; return; }
-  cancelPending();
-  const controller=new AbortController(); pendingController=controller;
-  const timeout=setTimeout(()=>controller.abort(),60000);
-  const started=performance.now(); metrics.requests++;
-  const version=++predictionVersion;
-  state.latest=[];
-  if(extra?.fill_mask_reference_text===undefined) hideFillmaskBox();
   el("candidates").innerHTML='<div class="empty">후보 생성 중…</div>';
-  el("nudgeBox").innerHTML=""; el("unitHint").hidden=true; el("btnOpenRecovery").style.display="none";
   el("btnPredict").disabled=true;
-  el("btnCancel").hidden=false;
-  el("candidates").setAttribute("aria-busy","true");
   const manualCtx = el("context").value.trim();
-  const body=Object.assign({
-    input_mode:"initials", bci_input:state.initials, top_k:Number(el("candidateCount").value),
-    experiment_mode:"hybrid",
+  const body={
+    input_mode:"initials", bci_input:state.initials, top_k:3,
     partner: state.partner || "other", situation: state.situation || "general",
-    current_sentence: state.committed.slice(-300),
-    recent_context: [...state.history.slice(-5), ...(manualCtx ? [manualCtx] : [])].slice(-5),
-  }, extra||{});
+    current_sentence: state.committed,
+    recent_context: manualCtx ? [manualCtx] : [],
+  };
   try{
-    const sessionId=state.sessionId;
-    const url = sessionId ? `/session/${sessionId}/predict` : "/predict";
-    const options={method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:controller.signal};
-    let r=await fetch(url,options);
-    let d=await r.json();
-    if(version!==predictionVersion) return;
-    // A restarted server loses its in-memory sessions. Continue using the
-    // browser's sentence/history, without clearing input or replaying commits.
-    if(sessionId && r.status===404 && d.detail==="session not found"){
-      state.sessionId=null;
-      try{ localStorage.removeItem("bci_session_id"); }catch(e){}
-      r=await fetch("/predict",options);
-      d=await r.json();
-      if(version!==predictionVersion) return;
-    }
+    const url = state.sessionId ? `/session/${state.sessionId}/predict` : "/predict";
+    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await r.json();
     if(!r.ok) throw new Error((d.detail&&(d.detail.message||JSON.stringify(d.detail)))||JSON.stringify(d));
-    if(extra?.fill_mask_reference_text!==undefined){
-      d={...d,candidates:(d.candidates||[]).filter(c=>c.text!==extra.fill_mask_reference_text)};
-    }
     state.latest=d.candidates||[];
-    metrics.latencies_ms.push(Math.round(performance.now()-started));
-    metrics.latencies_ms=metrics.latencies_ms.slice(-100);
     renderCandidates(d);
-    if(d.fallback && d.fallback!=="none") announce("현재 대체 후보를 표시하고 있습니다. 원하는 말이 없으면 직접 입력해주세요.");
-    else announce("원하는 표현을 확인하고 확정해주세요.");
-    return d;
   }catch(e){
-    if(version!==predictionVersion) return;
-    metrics.errors++;
-    el("candidates").innerHTML=`<div class="empty">${e.name==="AbortError" ? "응답이 늦어 조회를 중지했습니다." : "후보를 불러오지 못했습니다."}<br>다시 조회하거나 ‘문장을 직접 입력하기’를 이용해주세요.</div>`;
-    announce(e.name==="AbortError" ? "조회 시간이 초과됐습니다. 입력은 유지됩니다." : "서버 연결을 확인해주세요. 직접 입력과 문장 말하기는 계속 사용할 수 있습니다.");
+    el("candidates").innerHTML=`<div class="empty">오류: ${esc(e.message||e)}</div>`;
   }finally{
-    clearTimeout(timeout);
-    if(version===predictionVersion){
-      pendingController=null; el("btnPredict").disabled=false; el("btnCancel").hidden=true;
-      el("candidates").setAttribute("aria-busy","false");
-    }
+    el("btnPredict").disabled=false;
   }
 }
 
 function renderCandidates(d){
-  const list=state.latest.slice(0,5);
-  if(!list.length){
-    el("candidates").innerHTML='<div class="empty">유효한 후보가 없습니다. 아래에서 직접 입력해보세요.</div>';
-  }else{
+  const list=state.latest.slice(0,3);
+  if(!list.length){ el("candidates").innerHTML='<div class="empty">유효한 후보가 없습니다. 초성을 다시 입력해보세요.</div>'; }
+  else{
     el("candidates").innerHTML = list.map((c,i)=>`
       <div class="candidate" data-i="${i}">
         <span class="key-hint">${i+1}</span>
         <div class="rank">${i+1}</div>
-        <div class="ct">${renderCandidateUnits(c.text)}</div>
-        <div class="meta">후보 ${i+1}</div>
-        <button type="button" class="commit-candidate">문장 확정 ${i+1}</button>
+        <div class="ct">${esc(c.text)}</div>
+        <div class="meta">score ${(c.final_score??c.context_score??0).toFixed?.(2) ?? c.final_score}<div class="freq">${FREQS[i]||""}</div></div>
       </div>`).join("");
     [...el("candidates").children].forEach(node=>{
-      const i=parseInt(node.dataset.i,10);
-      node.querySelector(".commit-candidate").onclick=()=>commit(i);
-      [...node.querySelectorAll(".unit")].forEach(span=>{
-        span.onclick=(ev)=>{
-          ev.stopPropagation();
-          openFillMask(list[i].text, parseInt(span.dataset.u,10));
-        };
-      });
+      node.onclick=()=>commit(parseInt(node.dataset.i,10));
     });
-    el("unitHint").hidden=false;
   }
-
   el("mGen").textContent=d.generator_model||"-";
   el("mRank").textContent=d.ranker_model||"-";
   el("mLat").textContent=((d.latency&&d.latency.total_ms)??"-")+" ms";
-  el("mMode").textContent = d.recovery_mode && d.recovery_mode!=="none" ? d.recovery_mode : (d.hybrid_action||"-");
-
-  el("btnOpenRecovery").style.display="inline-block";
-
-  if(d.hybrid_action==="need_more_input"){
-    el("nudgeBox").innerHTML = `<div class="nudge">원하는 말이 없나요? 글자를 완성해 다시 찾거나 문장을 직접 입력할 수 있어요.</div>`;
-    openRecoveryPanel();
-  }
-}
-
-function renderCandidateUnits(text){
-  let idx=0, html="";
-  for(const ch of String(text)){
-    if(/\s/.test(ch)){ html+=" "; continue; }
-    if(isHangulSyllable(ch) || CHO.includes(ch)){
-      html += `<button type="button" class="unit" data-u="${idx}" aria-label="${esc(ch)} 글자 대안 찾기" title="탭하면 이 글자만 바꾼 대안 보기">${esc(ch)}</button>`;
-      idx++;
-    } else {
-      html += esc(ch);
-    }
-  }
-  return html;
-}
-
-/* ---------------- KeywordAE recovery panel ---------------- */
-el("btnOpenRecovery").onclick=()=>openRecoveryPanel();
-el("btnRecoveryClose").onclick=()=>closeRecoveryPanel();
-el("btnRecoveryReset").onclick=()=>{ clearRecoveryState(); renderRecoveryBlocks(); el("jamoPicker").hidden=true; hideFillmaskBox(); };
-el("btnRecoveryPredict").onclick=async ()=>{
-  if(!Object.keys(state.spelled).length){ return; }
-  if([...state.initials].every((_,i)=>state.spelled[i])){
-    await commitText([...state.initials].map((_,i)=>state.spelled[i]).join(""));
-    return;
-  }
-  await predict({ spelled_syllables: state.spelled });
-};
-
-function openRecoveryPanel(){
-  el("recoveryPanel").hidden=false;
-  renderRecoveryBlocks();
-}
-function closeRecoveryPanel(){
-  el("recoveryPanel").hidden=true;
-  el("jamoPicker").hidden=true;
-  hideFillmaskBox();
-}
-
-function renderRecoveryBlocks(){
-  const chars=[...state.initials];
-  el("btnRecoveryPredict").textContent=chars.length && chars.every((_,i)=>state.spelled[i]) ? "완성한 글자 확정" : "이 글자로 다시 찾기";
-  el("btnRecoveryPredict").disabled=Object.keys(state.spelled).length===0;
-  el("recoveryBlocks").innerHTML = chars.map((c,i)=>{
-    const spelled=state.spelled[i];
-    const cls = spelled ? "rblock filled" : (state.jamoTarget===i ? "rblock active" : "rblock");
-    return `<button type="button" class="${cls}" data-i="${i}" aria-label="${i+1}번째 글자 완성">${esc(spelled||c)}</button>`;
-  }).join("");
-  [...el("recoveryBlocks").children].forEach(node=>{
-    node.onclick=()=>openJamoPicker(parseInt(node.dataset.i,10));
-  });
-}
-
-function openJamoPicker(index){
-  state.jamoTarget=index; state.jamoMedial=null;
-  renderRecoveryBlocks();
-  renderJamoPicker();
-}
-function renderJamoPicker(){
-  const box=el("jamoPicker");
-  if(state.jamoTarget===null){ box.hidden=true; return; }
-  box.hidden=false;
-  const cho=state.initials[state.jamoTarget];
-  if(!state.jamoMedial){
-    box.innerHTML = `<div class="row-lb">${esc(cho)} · 중성(모음)을 선택하세요</div>
-      <div class="jamo-grid">${JUNG.map(j=>`<button class="jamo-btn" data-j="${j}">${j}</button>`).join("")}</div>`;
-    [...box.querySelectorAll(".jamo-btn")].forEach(btn=>{
-      btn.onclick=()=>{ state.jamoMedial=btn.dataset.j; renderJamoPicker(); };
-    });
-  }else{
-    box.innerHTML = `<div class="row-lb">${esc(cho+state.jamoMedial)} · 받침을 선택하세요 (없으면 첫 번째)</div>
-      <div class="jamo-grid">${JONG.map(j=>`<button class="jamo-btn" data-j="${j}">${j||"없음"}</button>`).join("")}</div>`;
-    [...box.querySelectorAll(".jamo-btn")].forEach(btn=>{
-      btn.onclick=()=>{
-        const syll=composeSyllableJS(cho, state.jamoMedial, btn.dataset.j);
-        if(syll){ state.spelled[state.jamoTarget]=syll; }
-        state.jamoTarget=null; state.jamoMedial=null;
-        renderRecoveryBlocks(); renderJamoPicker();
-      };
-    });
-  }
-}
-
-/* ---------------- FillMask recovery ---------------- */
-async function openFillMask(referenceText, targetIndex){
-  if(!state.initials) return;
-  const selection={referenceText, targetIndex};
-  state.fillMaskFor=selection;
-  el("recoveryPanel").hidden=false;
-  el("jamoPicker").hidden=true;
-  const box=el("fillmaskBox");
-  box.hidden=false;
-  el("fillmaskLabel").textContent = `"${referenceText}" 중 "${unitsOf(referenceText)[targetIndex]||"?"}" 대신 다른 글자로 (FillMask)`;
-  el("fillmaskAlts").innerHTML = `<div class="empty" style="padding:10px">대안 찾는 중…</div>`;
-  const d = await predict({
-    fill_mask_reference_text: referenceText,
-    fill_mask_target_index: targetIndex,
-    top_k: 5,
-  });
-  if(state.fillMaskFor!==selection) return;
-  if(!d){
-    el("fillmaskAlts").innerHTML = `<div class="empty">대안 조회에 실패했습니다. 후보를 다시 생성해주세요.</div>`;
-    return;
-  }
-  const alts=d.candidates||[];
-  if(!alts.length){
-    el("fillmaskAlts").innerHTML = `<div class="empty" style="padding:10px">대안을 찾지 못했습니다. 위 KeywordAE로 직접 입력해보세요.</div>`;
-    return;
-  }
-  el("fillmaskAlts").innerHTML = alts.map((c,i)=>`<button type="button" class="alt" data-i="${i}"><span>${esc(c.text)}</span><span>문장 확정</span></button>`).join("");
-  [...el("fillmaskAlts").children].forEach(node=>{
-    node.onclick=()=>commit(parseInt(node.dataset.i,10));
-  });
-}
-function hideFillmaskBox(){
-  state.fillMaskFor=null;
-  el("fillmaskBox").hidden=true;
-  el("fillmaskAlts").innerHTML="";
-}
-
-/* ---------------- commit ---------------- */
-async function commitText(text){
-  return commitValue(String(text||"").trim());
+  el("mFallback").textContent=d.fallback||"none";
 }
 
 async function commit(i){
   const c=state.latest[i]; if(!c) return;
-  return commitValue(c.text,c.candidate_id);
-}
-async function commitValue(text,candidateId){
-  if(!text || commitBusy) return;
-  commitBusy=true;
-  cancelPending();
-  const version=predictionVersion;
-  try{
-    let updated=null;
-    if(state.sessionId){
-      try{
-        const r=await fetch(`/session/${state.sessionId}/${candidateId ? "select" : "select_text"}`,{
-          method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify(candidateId ? {candidate_id:candidateId} : {text}),
-          signal:AbortSignal.timeout(10000),
-        });
-        if(version!==predictionVersion) return;
-        if(r.ok) updated=await r.json();
-        else if(r.status===404) state.sessionId=null;
-        else{ announce("선택 정보를 확인할 수 없습니다. 후보를 다시 조회해주세요."); return; }
-      }catch(e){
-        if(version!==predictionVersion) return;
-        state.sessionId=null;
-      }
-    }
-    if(version!==predictionVersion) return;
-    rememberUndo();
-    state.committed=updated ? updated.sentence : (state.committed ? state.committed+" " : "")+text;
-    state.history=updated ? updated.history||[] : [...state.history,text];
-    state.history=state.history.slice(-100);
-    recordHabitual(text); metrics.commits++;
-    state.initials=""; state.latest=[];
-    clearRecoveryState(); renderBuffer(); renderHistoryPills(); refreshHabitual();
-    announce("문장을 추가했습니다. 잘못 선택했다면 ‘마지막 문장 취소’를 눌러주세요.");
-  }finally{
-    commitBusy=false;
+  if(state.sessionId){
+    try{
+      const r=await fetch(`/session/${state.sessionId}/select`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({candidate_id:c.candidate_id})});
+      const d=await r.json();
+      if(r.ok){ state.committed=d.sentence; state.history=d.history||[]; }
+      else{ state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text); }
+    }catch(e){ state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text); }
+  }else{
+    state.committed=(state.committed?state.committed+" ":"")+c.text; state.history.push(c.text);
   }
+  state.initials=""; state.latest=[];
+  el("candidates").innerHTML='<div class="empty">선택 완료. 다음 초성을 입력하세요.</div>';
+  renderBuffer(); renderHistoryPills();
 }
 
 document.addEventListener("keydown",(e)=>{
-  if(el("guideDialog").open) return;
   if(el("view-speller").hidden) return;
-  if(e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
-  if(["TEXTAREA","INPUT","SELECT"].includes(e.target.tagName)) return;
-  if(e.key==="Escape"){ el("btnCancel").click(); return; }
-  if(["1","2","3","4","5"].includes(e.key)){
+  if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT") return;
+  if(["1","2","3"].includes(e.key)){
     const idx=parseInt(e.key,10)-1;
-    if(state.latest[idx]){ e.preventDefault(); metrics.actions++; commit(idx); }
+    if(state.latest[idx]) commit(idx);
   }
 });
-
-el("btnGuide").onclick=()=>{el("guideDialog").showModal();};
-el("btnGuideClose").onclick=()=>el("guideDialog").close();
-el("guideDialog").addEventListener("close",()=>el("btnGuide").focus());
-el("btnLargeText").onclick=()=>{
-  const enabled=document.body.classList.toggle("large-text");
-  el("btnLargeText").setAttribute("aria-pressed",String(enabled));
-  try{sessionStorage.setItem("bci_large_text",String(enabled));}catch(e){}
-};
-try{if(sessionStorage.getItem("bci_large_text")==="true"){document.body.classList.add("large-text");el("btnLargeText").setAttribute("aria-pressed","true");}}catch(e){}
 
 /* ---------------- health check ---------------- */
 async function health(){
   const h=el("health"), t=el("healthText");
   try{
-    const r=await fetch("/health",{signal:AbortSignal.timeout(8000)});
+    const r=await fetch("/health");
     if(r.ok){ h.className="health ok"; t.textContent="Backend 연결됨"; }
     else{ h.className="health bad"; t.textContent="Backend 오류"; }
   }catch(e){ h.className="health bad"; t.textContent="Backend 연결 안 됨"; }
 }
 
-function restoreDraft(){
-  try{
-    const draft=JSON.parse(sessionStorage.getItem("bci_draft_v1")||"null");
-    if(!draft || !PARTNERS.some(p=>p.v===draft.partner) || !SITUATIONS.some(s=>s.v===draft.situation)) return;
-    state.partner=draft.partner;state.situation=draft.situation;state.sessionId=null;
-    state.committed=String(draft.committed||"").slice(-30000);
-    state.initials=[...String(draft.initials||"")].filter(c=>CHO.includes(c)).slice(0,20).join("");
-    state.history=Array.isArray(draft.history) ? draft.history.filter(x=>typeof x==="string").slice(-100) : [];
-    state.habitual=Array.isArray(draft.habitual) ? draft.habitual.filter(p=>typeof p.text==="string" && p.text.length<=300 && Number.isFinite(p.count) && p.count>0).slice(0,100) : [];
-    el("context").value=String(draft.context||"").slice(0,300);
-    el("autoPredict").checked=draft.autoPredict===true;
-    el("candidateCount").value=draft.candidateCount==="5" ? "5" : "3";
-    el("partnerBadge").textContent=partnerLabel(state.partner);
-    el("situationBadge").textContent=situationLabel(state.situation);
-    renderKeyboard();renderBuffer();renderHistoryPills();renderHabitual();renderCandidatesEmpty();showView("speller");
-    announce("이 탭의 대화를 복원했습니다. 후보는 새로 조회해주세요.");
-  }catch(e){}
-}
 renderPartnerGrid();
 renderSituationGrid();
-restoreDraft();
 health();
-setInterval(()=>{ if(!document.hidden) health(); },60000);
+setInterval(health, 20000);
 </script>
 </body>
 </html>
