@@ -203,9 +203,136 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 /* ==========================================================================
    Speller workspace — step 3
    ========================================================================== */
-.workspace-intro{display:flex;align-items:baseline;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-5)}
+.workspace-intro{display:flex;align-items:baseline;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-3)}
 .workspace-intro h1{font-size:var(--fs-lg);font-weight:800;margin:0;letter-spacing:-.01em}
 .workspace-intro p{margin:0;color:var(--ink-500);font-size:var(--fs-sm)}
+
+/* ==========================================================================
+   Loop HUD — the research instrument.
+   Phil_Metting2.pdf의 루프 4단계(① 후보 검토·결정 → ② 응시·EEG 수집(SSVEP)
+   → ③ 선택 키 판독 → ④ 후보 갱신(LLM))를 그대로 화면에 올리고, 선택당 실제
+   소요시간을 재서 ChatBCI 24.56s / MindChat 5.5–6.5s 와 나란히 보여준다.
+   EEG가 붙기 전에 "어떤 시스템이 좋을지" 숫자로 평가하기 위한 계기판.
+   ========================================================================== */
+.loop-hud{
+  display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-lg);
+  padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-5);box-shadow:var(--shadow-sm);
+}
+.loop-bar{display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.loop-step{
+  display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--ink-300);
+  padding:6px 11px;border-radius:var(--r-pill);white-space:nowrap;
+  transition:background .18s ease,color .18s ease;
+}
+.loop-step .n{width:16px;height:16px;border-radius:99px;background:var(--ink-200);color:var(--surface);display:grid;place-items:center;font-size:9.5px;flex:0 0 auto}
+.loop-step .t{font-size:9.5px;font-weight:600;opacity:.75;font-variant-numeric:tabular-nums}
+.loop-step.active{background:var(--blue-50);color:var(--blue-700)}
+.loop-step.active .n{background:var(--blue-500)}
+.loop-step.stim.active{background:var(--amber-50);color:var(--amber-600)}
+.loop-step.stim.active .n{background:var(--amber-600)}
+.loop-arrow{color:var(--ink-200);font-size:10px}
+.loop-metrics{display:flex;gap:var(--sp-4);margin-left:auto;flex-wrap:wrap;align-items:center}
+.loop-metrics div{display:flex;flex-direction:column;gap:1px}
+.loop-metrics span{font-size:9.5px;font-weight:700;color:var(--ink-300);letter-spacing:.03em}
+.loop-metrics b{font-size:var(--fs-sm);font-weight:800;color:var(--ink-900);font-variant-numeric:tabular-nums}
+.loop-metrics .ref b{font-size:10.5px;font-weight:700;color:var(--ink-500)}
+.loop-metrics .hi b{color:var(--blue-600)}
+@media(max-width:860px){.loop-metrics{margin-left:0;width:100%;border-top:1px dashed var(--line);padding-top:var(--sp-3)}}
+
+/* SSVEP 자극 창(실험 모드): 선택한 키가 점멸하는 동안 다른 입력을 막는다 */
+.kb.stim .key{opacity:.35;pointer-events:none}
+.kb.stim .key.flicker{opacity:1;animation:ssvep .1s steps(1,end) infinite;border-color:var(--amber-600)}
+@keyframes ssvep{0%{background:var(--amber-600);color:#fff}50%{background:var(--surface);color:var(--ink-900)}}
+@media(prefers-reduced-motion:reduce){.kb.stim .key.flicker{animation:none;background:var(--amber-50)}}
+
+/* ==========================================================================
+   Chat log — 상대/나 대화 누적 (PDF: "현재 진행중인 대화 누적 : 상대, 사용자
+   대화 채팅 형식으로 누적"). 이 로그가 그대로 LLM의 recent_context가 된다.
+   ========================================================================== */
+.chat-log{
+  display:flex;flex-direction:column;gap:6px;min-height:104px;max-height:176px;overflow-y:auto;
+  padding:var(--sp-3);background:#fbfcfe;border:1px solid var(--line);border-radius:var(--r-md);
+}
+.chat-turn{display:flex;gap:8px;align-items:flex-start;font-size:var(--fs-sm);line-height:1.55}
+.chat-turn .who{
+  flex:0 0 auto;font-size:10px;font-weight:800;padding:3px 8px;border-radius:var(--r-pill);
+  background:var(--ink-200);color:var(--surface);margin-top:1px;
+}
+.chat-turn.partner .who{background:var(--ink-500)}
+.chat-turn.me .who{background:var(--blue-500)}
+.chat-turn.me .tx{font-weight:700;color:var(--ink-900)}
+.chat-turn .tx{color:var(--ink-700);overflow-wrap:anywhere}
+.chat-empty{font-size:var(--fs-sm);color:var(--ink-300);text-align:center;padding:var(--sp-4) 0}
+.chat-input-row{display:flex;gap:8px;margin-top:var(--sp-3);align-items:stretch}
+.chat-input-row input{
+  flex:1 1 0;width:0;min-width:0;font:inherit;font-size:var(--fs-base);padding:10px 13px;
+  border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-900);
+}
+.chat-input-row input:focus{outline:2px solid var(--ink-500);outline-offset:1px}
+.who-note{font-size:10.5px;color:var(--ink-300);font-weight:600;margin-top:6px}
+
+/* ==========================================================================
+   Candidate surface — 단어 5 + 문장 2, 각 후보는 자신을 고르는 키 뱃지를 단다.
+   3초 "후보 검토·결정" 구간을 줄이는 것이 전체 속도의 핵심이므로, 후보 → 키의
+   시선 이동을 없애는 게 이 영역의 유일한 설계 목표다.
+   ========================================================================== */
+.cand-card{grid-column:1/-1;border-top:3px solid var(--blue-500)}
+.cand-head{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-3)}
+.cand-head .lb{font-size:var(--fs-sm);font-weight:800;color:var(--ink-700)}
+.cand-head .tag{font-size:10.5px;font-weight:700;color:var(--blue-700);background:var(--blue-50);padding:4px 10px;border-radius:var(--r-pill)}
+.cand-foot{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-2);min-width:0}
+.cand-foot>details{min-width:0}
+.metrics{min-width:0}
+.metric{min-width:0;overflow:hidden}
+.cand-foot>details{margin:0}
+.cand-foot summary{min-height:32px;font-size:var(--fs-xs)}
+.settings-row{display:flex;gap:8px;margin-top:var(--sp-4);align-items:flex-start;flex-wrap:wrap}
+.settings-row>details{flex:1 1 220px;margin-top:0}
+.ratio-tag{font-size:10.5px;font-weight:700;color:var(--blue-700);background:var(--blue-50);padding:4px 10px;border-radius:var(--r-pill)}
+.ratio-tag.llm{color:var(--amber-600);background:var(--amber-50)}
+.cand-words{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:var(--sp-2)}
+@media(max-width:720px){.cand-words{grid-template-columns:repeat(2,1fr)}}
+.cand-sents{display:flex;flex-direction:column;gap:7px}
+.cand{
+  display:flex;align-items:center;gap:9px;text-align:left;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);
+  padding:9px 11px;min-height:50px;transition:border-color .15s ease,box-shadow .15s ease,transform .1s ease;
+}
+.cand:hover{border-color:var(--blue-500);box-shadow:var(--shadow-sm)}
+.cand:active{transform:scale(.98)}
+.cand .kb-badge{
+  flex:0 0 auto;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;
+  font-size:11.5px;font-weight:800;background:var(--blue-500);color:#fff;
+}
+.cand.sent .kb-badge{background:var(--green-500)}
+.cand .tx{font-size:var(--fs-md);font-weight:700;color:var(--ink-900);overflow-wrap:anywhere;line-height:1.5}
+.cand.sent .tx{font-size:1.05rem}
+.cand.ph{border-style:dashed;cursor:default;background:#fbfcfe}
+.cand.ph:hover{border-color:var(--line);box-shadow:none}
+.cand.ph .kb-badge{background:var(--ink-200)}
+.cand.ph .tx{font-size:var(--fs-sm);font-weight:600;color:var(--ink-300)}
+.cand.loading .tx{color:var(--ink-500);font-weight:600;font-size:var(--fs-sm)}
+.cand .tx .unit{
+  font:inherit;background:none;border:none;border-bottom:1.5px dashed var(--ink-200);
+  padding:0 1px;cursor:pointer;color:inherit;border-radius:3px;
+}
+.cand .tx .unit:hover{background:var(--blue-50);border-color:var(--blue-500);color:var(--blue-700)}
+
+/* ==========================================================================
+   Experiment strip — pseudo-online 설정 (PDF 3번). 기본은 꺼짐.
+   ========================================================================== */
+.exp-strip{display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-sm)}
+.exp-strip label{display:flex;align-items:center;gap:7px;font-weight:700;color:var(--ink-700);margin:0}
+.exp-strip input[type=number]{
+  width:78px;font:inherit;font-size:var(--fs-sm);padding:7px 9px;border:1.5px solid var(--line);
+  border-radius:var(--r-sm);background:var(--surface);color:var(--ink-900);
+}
+.exp-on{background:var(--amber-50);border-color:#f5dcb0!important}
+.mis-flag{font-size:10.5px;font-weight:800;color:var(--amber-600);background:var(--amber-50);padding:3px 9px;border-radius:var(--r-pill)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--sp-5);align-items:start}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
 
 .grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:var(--sp-5);align-items:start}
 @media(max-width:960px){.grid{grid-template-columns:1fr}}
@@ -216,7 +343,10 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 }
 .card h3 .tag{font-size:10.5px;font-weight:700;color:var(--blue-700);background:var(--blue-50);padding:4px 10px;border-radius:var(--r-pill)}
 .section-copy{font-size:var(--fs-sm);color:var(--ink-500);margin:0 0 var(--sp-5)}
-.conversation-card{grid-column:1/-1;border-top:3px solid var(--blue-500)}
+.conversation-card{border-top:3px solid var(--green-500)}
+.kb-card{grid-column:1/-1}
+.step-wrap.wide .card{padding:var(--sp-5)}
+.step-wrap.wide .card h3{margin-bottom:var(--sp-3)}
 
 /* conversation card contents */
 #notice:empty{display:none}
@@ -252,26 +382,56 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 .habitual-chip .n{opacity:.65;font-weight:600;margin-left:4px;font-size:10.5px}
 .habitual-empty{font-size:var(--fs-sm);color:var(--ink-500)}
 
-.ini-row{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 var(--sp-3)}
-.ini-row .lb{font-size:var(--fs-sm);font-weight:800;color:var(--ink-700)}
-.ini-display{
-  font-weight:800;font-size:1.7rem;letter-spacing:.14em;color:var(--blue-700);
-  background:var(--blue-50);border-radius:var(--r-md);padding:14px 18px;min-height:60px;
-  display:flex;align-items:center;overflow-wrap:anywhere;margin-bottom:var(--sp-4);
-}
-.ini-display.empty{color:var(--ink-300);background:#f6f7fb;font-size:var(--fs-base);letter-spacing:0;font-weight:600}
+.ini-row{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 var(--sp-3);flex-wrap:wrap;gap:6px}
+.ini-row .lb{font-size:var(--fs-sm);font-weight:800;color:var(--ink-700);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ini-row .lb .tag.soft{font-size:10px;font-weight:700;color:var(--ink-500);background:#f6f7fb;border:1px solid var(--line);border-radius:var(--r-pill);padding:3px 9px}
 
-.keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:var(--sp-4)}
-.key{
-  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-sm);padding:14px 6px;cursor:pointer;
-  font-size:1.15rem;font-weight:700;color:var(--ink-900);min-height:52px;transition:background .1s ease,border-color .1s ease;
+.ini-display{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:60px;
+  background:#f6f7fb;border-radius:var(--r-md);padding:12px 14px;margin-bottom:var(--sp-3);
 }
-.key:hover{border-color:var(--blue-500);color:var(--blue-700);background:var(--blue-50)}
-.key:active{transform:scale(.95)}
-@media(max-width:640px){.keyboard{grid-template-columns:repeat(5,1fr)}}
+.ini-display.empty{color:var(--ink-300);font-size:var(--fs-base);font-weight:600}
+.wblock{
+  min-width:38px;min-height:38px;padding:6px 10px;border-radius:9px;border:1.5px solid var(--line-strong);
+  background:var(--surface);color:var(--blue-700);font-weight:800;font-size:1.15rem;display:grid;place-items:center;
+}
+.wblock.done{border-color:var(--green-500);color:var(--green-600);background:var(--green-50)}
+
+.ac-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:var(--sp-3)}
+.ac-row[hidden]{display:none}
+.ac-chip{
+  border:1.5px solid var(--blue-100);background:var(--blue-50);color:var(--blue-700);border-radius:var(--r-pill);
+  font-size:var(--fs-sm);font-weight:700;padding:8px 14px;cursor:pointer;min-height:38px;
+}
+.ac-chip:hover{border-color:var(--blue-500)}
+
+.kb-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:var(--sp-2);font-size:10.5px;color:var(--ink-500);font-weight:700}
+.kb-legend i{width:8px;height:8px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle}
+
+.kb{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:var(--sp-3)}
+@media(max-width:640px){.kb{grid-template-columns:repeat(5,1fr)}}
+.kb .key{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-sm);cursor:pointer;
+  font-size:1.1rem;font-weight:700;color:var(--ink-900);min-height:46px;transition:transform .08s ease,box-shadow .08s ease,border-color .1s ease;
+  display:flex;align-items:center;justify-content:center;padding:4px;min-width:0;overflow:hidden;
+}
+.kb .key:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.kb .key:active{transform:scale(.95)}
+.kb .key.cho{background:var(--blue-50);border-color:var(--blue-100);color:var(--blue-700)}
+.kb .key.jung{background:var(--green-50);border-color:#bfe9d5;color:var(--green-600)}
+.kb .key.cand{background:#f4f0ff;border-color:#ded2fb;color:#6d3fd4;font-size:var(--fs-sm);flex-direction:column;gap:1px;overflow:hidden}
+.kb .key.cand:not(:disabled){background:#efe9ff;border-color:#c9b6f7;box-shadow:0 1px 0 #c9b6f7}
+.kb .key.cand .cw{display:block;font-size:11px;font-weight:800;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-900)}
+.kb .key.cand .cw:empty{display:none}
+.kb .key.cand:disabled{opacity:.35}
+.kb .key.fn{background:#f6f7fb;border-color:var(--line-strong);color:var(--ink-700);font-size:var(--fs-sm);white-space:nowrap;text-overflow:ellipsis}
+
+.kb .key.fn.commit{background:var(--blue-500);border-color:transparent;color:#fff;font-weight:800}
+.kb .key.fn.commit:hover{filter:brightness(1.05)}
+@media(max-width:640px){.kb{gap:5px}.kb .key{font-size:1rem}.kb .key.fn{font-size:10.5px;white-space:normal;line-height:1.2;word-break:keep-all}.kb .key.cand{font-size:11px}.kb .key.cand .cw{font-size:9.5px}}
+.kb .key:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--sp-4)}
-.actions #btnPredict{flex:1 1 100%;order:-1;font-size:var(--fs-md);padding:14px 16px}
 .btn{
   border:1.5px solid var(--line);background:var(--surface);color:var(--ink-900);border-radius:var(--r-sm);
   padding:11px 15px;font-size:var(--fs-sm);font-weight:700;cursor:pointer;min-height:44px;
@@ -367,8 +527,8 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 /* large-text accessibility mode */
 body.large-text .buffer{font-size:1.7rem}
 body.large-text .candidate .ct{font-size:1.4rem}
-body.large-text .ini-display{font-size:2rem}
-body.large-text .key{font-size:1.3rem;min-height:58px}
+body.large-text .wblock{font-size:1.4rem;min-height:46px}
+body.large-text .kb .key{font-size:1.3rem;min-height:58px}
 body.large-text .btn,body.large-text summary,body.large-text .guide-body p,body.large-text .guide-body li{font-size:1.05rem}
 body.large-text .candidate .commit-candidate{font-size:var(--fs-md);min-height:50px}
 
@@ -412,6 +572,7 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
 </style>
 </head>
 <body>
+<a href="/speller/research" style="display:block;padding:12px 24px;background:#eaf2fa;color:#17448f;text-align:center;font-weight:700">새 입력 실험실 · 단어/문장 개인화 · 40키 · 속도 비교 →</a>
 
 <div class="topbar">
   <div class="brand">
@@ -494,9 +655,40 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
       <button class="ghost-btn" id="btnNewSession" style="margin-left:auto">↺ 새 대화 시작</button>
     </div>
 
-    <div class="workspace-intro"><span class="eyebrow">MY CONVERSATION</span><h1>지금, 전하고 싶은 말</h1><p>· 초성 입력 → 표현 확인 → 문장 확정</p></div>
+    <!-- 루프 HUD: PDF의 4단계 루프를 그대로 올리고 선택당 실제 시간을 잰다 -->
+    <div class="loop-hud">
+      <div class="loop-bar" id="loopBar" title="문장 시작 → loop(① 후보 검토·결정 → ② 응시·EEG 수집 → ③ 선택 키 판독 → ④ 후보 갱신) → 종료">
+        <div class="loop-step" data-step="1"><span class="n">1</span>후보 검토·결정<span class="t" id="t1">–</span></div>
+        <span class="loop-arrow">→</span>
+        <div class="loop-step stim" data-step="2"><span class="n">2</span>응시·EEG 수집<span class="t" id="t2">–</span></div>
+        <span class="loop-arrow">→</span>
+        <div class="loop-step" data-step="3"><span class="n">3</span>선택 키 판독<span class="t" id="t3">–</span></div>
+        <span class="loop-arrow">→</span>
+        <div class="loop-step" data-step="4"><span class="n">4</span>후보 갱신<span class="t" id="t4">–</span></div>
+      </div>
+      <div class="loop-metrics">
+        <div class="hi"><span>이번 선택</span><b id="mSel">–</b></div>
+        <div class="hi"><span>평균 초/선택</span><b id="mAvg">–</b></div>
+        <div><span>선택 수</span><b id="mCount">0</b></div>
+        <div><span>LLM 실대기</span><b id="mWait">–</b></div>
+        <div class="ref"><span>논문 비교</span><b>ChatBCI 24.56s · MindChat 5.5–6.5s</b></div>
+      </div>
+    </div>
+
     <div class="grid">
-      <section class="card conversation-card">
+      <!-- 대화 누적 (상대 / 나) -->
+      <section class="card">
+        <h3>대화 <span class="tag">상대 · 나 누적 → 후보 문맥</span></h3>
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-input-row">
+          <input id="partnerText" maxlength="200" placeholder="상대방이 한 말을 입력하세요" aria-label="상대방이 한 말">
+          <button class="btn" id="btnPartnerSend">상대 말 추가</button>
+        </div>
+        <p class="who-note">상대방 전용 입력 · 환자 입력은 아래 40키만 사용합니다.</p>
+      </section>
+
+      <!-- 내가 전할 말 -->
+      <section class="card conversation-card" id="sayCard">
         <h3>내가 전할 말 <span class="tag">확정한 문장만 추가</span></h3>
         <div id="notice" role="status" aria-live="polite" class="unit-hint"></div>
         <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
@@ -506,59 +698,26 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
           <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
         </div>
       </section>
-      <section class="card input-card">
-        <h3><span class="step-chip">1</span> 초성으로 시작하기</h3>
-        <p class="section-copy">말하고 싶은 글자의 첫 자음을 차례로 눌러주세요.</p>
 
-        <details class="context-details"><summary>자주 쓰는 표현 · 대화 문맥</summary><div class="recent-box">
-          <label>자주 쓰는 표현 (탭하면 바로 입력됨)</label>
-          <div class="habitual-row" id="habitualRow"></div>
+      <!-- 후보: 단어 5 + 문장 2, 각 후보는 자신을 고르는 후보키 번호를 단다 -->
+      <section class="card cand-card">
+        <div class="cand-head">
+          <span class="lb">후보</span><span class="tag">후보키 1–7 · 숫자키</span>
+          <span class="ratio-tag" id="ratioTag">단어 5 · 문장 2</span>
+          <span id="nudgeBox"></span>
         </div>
-
-        <div class="recent-box">
-          <label>최근 대화 (후보 조회에 자동 반영)</label>
-          <div class="ctx-pill-row" id="historyPills"></div>
-          <label for="context">상대방의 말 · 지금 상황 (선택)</label>
-          <textarea id="context" rows="2" maxlength="300" placeholder="예: 상대방이 ‘무엇을 도와줄까?’라고 물었어요"></textarea>
-        </div></details>
-
-        <div class="ini-row">
-          <span class="lb">입력 중인 초성</span><span class="unit-hint">최대 20글자</span>
+        <div class="cand-words" id="candWords" aria-live="polite"></div>
+        <div class="cand-sents" id="candSents" aria-live="polite" aria-busy="false"></div>
+        <div class="cand-foot">
+          <span class="unit-hint" id="unitHint" style="margin:0" hidden>💡 문장 후보의 글자를 누르면 그 글자만 바꾼 대안을 찾습니다 (FillMask)</span>
+          <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding:0;margin-left:auto">🔎 글자를 직접 완성하기</button>
+          <details style="margin:0"><summary>응답 정보</summary><div class="metrics">
+            <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
+            <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
+            <div class="metric"><span>서버 지연</span><b id="mLat">-</b></div>
+            <div class="metric"><span>모드</span><b id="mMode">-</b></div>
+          </div></details>
         </div>
-        <div class="ini-display empty" id="iniDisplay">초성을 선택하세요</div>
-        <div class="keyboard" id="keyboard"></div>
-        <div class="actions">
-          <button class="btn" id="btnBack">⌫ 지우기</button>
-          <button class="btn" id="btnClear">초성 초기화</button>
-          <button class="btn primary" id="btnPredict">후보 생성</button>
-          <button class="btn" id="btnCancel" hidden>조회 취소</button>
-          <button class="btn danger" id="btnReset">전체 초기화</button>
-        </div>
-        <details class="recovery" id="directPanel">
-          <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
-          <label for="directText">예측 없이 입력한 문장을 그대로 사용합니다</label>
-          <textarea id="directText" rows="2" maxlength="300" placeholder="전하고 싶은 문장을 입력하세요"></textarea>
-          <button class="btn primary" id="btnDirectCommit">입력한 문장 확정</button>
-        </details>
-        <details class="recovery">
-          <summary>입력 설정 · 이 탭의 기록</summary>
-          <label><input type="checkbox" id="autoPredict"> 입력을 멈추면 자동으로 후보 조회</label>
-          <p class="unit-hint">자동 조회는 1.2초 후 실행됩니다. 문장 확정은 항상 직접 선택합니다.</p>
-          <label for="candidateCount">표시할 후보 수</label>
-          <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
-          <p class="unit-hint">문장과 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 문맥이 서버·언어 모델로 전달됩니다.</p>
-          <button class="btn" id="btnExportMetrics">사용 지표 내려받기</button>
-          <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
-        </details>
-      </section>
-
-      <aside class="card candidate-card">
-        <h3><span class="step-chip">2</span> 내 뜻에 맞는 표현 <span class="tag">직접 선택</span></h3>
-        <p class="section-copy">글자를 누르면 수정, ‘문장 확정’을 누르면 추가돼요.</p>
-        <div id="nudgeBox"></div>
-        <div class="cand-list" id="candidates" aria-live="polite" aria-busy="false"><div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 숫자로도 선택할 수 있어요.</div></div>
-        <div class="unit-hint" id="unitHint" hidden>💡 글자를 누르면 해당 글자의 대안을 찾습니다 (FillMask). 문장 추가는 ‘문장 확정’ 버튼 또는 표시된 후보의 숫자 키를 사용하세요.</div>
-        <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding-left:0">🔎 원하는 표현이 없어요 → 직접 입력하기</button>
         <div class="recovery" id="recoveryPanel" hidden>
           <div class="recovery-head">
             <span>글자를 직접 완성해서 다시 찾기 (KeywordAE)</span>
@@ -575,20 +734,75 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
             <div class="alt-list" id="fillmaskAlts"></div>
           </div>
         </div>
-        <details><summary>응답 정보</summary><div class="metrics">
-          <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
-          <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
-          <div class="metric"><span>지연시간</span><b id="mLat">-</b></div>
-          <div class="metric"><span>모드</span><b id="mMode">-</b></div>
-        </div></details>
-      </aside>
+      </section>
+
+      <!-- 입력: 현재 글자 + 40키 -->
+      <section class="card kb-card">
+        <div class="ini-row">
+          <span class="lb"><span class="step-chip">1</span> 입력 중 <span class="tag soft">최대 20글자</span></span>
+          <span id="expFlag"></span>
+        </div>
+        <div class="ini-display empty" id="iniDisplay">키를 눌러 시작하세요</div>
+        <div class="kb-legend">
+          <span><i style="background:var(--blue-500)"></i>초성 19</span>
+          <span><i style="background:var(--green-500)"></i>중성 10</span>
+          <span><i style="background:#6d3fd4"></i>후보 7</span>
+          <span><i style="background:var(--ink-500)"></i>기능 4</span>
+          <span style="margin-left:auto;color:var(--ink-300)">합계 40키 · 5×8</span>
+        </div>
+        <div class="keyboard kb" id="keyboard"></div>
+        <div class="actions">
+          <button class="btn" id="btnClear">단어 초기화</button>
+          <button class="btn" id="btnCancel" hidden>조회 취소</button>
+          <button class="btn danger" id="btnReset">전체 초기화</button>
+        </div>
+
+        <div class="settings-row">
+        <details class="recovery" id="expPanel">
+          <summary>Pseudo-online 실험 모드 · 결과 내보내기</summary>
+          <div class="exp-strip">
+            <label><input type="checkbox" id="expOn"> 실험 모드 켜기</label>
+            <label>SSVEP 자극 <input type="number" id="expStim" value="1500" min="0" max="6000" step="100"> ms</label>
+            <label>판독 정확도 <input type="number" id="expAcc" value="90" min="10" max="100" step="1"> %</label>
+            <label>참가자 <input type="text" id="expSubject" value="S01" maxlength="20" style="width:90px"></label>
+          </div>
+          <p class="unit-hint">실험 모드를 켜면 키를 누른 뒤 설정한 시간만큼 자극(점멸) 창이 유지되고, 설정한 정확도로 오판독이 주입됩니다(MindChat SSVEP 90% 기준). 모든 시행의 소요 시간·오판독 여부가 기록됩니다.</p>
+          <div class="actions" style="margin-top:0">
+            <button class="btn" id="btnExportTrials">시행 기록 CSV 내려받기</button>
+            <button class="btn" id="btnExportMetrics">사용 지표 JSON</button>
+            <button class="btn danger sm" id="btnResetTrials">기록 비우기</button>
+          </div>
+        </details>
+
+        <details class="recovery" id="directPanel">
+          <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
+          <label for="directText">예측 없이 입력한 문장을 그대로 사용합니다</label>
+          <textarea id="directText" rows="2" maxlength="300" placeholder="전하고 싶은 문장을 입력하세요"></textarea>
+          <button class="btn primary" id="btnDirectCommit">입력한 문장 확정</button>
+        </details>
+
+        <details class="recovery">
+          <summary>입력 설정 · 자주 쓰는 표현 · 이 탭의 기록</summary>
+          <label>자주 쓰는 표현 (탭하면 바로 입력됨)</label>
+          <div class="habitual-row" id="habitualRow"></div>
+          <label for="context">상황 메모 (선택 · 후보 조회에 함께 전달)</label>
+          <textarea id="context" rows="2" maxlength="300" placeholder="예: 식사 중이고 보호자가 옆에 있어요"></textarea>
+          <label><input type="checkbox" id="autoPredict" checked> 초성을 입력할 때마다 문장 후보 자동 갱신</label>
+          <p class="unit-hint">단어 후보는 항상 즉시(로컬) 갱신됩니다. 문장 후보만 언어 모델을 호출하며, 입력이 멈춘 뒤 0.7초에 실행됩니다.</p>
+          <label for="candidateCount">문장 후보 최대 수</label>
+          <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
+          <p class="unit-hint">문장과 대화, 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 대화가 서버·언어 모델로 전달됩니다.</p>
+          <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
+        </details>
+        </div>
+      </section>
     </div>
   </section>
 
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 웹에서는 클릭·키보드 입력을 사용합니다. EEG 측정·SSVEP 자극은 활성화되어 있지 않습니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v0.8.0</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독은 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v0.9.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -597,11 +811,11 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
     <p class="guide-lead">내가 원하는 말을, 나의 속도로.</p>
     <p>초성으로 문장을 찾고, 뜻에 맞게 고친 다음 상대방에게 보여주거나 소리로 전하세요. 설명서를 닫으면 작성 중이던 화면으로 돌아갑니다.</p>
     <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a></nav>
-    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> 예를 들어 ‘물 줘’는 <strong>ㅁ → ㅈ</strong>을 누르고 ‘후보 생성’을 선택합니다. 띄어쓰기와 문장 부호는 입력하지 않습니다. 한 번에 최대 20글자까지 입력할 수 있습니다.</li><li><strong>추천 표현 확인:</strong> 원하는 문장이면 ‘문장 확정’을 누릅니다. 확정한 문장은 위쪽 ‘내가 전할 말’에 추가됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
+    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> ‘물 줘’는 <strong>ㅁ → ㅈ</strong>처럼 초성만 눌러도 되고, ㅁ 다음에 모음 <strong>ㅜ</strong>를 눌러 ‘무’를 그 자리에서 확정해도 됩니다(받침은 후보가 채워줍니다). 한 번에 최대 20글자입니다.</li><li><strong>후보키로 선택:</strong> 키를 누를 때마다 <strong>단어 후보</strong>가 즉시(로컬·0ms) 갱신되고, <strong>문장 후보</strong>는 언어 모델이 0.7초 뒤 채웁니다. 원하는 후보의 번호가 붙은 <strong>후보키 1~7</strong>(또는 숫자키)을 누르면 바로 확정됩니다. 단어/문장 개수 비율은 로컬에 맞는 단어가 몇 개인지에 따라 자동으로 조절됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
     <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
-    <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>마지막 문장 취소:</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>지우기 / 초성 초기화:</strong> 마지막 초성 하나 / 입력한 초성 전체를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>5</kbd>는 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
+    <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>마지막 문장 취소:</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>글자삭제 / 단어삭제:</strong> 마지막 글자 하나 / 작성 중인 단어(없으면 확정된 마지막 어절)를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>7</kbd>은 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
     <section id="guide-settings"><h3>4. 나에게 맞게 조절하기</h3><ul><li><strong>큰 글씨:</strong> 화면 위쪽 ‘가 큰 글씨’로 입력·후보·주요 버튼을 확대합니다. 같은 버튼으로 기본 크기로 돌아옵니다.</li><li><strong>자동 후보 조회:</strong> ‘입력 설정 · 이 탭의 기록’에서 켭니다. 초성 2개 이상 입력 후 1.2초 동안 입력을 멈추면 조회합니다. 문장은 자동 확정되지 않습니다.</li><li><strong>후보 수:</strong> 3개 또는 5개로 선택합니다.</li><li><strong>대화 문맥:</strong> ‘자주 쓰는 표현 · 대화 문맥’을 열어 상대방의 말이나 상황을 적으면 조회에 참고합니다. 최근 대화도 자동 반영됩니다.</li><li><strong>자주 쓰는 표현:</strong> 확정한 표현이 모입니다. 이 버튼은 누르면 바로 문장에 추가됩니다.</li></ul><h4>내 대화는 어디에 저장되나요?</h4><p>작성 중인 문장과 최근 대화, 자주 쓰는 표현은 현재 브라우저 탭의 세션 저장소에 보관되어 새로고침 뒤 복원됩니다. 후보 조회 시 초성·문맥 등 필요한 입력이 서버와 언어 모델로 전송됩니다. 탭 복원 기능에 따라 기록이 다시 열릴 수 있으므로 공용 기기에서는 ‘이 탭의 기록 삭제’를 사용하세요.</p><p>‘사용 지표 내려받기’는 입력 횟수·조회 지연시간 등의 JSON 파일을 저장합니다. 문장 원문은 포함하지 않습니다. 실제 EEG 정확도나 의사소통 성능을 측정하는 기능은 아닙니다.</p></section>
-    <section id="guide-trouble"><h3>5. 잘 안 될 때</h3><details><summary>후보가 늦게 나오거나 연결 오류가 보여요</summary><p>서버가 절전 상태에서 깨어나는 데 시간이 걸릴 수 있습니다. 잠시 후 ‘후보 생성’을 다시 눌러보세요. 입력은 유지됩니다. ‘조회 취소’로 중단하거나, 기다리지 않고 문장 전체를 직접 입력할 수도 있습니다.</p></details><details><summary>원하는 표현이 없거나 초성을 잘못 눌렀어요</summary><p>‘지우기’로 잘못 입력한 초성을 수정하세요. 글자 하나의 대안은 FillMask, 일부 글자를 지정하는 것은 KeywordAE, 정확한 문장을 알고 있을 때는 전체 직접 입력을 사용하세요.</p></details><details><summary>눈으로 바라보면 선택되나요?</summary><p>현재 웹 버전은 클릭·터치·키보드로 조작하는 연구용 인터페이스입니다. EEG 측정, 시선 추적, P300/SSVEP 자극 및 실제 뇌파 선택 기능은 활성화되어 있지 않습니다.</p></details><details><summary>새 대화와 기록 삭제는 어떻게 다른가요?</summary><p>‘새 대화 시작’은 상대와 상황을 다시 선택하며 현재 대화를 초기화합니다. 자주 쓰는 표현은 유지됩니다. 개인 기록까지 비우려면 ‘입력 설정 · 이 탭의 기록’의 ‘이 탭의 기록 삭제’를 선택하세요.</p></details></section>
+    <section id="guide-trouble"><h3>5. 잘 안 될 때</h3><details><summary>문장 후보가 늦게 나와요</summary><p>단어 후보는 언어 모델을 거치지 않으므로 항상 즉시 뜹니다 — 서버가 느리거나 끊겨도 단어 후보만으로 계속 입력할 수 있습니다. 문장 후보만 언어 모델을 기다리며, 이 대기 시간은 위쪽 HUD의 ‘LLM 실대기’에 실측으로 표시됩니다.</p></details><details><summary>원하는 표현이 없거나 초성을 잘못 눌렀어요</summary><p>‘지우기’로 잘못 입력한 초성을 수정하세요. 글자 하나의 대안은 FillMask, 일부 글자를 지정하는 것은 KeywordAE, 정확한 문장을 알고 있을 때는 전체 직접 입력을 사용하세요.</p></details><details><summary>눈으로 바라보면 선택되나요?</summary><p>아직 아닙니다. 현재 웹 버전은 클릭·터치·키보드로 조작하는 연구용 인터페이스입니다. 다만 <strong>Pseudo-online 실험 모드</strong>를 켜면 SSVEP 자극 시간(기본 1.5초)과 판독 정확도(기본 90%)를 흉내 내어, 실제 EEG를 붙이기 전에 전체 루프가 얼마나 걸리는지 측정하고 CSV로 저장할 수 있습니다.</p></details><details><summary>새 대화와 기록 삭제는 어떻게 다른가요?</summary><p>‘새 대화 시작’은 상대와 상황을 다시 선택하며 현재 대화를 초기화합니다. 자주 쓰는 표현은 유지됩니다. 개인 기록까지 비우려면 ‘입력 설정 · 이 탭의 기록’의 ‘이 탭의 기록 삭제’를 선택하세요.</p></details></section>
     <p class="unit-hint">디자인 기준: 읽기 쉬운 대비, 큰 조작 영역, 키보드 초점 표시. <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">WCAG 2.2 참고</a> · 실제 사용자 평가를 통한 추가 개선이 필요합니다.</p>
   </div>
 </dialog>
@@ -609,6 +823,24 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
 const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
 const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
 const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+
+/* ---------------- 40-key layout: 19 초성 + 10 중성 + 7 받침 + 4 기능키 ---------------- */
+const JUNG_BASIC=["ㅏ","ㅑ","ㅓ","ㅕ","ㅗ","ㅛ","ㅜ","ㅠ","ㅡ","ㅣ"];
+/* 40키 = 초성 19 + 중성 10 + 후보 7 + 기능 4  (5행 × 8열, ChatBCI와 같은 격자)
+   후보를 키보드 안에 넣는 것이 핵심이다. SSVEP로는 후보를 "클릭"할 수 없고
+   반드시 40키 중 하나를 응시해 골라야 하므로, MindChat의 번호키(0~6) 방식을
+   그대로 따른다. 대신 받침 7키는 주 키보드에서 빼고 복구 패널에만 남긴다 —
+   받침은 후보가 채워주는 것이 이 연구의 전제이기 때문. */
+const CAND_SLOTS=7;
+const FN_KEYS=[
+  {code:"back",   label:"⌫ 글자삭제", cls:"back"},
+  {code:"delword",label:"⌦ 단어삭제", cls:"delword"},
+  {code:"space",  label:"␣ 띄어쓰기", cls:"space"},
+  {code:"commit", label:"✓ 문장확정", cls:"commit"},
+];
+/* 로컬 자동완성 시드: research/phrase_memory/approved_bci_phrase_bank_v2.jsonl 에서
+   실제 검수된 문장을 단어 단위로 쪼개 빈도를 센 것 (LLM 미사용, 클라우드 호출 없음). */
+const SEED_WORDS=[["ㅈ","좀",39],["ㅈㄱ","조금",19],["ㅈ","줘",17],["ㄴㅁ","너무",10],["ㅇㄴ","오늘",8],["ㄷㅅ","다시",8],["ㄱㅇ","거야",7],["ㄷ","더",6],["ㄲㅈ","꺼줘",6],["ㅇㅈ","언제",6],["ㅋㅈ","켜줘",5],["ㄷㅇ","다음",5],["ㅎㅈ","해줘",4],["ㄴㅊㅈ","낮춰줘",4],["ㄴㄹㅈ","내려줘",4],["ㅇㅍ","아파",4],["ㅇㄹㅈ","알려줘",4],["ㅁㅇ","뭐야",4],["ㅁㅇ","많이",4],["ㅁㅎㅈ","말해줘",4],["ㅎㄱ","할게",4],["ㄱㅈㅇㅈ","가져와줘",3],["ㅎㄷㅍ","휴대폰",3],["ㄷㅇㅈ","닫아줘",3],["ㅎ","한",3],["ㅁㅊㅈ","멈춰줘",3],["ㅁ","물",3],["ㅂ","밥",3],["ㄴㅇㅈ","높여줘",3],["ㅇㄹㅈ","올려줘",3],["ㅂㅊㅈ","받쳐줘",3],["ㄷㄷㅎ","답답해",3],["ㅎㅇㅎㅈㅅㅇ","확인해주세요",3],["ㄴㄱ","누가",3],["ㅇㅈ","일정",3],["ㅈㅁ","정말",3],["ㅈ","잘",3],["ㅂㄱ","방금",3],["ㄷ","다",3],["ㅇ","안",3],["ㅅㅁㅎㅈ","설명해줘",3],["ㅂㅇㅈ","보여줘",3],["ㅂㅉㄹ","번째로",3],["ㅂㅈ","봐줘",2],["ㄱㄷㄹㅈ","기다려줘",2],["ㅅ","손",2],["ㄴㅇㅈ","놓아줘",2],["ㅊㅊㅎ","천천히",2],["ㄴ","내",2],["ㄷㅇㅈ","들어줘",2],["ㅇㄱㅈ","옮겨줘",2],["ㅊ","차",2],["ㅁㅈ","먹자",2],["ㅇㅇㅋ","에어컨",2],["ㅅㅍㄱ","선풍기",2],["ㄴㅂ","난방",2],["ㅋㅌ","커튼",2],["ㅊㅁ","창문",2],["ㅇㅇㅈ","열어줘",2],["ㅂㄹ","볼륨",2],["ㅅㄹ","소리",2],["ㅋㅇㅈ","키워줘",2],["ㅈㅁㅇ","조명을",2],["ㄷㄹ","다리",2],["ㅍ","팔",2],["ㅂㄱ","베개",2],["ㅁㅇ","몸을",2],["ㄷㄹㅈ","돌려줘",2],["ㅊㄷㄹ","침대를",2],["ㅇㅇㄹ","옆으로",2],["ㅎㄹㄱ","허리가",2],["ㅃㄱㅎ","뻐근해",2],["ㅇㅇ","약을",2],["ㅁㅇㅇㅇ","먹었어요",2],["ㅇㅈ","아직",2],["ㅎㅈㅅㅇ","해주세요",2],["ㅇㄴㅇ","오나요",2],["ㄱㅅ","검사",2],["ㅅㄱㅇ","시간이",2],["ㄱ","것",2],["ㅇㄹㅈㅅㅇ","알려주세요",2],["ㅁ","몇",2],["ㅇ","올",2],["ㅁ","뭐",2],["ㅎ","해",2],["ㅇㅂ","이번",2],["ㅁㅇ","먹어",2],["ㅁㅅ","무슨",2],["ㄴㅇ","내일",2],["ㅈ","주",2],["ㅂㄱㅇ","반가워",2],["ㅂㅈ","보자",2],["ㅎㅇ","했어",2],["ㄴ","나",2],["ㅁㅇㅂㅈ","물어봐줘",2],["ㅈㄱㅇ","지금은",2],["ㅅㅇ","싶은",2],["ㄱㅂㅇㅇ","기분이야",2],["ㅅㅇ","싶어",2],["ㄱㅇ","곁에",2],["ㄱㅂㅇ","기분이",2],["ㄷ","돼",2],["ㅎㅁ","화면",2],["ㅈㅎ","전화",2],["ㅁㅅㅈ","메시지",2],["ㅌㄹㅂㅈ","텔레비전",2],["ㅅㄹㄹ","소리를",2],["ㄴㄹ","노래",2],["ㄱ","곡",2],["ㅌㅇㅈ","틀어줘",2],["ㅇㄹ","알람",2],["ㅇㅈ","있지",2],["ㅇㅈ","와줘",2],["ㅈㅈㅅㅇ","재주세요",2],["ㅇ","왜",2],["ㅁㅇㅇ","마음이",2],["ㅈㅇ","좋아",2],["ㅇㅉ","이쪽",1],["ㅈㅇㅈ","잡아줘",1],["ㅇㄱ","여기",1],["ㅈㄱ","저기",1],["ㅇㄱ","이거",1],["ㅇㄱ","안경",1],["ㄹㅁㅋ","리모컨",1],["ㅁ","문",1],["ㅂ","번",1],["ㅈㅅ","잠시",1],["ㅁ","말",1],["ㅇㅉㅇㄹ","이쪽으로",1],["ㅅㅇㅎ","시원한",1],["ㅈㅅ","주스",1],["ㅃㄷ","빨대",1],["ㄴㅇㅈ","넣어줘",1],["ㅋ","컵",1],["ㅈㄱㄹ","젓가락",1],["ㅈ","죽",1],["ㄱ","국",1],["ㅋㅇ","컵에",1],["ㄸㄹㅈ","따라줘",1],["ㅅㅅ","식사",1],["ㅅㅇㄷ","쉬었다",1],["ㅈㅇㅈ","줄여줘",1],["ㄱㄱㄱ","공기가",1],["ㄱㅈㅎ","건조해",1],["ㄷㅇ","등을",1],["ㅅㅇㅈ","세워줘",1],["ㄴㅎㅈ","눕혀줘",1],["ㄱㄱ","고개",1],["ㅍㅈ","펴줘",1],["ㅅㅇ","손을",1],["ㅂㅇ","발을",1],["ㅇㄲㄹ","어깨를",1],["ㅎㄹㄹ","허리를",1],["ㄱㅇㄷㄹ","가운데로",1],["ㅁㅇ","목이",1],["ㄷㄹㄱ","다리가",1],["ㄱㅅㅇ","가슴이",1],["ㅅㅇ","숨이",1],["ㅅㄲㅇ","손끝이",1],["ㅈㄹ","저려",1],["ㄴㅇ","눈이",1],["ㄸㄱㅇ","따가워",1],["ㅇㅇㅇ","입안이",1],["ㅁㄹ","말라",1],["ㅁㅇ","몸이",1],["ㅈㄲ","자꾸",1],["ㄸㄹ","떨려",1],["ㅂㄱ","배가",1],["ㄷㅂㄹㅎ","더부룩해",1],["ㅅㅇ","속이",1],["ㅆㄹ","쓰려",1],["ㅅㅅㅍㅎㄷ","산소포화도",1],["ㅎㅎ","호흡",1],["ㅅㅌ","상태",1],["ㅇㅁ","이미",1],["ㅁ","못",1],["ㅂㅎㅈㅇㄱ","보호자에게",1],["ㅇㄹㅎㅈㅅㅇ","연락해주세요",1],["ㅎㅇ","흡인",1],["ㅎㅂ","한번",1],["ㅈㅅㄹ","자세를",1],["ㄱㅎㅅ","간호사",1],["ㅇㅅ","의사",1],["ㅇㅈㅇㅇ","언제예요",1],["ㅈㅅ","주사",1],["ㅂㅇㄱ","부위가",1],["ㅇㅍㅇ","아파요",1],["ㅇㄱㅅㄹ","응급실로",1],["ㄱㅇ","가야",1],["ㅎ","할",1],["ㄱㅇㅇ","같아요",1],["ㅅㅅㄹ","산소를",1],["ㅇㄹㅈㅅㅇ","올려주세요",1],["ㅌㅈ","통증",1],["ㅇㅊㄹ","위치를",1],["ㅂㅈㅅㅇ","봐주세요",1],["ㅇ","약",1],["ㅇㄹㅇ","이름을",1],["ㅅㅇ","시에",1],["ㅊㅂㅎ","출발할",1],["ㅂㅇ","병원",1],["ㅇㅇ","있어",1],["ㅇㅎㅇㄴ","오후에는",1],["ㅈㄴㅇㄴ","저녁에는",1],["ㅇ","와",1],["ㅈㅁㅇ","주말에",1],["ㄷㅇ","달에",1],["ㅁㄴㅈ","만나자",1],["ㅇㅊㅇ","아침에",1],["ㄲㅇㅈㄹ","깨워줄래",1],["ㅈㅅㅇ","점심은",1],["ㅇㄴㅇ","오늘이",1],["ㅇㅇㅇㅇ","요일이야",1],["ㅇㅇ","예약",1],["ㅅㅇ","시야",1],["ㅇㅈㅇ","일정이",1],["ㅂㄱ","보고",1],["ㅅㅇㅇ","싶었어",1],["ㅁㄴㅅ","만나서",1],["ㅈㄴㅈ","지냈지",1]];
 
 const PARTNERS=[
   {v:"family",icon:"👪",label:"가족",hint:"편안한 말투"},
@@ -634,21 +866,29 @@ let state={
   sessionId: null,
   initials:"", committed:"", latest:[], history:[],
   habitual:[],
+  wordFreq:{},         // 단어 섹션 학습: {word: count}, 자동완성 순위에 사용 (이 브라우저 탭 전용)
   spelled:{},          // KeywordAE: {unitIndex: composedSyllable}
   jamoTarget:null,     // index currently being spelled in the jamo picker
   jamoMedial:null,     // medial chosen so far for jamoTarget (before jong/commit)
   fillMaskFor:null,    // {referenceText, targetIndex} while showing FillMask alternatives
 };
 let predictionVersion=0;
+/* 후보 슬롯: [{kind:"word"|"sent", text, candidate_id?}] — 키 1..7과 1:1 대응 */
+let slots=[];
+/* 루프 계측: PDF의 ①후보검토 ②응시·EEG ③판독 ④후보갱신 각 구간을 실측한다 */
+let loop={readyAt:null, decisionMs:0, stimMs:0, decodeMs:0, refreshMs:0, refreshAt:null, waiting:false};
+let trials=[], selTotals=[], llmWaits=[];
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"0.7.0",actions:0,commits:0,undos:0,requests:0,errors:0,latencies_ms:[]};
+let metrics={version:"0.9.0",actions:0,commits:0,undos:0,requests:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
     partner:state.partner,situation:state.situation,initials:state.initials,
     committed:state.committed,history:state.history.slice(-100),habitual:state.habitual.slice(0,100),
+    wordFreq:state.wordFreq,
     context:el("context").value,autoPredict:el("autoPredict").checked,
     candidateCount:el("candidateCount").value,
+    expStim:el("expStim").value,expAcc:el("expAcc").value,expSubject:el("expSubject").value,
   })); }catch(e){}
 }
 function cancelPending(){
@@ -657,12 +897,14 @@ function cancelPending(){
   pendingController=null;
   predictionVersion++;
   el("btnCancel").hidden=true;
-  el("candidates").setAttribute("aria-busy","false");
+  el("candSents").setAttribute("aria-busy","false");
+  loop.waiting=false;
 }
 function schedulePrediction(){
   clearTimeout(autoTimer);
-  if(el("autoPredict").checked && state.initials.length>=2){
-    autoTimer=setTimeout(()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {}),1200);
+  if(el("autoPredict").checked && state.initials.length>=1){
+    // 문장 후보만 디바운스한다. 단어 후보는 매 키마다 이미 즉시 갱신돼 있다.
+    autoTimer=setTimeout(()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {}),700);
   }
 }
 function recordHabitual(text){
@@ -670,6 +912,15 @@ function recordHabitual(text){
   if(found) found.count++; else state.habitual.push({text,count:1});
   state.habitual.sort((a,b)=>b.count-a.count);
   state.habitual=state.habitual.slice(0,100);
+}
+function recordWordFreq(word){
+  if(!word || word.length>20) return;
+  state.wordFreq[word]=(state.wordFreq[word]||0)+1;
+  const entries=Object.entries(state.wordFreq);
+  if(entries.length>300){
+    entries.sort((a,b)=>a[1]-b[1]);
+    for(const [k] of entries.slice(0, entries.length-300)) delete state.wordFreq[k];
+  }
 }
 function rememberUndo(){
   undoStack.push({committed:state.committed,history:[...state.history],habitual:state.habitual.map(p=>({...p}))});
@@ -679,7 +930,100 @@ function rememberUndo(){
 function el(id){return document.getElementById(id)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
-/* ---------------- Korean unit helpers (mirror app/korean/initials.py) ---------------- */
+/* ==========================================================================
+   Loop instrumentation
+   --------------------------------------------------------------------------
+   문장 시작 → loop( ① 후보 검토·결정 → ② 응시·EEG 수집(SSVEP) → ③ 선택 키 판독
+   → ④ 후보 갱신(LLM) ) → 종료.  네 구간을 각각 실측해 "선택당 몇 초"를 낸다.
+   ChatBCI 24.56s / MindChat 5.5–6.5s 와 같은 축에서 비교하기 위한 계기판이다.
+   ========================================================================== */
+function setLoopStep(n){
+  const bar=el("loopBar"); if(!bar) return;
+  bar.querySelectorAll(".loop-step").forEach(x=>x.classList.toggle("active", x.dataset.step===String(n)));
+}
+function fmtMs(ms){ return ms==null ? "–" : (ms>=1000 ? (ms/1000).toFixed(2)+"s" : Math.round(ms)+"ms"); }
+/* ① 후보 검토·결정 시작 = 사용자가 다음 키를 고를 수 있게 된 순간.
+   force=false 로 부르면 "이미 고를 후보가 있었다면 타이머를 건드리지 않는다".
+   로컬 단어 후보는 0ms에 이미 떠 있으므로, 뒤늦게 도착한 LLM 문장 때문에
+   결정 시간이 0으로 리셋되면 실제보다 빠르게 측정되기 때문이다. */
+function loopReady(force){
+  if(!force && loop.readyAt!=null && slots.length) { loop.waiting=false; setLoopStep(1); return; }
+  loop.readyAt=performance.now();
+  loop.waiting=false;
+  setLoopStep(1);
+}
+function loopStageText(){
+  el("t1").textContent=fmtMs(loop.decisionMs);
+  el("t2").textContent=fmtMs(loop.stimMs);
+  el("t3").textContent=fmtMs(loop.decodeMs);
+  el("t4").textContent=fmtMs(loop.refreshMs);
+}
+function loopFinish(extra){
+  // ④ 후보 갱신 종료 → 한 번의 선택이 끝났다. 기록하고 다시 ①로.
+  loop.refreshMs = loop.refreshAt!=null ? performance.now()-loop.refreshAt : 0;
+  const total = loop.decisionMs + loop.stimMs + loop.decodeMs + loop.refreshMs;
+  selTotals.push(total); if(selTotals.length>500) selTotals.shift();
+  trials.push(Object.assign({
+    t: new Date().toISOString(),
+    subject: (el("expSubject").value||"").trim(),
+    exp_mode: expEnabled() ? 1 : 0,
+    decision_ms: Math.round(loop.decisionMs),
+    stimulus_ms: Math.round(loop.stimMs),
+    decode_ms: Math.round(loop.decodeMs),
+    refresh_ms: Math.round(loop.refreshMs),
+    total_ms: Math.round(total),
+    misdecode: loop.misdecode||0,
+  }, extra||{}));
+  if(trials.length>2000) trials.shift();
+  el("mSel").textContent=(total/1000).toFixed(2)+"s";
+  el("mCount").textContent=String(trials.length);
+  const avg=selTotals.reduce((a,b)=>a+b,0)/selTotals.length;
+  el("mAvg").textContent=(avg/1000).toFixed(2)+"s";
+  el("mWait").textContent = llmWaits.length ? Math.round(llmWaits.reduce((a,b)=>a+b,0)/llmWaits.length)+"ms" : "0ms";
+  loopStageText();
+  loopReady(true);
+}
+function expEnabled(){ const c=el("expOn"); return !!(c && c.checked); }
+
+/* ② 응시·EEG 수집 + ③ 판독.
+   실험 모드가 꺼져 있으면 두 구간은 0ms(마우스/키보드 = 즉시 판독)이고,
+   켜져 있으면 설정한 자극 시간만큼 해당 키가 점멸한 뒤 설정 정확도로 판독된다.
+   ponytail: 오판독은 격자에서 인접한 키로만 바뀐다(SSVEP 혼동은 대개 이웃 자극).
+   실제 혼동행렬이 생기면 neighbours() 대신 그 행렬을 쓰면 된다. */
+function neighbourKey(btn){
+  const keys=[...el("keyboard").querySelectorAll(".key")];
+  const i=keys.indexOf(btn); if(i<0) return btn;
+  const cols=8, cand=[i-1,i+1,i-cols,i+cols].filter(k=>k>=0&&k<keys.length);
+  return keys[cand[Math.floor(Math.random()*cand.length)]] || btn;
+}
+function ssvepGate(btn, apply){
+  // ① 종료: 화면이 준비된 순간부터 키를 고를 때까지가 "후보 검토·결정" 시간
+  loop.decisionMs = loop.readyAt!=null ? performance.now()-loop.readyAt : 0;
+  if(!expEnabled()){
+    loop.stimMs=0; loop.decodeMs=0; loop.misdecode=0;
+    setLoopStep(3); apply(btn, false);
+    return;
+  }
+  const stim=Math.max(0, Math.min(6000, Number(el("expStim").value)||0));
+  const kb=el("keyboard");
+  setLoopStep(2);
+  kb.classList.add("stim"); btn.classList.add("flicker");
+  const t0=performance.now();
+  setTimeout(()=>{
+    kb.classList.remove("stim"); btn.classList.remove("flicker");
+    loop.stimMs=performance.now()-t0;
+    setLoopStep(3);
+    const d0=performance.now();
+    const acc=Math.max(0.1, Math.min(1, (Number(el("expAcc").value)||90)/100));
+    const mis = Math.random() > acc;
+    const chosen = mis ? neighbourKey(btn) : btn;
+    loop.decodeMs=performance.now()-d0;
+    loop.misdecode = mis ? 1 : 0;
+    el("expFlag").innerHTML = mis ? '<span class="mis-flag">오판독 주입됨</span>' : '<span class="mis-flag">실험 모드</span>';
+    apply(chosen, mis);
+  }, stim);
+}
+
 function isHangulSyllable(ch){ const c=ch.codePointAt(0); return c>=0xAC00 && c<=0xD7A3; }
 function unitsOf(text){
   const out=[];
@@ -693,6 +1037,20 @@ function composeSyllableJS(cho,jung,jong){
   const ci=CHO.indexOf(cho), ji=JUNG.indexOf(jung), fi=JONG.indexOf(jong||"");
   if(ci<0||ji<0||fi<0) return null;
   return String.fromCodePoint(0xAC00 + (ci*21+ji)*28 + fi);
+}
+function decomposeSyllableJS(ch){
+  const code=(ch||"").codePointAt(0);
+  if(!isHangulSyllable(ch)) return null;
+  const off=code-0xAC00;
+  return {cho:CHO[Math.floor(off/(21*28))], jung:JUNG[Math.floor((off%(21*28))/28)], jong:JONG[off%28]};
+}
+function choseongOf(text){
+  let out="";
+  for(const ch of String(text||"")){
+    if(isHangulSyllable(ch)) out+=CHO[Math.floor((ch.codePointAt(0)-0xAC00)/(21*28))];
+    else if(CHO.includes(ch)) out+=ch;
+  }
+  return out;
 }
 
 /* ---------------- view switching ---------------- */
@@ -737,8 +1095,9 @@ function situationLabel(v){ return (SITUATIONS.find(s=>s.v===v)||{}).label || v;
 function resetToStart(){
   cancelPending();
   const personal=state.habitual;
+  const wordFreq=state.wordFreq;
   state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[],
-    habitual:personal,spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null};
+    habitual:personal,wordFreq,spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null};
   undoStack=[];
   el("context").value="";
   saveDraft();
@@ -757,7 +1116,7 @@ async function startSession(){
   el("partnerBadge").innerHTML = `<span class="num">✓</span>${esc(partnerLabel(state.partner))}`;
   el("situationBadge").innerHTML = `<span class="num">✓</span>${esc(situationLabel(state.situation))}`;
   state.committed=""; state.initials=""; state.latest=[]; state.history=[];
-  renderKeyboard(); renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
+  renderKeyboard(); renderBuffer(); renderChat(); renderCandidatesEmpty();
   refreshHabitual();
 }
 
@@ -765,14 +1124,100 @@ el("partnerBadge").onclick=()=>showView("partner");
 el("situationBadge").onclick=()=>showView("situation");
 
 function renderKeyboard(){
-  el("keyboard").innerHTML = CHO.map(c=>`<button class="key" data-c="${c}">${c}</button>`).join("");
-  [...el("keyboard").children].forEach(btn=>{
-    btn.onclick=()=>{
-      if(state.initials.length>=20){ announce("한 번에 최대 20글자까지 입력할 수 있어요. 문장을 나누어 입력해주세요."); return; }
-      state.initials+=btn.dataset.c; clearRecoveryState(); renderBuffer(); schedulePrediction();
-    };
-  });
+  const cho=CHO.map(c=>`<button type="button" class="key cho" data-t="cho" data-v="${c}">${c}</button>`).join("");
+  const jung=JUNG_BASIC.map(c=>`<button type="button" class="key jung" data-t="jung" data-v="${c}">${c}</button>`).join("");
+  const cand=Array.from({length:CAND_SLOTS},(_,k)=>
+    `<button type="button" class="key cand" data-t="cand" data-v="${k}" id="candKey${k}" disabled>${k+1}<span class="cw" id="candKeyW${k}"></span></button>`).join("");
+  const fn=FN_KEYS.map(f=>`<button type="button" class="key fn ${f.cls}" data-t="fn" data-v="${f.code}">${f.label}</button>`).join("");
+  el("keyboard").innerHTML = cho+jung+cand+fn;
+  el("keyboard").onclick=(e)=>{
+    const btn=e.target.closest(".key"); if(!btn || btn.disabled) return;
+    metrics.actions++;
+    ssvepGate(btn,(chosen)=>handleKey(chosen.dataset.t, chosen.dataset.v));
+  };
+  loopReady(true);
 }
+
+/* 40키 입력 처리. 초성만 누르면 기존과 동일, 중성까지 누르면 composeSyllableJS로
+   그 글자를 그 자리에서 확정해 state.spelled에 넣는다(= 백엔드가 이미 받던
+   spelled_syllables 필드라 서버 변경이 필요 없음). 후보키는 slots[]에서 고른다. */
+function handleKey(t,v){
+  if(t==="cand") return chooseSlot(Number(v));
+  if(t==="cho"){
+    if(state.initials.length>=20){ announce("한 번에 최대 20글자까지 입력할 수 있어요. 문장을 나누어 입력해주세요."); loopFinish({key:v,type:"cho",rejected:1}); return; }
+    state.initials+=v; clearCandidates(); renderBuffer(); schedulePrediction();
+    loopFinish({key:v,type:"cho"});
+    return;
+  }
+  if(t==="jung"){
+    const idx=state.initials.length-1;
+    if(idx<0){ announce("먼저 초성을 눌러주세요."); loopFinish({key:v,type:"jung",rejected:1}); return; }
+    const syll=composeSyllableJS(state.initials[idx], v, "");
+    if(syll) state.spelled[idx]=syll;
+    clearCandidates(); renderBuffer(); schedulePrediction();
+    loopFinish({key:v,type:"jung"});
+    return;
+  }
+  if(v==="back")    return backspaceOne();
+  if(v==="delword") return deleteWord();
+  if(v==="space")   return pressSpace();
+  if(v==="commit")  return pressCommitKey();
+}
+function backspaceOne(){
+  const idx=state.initials.length-1;
+  if(idx<0){ loopFinish({key:"back",type:"fn",rejected:1}); return; }
+  state.initials=state.initials.slice(0,-1);
+  delete state.spelled[idx];
+  clearCandidates(); renderBuffer(); schedulePrediction();
+  loopFinish({key:"back",type:"fn"});
+}
+/* ChatBCI의 DW(단어 삭제)에 해당. 작성 중인 초성이 있으면 그걸 통째로 비우고,
+   없으면 이미 확정된 마지막 어절을 되돌린다. */
+function deleteWord(){
+  if(state.initials){
+    state.initials=""; clearRecoveryState(); renderBuffer();
+    loopFinish({key:"delword",type:"fn"});
+    return;
+  }
+  const parts=state.committed.trim().split(/\s+/).filter(Boolean);
+  if(parts.length){
+    rememberUndo();
+    parts.pop();
+    state.committed=parts.join(" ");
+    renderBuffer();
+  }
+  loopFinish({key:"delword",type:"fn"});
+}
+function fullySpelledWord(){
+  if(!state.initials) return null;
+  const chars=[...state.initials];
+  if(!chars.every((_,i)=>state.spelled[i])) return null;
+  return chars.map((_,i)=>state.spelled[i]).join("");
+}
+function pressSpace(){
+  // 모든 글자가 완성돼 있으면 LLM을 거치지 않고 바로 확정한다 (0ms 경로).
+  const word=fullySpelledWord();
+  if(word){ commitText(word,{key:"space",type:"fn",picked:"spelled"}); return; }
+  if(!state.initials){ announce("먼저 단어를 입력해주세요."); loopFinish({key:"space",type:"fn",rejected:1}); return; }
+  predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {});
+  loopFinish({key:"space",type:"fn"});
+}
+function pressCommitKey(){
+  const first=slots[0];
+  if(first){ chooseSlot(0); return; }
+  const word=fullySpelledWord();
+  if(word){ commitText(word,{key:"commit",type:"fn",picked:"spelled"}); return; }
+  announce("아직 확정할 후보가 없어요. 초성을 더 입력해주세요.");
+  loopFinish({key:"commit",type:"fn",rejected:1});
+}
+function chooseSlot(k){
+  const sl=slots[k];
+  if(!sl){ announce("그 번호의 후보가 비어 있어요."); loopFinish({key:"cand"+(k+1),type:"cand",rejected:1}); return; }
+  const meta={key:"cand"+(k+1), type:"cand", picked:sl.kind, text:sl.text};
+  if(sl.kind==="word") commitText(sl.text, meta);
+  else commitValue(sl.text, sl.candidate_id, meta);
+}
+
 function renderBuffer(){
   saveDraft();
   el("btnUndo").disabled=undoStack.length===0;
@@ -780,20 +1225,133 @@ function renderBuffer(){
   el("committed").textContent=state.committed;
   el("pending").textContent = state.initials ? " ["+state.initials+"]" : "";
   el("bufferPh").style.display = (state.committed || state.initials) ? "none" : "inline";
+  renderWordDisplay();
+  renderCandidatePanel();
+}
+function renderWordDisplay(){
   const id=el("iniDisplay");
-  if(state.initials){ id.textContent=state.initials; id.classList.remove("empty"); }
-  else{ id.textContent="초성을 선택하세요"; id.classList.add("empty"); }
+  if(!state.initials){ id.innerHTML="키를 눌러 시작하세요"; id.classList.add("empty"); return; }
+  id.classList.remove("empty");
+  id.innerHTML=[...state.initials].map((c,i)=>{
+    const done=state.spelled[i];
+    return `<span class="wblock${done?" done":""}">${esc(done||c)}</span>`;
+  }).join("");
 }
-function renderHistoryPills(){
-  el("historyPills").innerHTML = state.history.slice(-5).map(h=>`<span class="ctx-pill">${esc(h)}</span>`).join("")
-    || `<span class="ctx-pill" style="opacity:.5;cursor:default">아직 대화 기록 없음</span>`;
+
+/* ==========================================================================
+   단어 후보 — 전부 로컬. 서버도 LLM도 거치지 않으므로 0ms이고, 초성을 누를
+   때마다 무조건 새로 만들어진다 (PDF: "초성 입력마다 새로 생성").
+   출처는 검수된 phrase bank에서 뽑은 시드 + 이 탭에서 확정된 단어 학습치.
+   ========================================================================== */
+function localWords(limit){
+  if(!state.initials) return [];
+  const merged=new Map();
+  for(const [ini,word,freq] of SEED_WORDS){ if(ini.startsWith(state.initials)) merged.set(word,(merged.get(word)||0)+freq); }
+  for(const [word,freq] of Object.entries(state.wordFreq||{})){
+    if(choseongOf(word).startsWith(state.initials)) merged.set(word,(merged.get(word)||0)+freq*5);
+  }
+  // 이미 글자를 확정해 둔 자리는 그 글자와 맞는 단어만 남긴다
+  const pinned=Object.entries(state.spelled);
+  const ok=(w)=>pinned.every(([i,ch])=>w[Number(i)]===ch);
+  return [...merged.entries()].filter(([w])=>ok(w)).sort((a,b)=>b[1]-a[1])
+    .slice(0,limit||5).map(([text,score])=>({kind:"word",text,score}));
 }
+
+/* 점수제: 단어/문장 비율을 로컬 매칭 수로 유동 조절한다.
+   로컬에 딱 맞는 단어가 많으면 단어 슬롯을 채우고(빠르고 정확), 적으면 그만큼
+   문장 슬롯을 늘려 LLM에 맡긴다. 합은 항상 후보키 7개 안. */
+function candidateSplit(){
+  const words=localWords(5);
+  const w=words.length;
+  return {words, wordN:w, sentN:Math.max(2, Math.min(5, CAND_SLOTS-w))};
+}
+function renderCandidatePanel(){
+  const {words,sentN}=candidateSplit();
+  const sents=(state.latest||[]).slice(0,sentN).map(c=>({kind:"sent",text:c.text,candidate_id:c.candidate_id}));
+  slots=[...words,...sents];
+  el("ratioTag").textContent=`단어 ${words.length} · 문장 ${sents.length}`;
+  el("ratioTag").classList.toggle("llm", words.length<2);
+
+  const wordHtml = words.length
+    ? words.map((sl,k)=>`<button type="button" class="cand word" data-k="${k}"><span class="kb-badge">${k+1}</span><span class="tx">${esc(sl.text)}</span></button>`).join("")
+    : `<div class="cand ph" style="grid-column:1/-1"><span class="kb-badge">–</span><span class="tx">${state.initials?"이 초성으로 아는 단어가 없어요 · 문장 후보를 보세요":"초성을 누르면 단어 후보가 바로 나옵니다 (0ms · 로컬)"}</span></div>`;
+  el("candWords").innerHTML=wordHtml;
+
+  const off=words.length;
+  let sentHtml;
+  if(sents.length){
+    sentHtml = sents.map((sl,k)=>`<button type="button" class="cand sent" data-k="${off+k}"><span class="kb-badge">${off+k+1}</span><span class="tx">${renderCandidateUnits(sl.text)}</span></button>`).join("");
+  } else if(loop.waiting){
+    sentHtml = `<div class="cand ph loading"><span class="kb-badge">…</span><span class="tx">문장 후보 생성 중…</span></div>`;
+  } else {
+    sentHtml = `<div class="cand ph"><span class="kb-badge">–</span><span class="tx">${state.initials?"곧 문장 후보가 채워집니다":"문장 후보는 초성을 입력하면 생성됩니다"}</span></div>`;
+  }
+  el("candSents").innerHTML=sentHtml;
+
+  for(const node of [...el("candWords").children, ...el("candSents").children]){
+    if(!node.dataset || node.dataset.k===undefined) continue;
+    const k=Number(node.dataset.k);
+    node.onclick=(ev)=>{
+      if(ev.target.closest(".unit")) return;
+      metrics.actions++;
+      const key=el("candKey"+k);
+      if(key && !key.disabled) ssvepGate(key,()=>chooseSlot(k)); else chooseSlot(k);
+    };
+    [...node.querySelectorAll(".unit")].forEach(span=>{
+      span.onclick=(ev)=>{ ev.stopPropagation(); openFillMask(slots[k].text, parseInt(span.dataset.u,10)); };
+    });
+  }
+  // 후보키에 실제 후보를 실어 준다 — 키만 보고도 무엇이 선택될지 알 수 있게
+  for(let k=0;k<CAND_SLOTS;k++){
+    const key=el("candKey"+k); if(!key) continue;
+    const sl=slots[k];
+    key.disabled=!sl;
+    el("candKeyW"+k).textContent = sl ? (sl.text.length>6 ? sl.text.slice(0,6)+"…" : sl.text) : "";
+  }
+  el("unitHint").hidden = !sents.length;
+}
+
+/* ==========================================================================
+   대화 누적 (PDF: "상대, 사용자 대화 채팅 형식으로 누적").
+   state.history의 원소는 {who:"partner"|"me", text}. 이 로그가 그대로
+   /predict 의 recent_context 로 들어가므로, 화면에 보이는 것과 모델이 보는
+   문맥이 항상 같다.
+   ========================================================================== */
+function renderChat(){
+  const log=el("chatLog");
+  if(!state.history.length){
+    log.innerHTML='<div class="chat-empty">아직 대화가 없습니다 · 상대방의 말을 넣거나 문장을 확정해보세요</div>';
+    return;
+  }
+  log.innerHTML = state.history.slice(-30).map(h=>
+    `<div class="chat-turn ${h.who==="me"?"me":"partner"}"><span class="who">${h.who==="me"?"나":"상대"}</span><span class="tx">${esc(h.text)}</span></div>`
+  ).join("");
+  log.scrollTop=log.scrollHeight;
+}
+function pushTurn(who,text){
+  text=String(text||"").trim(); if(!text) return;
+  state.history.push({who,text});
+  state.history=state.history.slice(-100);
+  renderChat(); saveDraft();
+}
+/* 상대 전용 입력. 환자는 40키만, 상대는 이 줄만 쓴다 (입력키 구분). */
+el("btnPartnerSend").onclick=()=>{
+  const v=el("partnerText").value.trim();
+  if(!v) return;
+  pushTurn("partner",v);
+  el("partnerText").value="";
+  announce("상대방의 말을 대화에 추가했습니다. 다음 후보부터 반영됩니다.");
+  if(state.initials) schedulePrediction();
+};
+el("partnerText").addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); el("btnPartnerSend").click(); } });
+
 function renderCandidatesEmpty(){
-  el("candidates").innerHTML='<div class="empty">초성을 입력하고 후보 생성을 누르세요.<br>키보드 1·2·3 으로도 선택할 수 있어요.</div>';
+  state.latest=[];
   el("mGen").textContent="-"; el("mRank").textContent="-"; el("mLat").textContent="-"; el("mMode").textContent="-";
-  el("nudgeBox").innerHTML=""; el("unitHint").hidden=true;
+  el("nudgeBox").innerHTML=""; 
   el("btnOpenRecovery").style.display="none";
   closeRecoveryPanel();
+  renderCandidatePanel();
 }
 
 /* ---------------- 자주 쓰는 표현 (habitual phrases) ---------------- */
@@ -814,7 +1372,6 @@ function renderHabitual(){
   });
 }
 
-el("btnBack").onclick=()=>{ state.initials=state.initials.slice(0,-1); clearRecoveryState(); renderBuffer(); schedulePrediction(); };
 el("btnClear").onclick=()=>{ state.initials=""; clearRecoveryState(); renderBuffer(); };
 el("btnReset").onclick=async ()=>{
   rememberUndo();
@@ -822,7 +1379,7 @@ el("btnReset").onclick=async ()=>{
   el("context").value="";
   clearRecoveryState();
   if(state.sessionId){ try{ await fetch(`/session/${state.sessionId}/reset`,{method:"POST"}); }catch(e){} }
-  renderBuffer(); renderHistoryPills(); renderCandidatesEmpty();
+  renderBuffer(); renderChat(); renderCandidatesEmpty();
 };
 el("btnSpeak").onclick=()=>{
   if(!state.committed) return;
@@ -830,14 +1387,13 @@ el("btnSpeak").onclick=()=>{
   const u=new SpeechSynthesisUtterance(state.committed); u.lang="ko-KR";
   speechSynthesis.cancel(); speechSynthesis.speak(u);
 };
-el("btnPredict").onclick=()=>predict({});
 el("btnCancel").onclick=()=>{ clearRecoveryState(); announce("조회를 취소했습니다. 입력한 초성은 유지됩니다."); };
 el("btnStopSpeak").onclick=()=>{ if("speechSynthesis" in window) speechSynthesis.cancel(); };
 el("btnUndo").onclick=()=>{
   const snapshot=undoStack.pop(); if(!snapshot) return;
   cancelPending(); state.sessionId=null;
   Object.assign(state,snapshot); state.initials=""; metrics.undos++;
-  clearRecoveryState(); renderBuffer(); renderHistoryPills(); renderHabitual();
+  clearRecoveryState(); renderBuffer(); renderChat(); renderHabitual();
   announce("마지막 문장 확정을 되돌렸습니다.");
 };
 el("btnDirectCommit").onclick=async ()=>{
@@ -849,48 +1405,60 @@ el("context").oninput=()=>{ clearRecoveryState(); saveDraft(); schedulePredictio
 el("autoPredict").onchange=()=>{ saveDraft(); schedulePrediction(); };
 el("candidateCount").onchange=()=>{ clearRecoveryState(); saveDraft(); };
 el("btnForget").onclick=()=>{
-  state.habitual=[]; resetToStart();
+  state.habitual=[]; state.wordFreq={}; resetToStart();
   try{ sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
 };
 el("btnExportMetrics").onclick=()=>{
-  const blob=new Blob([JSON.stringify({...metrics,note:"UI action counts and request latency only; no EEG ITR or clinical validation."},null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url;a.download="bci-interaction-metrics.json";a.click();URL.revokeObjectURL(url);
+  downloadBlob(new Blob([JSON.stringify({...metrics,note:"UI action counts and request latency only; no EEG ITR or clinical validation."},null,2)],{type:"application/json"}),
+    "bci-interaction-metrics.json");
 };
 document.addEventListener("click",e=>{
   if(!el("view-speller").hidden && e.target.closest("button")) metrics.actions++;
 });
 
-function clearRecoveryState(){
+function clearCandidates(){
   cancelPending();
   state.latest=[];
-  state.spelled={}; state.jamoTarget=null; state.jamoMedial=null; state.fillMaskFor=null;
-  el("btnPredict").disabled=false;
+  state.jamoTarget=null; state.jamoMedial=null; state.fillMaskFor=null;
   renderCandidatesEmpty();
+}
+function clearRecoveryState(){
+  state.spelled={};
+  clearCandidates();
 }
 
 /* ---------------- predict (base + recovery variants) ---------------- */
 async function predict(extra){
-  if(!state.initials){ el("candidates").innerHTML='<div class="empty">먼저 초성을 선택해주세요.</div>'; return; }
+  if(!state.initials){ return; }
+  // ④ 후보 갱신 구간 시작 — 여기서 재는 것이 "사용자가 실제로 기다린 LLM 시간"
+  setLoopStep(4);
+  loop.refreshAt=performance.now();
+  loop.waiting=true;
   cancelPending();
+  loop.waiting=true;
   const controller=new AbortController(); pendingController=controller;
   const timeout=setTimeout(()=>controller.abort(),60000);
   const started=performance.now(); metrics.requests++;
   const version=++predictionVersion;
   state.latest=[];
   if(extra?.fill_mask_reference_text===undefined) hideFillmaskBox();
-  el("candidates").innerHTML='<div class="empty">후보 생성 중…</div>';
-  el("nudgeBox").innerHTML=""; el("unitHint").hidden=true; el("btnOpenRecovery").style.display="none";
-  el("btnPredict").disabled=true;
+  el("nudgeBox").innerHTML=""; el("btnOpenRecovery").style.display="none";
   el("btnCancel").hidden=false;
-  el("candidates").setAttribute("aria-busy","true");
+  el("candSents").setAttribute("aria-busy","true");
+  renderCandidatePanel();
   const manualCtx = el("context").value.trim();
+  const {sentN}=candidateSplit();
   const body=Object.assign({
-    input_mode:"initials", bci_input:state.initials, top_k:Number(el("candidateCount").value),
+    input_mode:"initials", bci_input:state.initials,
+    top_k: Math.max(1, Math.min(Number(el("candidateCount").value)||3, sentN)),
     experiment_mode:"hybrid",
     partner: state.partner || "other", situation: state.situation || "general",
     current_sentence: state.committed.slice(-300),
-    recent_context: [...state.history.slice(-5), ...(manualCtx ? [manualCtx] : [])].slice(-5),
+    // 화자를 붙여 누적 대화를 그대로 넘긴다 (PDF: context = 현재 진행중인 대화 전체)
+    recent_context: [
+      ...state.history.slice(-5).map(h=>`${h.who==="me"?"나":"상대"}: ${h.text}`),
+      ...(manualCtx ? [`상황: ${manualCtx}`] : []),
+    ].slice(-5),
   }, extra||{});
   try{
     const sessionId=state.sessionId;
@@ -913,61 +1481,42 @@ async function predict(extra){
       d={...d,candidates:(d.candidates||[]).filter(c=>c.text!==extra.fill_mask_reference_text)};
     }
     state.latest=d.candidates||[];
-    metrics.latencies_ms.push(Math.round(performance.now()-started));
+    const waited=performance.now()-started;
+    metrics.latencies_ms.push(Math.round(waited));
     metrics.latencies_ms=metrics.latencies_ms.slice(-100);
+    llmWaits.push(waited); if(llmWaits.length>100) llmWaits.shift();
+    el("mWait").textContent=Math.round(llmWaits.reduce((a,b)=>a+b,0)/llmWaits.length)+"ms";
+    loop.waiting=false;
     renderCandidates(d);
     if(d.fallback && d.fallback!=="none") announce("현재 대체 후보를 표시하고 있습니다. 원하는 말이 없으면 직접 입력해주세요.");
-    else announce("원하는 표현을 확인하고 확정해주세요.");
+    else announce("원하는 표현을 확인하고 후보키로 선택해주세요.");
     return d;
   }catch(e){
     if(version!==predictionVersion) return;
     metrics.errors++;
-    el("candidates").innerHTML=`<div class="empty">${e.name==="AbortError" ? "응답이 늦어 조회를 중지했습니다." : "후보를 불러오지 못했습니다."}<br>다시 조회하거나 ‘문장을 직접 입력하기’를 이용해주세요.</div>`;
-    announce(e.name==="AbortError" ? "조회 시간이 초과됐습니다. 입력은 유지됩니다." : "서버 연결을 확인해주세요. 직접 입력과 문장 말하기는 계속 사용할 수 있습니다.");
+    loop.waiting=false;
+    renderCandidatePanel();
+    announce(e.name==="AbortError" ? "조회 시간이 초과됐습니다. 입력과 단어 후보는 그대로 쓸 수 있습니다." : "서버 연결을 확인해주세요. 단어 후보와 직접 입력은 계속 사용할 수 있습니다.");
   }finally{
     clearTimeout(timeout);
     if(version===predictionVersion){
-      pendingController=null; el("btnPredict").disabled=false; el("btnCancel").hidden=true;
-      el("candidates").setAttribute("aria-busy","false");
+      pendingController=null; el("btnCancel").hidden=true;
+      el("candSents").setAttribute("aria-busy","false");
+      loop.waiting=false;
+      loopReady();
     }
   }
 }
 
 function renderCandidates(d){
-  const list=state.latest.slice(0,5);
-  if(!list.length){
-    el("candidates").innerHTML='<div class="empty">유효한 후보가 없습니다. 아래에서 직접 입력해보세요.</div>';
-  }else{
-    el("candidates").innerHTML = list.map((c,i)=>`
-      <div class="candidate" data-i="${i}">
-        <span class="key-hint">${i+1}</span>
-        <div class="rank">${i+1}</div>
-        <div class="ct">${renderCandidateUnits(c.text)}</div>
-        <div class="meta">후보 ${i+1}</div>
-        <button type="button" class="commit-candidate">문장 확정 ${i+1}</button>
-      </div>`).join("");
-    [...el("candidates").children].forEach(node=>{
-      const i=parseInt(node.dataset.i,10);
-      node.querySelector(".commit-candidate").onclick=()=>commit(i);
-      [...node.querySelectorAll(".unit")].forEach(span=>{
-        span.onclick=(ev)=>{
-          ev.stopPropagation();
-          openFillMask(list[i].text, parseInt(span.dataset.u,10));
-        };
-      });
-    });
-    el("unitHint").hidden=false;
-  }
-
+  renderCandidatePanel();
   el("mGen").textContent=d.generator_model||"-";
   el("mRank").textContent=d.ranker_model||"-";
   el("mLat").textContent=((d.latency&&d.latency.total_ms)??"-")+" ms";
   el("mMode").textContent = d.recovery_mode && d.recovery_mode!=="none" ? d.recovery_mode : (d.hybrid_action||"-");
-
   el("btnOpenRecovery").style.display="inline-block";
-
   if(d.hybrid_action==="need_more_input"){
-    el("nudgeBox").innerHTML = `<div class="nudge">원하는 말이 없나요? 글자를 완성해 다시 찾거나 문장을 직접 입력할 수 있어요.</div>`;
+    el("nudgeBox").innerHTML = `<span class="ratio-tag llm">초성이 더 필요해요</span>`;
     openRecoveryPanel();
   }
 }
@@ -1081,7 +1630,10 @@ async function openFillMask(referenceText, targetIndex){
   }
   el("fillmaskAlts").innerHTML = alts.map((c,i)=>`<button type="button" class="alt" data-i="${i}"><span>${esc(c.text)}</span><span>문장 확정</span></button>`).join("");
   [...el("fillmaskAlts").children].forEach(node=>{
-    node.onclick=()=>commit(parseInt(node.dataset.i,10));
+    node.onclick=()=>{
+      const c=alts[parseInt(node.dataset.i,10)]; if(!c) return;
+      commitValue(c.text,c.candidate_id,{key:"fillmask",type:"alt",picked:"sent",text:c.text});
+    };
   });
 }
 function hideFillmaskBox(){
@@ -1091,17 +1643,14 @@ function hideFillmaskBox(){
 }
 
 /* ---------------- commit ---------------- */
-async function commitText(text){
-  return commitValue(String(text||"").trim());
+async function commitText(text,meta){
+  return commitValue(String(text||"").trim(),null,meta);
 }
-
-async function commit(i){
-  const c=state.latest[i]; if(!c) return;
-  return commitValue(c.text,c.candidate_id);
-}
-async function commitValue(text,candidateId){
-  if(!text || commitBusy) return;
+async function commitValue(text,candidateId,meta){
+  if(!text || commitBusy){ if(meta) loopFinish(Object.assign({},meta,{rejected:1})); return; }
   commitBusy=true;
+  setLoopStep(4);
+  loop.refreshAt=performance.now();
   cancelPending();
   const version=predictionVersion;
   try{
@@ -1116,7 +1665,7 @@ async function commitValue(text,candidateId){
         if(version!==predictionVersion) return;
         if(r.ok) updated=await r.json();
         else if(r.status===404) state.sessionId=null;
-        else{ announce("선택 정보를 확인할 수 없습니다. 후보를 다시 조회해주세요."); return; }
+        else{ announce("선택 정보를 확인할 수 없습니다. 후보를 다시 조회해주세요."); loopReady(); return; }
       }catch(e){
         if(version!==predictionVersion) return;
         state.sessionId=null;
@@ -1125,26 +1674,89 @@ async function commitValue(text,candidateId){
     if(version!==predictionVersion) return;
     rememberUndo();
     state.committed=updated ? updated.sentence : (state.committed ? state.committed+" " : "")+text;
-    state.history=updated ? updated.history||[] : [...state.history,text];
+    // 서버 세션의 history는 환자 발화만 담고 상대 발화는 모른다. 화면의 대화
+    // 로그가 문맥의 단일 출처이므로 여기서만 쌓는다.
+    state.history.push({who:"me",text});
     state.history=state.history.slice(-100);
     recordHabitual(text); metrics.commits++;
+    for(const w of text.split(/\s+/).filter(Boolean)) recordWordFreq(w);
     state.initials=""; state.latest=[];
-    clearRecoveryState(); renderBuffer(); renderHistoryPills(); refreshHabitual();
+    clearRecoveryState(); renderBuffer(); renderChat(); refreshHabitual();
     announce("문장을 추가했습니다. 잘못 선택했다면 ‘마지막 문장 취소’를 눌러주세요.");
   }finally{
     commitBusy=false;
+    if(meta) loopFinish(Object.assign({committed:text},meta)); else loopReady(true);
   }
 }
 
+/* ==========================================================================
+   Pseudo-online 시행 기록 내보내기.
+   엑셀에서 바로 열리도록 UTF-8 BOM을 붙인 CSV로 저장한다 (한글 깨짐 방지).
+   ========================================================================== */
+function downloadBlob(blob, filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=filename; a.style.display="none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function exportTrialsCSV(){
+  if(!trials.length){ announce("아직 기록된 시행이 없습니다."); return; }
+  const cols=["t","subject","exp_mode","key","type","picked","text","committed","rejected",
+              "decision_ms","stimulus_ms","decode_ms","refresh_ms","total_ms"];
+  const q=(v)=>{ const x=v===undefined||v===null?"":String(v); return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x; };
+  const head=["participant_sentence_so_far"].concat(cols).join(",");
+  const rows=trials.map(r=>[state.committed].concat(cols.map(c=>r[c])).map(q).join(","));
+  const sum=["","","","","","","","","","","","","",""];
+  const total=trials.reduce((a,r)=>a+(r.total_ms||0),0);
+  const body="﻿"+[head,...rows,
+    "", "# summary",
+    `# selections,${trials.length}`,
+    `# total_input_time_s,${(total/1000).toFixed(2)}`,
+    `# mean_s_per_selection,${(total/trials.length/1000).toFixed(2)}`,
+    `# misdecode_injected,${trials.filter(r=>r.misdecode).length}`,
+    `# reference,ChatBCI 24.56 s/selection; MindChat 5.5-6.5 s/selection`,
+  ].join("\n");
+  const who=(el("expSubject").value||"S").trim().replace(/[^\w.-]/g,"_");
+  downloadBlob(new Blob([body],{type:"text/csv;charset=utf-8"}),
+    `bci-trials-${who}-${new Date().toISOString().slice(0,19).replace(/[:T]/g,"")}.csv`);
+  announce(`${trials.length}개 시행을 CSV로 저장했습니다.`);
+}
+el("btnExportTrials").onclick=exportTrialsCSV;
+el("btnResetTrials").onclick=()=>{
+  trials=[]; selTotals=[]; llmWaits=[];
+  el("mSel").textContent="–"; el("mAvg").textContent="–"; el("mCount").textContent="0"; el("mWait").textContent="–";
+  announce("시행 기록을 비웠습니다.");
+};
+el("expOn").onchange=()=>{
+  el("expPanel").classList.toggle("exp-on", expEnabled());
+  el("expFlag").innerHTML = expEnabled() ? '<span class="mis-flag">실험 모드</span>' : "";
+  announce(expEnabled() ? "실험 모드: 키를 누르면 자극 창이 유지되고 설정한 정확도로 오판독이 주입됩니다." : "실험 모드를 껐습니다.");
+};
+
 document.addEventListener("keydown",(e)=>{
-  if(el("guideDialog").open) return;
+  if(el("guideDialog").open){
+    if(e.key==="Tab"){
+      const nodes=[...el("guideDialog").querySelectorAll('button,a[href],summary,input,select,textarea')].filter(n=>!n.disabled&&n.getClientRects().length);
+      const first=nodes[0],last=nodes[nodes.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    }
+    return;
+  }
   if(el("view-speller").hidden) return;
   if(e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
   if(["TEXTAREA","INPUT","SELECT"].includes(e.target.tagName)) return;
   if(e.key==="Escape"){ el("btnCancel").click(); return; }
-  if(["1","2","3","4","5"].includes(e.key)){
+  if(["1","2","3","4","5","6","7"].includes(e.key)){
     const idx=parseInt(e.key,10)-1;
-    if(state.latest[idx]){ e.preventDefault(); metrics.actions++; commit(idx); }
+    if(slots[idx]){
+      e.preventDefault(); metrics.actions++;
+      const key=el("candKey"+idx);
+      if(key && !key.disabled) ssvepGate(key,()=>chooseSlot(idx)); else chooseSlot(idx);
+    }
   }
 });
 
@@ -1175,14 +1787,23 @@ function restoreDraft(){
     state.partner=draft.partner;state.situation=draft.situation;state.sessionId=null;
     state.committed=String(draft.committed||"").slice(-30000);
     state.initials=[...String(draft.initials||"")].filter(c=>CHO.includes(c)).slice(0,20).join("");
-    state.history=Array.isArray(draft.history) ? draft.history.filter(x=>typeof x==="string").slice(-100) : [];
+    // v3 이하는 history가 문자열 배열(환자 발화만)이었다 — 화자를 붙여 옮긴다.
+    state.history=Array.isArray(draft.history)
+      ? draft.history.map(h=>typeof h==="string" ? {who:"me",text:h}
+          : (h && typeof h.text==="string" ? {who:h.who==="partner"?"partner":"me",text:h.text} : null))
+        .filter(h=>h && h.text.length<=300).slice(-100)
+      : [];
     state.habitual=Array.isArray(draft.habitual) ? draft.habitual.filter(p=>typeof p.text==="string" && p.text.length<=300 && Number.isFinite(p.count) && p.count>0).slice(0,100) : [];
+    state.wordFreq = (draft.wordFreq && typeof draft.wordFreq==="object" && !Array.isArray(draft.wordFreq)) ? draft.wordFreq : {};
     el("context").value=String(draft.context||"").slice(0,300);
-    el("autoPredict").checked=draft.autoPredict===true;
+    el("autoPredict").checked=draft.autoPredict!==false;
+    if(draft.expStim) el("expStim").value=draft.expStim;
+    if(draft.expAcc) el("expAcc").value=draft.expAcc;
+    if(draft.expSubject) el("expSubject").value=draft.expSubject;
     el("candidateCount").value=draft.candidateCount==="5" ? "5" : "3";
     el("partnerBadge").textContent=partnerLabel(state.partner);
     el("situationBadge").textContent=situationLabel(state.situation);
-    renderKeyboard();renderBuffer();renderHistoryPills();renderHabitual();renderCandidatesEmpty();showView("speller");
+    renderKeyboard();renderBuffer();renderChat();renderHabitual();renderCandidatesEmpty();showView("speller");
     announce("이 탭의 대화를 복원했습니다. 후보는 새로 조회해주세요.");
   }catch(e){}
 }

@@ -249,6 +249,8 @@ class BCILanguagePipeline:
         context = build_context(
             request
         )
+        if request.candidate_unit == "word":
+            context += "\n출력 단위: 공백 없는 한국어 단어 또는 어절 하나. 문장 대신 단어 후보를 제시한다."
 
         recovery_mode = _recovery_mode(request)
 
@@ -303,7 +305,7 @@ class BCILanguagePipeline:
                 try:
                     broad = self.model_client.generate_candidates(
                         request.bci_input,
-                        max(settings.generation_count * 2, _recovery_count()),
+                        max(5, request.top_k + 2) if request.latency_strategy == "fast" else max(settings.generation_count * 2, _recovery_count()),
                     )
                     usage = _usage_add(usage, broad.usage)
                     raw_texts = broad.candidates
@@ -313,7 +315,7 @@ class BCILanguagePipeline:
                 try:
                     recovery_result = recovery_fn(
                         request.bci_input,
-                        _recovery_count(),
+                        min(_recovery_count(), max(5, request.top_k + 2)) if request.latency_strategy == "fast" else _recovery_count(),
                         spelled=request.spelled_syllables,
                         reference_text=request.fill_mask_reference_text,
                         target_index=request.fill_mask_target_index,
@@ -400,10 +402,11 @@ class BCILanguagePipeline:
 
                 try:
                     contextual = getattr(self.model_client, "generate_candidates_with_context", None)
-                    if contextual and os.getenv("ENABLE_CONTEXTUAL_GENERATION", "false").lower() == "true":
-                        gen_result = contextual(initials, settings.generation_count, context)
+                    count = min(settings.generation_count, max(5, request.top_k + 2)) if request.latency_strategy == "fast" else settings.generation_count
+                    if contextual and (request.latency_strategy == "fast" or request.candidate_unit == "word" or os.getenv("ENABLE_CONTEXTUAL_GENERATION", "false").lower() == "true"):
+                        gen_result = contextual(initials, count, context)
                     else:
-                        gen_result = self.model_client.generate_candidates(initials, settings.generation_count)
+                        gen_result = self.model_client.generate_candidates(initials, count)
 
                     usage = _usage_add(
                         usage,
@@ -476,7 +479,7 @@ class BCILanguagePipeline:
                 probe_intent_max = None
 
                 if (
-                    _ensemble_mode() == "context_quality"
+                    request.latency_strategy != "fast" and _ensemble_mode() == "context_quality"
                     and base_valid
                     and settings.use_llm_ranker
                 ):
@@ -562,6 +565,7 @@ class BCILanguagePipeline:
 
                 if (
                     base_success
+                    and request.latency_strategy != "fast"
                     and _supports_diversity_generator(
                         self.model_client
                     )
@@ -746,9 +750,8 @@ class BCILanguagePipeline:
                     candidate.text
                 ] = candidate
 
-        candidates = list(
-            best_by_text.values()
-        )
+        candidates = [c for c in best_by_text.values()
+                      if request.candidate_unit != "word" or not any(ch.isspace() for ch in c.text.strip())]
 
         candidates.sort(
             key=lambda candidate: (
@@ -842,7 +845,7 @@ class BCILanguagePipeline:
 
         rank_start = time.perf_counter()
 
-        if settings.use_llm_ranker:
+        if settings.use_llm_ranker and request.latency_strategy != "fast":
 
             try:
 

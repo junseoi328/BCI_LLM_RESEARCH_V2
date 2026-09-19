@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>이심전심 · 입력 실험실</title>
+    <style>
+      :root {
+        --ink: #183245;
+        --muted: #526879;
+        --blue: #2458b8;
+        --green: #216548;
+        --line: #c6d4df;
+        --bg: #f3f6f8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.65 "Noto Sans KR",
+          "Malgun Gothic",
+          sans-serif;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+      button,
+      a,
+      select {
+        touch-action: manipulation;
+      }
+      button,
+      select {
+        min-height: 48px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 15px;
+        background: white;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      button[aria-pressed="true"],
+      .primary {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: white;
+      }
+      :focus-visible {
+        outline: 3px solid #bb6500;
+        outline-offset: 3px;
+      }
+      a {
+        color: var(--blue);
+      }
+      header {
+        background: white;
+        border-bottom: 1px solid var(--line);
+        padding: 18px max(20px, calc((100vw - 1280px) / 2));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-size: 21px;
+        font-weight: 800;
+      }
+      .brand small {
+        font-size: 12px;
+        color: var(--muted);
+        display: block;
+        font-weight: 400;
+      }
+      main {
+        max-width: 1280px;
+        margin: auto;
+        padding: 28px 20px;
+      }
+      .intro {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      h1 {
+        font-size: 30px;
+        margin: 4px 0;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 0 0 16px;
+      }
+      p {
+        margin: 8px 0;
+      }
+      .muted,
+      small {
+        color: var(--muted);
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        color: var(--green);
+        font-weight: 800;
+      }
+      .card {
+        background: white;
+        border: 1px solid #d7e1e7;
+        border-radius: 20px;
+        padding: 24px;
+        margin-top: 20px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .row label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .sentence {
+        font-size: 28px;
+        min-height: 88px;
+        background: #f1f7f3;
+        border: 1px solid #c5dacb;
+        padding: 20px;
+        border-radius: 14px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        margin: 14px 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.12fr 1fr;
+        gap: 20px;
+      }
+      .grid .card {
+        min-width: 0;
+      }
+      textarea,
+      input[type="text"] {
+        width: 100%;
+        border: 1px solid #9fb6c8;
+        border-radius: 12px;
+        padding: 14px;
+        color: var(--ink);
+        background: #fff;
+      }
+      textarea {
+        resize: vertical;
+        font-size: 24px;
+      }
+      .keyboard {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        gap: 8px;
+        margin: 16px 0;
+      }
+      .key {
+        min-width: 0;
+        font-size: 21px;
+        padding: 10px 2px;
+        min-height: 55px;
+      }
+      .key.control {
+        font-size: 13px;
+        background: #eef3fa;
+      }
+      .candidate {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 12px 0;
+      }
+      .candidate strong {
+        font-size: 24px;
+        display: block;
+        overflow-wrap: anywhere;
+      }
+      .candidate button {
+        width: 100%;
+        margin-top: 10px;
+      }
+      .source {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      #status {
+        min-height: 30px;
+        color: var(--green);
+        margin-top: 12px;
+      }
+      #loop {
+        background: #eaf0f9;
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-top: 16px;
+      }
+      .suggestions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .suggestions button {
+        background: #f0f6f2;
+        color: var(--green);
+      }
+      summary {
+        min-height: 48px;
+        padding: 12px 0;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .stats {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 14px 0;
+      }
+      .stats b {
+        font-size: 22px;
+      }
+      .stats small {
+        display: block;
+      }
+      dialog {
+        width: min(820px, calc(100% - 24px));
+        max-height: 88dvh;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 24px;
+        color: var(--ink);
+      }
+      dialog::backdrop {
+        background: #172b3a88;
+      }
+      dialog h3 {
+        margin-top: 28px;
+      }
+      dialog li {
+        margin: 8px 0;
+      }
+      footer {
+        padding: 28px 20px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .large {
+        font-size: 19px;
+      }
+      .large .key {
+        font-size: 25px;
+      }
+      .large .candidate strong,
+      .large textarea {
+        font-size: 30px;
+      }
+      @media (max-width: 850px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .intro {
+          display: block;
+        }
+        .keyboard {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+        .card {
+          padding: 18px;
+        }
+        main {
+          padding: 20px 12px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        심 · 이심전심<small>입력 전략 실험실 · EEG 연결 전 UX 평가</small>
+      </div>
+      <nav class="row">
+        <a href="/speller">기존 대화 화면</a
+        ><button id="large" aria-pressed="false">큰 글씨</button
+        ><button id="help">사용 설명서</button>
+      </nav>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <span class="eyebrow">LESS EFFORT, YOUR WORDS</span>
+          <h1>선택은 줄이고, 내 뜻은 그대로.</h1>
+          <p class="muted">
+            한 문장을 시작하고, 단어와 표현을 고르며 완성하세요.
+          </p>
+        </div>
+        <span class="source"
+          >클릭·키보드 선택 모의실험 / 실제 EEG 판별 없음</span
+        >
+      </div>
+      <section class="card">
+        <div class="row">
+          <h2 style="margin: 0">내가 전할 문장</h2>
+          <button id="start" class="primary">새 문장 시작</button
+          ><button id="finish">문장 종료</button
+          ><button id="undo">마지막 선택 취소</button>
+        </div>
+        <div id="sentence" class="sentence" aria-live="polite">
+          새 문장을 시작해주세요.
+        </div>
+        <div class="row">
+          <button id="speak">문장 말하기</button
+          ><button id="stop">말하기 중지</button>
+        </div>
+        <div id="loop" role="status">
+          준비 → 문장 시작 → 키 후보 결정 → 선택(SSVEP 모의) → 후보 조회 → 반복
+          → 종료
+        </div>
+      </section>
+      <div class="grid">
+        <section class="card">
+          <h2>01 · 입력과 후보 단위</h2>
+          <div class="row">
+            <button id="sentenceMode" aria-pressed="true">문장 섹션</button
+            ><button id="wordMode" aria-pressed="false">단어 섹션</button
+            ><span id="memoryCount" class="source"></span>
+          </div>
+          <p class="muted">
+            40키: 자음 19 + 모음 14 + 기능 7. PC 입력 칸은 한글·영문·숫자·기호를
+            모두 지원합니다.
+          </p>
+          <label for="entry">초성 또는 직접 쓴 글자</label
+          ><textarea
+            id="entry"
+            rows="2"
+            maxlength="300"
+            placeholder="예: ㄷㅇㅈ 또는 도와줘"
+          ></textarea>
+          <div class="row">
+            <button id="literal">입력한 그대로 추가</button
+            ><label><input id="auto" type="checkbox" />멈추면 자동 조회</label>
+          </div>
+          <div id="keyboard" class="keyboard" aria-label="40키 입력판"></div>
+          <div class="row">
+            <button id="lookup" class="primary">후보 조회</button
+            ><button id="cancel">조회 취소</button>
+          </div>
+          <div id="status" role="status" aria-live="polite"></div>
+          <details>
+            <summary>문맥 · 비교 조건</summary>
+            <label for="context">상대방의 말 / 현재 상황</label
+            ><input
+              type="text"
+              id="context"
+              maxlength="300"
+              placeholder="예: 무엇을 도와줄까?"
+            /><label for="strategy">입력 전략 (문장 시작 전 선택)</label
+            ><select id="strategy">
+              <option value="initials">초성열 입력</option>
+              <option value="jamo">자모 조합 입력</option></select
+            ><label for="condition">실험 조건 (문장 시작 전에 선택)</label
+            ><select id="condition">
+              <option value="fast">빠른 LLM · 생성 + 로컬 정렬</option>
+              <option value="balanced">기존 LLM · 생성 + 모델 정렬</option>
+              <option value="local">개인 표현만 · 서버 조회 없음</option>
+              <option value="direct">직접 입력만 · 예측 없음</option>
+            </select>
+            <p class="source">
+              동일 과제를 조건별로 수행해 비교하세요. 조건 순서는 번갈아
+              배치하는 것이 좋습니다.
+            </p>
+          </details>
+        </section>
+        <aside class="card">
+          <h2>02 · 후보를 확인하고 선택</h2>
+          <p class="muted">
+            선택한 표현은 작성 중인 문장에 추가됩니다. 단어를 추가한 뒤에도 입력
+            루프는 계속됩니다.
+          </p>
+          <div id="candidates" aria-live="polite" aria-busy="false"></div>
+          <h3>연관 표현 · 자동완성</h3>
+          <p class="source">
+            확정한 개인 표현과 예시 사전에서 찾습니다. LLM 없이 즉시 표시됩니다.
+          </p>
+          <div id="related" class="suggestions"></div>
+          <details>
+            <summary>단어·문장별 기억 관리</summary>
+            <p>
+              완료한 문장과 실제 선택한 단어를 각각 기억합니다. 현재 탭에만
+              저장하며 모델 가중치를 학습하지 않습니다.
+            </p>
+            <button id="forget">개인 표현 기억 삭제</button>
+          </details>
+        </aside>
+      </div>
+      <section class="card">
+        <h2>03 · EEG 연결 전 비교 평가</h2>
+        <label for="target">따라 쓸 목표 문장 (선택 · 서버에 보내지 않음)</label
+        ><input
+          id="target"
+          type="text"
+          maxlength="300"
+          placeholder="예: 물 한 잔 주세요."
+        />
+        <div class="stats">
+          <div><b id="time">—</b><small>문장 소요시간</small></div>
+          <div><b id="actions">0</b><small>입력·선택 동작</small></div>
+          <div>
+            <b id="latency">—</b><small>첫 후보 표시 / 서버 응답</small>
+          </div>
+          <div><b id="accuracy">—</b><small>목표 대비 문자 오류율</small></div>
+        </div>
+        <label
+          >느낀 부담
+          <select id="burden">
+            <option value="">선택 안 함</option>
+            <option value="1">1 매우 낮음</option>
+            <option value="2">2 낮음</option>
+            <option value="3">3 보통</option>
+            <option value="4">4 높음</option>
+            <option value="5">5 매우 높음</option>
+          </select></label
+        >
+        <div class="row">
+          <button id="export">평가 결과 JSON 내려받기</button
+          ><span id="trialCount" class="source">완료한 문장 0개</span>
+        </div>
+        <p class="source">
+          실제 뇌파 정확도·ITR이 아닙니다. 클릭 선택과 IME 입력 이벤트는 EEG
+          선택 횟수와 같지 않습니다. 문장 원문·목표 원문은 내보내지 않습니다.
+        </p>
+      </section>
+    </main>
+    <footer>
+      연구 제안서의 초성/자모 비교와 사용자 선택 루프를 위한 UX/UI 초안 · 사용자
+      평가 전 “최적” 성능을 가정하지 않습니다.
+    </footer>
+    <dialog id="guide" aria-labelledby="guideTitle">
+      <div class="row">
+        <h2 id="guideTitle">입력 실험실 사용 설명서</h2>
+        <button id="closeHelp" autofocus>닫기</button>
+      </div>
+      <h3>한 문장 단위의 입력 루프</h3>
+      <ol>
+        <li>비교 조건과 목표 문장을 설정하고 ‘새 문장 시작’을 누릅니다.</li>
+        <li>
+          단어 또는 문장 섹션을 고릅니다. 40키 또는 컴퓨터 키보드로 입력합니다.
+          자음 뒤 모음은 한글 음절로 조합됩니다. 정확한 받침·복합 자모는 PC 한글
+          입력기로도 입력할 수 있습니다.
+        </li>
+        <li>
+          ‘후보 조회’로 초성과 문맥에 맞는 표현을 찾고 원하는 후보를 선택합니다.
+          이 클릭을 향후 SSVEP 판별 결과로 대체할 수 있는 단계로 분리했습니다.
+          실제 주파수 자극은 없습니다.
+        </li>
+        <li>
+          후보가 없으면 입력을 고쳐 다시 조회하거나 ‘입력한 그대로 추가’를
+          누릅니다. 입력·선택·조회는 문장 종료까지 반복합니다.
+        </li>
+        <li>
+          ‘문장 종료’로 평가를 저장합니다. 다시 시작하기 전에는 완료한 문장이
+          유지됩니다.
+        </li>
+      </ol>
+      <h3>빠른 후보와 개인화</h3>
+      <p>
+        단어는 선택한 단어만, 문장은 종료한 전체 문장만 별도 빈도로 기억합니다.
+        단어 정의는 띄어쓰기 없는 어절입니다. 자동완성은 초성/글자 접두어 일치,
+        연관 표현은 공통 단어 기반 개인 사전 검색으로, 의미 이해 모델은
+        아닙니다. 예시 사전과 개인 표현은 출처를 표시합니다.
+      </p>
+      <p>
+        빠른 LLM 조건은 생성 후보 수를 줄이고 별도 LLM 정렬과 추가 다양성 생성을
+        생략합니다. 같은 입력·문맥·단위·조건은 이 탭에서 60초 동안 재사용합니다.
+        개인 후보가 있으면 먼저 보여주고 서버 결과가 오면 별도로 덧붙입니다.
+        입력이 바뀌거나 조회를 취소하면 늦은 결과를 폐기합니다.
+      </p>
+      <h3>실험과 한계</h3>
+      <p>
+        직접 입력 / 개인 표현 / 빠른 LLM / 기존 LLM을 동일 목표로 비교하세요.
+        문장 시간은 실제 경과시간(대기 포함), 입력 동작은 화면 키·PC 입력
+        이벤트·후보 선택·수정, 문자 오류율은 목표와 완성 문장의 편집거리/목표
+        문자 수입니다. 목표·조건은 시행 중 고정됩니다. 새로고침은 진행 중 시행을
+        중단합니다. 원문은 평가 JSON에 포함하지 않습니다.
+      </p>
+      <p>
+        LLM을 쓰는 이유는 사용자가 모든 글자를 입력할 부담을 줄이기
+        위해서입니다. 생성 대기와 오추천 수정까지 포함한 총시간이 더 길다면 이
+        조건에서는 이득이 없는 것입니다. 실제 ALS 사용자 성능·피로·EEG 성능은
+        별도 평가가 필요합니다.
+      </p>
+      <h3>연구 근거</h3>
+      <ul>
+        <li>
+          <a
+            href="https://www.nature.com/articles/s41467-024-53873-3"
+            target="_blank"
+            rel="noopener"
+            >SpeakFaster (2024)</a
+          >: 약어 입력과 사용자 수정 흐름. 본 화면은 한국어에 맞춘 응용이며
+          논문의 성능 수치를 재현한 것이 아닙니다.
+        </li>
+        <li>
+          <a
+            href="https://www.nature.com/articles/s41598-025-25660-7"
+            target="_blank"
+            rel="noopener"
+            >ChatBCI (2026)</a
+          >: 문맥 기반 단어 예측을 통한 입력 지원.
+        </li>
+        <li>
+          <a
+            href="https://arxiv.org/abs/2507.21435"
+            target="_blank"
+            rel="noopener"
+            >MindChat (2025, 사전논문)</a
+          >: 실제 상황 문맥을 고려한 BCI spelling. 본 실험실에서는 EEG 해독을
+          수행하지 않습니다.
+        </li>
+      </ul>
+      <h3>개인정보</h3>
+      <p>
+        후보 조회에는 입력 초성과 완성한 일부 글자, 작성 중 문장, 직접 작성한
+        상황이 서버·언어 모델로 전송됩니다. 목표 문장은 보내지 않습니다.
+        단어·문장 기억은 현재 탭의 세션 저장소에 저장됩니다. 공용 기기에서는
+        ‘개인 표현 기억 삭제’를 사용하세요. 평가 결과는 다운로드 전까지
+        메모리에만 있습니다.
+      </p>
+    </dialog>
+    <script>
+      "use strict";
+      const $ = (id) => document.getElementById(id),
+        CHO = [..."ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"],
+        V = [..."ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅛㅜㅠㅡㅣ"],
+        J = [..."ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ"],
+        T = ["", ..."ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ"];
+      const demo = {
+        word: ["물", "식사", "도움", "자세", "휴식", "화장실", "컴퓨터"],
+        sentence: [
+          "물 주세요",
+          "자세를 바꿔 주세요",
+          "잠깐 쉬고 싶어요",
+          "도와줘",
+          "고마워요",
+        ],
+      };
+      let mode = "sentence",
+        active = false,
+        sentence = "",
+        selection = [],
+        undos = [],
+        memory = { word: [], sentence: [] },
+        trial = null,
+        trials = [],
+        controller = null,
+        version = 0,
+        timer = null,
+        shown = [],
+        cache = new Map();
+      try {
+        const m = JSON.parse(
+          sessionStorage.getItem("bci_research_memory") || "null",
+        );
+        if (m)
+          for (const k of ["word", "sentence"])
+            memory[k] = (Array.isArray(m[k]) ? m[k] : [])
+              .filter(
+                (x) =>
+                  typeof x.text === "string" &&
+                  x.text.length <= 300 &&
+                  Number.isFinite(x.count) &&
+                  x.count > 0,
+              )
+              .slice(0, 200);
+      } catch {}
+      function initials(s) {
+        return [...s]
+          .map((c) => {
+            const n = c.charCodeAt(0) - 0xac00;
+            return n >= 0 && n < 11172
+              ? CHO[Math.floor(n / 588)]
+              : CHO.includes(c)
+                ? c
+                : "";
+          })
+          .join("");
+      }
+      function cancel() {
+        clearTimeout(timer);
+        if (controller) controller.abort();
+        controller = null;
+        version++;
+        $("candidates").setAttribute("aria-busy", "false");
+      }
+      function status(s) {
+        $("status").textContent = s;
+      }
+      function phase(s) {
+        $("loop").textContent = active
+          ? "문장 진행 중 → " + s + " → 입력 루프 계속"
+          : s;
+      }
+      function count(kind) {
+        if (active) {
+          trial.actions++;
+          trial[kind] = (trial[kind] || 0) + 1;
+          $("actions").textContent = trial.actions;
+        }
+      }
+      function saveMemory() {
+        try {
+          sessionStorage.setItem("bci_research_memory", JSON.stringify(memory));
+        } catch {
+          status("저장 공간이 부족해 이번 개인 표현은 메모리에만 유지됩니다.");
+        }
+      }
+      function learn(k, text) {
+        if (!text.trim()) return;
+        let item = memory[k].find((x) => x.text === text);
+        if (item) item.count++;
+        else memory[k].push({ text, count: 1 });
+        memory[k].sort((a, b) => b.count - a.count);
+        memory[k] = memory[k].slice(0, 200);
+      }
+      function render() {
+        $("sentence").textContent =
+          sentence ||
+          (active ? "아직 추가한 표현이 없어요." : "새 문장을 시작해주세요.");
+        $("memoryCount").textContent =
+          "기억한 " +
+          (mode === "word" ? "단어 " : "문장 ") +
+          memory[mode].length +
+          "개";
+        $("start").disabled = active;
+        $("finish").disabled = !active;
+        $("condition").disabled = active;
+        $("strategy").disabled = active;
+        $("target").disabled = active;
+        $("undo").disabled = !active || !undos.length;
+        $("lookup").disabled = !active || $("condition").value === "direct";
+        $("literal").disabled = !active;
+        $("entry").disabled = !active;
+        document
+          .querySelectorAll(".key")
+          .forEach((b) => (b.disabled = !active));
+        $("sentenceMode").setAttribute(
+          "aria-pressed",
+          String(mode === "sentence"),
+        );
+        $("wordMode").setAttribute("aria-pressed", String(mode === "word"));
+      }
+      function candidates(items) {
+        shown = items;
+        $("candidates").replaceChildren();
+        if (!items.length) {
+          const p = document.createElement("p");
+          p.className = "muted";
+          p.textContent = "입력을 추가하거나 후보를 조회해주세요.";
+          $("candidates").append(p);
+          return;
+        }
+        for (const item of items) {
+          const box = document.createElement("div");
+          box.className = "candidate";
+          const t = document.createElement("strong");
+          t.textContent = item.text;
+          const s = document.createElement("span");
+          s.className = "source";
+          s.textContent = item.source;
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = mode === "word" ? "이 단어 추가" : "이 표현 추가";
+          b.disabled = !active;
+          b.onclick = () => append(item.text);
+          box.append(t, s, b);
+          $("candidates").append(box);
+        }
+      }
+      function localMatches() {
+        const q = $("entry").value.trim(),
+          i = initials(q);
+        if (!q) return [];
+        const all = [
+          ...memory[mode].map((x) => ({ ...x, source: "개인 기억" })),
+          ...demo[mode].map((text) => ({
+            text,
+            count: 0,
+            source: "예시 사전",
+          })),
+        ];
+        const seen = new Set();
+        return all
+          .filter((x) => {
+            if (seen.has(x.text)) return false;
+            seen.add(x.text);
+            return (
+              x.text.startsWith(q) || (i && initials(x.text).startsWith(i))
+            );
+          })
+          .slice(0, 5);
+      }
+      function related() {
+        $("related").replaceChildren();
+        if (!active || $("condition").value === "direct") return;
+        const q = $("entry").value.trim(),
+          words = sentence.split(/\s+/).filter(Boolean);
+        const pool = localMatches();
+        if (!q)
+          pool.push(
+            ...memory[mode]
+              .filter((x) => words.some((w) => x.text.includes(w)))
+              .slice(0, 4)
+              .map((x) => ({ ...x, source: "개인 연관 표현" })),
+          );
+        for (const item of pool.slice(0, 5)) {
+          const b = document.createElement("button");
+          b.textContent = item.text;
+          b.title = item.source;
+          b.onclick = () => append(item.text);
+          $("related").append(b);
+        }
+      }
+      function changed() {
+        cancel();
+        candidates([]);
+        related();
+        phase("키 후보 결정 / 클릭·PC 선택");
+        if (
+          active &&
+          $("auto").checked &&
+          initials($("entry").value).length >= 2 &&
+          $("condition").value !== "direct"
+        )
+          timer = setTimeout(lookup, 600);
+      }
+      function append(text) {
+        if (!active) return;
+        cancel();
+        count("selections");
+        undos.push({ sentence, selection: [...selection] });
+        sentence = (sentence ? sentence + " " : "") + text;
+        selection.push({ mode, text });
+        $("entry").value = "";
+        candidates([]);
+        render();
+        related();
+        phase("표현 선택 완료");
+      }
+      const compoundV = {
+        ㅗㅏ: "ㅘ",
+        ㅗㅐ: "ㅙ",
+        ㅗㅣ: "ㅚ",
+        ㅜㅓ: "ㅝ",
+        ㅜㅔ: "ㅞ",
+        ㅜㅣ: "ㅟ",
+        ㅡㅣ: "ㅢ",
+      };
+      const compoundT = {
+        ㄱㅅ: "ㄳ",
+        ㄴㅈ: "ㄵ",
+        ㄴㅎ: "ㄶ",
+        ㄹㄱ: "ㄺ",
+        ㄹㅁ: "ㄻ",
+        ㄹㅂ: "ㄼ",
+        ㄹㅅ: "ㄽ",
+        ㄹㅌ: "ㄾ",
+        ㄹㅍ: "ㄿ",
+        ㄹㅎ: "ㅀ",
+        ㅂㅅ: "ㅄ",
+      };
+      function composeInput(text, value) {
+        const chars = [...text],
+          last = chars.at(-1),
+          n = last ? last.charCodeAt(0) - 0xac00 : -1;
+        if (J.includes(value) && CHO.includes(last)) {
+          chars[chars.length - 1] = String.fromCharCode(
+            0xac00 + CHO.indexOf(last) * 588 + J.indexOf(value) * 28,
+          );
+          return chars.join("");
+        }
+        if (n >= 0 && n < 11172) {
+          const ci = Math.floor(n / 588),
+            vi = Math.floor((n % 588) / 28),
+            ti = n % 28;
+          if (J.includes(value)) {
+            if (ti) {
+              const tail = T[ti],
+                split = Object.entries(compoundT).find(
+                  ([k, v]) => v === tail,
+                )?.[0];
+              const keep = split ? T.indexOf(split[0]) : 0,
+                move = split ? split[1] : tail;
+              chars[chars.length - 1] = String.fromCharCode(
+                0xac00 + ci * 588 + vi * 28 + keep,
+              );
+              return (
+                chars.join("") +
+                String.fromCharCode(
+                  0xac00 + CHO.indexOf(move) * 588 + J.indexOf(value) * 28,
+                )
+              );
+            }
+            const next = compoundV[J[vi] + value];
+            if (next) {
+              chars[chars.length - 1] = String.fromCharCode(
+                0xac00 + ci * 588 + J.indexOf(next) * 28,
+              );
+              return chars.join("");
+            }
+          } else if (CHO.includes(value) && T.includes(value)) {
+            const next = ti ? compoundT[T[ti] + value] : value;
+            if (next) {
+              chars[chars.length - 1] = String.fromCharCode(
+                0xac00 + ci * 588 + vi * 28 + T.indexOf(next),
+              );
+              return chars.join("");
+            }
+          }
+        }
+        return text + value;
+      }
+      function key(value) {
+        if (!active) return;
+        count("screen_keys");
+        if (value === "⌫") {
+          $("entry").value = [...$("entry").value].slice(0, -1).join("");
+          countCorrection();
+        } else if (value === "비우기") {
+          $("entry").value = "";
+          countCorrection();
+        } else if (value === "조회") {
+          lookup();
+          return;
+        } else if (value === "종료") {
+          finish();
+          return;
+        } else {
+          const char = value === "공백" ? " " : value;
+          $("entry").value = (
+            $("strategy").value === "jamo"
+              ? composeInput($("entry").value, char)
+              : $("entry").value + char
+          ).slice(0, 300);
+        }
+        changed();
+      }
+      function countCorrection() {
+        if (trial) trial.corrections++;
+      }
+      for (const value of [
+        ...CHO,
+        ...V,
+        "공백",
+        "⌫",
+        "비우기",
+        "조회",
+        "종료",
+        ".",
+        ",",
+      ]) {
+        const b = document.createElement("button");
+        b.className =
+          "key" + ([...CHO, ...V].includes(value) ? "" : " control");
+        b.textContent = value;
+        b.onclick = () => key(value);
+        $("keyboard").append(b);
+      }
+      $("entry").addEventListener("input", (e) => {
+        if (!e.isComposing) count("pc_input_events");
+        if (e.inputType?.startsWith("delete")) countCorrection();
+        cancel();
+        candidates([]);
+        if (!e.isComposing) changed();
+      });
+      $("entry").addEventListener("compositionend", () => {
+        count("ime_commits");
+        changed();
+      });
+      $("context").oninput = changed;
+      $("auto").onchange = changed;
+      async function lookup() {
+        if (!active || $("condition").value === "direct") return;
+        cancel();
+        const current = version,
+          raw = $("entry").value.trim(),
+          ini = initials(raw),
+          condition = $("condition").value;
+        const local = localMatches(),
+          start = performance.now();
+        if (/[^ㄱ-ㅎ가-힣\s.,!?]/.test(raw) || !ini || ini.length > 20) {
+          status(
+            "후보 조회는 한글 초성 1~20개를 사용합니다. 다른 문자는 그대로 추가할 수 있어요.",
+          );
+          return;
+        }
+        const spelled = {};
+        let pos = 0;
+        for (const c of raw) {
+          if (initials(c)) {
+            if (!CHO.includes(c)) spelled[pos] = c;
+            pos++;
+          }
+        }
+        const body = {
+          bci_input: ini,
+          input_mode: "initials",
+          candidate_unit: mode,
+          latency_strategy: condition === "balanced" ? "balanced" : "fast",
+          top_k: 3,
+          partner: "other",
+          situation: "general",
+          current_sentence: sentence.slice(-300),
+          recent_context: $("context").value ? [$("context").value] : [],
+          ...(Object.keys(spelled).length
+            ? { spelled_syllables: spelled }
+            : {}),
+        };
+        const cacheKey = JSON.stringify(body);
+        candidates(local);
+        if (local.length)
+          trial.first_candidate_ms.push(performance.now() - start);
+        if (condition === "local") {
+          status(
+            local.length
+              ? "개인 표현·예시 사전에서 찾았습니다."
+              : "아직 일치하는 개인 표현이 없습니다.",
+          );
+          return;
+        }
+        const cached = cache.get(cacheKey);
+        if (cached && Date.now() - cached.at < 60000) {
+          if (!local.length)
+            trial.first_candidate_ms.push(performance.now() - start);
+          candidates(cached.items);
+          trial.cache_hits++;
+          status("같은 입력·문맥의 최근 후보를 재사용했습니다.");
+          return;
+        }
+        const ac = new AbortController();
+        controller = ac;
+        $("candidates").setAttribute("aria-busy", "true");
+        phase("LLM 후보 조회");
+        status(
+          local.length
+            ? "즉시 후보를 먼저 표시했습니다. LLM 후보를 추가로 찾습니다."
+            : "후보를 찾고 있습니다…",
+        );
+        trial.requests++;
+        const timeout = setTimeout(() => ac.abort(), 25000);
+        try {
+          const r = await fetch("/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            signal: ac.signal,
+          });
+          if (!r.ok) throw new Error("server");
+          const d = await r.json();
+          if (current !== version || !active) return;
+          const elapsed = performance.now() - start;
+          trial.server_ms.push(elapsed);
+          if (!local.length) trial.first_candidate_ms.push(elapsed);
+          const remote = (d.candidates || [])
+            .filter(
+              (x) =>
+                typeof x.text === "string" &&
+                (mode !== "word" || !/\s/.test(x.text.trim())),
+            )
+            .map((x) => ({ text: x.text, source: "서버 후보" }));
+          const items = [...local, ...remote]
+            .filter((x, i, a) => a.findIndex((y) => y.text === x.text) === i)
+            .slice(0, 8);
+          cache.set(cacheKey, { at: Date.now(), items });
+          if (cache.size > 30) cache.delete(cache.keys().next().value);
+          candidates(items);
+          $("latency").textContent =
+            Math.round(
+              local.length ? trial.first_candidate_ms.at(-1) : elapsed,
+            ) +
+            " / " +
+            Math.round(elapsed) +
+            " ms";
+          status("후보를 확인하고 선택하세요.");
+          phase("후보 결정 → 선택(SSVEP 모의)");
+        } catch (e) {
+          if (current === version) {
+            trial.errors++;
+            status(
+              e.name === "AbortError"
+                ? "조회 시간이 초과되었습니다. 직접 입력하거나 다시 조회하세요."
+                : "후보 조회 실패. 입력을 유지했습니다. 직접 입력할 수 있어요.",
+            );
+          }
+        } finally {
+          clearTimeout(timeout);
+          if (current === version) {
+            controller = null;
+            $("candidates").setAttribute("aria-busy", "false");
+          }
+        }
+      }
+      function distance(a, b) {
+        let row = Array.from({ length: b.length + 1 }, (_, i) => i);
+        for (let i = 1; i <= a.length; i++) {
+          let next = [i];
+          for (let j = 1; j <= b.length; j++)
+            next[j] = Math.min(
+              next[j - 1] + 1,
+              row[j] + 1,
+              row[j - 1] + (a[i - 1] !== b[j - 1]),
+            );
+          row = next;
+        }
+        return row[b.length];
+      }
+      function finish() {
+        if (!active) return;
+        if ($("entry").value.trim()) {
+          status(
+            "아직 입력 중인 글자가 있습니다. 후보를 선택하거나 입력한 그대로 추가해주세요.",
+          );
+          return;
+        }
+        if (!sentence.trim()) {
+          status("표현을 하나 이상 추가해주세요.");
+          return;
+        }
+        cancel();
+        active = false;
+        const duration = performance.now() - trial.started,
+          goal = [...$("target").value],
+          actual = [...sentence];
+        const result = {
+          ...trial,
+          duration_ms: Math.round(duration),
+          characters: actual.length,
+          cer: goal.length ? distance(goal, actual) / goal.length : null,
+          burden: $("burden").value ? Number($("burden").value) : null,
+        };
+        delete result.started;
+        trials.push(result);
+        for (const s of selection) if (s.mode === "word") learn("word", s.text);
+        learn("sentence", sentence);
+        saveMemory();
+        $("time").textContent = (duration / 1000).toFixed(1) + "초";
+        $("accuracy").textContent =
+          result.cer === null ? "—" : (100 * result.cer).toFixed(1) + "%";
+        $("trialCount").textContent = "완료한 문장 " + trials.length + "개";
+        phase("문장 종료 · 평가 저장 완료");
+        render();
+        candidates([]);
+        related();
+      }
+      $("start").onclick = () => {
+        cancel();
+        active = true;
+        sentence = "";
+        selection = [];
+        undos = [];
+        $("entry").value = "";
+        trial = {
+          started: performance.now(),
+          condition: $("condition").value,
+          strategy: $("strategy").value,
+          actions: 0,
+          corrections: 0,
+          requests: 0,
+          errors: 0,
+          cache_hits: 0,
+          first_candidate_ms: [],
+          server_ms: [],
+          modes: [],
+        };
+        cache.clear();
+        $("actions").textContent = "0";
+        $("time").textContent = "진행 중";
+        $("accuracy").textContent = "—";
+        $("latency").textContent = "—";
+        $("burden").value = "";
+        status("초성이나 글자를 입력하세요.");
+        render();
+        changed();
+      };
+      $("finish").onclick = finish;
+      $("lookup").onclick = lookup;
+      $("cancel").onclick = () => {
+        cancel();
+        status("조회를 취소했습니다.");
+      };
+      $("literal").onclick = () => {
+        const t = $("entry").value.trim();
+        if (t) {
+          if (mode === "word" && /\s/.test(t)) {
+            status("여러 단어는 문장 섹션에서 추가해주세요.");
+            return;
+          }
+          append(t);
+        }
+      };
+      for (const m of ["word", "sentence"])
+        $(m + "Mode").onclick = () => {
+          mode = m;
+          if (active) trial.modes.push(m);
+          changed();
+          render();
+        };
+      $("undo").onclick = () => {
+        if (!active || !undos.length) return;
+        cancel();
+        count("undo");
+        countCorrection();
+        const snap = undos.pop();
+        sentence = snap.sentence;
+        selection = snap.selection;
+        render();
+        candidates([]);
+        related();
+      };
+      $("forget").onclick = () => {
+        memory = { word: [], sentence: [] };
+        cache.clear();
+        saveMemory();
+        cancel();
+        candidates([]);
+        related();
+        render();
+        status("단어·문장 개인 기억을 삭제했습니다.");
+      };
+      $("help").onclick = () => $("guide").showModal();
+      $("closeHelp").onclick = () => $("guide").close();
+      $("guide").onclose = () => $("help").focus();
+      $("large").onclick = () =>
+        $("large").setAttribute(
+          "aria-pressed",
+          String(document.body.classList.toggle("large")),
+        );
+      $("speak").onclick = () => {
+        if (sentence && "speechSynthesis" in window) {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(sentence);
+          u.lang = "ko-KR";
+          speechSynthesis.speak(u);
+        }
+      };
+      $("stop").onclick = () => {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      };
+      $("burden").onchange = () => {
+        if (!active && trials.length)
+          trials[trials.length - 1].burden = $("burden").value
+            ? Number($("burden").value)
+            : null;
+      };
+      $("export").onclick = () => {
+        const blob = new Blob(
+          [
+            JSON.stringify(
+              { version: 1, measurement: "pre-EEG UI events; not ITR", trials },
+              null,
+              2,
+            ),
+          ],
+          { type: "application/json" },
+        );
+        const url = URL.createObjectURL(blob),
+          a = document.createElement("a");
+        a.href = url;
+        a.download = "bci-input-evaluation.json";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      };
+      render();
+      candidates([]);
+    </script>
+  </body>
+</html>

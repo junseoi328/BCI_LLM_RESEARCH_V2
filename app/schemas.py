@@ -57,6 +57,8 @@ class EEGHypothesis(BaseModel):
 
 
 class PredictionRequest(BaseModel):
+    candidate_unit: str = Field(default="sentence", pattern="^(word|sentence)$")
+    latency_strategy: str = Field(default="balanced", pattern="^(fast|balanced)$")
     session_id: str | None = Field(default=None, max_length=80)
     trial_id: str | None = Field(default=None, max_length=80)
     experiment_mode: ExperimentMode = ExperimentMode.initials_llm
