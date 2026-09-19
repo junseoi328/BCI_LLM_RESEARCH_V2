@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>이심전심 BCI Speller</title>
+<meta name="color-scheme" content="dark light">
 <meta name="description" content="한국어 초성 입력, 글자 수정, 직접 입력을 함께 지원하는 BCI·AAC 의사소통 연구용 스펠러">
 <style>
 /* ==========================================================================
@@ -55,7 +56,7 @@
 html,body{height:100%}
 body{
   margin:0;min-height:100vh;color:var(--ink-900);font-family:var(--font);font-size:var(--fs-base);line-height:1.6;
-  background:var(--bg);display:flex;flex-direction:column;
+  background:var(--bg);display:flex;flex-direction:column;overflow-x:clip;
 }
 a{color:var(--blue-600)}
 button{font:inherit;touch-action:manipulation}
@@ -93,7 +94,7 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
    ========================================================================== */
 .topbar{
   position:sticky;top:0;z-index:20;height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;
-  gap:var(--sp-4);padding:0 var(--sp-5);background:rgba(255,255,255,.88);backdrop-filter:blur(12px);
+  gap:var(--sp-4);padding:0 var(--sp-5);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--line);flex:0 0 auto;
 }
 .brand{display:flex;align-items:center;gap:11px;min-width:0}
@@ -187,15 +188,8 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 .big-cta:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
 
 /* hero */
-.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:var(--sp-10) var(--sp-2) var(--sp-4)}
 .eyebrow{font-size:var(--fs-xs);font-weight:800;letter-spacing:.14em;color:var(--blue-600);text-transform:uppercase}
-.hero h1{font-size:var(--fs-hero);line-height:1.32;letter-spacing:-.03em;font-weight:800;margin:var(--sp-4) 0}
-.hero h1 em{font-style:normal;color:var(--blue-600)}
 .hero-copy{font-size:var(--fs-lg);color:var(--ink-500);line-height:1.75;margin:0 0 var(--sp-7);max-width:34em}
-.ring-btn{
-  border:none;border-radius:var(--r-pill);background:var(--blue-500);color:var(--on-solid);cursor:pointer;
-  padding:16px 36px;font-size:var(--fs-lg);font-weight:800;box-shadow:var(--shadow-primary);transition:transform .12s ease,filter .12s ease;
-}
 .ring-btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
 .ring-btn small{display:none}
 .cap{margin-top:var(--sp-4);color:var(--ink-500);font-size:var(--fs-sm)}
@@ -531,10 +525,111 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
   body{background:var(--surface)}
   .card{box-shadow:none;border-color:var(--line)}
 }
+
+/* ==========================================================================
+   다크 테마 (기본)
+   --------------------------------------------------------------------------
+   키오스크처럼 어둡고 조용한 화면. 취향 문제만은 아니다 — SSVEP 점멸 자극은
+   어두운 바탕에서 대비가 가장 크고, 오래 응시할 때 눈부심도 적다.
+   아래에서 하는 일은 토큰 값을 바꾸는 것뿐이고 규칙은 하나도 건드리지 않는다.
+   밝은 화면이 필요하면 상단 '어둡게' 버튼으로 즉시 되돌아간다.
+   ========================================================================== */
+:root[data-theme="dark"]{
+  --blue-50:#152444;  --blue-100:#1d3260; --blue-200:#2b4a8c;
+  --blue-500:#4d86ff; --blue-600:#7ba6ff; --blue-700:#b3cbff;
+  --green-50:#0f2620; --green-100:#17392d; --green-200:#215041;
+  --green-500:#1fb886; --green-600:#54d8ab;
+  --amber-50:#2d2010; --amber-100:#443015; --amber-500:#e08a1e; --amber-600:#f5b556;
+  --red-50:#2d1518;   --red-200:#4d2429;  --red-600:#ff7a7a;
+  --pick-50:#1d1738;  --pick-100:#2a2052; --pick-200:#3d3072;
+  --pick-500:#9b7bff; --pick-600:#c0aaff;
+
+  --ink-900:#eef2fa; --ink-700:#c2ccdf; --ink-500:#8a96af; --ink-300:#5c6880; --ink-200:#3a4560;
+  --line:#222b40; --line-strong:#33405c;
+  --surface:#141a28; --surface-2:#0f1421; --surface-3:#1c2436;
+  --bg:#0a0e18;
+  --on-solid:#0a0e18;
+  --topbar-bg:rgba(20,26,40,.86);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  --shadow-md:0 20px 50px -12px rgba(0,0,0,.7);
+  --shadow-primary:0 10px 26px -10px rgba(77,134,255,.6);
+}
+/* 색을 채운 면 위의 글자는 다크에서도 흰색이 맞는 곳이 있다 */
+:root[data-theme="dark"] .brand .mark,
+:root[data-theme="dark"] .ring-btn,
+:root[data-theme="dark"] .big-cta,
+:root[data-theme="dark"] .btn.primary,
+:root[data-theme="dark"] .btn.accent,
+:root[data-theme="dark"] .kb .key.fn.commit,
+:root[data-theme="dark"] .cand .kb-badge,
+:root[data-theme="dark"] .chat-turn .who,
+:root[data-theme="dark"] .badge .num,
+:root[data-theme="dark"] .step-chip,
+:root[data-theme="dark"] .start-steps b,
+:root[data-theme="dark"] .loop-step .n{color:var(--bg)}
+:root[data-theme="dark"] .guide::backdrop{background:rgba(0,0,0,.65)}
+
+/* 라이트는 토큰 기본값 그대로 — 추가 정의가 필요 없다 */
+:root{--topbar-bg:rgba(255,255,255,.88)}
+.topbar{background:var(--topbar-bg)}
+
+/* ==========================================================================
+   Kiosk hero — 한 화면에 큰 문장 하나와 버튼 하나. 그 외에는 아무것도 없다.
+   ========================================================================== */
+.lab-link{
+  display:block;padding:9px 24px;text-align:center;text-decoration:none;
+  background:var(--surface-2);color:var(--ink-500);
+  font-size:var(--fs-xs);font-weight:700;border-bottom:1px solid var(--line);
+}
+.lab-link:hover{color:var(--blue-600);background:var(--blue-50)}
+
+.hero{
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;min-height:min(72vh,680px);padding:var(--sp-10) var(--sp-4);gap:var(--sp-8);
+}
+/* 발광체는 화면 끝까지 흘러야 한다. step-wrap(640px) 안에 갇히면 네모난
+   경계선이 그대로 보인다. 가로는 전체 폭으로 빼고, 가장자리는 마스크로 지운다. */
+.hero-glow{
+  position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);
+  overflow:hidden;pointer-events:none;z-index:0;
+  -webkit-mask-image:radial-gradient(62% 62% at 50% 46%,#000 35%,transparent 100%);
+  mask-image:radial-gradient(62% 62% at 50% 46%,#000 35%,transparent 100%);
+}
+.hero-glow i{
+  position:absolute;display:block;border-radius:50%;filter:blur(50px);opacity:.5;
+  animation:drift 22s ease-in-out infinite;
+}
+.hero-glow i:nth-child(1){width:min(34vw,430px);aspect-ratio:1;left:30%;top:4%;background:var(--green-500);opacity:.26}
+.hero-glow i:nth-child(2){width:min(40vw,540px);aspect-ratio:1;left:41%;top:16%;background:var(--blue-500);opacity:.4;animation-delay:-7s}
+.hero-glow i:nth-child(3){width:min(12vw,150px);aspect-ratio:1;left:35%;top:62%;background:var(--pick-500);opacity:.28;animation-delay:-14s}
+@keyframes drift{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(4%,-6%,0) scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.hero-glow i{animation:none}}
+
+.hero>*:not(.hero-glow){position:relative;z-index:1}
+.hero h1{
+  font-size:clamp(2.1rem,1.2rem + 3.6vw,3.6rem);line-height:1.3;letter-spacing:-.035em;
+  font-weight:800;margin:0;text-wrap:balance;
+}
+.hero h1 em{font-style:normal;color:var(--blue-600)}
+.ring-btn{
+  border:none;border-radius:var(--r-pill);background:var(--blue-500);color:var(--on-solid);cursor:pointer;
+  padding:20px 46px;font-size:var(--fs-xl);font-weight:800;box-shadow:var(--shadow-primary);
+  transition:transform .14s ease,filter .14s ease;
+}
+.hero .cap{margin:0;color:var(--ink-500);font-size:var(--fs-base)}
+.hero .cap b{color:var(--ink-700);font-weight:800}
+
+/* 온보딩 선택 카드도 같은 결로 — 크고 조용하게 */
+.pick-card{padding:var(--sp-5)}
+.pick-card .ico{font-size:30px}
+.headline h1{font-size:clamp(1.5rem,1.1rem + 1.4vw,2rem)}
+
+/* 이 화면들에서는 실험실 배너를 숨긴다 — 대화 중에 낄 자리가 아니다 */
+body:has(#view-speller:not([hidden])) .lab-link{display:none}
 </style>
 </head>
 <body>
-<a href="/speller/research" style="display:block;padding:12px 24px;background:#eaf2fa;color:#17448f;text-align:center;font-weight:700">새 입력 실험실 · 단어/문장 개인화 · 40키 · 속도 비교 →</a>
+<a class="lab-link" href="/speller/research">새 입력 실험실 · 40키 · 속도 비교 →</a>
 
 <div class="topbar">
   <div class="brand">
@@ -545,6 +640,7 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
     </div>
   </div>
   <nav class="top-tools" aria-label="화면 도구">
+    <button class="btn tool-btn" id="btnTheme" aria-pressed="true" title="어두운 화면 / 밝은 화면">◐ 어둡게</button>
     <button class="btn tool-btn" id="btnLargeText" aria-pressed="false">가 큰 글씨</button>
     <button class="btn tool-btn" id="btnGuide" aria-haspopup="dialog">사용 설명서</button>
     <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
@@ -556,13 +652,10 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
   <!-- STEP 0: hero / start -->
   <section class="step-wrap" id="view-start">
     <div class="hero">
-      <span class="eyebrow">이심전심 · 나의 속도로, 나의 말로</span>
+      <div class="hero-glow" aria-hidden="true"><i></i><i></i><i></i></div>
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
-      <p class="hero-copy">초성으로 시작하고, 내 뜻에 맞는 문장을 골라보세요.<br>원하는 말이 될 때까지 직접 고치고 완성할 수 있어요.</p>
       <button class="ring-btn" id="btnStart">대화 시작하기 <span aria-hidden="true">→</span></button>
-      <div class="cap">대화 상대와 상황을 고른 뒤 시작합니다.</div>
-      <div class="start-steps"><span><b>01</b> 초성 입력</span><span><b>02</b> 표현 선택·수정</span><span><b>03</b> 확정하고 말하기</span></div>
-      <div class="hero-example" aria-label="입력 예시"><span>이렇게 시작해요</span><strong>ㅁ ㅈ</strong><span aria-hidden="true">→</span><strong>물 줘</strong><span>후보 예시 · 결과는 달라질 수 있어요</span></div>
+      <p class="cap">대화 상대와 상황을 고른 뒤 시작합니다 · 초성 <b>ㅁ ㅈ</b> 만으로 <b>물 줘</b></p>
     </div>
   </section>
 
@@ -766,7 +859,7 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 검수된 표현 281개를 로컬에서 먼저 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독은 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.0.0</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 검수된 표현 281개를 로컬에서 먼저 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독은 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.0.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1892,6 +1985,16 @@ document.addEventListener("keydown",(e)=>{
 el("btnGuide").onclick=()=>{el("guideDialog").showModal();};
 el("btnGuideClose").onclick=()=>el("guideDialog").close();
 el("guideDialog").addEventListener("close",()=>el("btnGuide").focus());
+/* 테마 토글. 색이 전부 토큰이라 data-theme 한 글자만 바꾸면 화면 전체가 따라온다. */
+function applyTheme(dark){
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  el("btnTheme").textContent = dark ? "◐ 어둡게" : "☀ 밝게";
+  el("btnTheme").setAttribute("aria-pressed", String(dark));
+  try{ localStorage.setItem("bci_theme", dark ? "dark" : "light"); }catch(e){}
+}
+el("btnTheme").onclick=()=>applyTheme(document.documentElement.dataset.theme!=="dark");
+try{ applyTheme(localStorage.getItem("bci_theme")!=="light"); }catch(e){}
+
 el("btnLargeText").onclick=()=>{
   const enabled=document.body.classList.toggle("large-text");
   el("btnLargeText").setAttribute("aria-pressed",String(enabled));
