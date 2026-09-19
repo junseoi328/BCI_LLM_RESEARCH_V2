@@ -136,10 +136,16 @@ test('Automatic lookup debounces input and fully spelled text commits without a 
       state.partner='family';state.situation='general';showView('speller');renderKeyboard();
       el('autoPredict').checked=true;
     });
-    // 두 번 연속 입력해도 문장 후보 조회는 한 번만 나간다
+    // 문장 후보는 언어 모델을 기다리지 않고 즉시(로컬 표현 사전에서) 떠야 한다
+    const modelCall = page.waitForResponse(r => r.request().method()==='POST');
     await page.locator('#keyboard .key.cho[data-v="ㅁ"]').click();
     await page.locator('#keyboard .key.cho[data-v="ㅈ"]').click();
-    await page.locator('#candSents .cand.sent').waitFor();
+    await page.locator('#candSents .cand.sent').first().waitFor();
+    assert.equal(calls,0,'local sentence candidates appear before any model call');
+
+    // 두 번 연속 입력했어도 모델 조회는 한 번만 나간다 (디바운스)
+    await modelCall;
+    await page.waitForTimeout(400);
     assert.equal(calls,1);
     assert.equal(await page.locator('#committed').textContent(),'');
 
@@ -256,7 +262,7 @@ test('Expired session retries once without losing input, context or FillMask con
     assert.equal(await page.evaluate(() => state.initials), 'ㅁㅈ');
     assert.equal(await page.locator('#committed').textContent(), '도와줘');
     assert.equal(await page.evaluate(() => localStorage.getItem('bci_session_id')), null);
-    await page.locator('#candSents .cand.sent').first().click();
+    await page.locator('#candSents .cand.sent', {hasText:'물 좀'}).first().click();
     await page.waitForFunction(()=>document.querySelector('#committed').textContent==='도와줘 물 좀');
     await page.evaluate(() => { state.initials = 'ㅁㅈ'; return predict({}); });
     assert.equal(requests.at(-1).pathname, '/predict');
@@ -298,7 +304,7 @@ test('FillMask edits without committing and selects the displayed alternative', 
     });
     await setup();
     // 글자(unit)를 누르는 것은 '고치기'이지 '확정'이 아니다 — 절대 커밋되면 안 된다.
-    await page.locator('#candSents .unit[data-u="1"]').click();
+    await page.locator('#candSents .cand.sent', {hasText:'물 줘'}).first().locator('.unit[data-u="1"]').click();
     await page.waitForFunction(() => document.querySelector('#fillmaskAlts').textContent.includes('대안 찾는 중'));
     assert.equal(await page.locator('#committed').textContent(), '');
     assert.equal(requests.filter(r => r.path.endsWith('/select')).length, 0);
@@ -311,15 +317,16 @@ test('FillMask edits without committing and selects the displayed alternative', 
     ], recovery_mode: 'fill_mask' } });
     await page.locator('.alt').waitFor();
     assert.equal(await page.locator('#committed').textContent(), '');
-    assert.equal(await page.locator('#candSents .cand.sent .tx').first().textContent(), '물 좀');
-    await page.locator('#candSents .cand.sent').first().click();
+    assert.ok((await page.locator('#candSents .cand.sent .tx').allTextContents()).some(t=>t.trim()==='물 좀'));
+    await page.locator('#candSents .cand.sent', {hasText:'물 좀'}).first().click();
     await page.waitForFunction(() => document.querySelector('#committed').textContent === '물 좀');
     assert.equal(requests.find(r => r.path.endsWith('/select')).body.candidate_id, 'alternative');
 
     // 조회가 도중일 때 입력을 비우면 늦게 온 응답은 버려져야 한다.
+    // (앞과 다른 글자를 골라야 조회 캐시에 걸리지 않고 실제로 요청이 나간다)
     pending = null;
     await setup();
-    await page.locator('#candSents .unit[data-u="1"]').click();
+    await page.locator('#candSents .cand.sent', {hasText:'물 줘'}).first().locator('.unit[data-u="0"]').click();
     await new Promise(resolve => { const poll=()=>pending?resolve():setTimeout(poll,10); poll(); });
     await page.locator('#btnClear').click();
     await pending.fulfill({ json: { candidates: [{ candidate_id: 'late', text: '물 좀' }] } });

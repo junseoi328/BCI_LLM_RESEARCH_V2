@@ -7,17 +7,35 @@
 <meta name="description" content="한국어 초성 입력, 글자 수정, 직접 입력을 함께 지원하는 BCI·AAC 의사소통 연구용 스펠러">
 <style>
 /* ==========================================================================
-   Design tokens — one source of truth. Every value below is used through a
-   token; no raw color / size is hard-coded further down in this file.
+   이심전심 · BCI Speller — design tokens
+   --------------------------------------------------------------------------
+   단 하나의 닫힌 팔레트. 이 아래에서 raw hex 를 새로 쓰지 않는다.
+   색은 역할로만 부른다: primary(파랑) / accent(초록) / warn(주황) /
+   danger(빨강) / pick(보라, 후보키 전용) / ink·line·surface(중립).
    ========================================================================== */
 :root{
-  --blue-50:#eef3ff;  --blue-100:#dde9ff; --blue-500:#2f6fed; --blue-600:#1d4ed8; --blue-700:#173f9e;
-  --green-50:#e9f8f1; --green-500:#0f9d6e; --green-600:#0c7f59;
-  --amber-50:#fef3e2; --amber-600:#b45309;
-  --red-50:#fdecec;   --red-600:#dc2626;
+  /* primary — 초성, 강조, 선택 */
+  --blue-50:#eef3ff;  --blue-100:#dde9ff; --blue-200:#bed3fb;
+  --blue-500:#2f6fed; --blue-600:#1d4ed8; --blue-700:#173f9e;
+  /* accent — 중성, 확정, 성공 */
+  --green-50:#e9f8f1; --green-100:#cdeedd; --green-200:#a8e0c6;
+  --green-500:#0f9d6e; --green-600:#0c7f59;
+  /* warn — SSVEP 자극, 실험 모드 */
+  --amber-50:#fef5e7; --amber-100:#f8e2bc; --amber-500:#d97706; --amber-600:#b45309;
+  /* danger */
+  --red-50:#fdecec; --red-200:#f3d0d0; --red-600:#dc2626;
+  /* pick — 후보키 전용. 초성/중성/기능 어느 것과도 겹치지 않아야 한다 */
+  --pick-50:#f5f1ff; --pick-100:#ebe3fe; --pick-200:#d7c9fb;
+  --pick-500:#7c4ddb; --pick-600:#6234bd;
+  /* neutral */
   --ink-900:#131b29; --ink-700:#3c4658; --ink-500:#5d6883; --ink-300:#9aa4ba; --ink-200:#c7cede;
   --line:#e2e7f1; --line-strong:#ccd5e6;
-  --surface:#ffffff; --bg:#f3f5fa;
+  --surface:#ffffff;            /* 카드 */
+  --surface-2:#fbfcfe;          /* 카드 안 오목한 면 */
+  --surface-3:#f2f5fa;          /* 중립 버튼·기능키 */
+  --bg:#eef1f7;                 /* 페이지 */
+  --on-solid:#ffffff;           /* 색 채운 면 위의 글자 */
+
   --r-sm:10px; --r-md:14px; --r-lg:20px; --r-pill:999px;
   --shadow-sm:0 1px 2px rgba(19,27,41,.04),0 6px 16px rgba(19,27,41,.06);
   --shadow-md:0 16px 40px -12px rgba(19,27,41,.16);
@@ -26,6 +44,7 @@
   --fs-xs:.75rem; --fs-sm:.8125rem; --fs-base:.9375rem; --fs-md:1rem; --fs-lg:1.125rem; --fs-xl:1.375rem; --fs-2xl:1.75rem;
   --fs-hero:clamp(1.9rem,1.35rem + 2.4vw,2.85rem);
   --font:"Pretendard","Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --topbar-h:64px;
 }
 
 /* ==========================================================================
@@ -39,12 +58,11 @@ body{
   background:var(--bg);display:flex;flex-direction:column;
 }
 a{color:var(--blue-600)}
-button{font:inherit}
-button{touch-action:manipulation}
+button{font:inherit;touch-action:manipulation}
 button:disabled{opacity:.45;cursor:not-allowed}
 select{font:inherit;min-height:44px;padding:8px 10px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-900)}
 textarea{
-  width:100%;font:inherit;font-size:var(--fs-base);color:var(--ink-900);background:#fbfcfe;
+  width:100%;font:inherit;font-size:var(--fs-base);color:var(--ink-900);background:var(--surface-2);
   border:1.5px solid var(--line);border-radius:var(--r-sm);padding:11px 13px;resize:vertical;min-height:52px;
 }
 textarea:focus,select:focus{outline:2px solid var(--blue-500);outline-offset:1px}
@@ -55,98 +73,99 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 :focus-visible{outline:3px solid var(--blue-600);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 
-/* small reusable numbered-chip used by the stepper, hero steps and card headers */
+/* 공통 알갱이 — 한 번만 정의하고 어디서나 재사용 */
 .step-chip{
   width:26px;height:26px;flex:0 0 auto;border-radius:var(--r-pill);display:grid;place-items:center;
-  font-size:12px;font-weight:800;background:var(--ink-200);color:var(--surface);
+  font-size:12px;font-weight:800;background:var(--ink-200);color:var(--on-solid);
 }
-
-/* generic pill-tag language shared by .tag / .ctx-pill / .habitual-chip */
-.pill{
+.pill,.tag,.ctx-pill,.habitual-chip,.ratio-tag,.mis-flag{
   display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);
-  font-size:var(--fs-xs);font-weight:700;padding:5px 12px;
+  font-size:var(--fs-xs);font-weight:700;padding:4px 11px;white-space:nowrap;
 }
+.tag{font-size:10.5px;color:var(--blue-700);background:var(--blue-50)}
+.tag.soft{color:var(--ink-500);background:var(--surface-3)}
+.ratio-tag{font-size:10.5px;color:var(--blue-700);background:var(--blue-50)}
+.ratio-tag.llm{color:var(--amber-600);background:var(--amber-50)}
+.mis-flag{font-size:10.5px;color:var(--amber-600);background:var(--amber-50)}
 
 /* ==========================================================================
-   Top bar
+   Topbar
    ========================================================================== */
 .topbar{
-  position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:14px max(20px,calc((100vw - 1240px)/2));background:var(--surface);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:20;height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;
+  gap:var(--sp-4);padding:0 var(--sp-5);background:rgba(255,255,255,.88);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);flex:0 0 auto;
 }
 .brand{display:flex;align-items:center;gap:11px;min-width:0}
 .brand .mark{
-  width:40px;height:40px;flex:0 0 auto;border-radius:12px;background:var(--blue-500);
-  display:grid;place-items:center;color:#fff;font-weight:800;font-size:16px;
+  width:34px;height:34px;flex:0 0 auto;border-radius:11px;display:grid;place-items:center;
+  background:var(--blue-500);color:var(--on-solid);font-weight:800;font-size:15px;box-shadow:var(--shadow-primary);
 }
 .brand .name{font-weight:800;font-size:var(--fs-md);letter-spacing:-.01em;white-space:nowrap}
 .brand .sub{font-size:11.5px;color:var(--ink-500);margin-top:1px;white-space:nowrap}
 .top-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.top-tools::before{content:"";width:1px;height:22px;background:var(--line);margin-right:2px}
 .tool-btn{
-  border:1.5px solid var(--line);background:var(--surface);color:var(--ink-700);border-radius:var(--r-pill);
-  font-size:var(--fs-sm);font-weight:700;padding:9px 14px;min-height:40px;cursor:pointer;white-space:nowrap;
+  min-height:38px;padding:8px 13px;border-radius:var(--r-pill);border:1.5px solid var(--line);
+  background:var(--surface);color:var(--ink-700);font-size:var(--fs-sm);font-weight:700;cursor:pointer;white-space:nowrap;
 }
 .tool-btn:hover{border-color:var(--blue-500);color:var(--blue-700);background:var(--blue-50)}
 .tool-btn[aria-pressed="true"]{border-color:var(--blue-500);background:var(--blue-50);color:var(--blue-700)}
 .health{
-  display:flex;align-items:center;gap:7px;font-size:var(--fs-xs);font-weight:700;color:var(--ink-500);
-  background:#f6f7fb;border:1px solid var(--line);border-radius:var(--r-pill);padding:9px 13px;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:var(--r-pill);
+  background:var(--surface-3);font-size:var(--fs-xs);font-weight:700;color:var(--ink-500);white-space:nowrap;
 }
 .health .dot{width:8px;height:8px;border-radius:99px;background:var(--ink-200);transition:background .2s}
 .health.ok .dot{background:var(--green-500)}
 .health.bad .dot{background:var(--red-600)}
 @media(max-width:640px){
-  .topbar{flex-wrap:wrap;padding:12px 16px}
+  .topbar{height:auto;padding:10px var(--sp-4);flex-wrap:wrap}
   .brand .sub{display:none}
-  .top-tools{width:100%;justify-content:flex-start}
-  .top-tools::before{display:none}
+  .health span:last-child{display:none}
 }
 
 /* ==========================================================================
-   Shell / step containers
+   Shell — 온보딩 단계는 가운데 좁게, 작업 화면은 화면을 꽉 채운다
    ========================================================================== */
-.shell{flex:1;display:flex;flex-direction:column;align-items:center;padding:var(--sp-6) var(--sp-4) var(--sp-10)}
+.shell{flex:1;display:flex;flex-direction:column;align-items:center;padding:var(--sp-6) var(--sp-4) var(--sp-10);width:100%}
 .step-wrap{width:100%;max-width:640px;margin:0 auto}
-.step-wrap.wide{max-width:1240px}
+.step-wrap.wide{max-width:1560px;display:flex;flex-direction:column;gap:10px}
+.shell:has(#view-speller:not([hidden])){padding:var(--sp-3) var(--sp-4)}
+.shell:has(#view-speller:not([hidden]))~.footer-note{margin-top:var(--sp-3)}
 
-/* progress stepper shared by the partner / situation / speller screens */
-.badge-row{display:flex;align-items:center;gap:8px;margin:0 0 var(--sp-6);flex-wrap:wrap}
+/* ==========================================================================
+   Stepper / headline / pick cards  (온보딩 3단계)
+   ========================================================================== */
+.badge-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .badge{
-  display:flex;align-items:center;gap:8px;border:none;background:none;padding:0;cursor:default;
-  font-size:var(--fs-sm);font-weight:700;color:var(--ink-300);
+  display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:var(--r-pill);
+  background:var(--surface);border:1.5px solid var(--line);font-size:var(--fs-xs);font-weight:700;
 }
 .badge .num{
-  width:24px;height:24px;border-radius:var(--r-pill);background:var(--ink-200);color:#fff;
-  display:grid;place-items:center;font-size:11px;font-weight:800;flex:0 0 auto;
+  width:18px;height:18px;border-radius:var(--r-pill);display:grid;place-items:center;
+  font-size:10px;font-weight:800;background:var(--ink-200);color:var(--on-solid);
 }
 .badge-row .arrow{color:var(--ink-200);font-size:13px}
-.badge.done{color:var(--green-600);cursor:pointer}
+.badge.done{color:var(--green-600);cursor:pointer;border-color:var(--green-100)}
 .badge.done .num{background:var(--green-500)}
 .badge.todo{color:var(--ink-300)}
-.badge-row>.badge:not(.done):not(.todo){color:var(--blue-700)}
+.badge-row>.badge:not(.done):not(.todo){color:var(--blue-700);border-color:var(--blue-100);background:var(--blue-50)}
 .badge-row>.badge:not(.done):not(.todo) .num{background:var(--blue-500)}
 
 .headline{margin:0 0 var(--sp-6)}
 .headline h1{margin:0 0 6px;font-size:var(--fs-2xl);font-weight:800;letter-spacing:-.015em}
 .headline p{margin:0;color:var(--ink-500);font-size:var(--fs-base);line-height:1.6}
 
-/* ==========================================================================
-   Selection cards — step 1 (partner) / step 2 (situation)
-   ========================================================================== */
 .pick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3)}
 .pick-card{
-  position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);
-  padding:var(--sp-5) var(--sp-2) var(--sp-4);text-align:center;cursor:pointer;user-select:none;
-  display:flex;flex-direction:column;align-items:center;gap:7px;
+  position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;cursor:pointer;
+  padding:var(--sp-4);border-radius:var(--r-md);border:1.5px solid var(--line);background:var(--surface);
   transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
 }
 .pick-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:var(--blue-100)}
 .pick-card:active{transform:translateY(0)}
 .pick-card.sel{border-color:var(--blue-500);background:var(--blue-50)}
 .pick-card.sel::after{
-  content:"✓";position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:99px;
-  background:var(--blue-500);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;
+  content:"✓";position:absolute;top:10px;right:12px;font-size:12px;font-weight:800;color:var(--blue-600);
 }
 .pick-card .ico{font-size:26px;line-height:1}
 .pick-card .lb{font-size:var(--fs-base);font-weight:700;color:var(--ink-900)}
@@ -156,31 +175,26 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 
 .step-actions{display:flex;justify-content:space-between;align-items:center;margin-top:var(--sp-7);gap:10px}
 .ghost-btn{
-  background:transparent;border:none;color:var(--ink-500);font-size:var(--fs-sm);font-weight:700;
-  padding:10px 6px;cursor:pointer;border-radius:10px;min-height:44px;
+  background:none;border:none;color:var(--ink-500);font-size:var(--fs-sm);font-weight:700;cursor:pointer;
+  padding:8px 2px;text-align:left;
 }
 .ghost-btn:hover{color:var(--ink-900)}
-
 .big-cta{
-  border:none;border-radius:var(--r-pill);padding:14px 28px;font-size:var(--fs-base);font-weight:800;color:#fff;
-  background:var(--blue-500);cursor:pointer;box-shadow:var(--shadow-primary);min-height:48px;
-  transition:transform .12s ease,filter .12s ease;
+  border:none;border-radius:var(--r-pill);background:var(--blue-500);color:var(--on-solid);cursor:pointer;
+  padding:14px 30px;font-size:var(--fs-md);font-weight:800;box-shadow:var(--shadow-primary);transition:transform .12s ease,filter .12s ease;
 }
 .big-cta:hover{transform:translateY(-1px);filter:brightness(1.04)}
 .big-cta:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
 
-/* ==========================================================================
-   Hero — landing screen
-   ========================================================================== */
+/* hero */
 .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:var(--sp-10) var(--sp-2) var(--sp-4)}
 .eyebrow{font-size:var(--fs-xs);font-weight:800;letter-spacing:.14em;color:var(--blue-600);text-transform:uppercase}
-.hero h1{font-size:var(--fs-hero);line-height:1.32;letter-spacing:-.03em;font-weight:800;margin:var(--sp-4) 0 var(--sp-4)}
+.hero h1{font-size:var(--fs-hero);line-height:1.32;letter-spacing:-.03em;font-weight:800;margin:var(--sp-4) 0}
 .hero h1 em{font-style:normal;color:var(--blue-600)}
 .hero-copy{font-size:var(--fs-lg);color:var(--ink-500);line-height:1.75;margin:0 0 var(--sp-7);max-width:34em}
 .ring-btn{
-  display:inline-flex;align-items:center;gap:14px;border:none;border-radius:var(--r-pill);cursor:pointer;color:#fff;
-  background:var(--blue-500);padding:17px 32px;font-size:var(--fs-lg);font-weight:800;letter-spacing:-.01em;
-  box-shadow:var(--shadow-primary);transition:transform .15s ease,filter .15s ease;
+  border:none;border-radius:var(--r-pill);background:var(--blue-500);color:var(--on-solid);cursor:pointer;
+  padding:16px 36px;font-size:var(--fs-lg);font-weight:800;box-shadow:var(--shadow-primary);transition:transform .12s ease,filter .12s ease;
 }
 .ring-btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
 .ring-btn small{display:none}
@@ -188,12 +202,12 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 .start-steps{display:flex;gap:var(--sp-6);margin:var(--sp-8) 0 var(--sp-6);flex-wrap:wrap;justify-content:center}
 .start-steps span{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);font-weight:700;color:var(--ink-700)}
 .start-steps b{
-  width:22px;height:22px;border-radius:99px;background:var(--blue-50);color:var(--blue-700);
-  display:grid;place-items:center;font-size:11px;font-weight:800;
+  width:24px;height:24px;border-radius:var(--r-pill);display:grid;place-items:center;
+  background:var(--blue-500);color:var(--on-solid);font-size:11px;
 }
 .hero-example{
-  display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:var(--sp-5) var(--sp-6);
-  border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;justify-content:center;gap:var(--sp-3);flex-wrap:wrap;
+  padding:var(--sp-5);border-radius:var(--r-md);background:var(--surface);border:1.5px solid var(--line);
 }
 .hero-example span{font-size:var(--fs-sm);color:var(--ink-500);font-weight:600}
 .hero-example strong{font-size:1.35rem;font-weight:800;color:var(--ink-900)}
@@ -201,114 +215,113 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 @media(max-width:560px){.hero{padding:var(--sp-6) 0}.hero-copy{font-size:var(--fs-base)}.hero-example{padding:var(--sp-4)}}
 
 /* ==========================================================================
-   Speller workspace — step 3
-   ========================================================================== */
-.workspace-intro{display:flex;align-items:baseline;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-3)}
-.workspace-intro h1{font-size:var(--fs-lg);font-weight:800;margin:0;letter-spacing:-.01em}
-.workspace-intro p{margin:0;color:var(--ink-500);font-size:var(--fs-sm)}
-
-/* ==========================================================================
-   Loop HUD — the research instrument.
-   Phil_Metting2.pdf의 루프 4단계(① 후보 검토·결정 → ② 응시·EEG 수집(SSVEP)
-   → ③ 선택 키 판독 → ④ 후보 갱신(LLM))를 그대로 화면에 올리고, 선택당 실제
-   소요시간을 재서 ChatBCI 24.56s / MindChat 5.5–6.5s 와 나란히 보여준다.
-   EEG가 붙기 전에 "어떤 시스템이 좋을지" 숫자로 평가하기 위한 계기판.
+   Loop HUD — 논문의 4단계 루프를 그대로 올린 계기판.
+   한 줄을 넘지 않는다. 이 줄이 두 줄이 되면 작업 화면이 스크롤된다.
    ========================================================================== */
 .loop-hud{
-  display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;
-  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-lg);
-  padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-5);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;flex:0 0 auto;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-pill);
+  padding:var(--sp-2) var(--sp-5);box-shadow:var(--shadow-sm);
 }
-.loop-bar{display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.loop-bar{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
 .loop-step{
   display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--ink-300);
-  padding:6px 11px;border-radius:var(--r-pill);white-space:nowrap;
-  transition:background .18s ease,color .18s ease;
+  padding:5px 10px;border-radius:var(--r-pill);white-space:nowrap;transition:background .18s ease,color .18s ease;
 }
-.loop-step .n{width:16px;height:16px;border-radius:99px;background:var(--ink-200);color:var(--surface);display:grid;place-items:center;font-size:9.5px;flex:0 0 auto}
-.loop-step .t{font-size:9.5px;font-weight:600;opacity:.75;font-variant-numeric:tabular-nums}
+.loop-step .n{width:16px;height:16px;border-radius:99px;background:var(--ink-200);color:var(--on-solid);display:grid;place-items:center;font-size:9.5px;flex:0 0 auto}
+.loop-step .t{font-size:9.5px;font-weight:600;opacity:.8;font-variant-numeric:tabular-nums}
 .loop-step.active{background:var(--blue-50);color:var(--blue-700)}
 .loop-step.active .n{background:var(--blue-500)}
 .loop-step.stim.active{background:var(--amber-50);color:var(--amber-600)}
 .loop-step.stim.active .n{background:var(--amber-600)}
 .loop-arrow{color:var(--ink-200);font-size:10px}
-.loop-metrics{display:flex;gap:var(--sp-4);margin-left:auto;flex-wrap:wrap;align-items:center}
-.loop-metrics div{display:flex;flex-direction:column;gap:1px}
+.loop-metrics{display:flex;gap:var(--sp-5);margin-left:auto;flex-wrap:wrap;align-items:center}
+.loop-metrics div{display:flex;flex-direction:column;gap:0}
 .loop-metrics span{font-size:9.5px;font-weight:700;color:var(--ink-300);letter-spacing:.03em}
-.loop-metrics b{font-size:var(--fs-sm);font-weight:800;color:var(--ink-900);font-variant-numeric:tabular-nums}
+.loop-metrics b{font-size:var(--fs-sm);font-weight:800;color:var(--ink-900);font-variant-numeric:tabular-nums;line-height:1.3}
 .loop-metrics .ref b{font-size:10.5px;font-weight:700;color:var(--ink-500)}
 .loop-metrics .hi b{color:var(--blue-600)}
-@media(max-width:860px){.loop-metrics{margin-left:0;width:100%;border-top:1px dashed var(--line);padding-top:var(--sp-3)}}
-
-/* SSVEP 자극 창(실험 모드): 선택한 키가 점멸하는 동안 다른 입력을 막는다 */
-.kb.stim .key{opacity:.35;pointer-events:none}
-.kb.stim .key.flicker{opacity:1;animation:ssvep .1s steps(1,end) infinite;border-color:var(--amber-600)}
-@keyframes ssvep{0%{background:var(--amber-600);color:#fff}50%{background:var(--surface);color:var(--ink-900)}}
-@media(prefers-reduced-motion:reduce){.kb.stim .key.flicker{animation:none;background:var(--amber-50)}}
+@media(max-width:900px){.loop-hud{border-radius:var(--r-lg)}.loop-metrics{margin-left:0;width:100%;border-top:1px dashed var(--line);padding-top:var(--sp-2)}}
 
 /* ==========================================================================
-   Chat log — 상대/나 대화 누적 (PDF: "현재 진행중인 대화 누적 : 상대, 사용자
-   대화 채팅 형식으로 누적"). 이 로그가 그대로 LLM의 recent_context가 된다.
+   Workspace — 2단 고정. 왼쪽은 대화(맥락), 오른쪽은 후보+키(행동).
+   행동 축을 한 열에 세로로 붙여 후보에서 키까지의 시선 이동을 없앤다.
    ========================================================================== */
+.work{
+  display:grid;grid-template-columns:minmax(300px,360px) minmax(0,1fr);
+  gap:10px;align-items:stretch;flex:1 1 auto;min-height:0;
+}
+.col{display:flex;flex-direction:column;gap:10px;min-height:0;min-width:0}
+.card{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-lg);
+  padding:var(--sp-4) var(--sp-5);box-shadow:var(--shadow-sm);min-width:0;
+}
+.card>h3{
+  display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;
+  margin:0 0 10px;font-size:var(--fs-base);font-weight:800;letter-spacing:-.01em;
+}
+.card.accent{border-top:3px solid var(--green-500)}
+.card.primary{border-top:3px solid var(--blue-500)}
+.card.tight{padding:var(--sp-4) var(--sp-5)}
+.section-copy{font-size:var(--fs-sm);color:var(--ink-500);margin:0 0 var(--sp-4)}
+
+/* 대화 카드는 남는 높이를 전부 먹고 안쪽만 스크롤된다 */
+.card.chat{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}
 .chat-log{
-  display:flex;flex-direction:column;gap:6px;min-height:104px;max-height:176px;overflow-y:auto;
-  padding:var(--sp-3);background:#fbfcfe;border:1px solid var(--line);border-radius:var(--r-md);
+  flex:1 1 auto;min-height:90px;overflow-y:auto;overscroll-behavior:contain;
+  display:flex;flex-direction:column;gap:7px;
+  padding:var(--sp-3);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);
 }
 .chat-turn{display:flex;gap:8px;align-items:flex-start;font-size:var(--fs-sm);line-height:1.55}
 .chat-turn .who{
   flex:0 0 auto;font-size:10px;font-weight:800;padding:3px 8px;border-radius:var(--r-pill);
-  background:var(--ink-200);color:var(--surface);margin-top:1px;
+  background:var(--ink-500);color:var(--on-solid);margin-top:1px;
 }
-.chat-turn.partner .who{background:var(--ink-500)}
 .chat-turn.me .who{background:var(--blue-500)}
 .chat-turn.me .tx{font-weight:700;color:var(--ink-900)}
 .chat-turn .tx{color:var(--ink-700);overflow-wrap:anywhere}
-.chat-empty{font-size:var(--fs-sm);color:var(--ink-300);text-align:center;padding:var(--sp-4) 0}
-.chat-input-row{display:flex;gap:8px;margin-top:var(--sp-3);align-items:stretch}
+.chat-empty{font-size:var(--fs-sm);color:var(--ink-300);text-align:center;padding:var(--sp-4) 0;margin:auto}
+.chat-input-row{display:flex;gap:8px;margin-top:var(--sp-3);align-items:stretch;flex:0 0 auto}
 .chat-input-row input{
   flex:1 1 0;width:0;min-width:0;font:inherit;font-size:var(--fs-base);padding:10px 13px;
   border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-900);
 }
 .chat-input-row input:focus{outline:2px solid var(--ink-500);outline-offset:1px}
-.who-note{font-size:10.5px;color:var(--ink-300);font-weight:600;margin-top:6px}
+.who-note{font-size:10.5px;color:var(--ink-300);font-weight:600;margin:6px 0 0;flex:0 0 auto}
+
+/* 내가 전할 말 */
+.buffer{
+  min-height:56px;padding:var(--sp-3) var(--sp-4);border-radius:var(--r-md);background:var(--surface-2);
+  border:1.5px solid var(--line);font-size:var(--fs-lg);font-weight:700;line-height:1.6;overflow-wrap:anywhere;
+}
+.buffer .pending{color:var(--blue-600);border-bottom:2.5px solid var(--blue-500);padding-bottom:1px}
+.buffer .ph{color:var(--ink-300);font-weight:500;font-size:var(--fs-base)}
+.speech-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--sp-3)}
+.speech-actions #btnUndo{margin-left:auto}
 
 /* ==========================================================================
-   Candidate surface — 단어 5 + 문장 2, 각 후보는 자신을 고르는 키 뱃지를 단다.
-   3초 "후보 검토·결정" 구간을 줄이는 것이 전체 속도의 핵심이므로, 후보 → 키의
-   시선 이동을 없애는 게 이 영역의 유일한 설계 목표다.
+   Candidates — 후보 7개. 각 후보는 자기를 고르는 키 번호를 달고,
+   같은 번호가 아래 40키 격자에도 텍스트째 실린다.
+   3초 "후보 검토·결정" 구간을 줄이는 것이 이 영역의 유일한 목표.
    ========================================================================== */
-.cand-card{grid-column:1/-1;border-top:3px solid var(--blue-500)}
-.cand-head{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-3)}
-.cand-head .lb{font-size:var(--fs-sm);font-weight:800;color:var(--ink-700)}
-.cand-head .tag{font-size:10.5px;font-weight:700;color:var(--blue-700);background:var(--blue-50);padding:4px 10px;border-radius:var(--r-pill)}
-.cand-foot{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-2);min-width:0}
-.cand-foot>details{min-width:0}
-.metrics{min-width:0}
-.metric{min-width:0;overflow:hidden}
-.cand-foot>details{margin:0}
-.cand-foot summary{min-height:32px;font-size:var(--fs-xs)}
-.settings-row{display:flex;gap:8px;margin-top:var(--sp-4);align-items:flex-start;flex-wrap:wrap}
-.settings-row>details{flex:1 1 220px;margin-top:0}
-.ratio-tag{font-size:10.5px;font-weight:700;color:var(--blue-700);background:var(--blue-50);padding:4px 10px;border-radius:var(--r-pill)}
-.ratio-tag.llm{color:var(--amber-600);background:var(--amber-50)}
-.cand-words{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:var(--sp-2)}
-@media(max-width:720px){.cand-words{grid-template-columns:repeat(2,1fr)}}
-.cand-sents{display:flex;flex-direction:column;gap:7px}
+.cand-head{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:10px}
+.cand-head .lb{font-size:var(--fs-base);font-weight:800;color:var(--ink-900)}
+.cand-words{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.cand-sents{display:flex;flex-direction:column;gap:8px}
 .cand{
-  display:flex;align-items:center;gap:9px;text-align:left;cursor:pointer;
+  display:flex;align-items:center;gap:9px;text-align:left;cursor:pointer;min-width:0;
   background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);
-  padding:9px 11px;min-height:50px;transition:border-color .15s ease,box-shadow .15s ease,transform .1s ease;
+  padding:9px 12px;min-height:50px;transition:border-color .14s ease,box-shadow .14s ease,transform .1s ease;
 }
-.cand:hover{border-color:var(--blue-500);box-shadow:var(--shadow-sm)}
+.cand:hover{border-color:var(--pick-500);box-shadow:var(--shadow-sm)}
 .cand:active{transform:scale(.98)}
 .cand .kb-badge{
   flex:0 0 auto;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;
-  font-size:11.5px;font-weight:800;background:var(--blue-500);color:#fff;
+  font-size:11.5px;font-weight:800;background:var(--pick-500);color:var(--on-solid);
 }
-.cand.sent .kb-badge{background:var(--green-500)}
-.cand .tx{font-size:var(--fs-md);font-weight:700;color:var(--ink-900);overflow-wrap:anywhere;line-height:1.5}
+.cand .tx{font-size:var(--fs-md);font-weight:700;color:var(--ink-900);overflow-wrap:anywhere;line-height:1.45;min-width:0}
 .cand.sent .tx{font-size:1.05rem}
-.cand.ph{border-style:dashed;cursor:default;background:#fbfcfe}
+.cand.ph{border-style:dashed;cursor:default;background:var(--surface-2)}
 .cand.ph:hover{border-color:var(--line);box-shadow:none}
 .cand.ph .kb-badge{background:var(--ink-200)}
 .cand.ph .tx{font-size:var(--fs-sm);font-weight:600;color:var(--ink-300)}
@@ -318,256 +331,205 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
   padding:0 1px;cursor:pointer;color:inherit;border-radius:3px;
 }
 .cand .tx .unit:hover{background:var(--blue-50);border-color:var(--blue-500);color:var(--blue-700)}
+.cand-foot{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-2);min-width:0}
+.cand-foot>details{margin:0;min-width:0}
+.cand-foot summary{min-height:30px;font-size:var(--fs-xs)}
 
 /* ==========================================================================
-   Experiment strip — pseudo-online 설정 (PDF 3번). 기본은 꺼짐.
+   Input + 40-key grid — 5행 × 8열, 40개가 정확히 맞아떨어진다.
    ========================================================================== */
-.exp-strip{display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-sm)}
-.exp-strip label{display:flex;align-items:center;gap:7px;font-weight:700;color:var(--ink-700);margin:0}
-.exp-strip input[type=number]{
-  width:78px;font:inherit;font-size:var(--fs-sm);padding:7px 9px;border:1.5px solid var(--line);
-  border-radius:var(--r-sm);background:var(--surface);color:var(--ink-900);
-}
-.exp-on{background:var(--amber-50);border-color:#f5dcb0!important}
-.mis-flag{font-size:10.5px;font-weight:800;color:var(--amber-600);background:var(--amber-50);padding:3px 9px;border-radius:var(--r-pill)}
-
-.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--sp-5);align-items:start}
-@media(max-width:960px){.grid{grid-template-columns:1fr}}
-
-.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:var(--sp-5);align-items:start}
-@media(max-width:960px){.grid{grid-template-columns:1fr}}
-
-.card{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-6);box-shadow:var(--shadow-sm)}
-.card h3{
-  margin:0 0 4px;font-size:var(--fs-md);font-weight:800;display:flex;align-items:center;gap:10px;color:var(--ink-900);
-}
-.card h3 .tag{font-size:10.5px;font-weight:700;color:var(--blue-700);background:var(--blue-50);padding:4px 10px;border-radius:var(--r-pill)}
-.section-copy{font-size:var(--fs-sm);color:var(--ink-500);margin:0 0 var(--sp-5)}
-.conversation-card{border-top:3px solid var(--green-500)}
-.kb-card{grid-column:1/-1}
-.step-wrap.wide .card{padding:var(--sp-5)}
-.step-wrap.wide .card h3{margin-bottom:var(--sp-3)}
-
-/* conversation card contents */
-#notice:empty{display:none}
-#notice:not(:empty){
-  padding:9px 14px;background:var(--green-50);border-radius:var(--r-sm);margin-bottom:var(--sp-3);
-  color:var(--green-600);font-size:var(--fs-sm);font-weight:600;
-}
-.buffer{
-  min-height:78px;background:#fbfcfe;border:1.5px dashed var(--line-strong);border-radius:var(--r-md);
-  padding:var(--sp-5);font-size:1.3rem;line-height:1.55;font-weight:700;word-break:keep-all;color:var(--ink-900);
-}
-.buffer .pending{color:var(--blue-600);border-bottom:2.5px solid var(--blue-500);padding-bottom:1px}
-.buffer .ph{color:var(--ink-300);font-weight:500;font-size:var(--fs-base)}
-.speech-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--sp-4)}
-.speech-actions #btnUndo{margin-left:auto}
-
-/* input card */
-.context-details{margin-bottom:var(--sp-5);padding-bottom:var(--sp-4);border-bottom:1px solid var(--line)}
-.recent-box{margin-top:var(--sp-3)}
-.recent-box label{display:block;font-size:var(--fs-xs);color:var(--ink-500);font-weight:700;margin-bottom:6px}
-.ctx-pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--sp-4)}
-.ctx-pill{
-  font-size:var(--fs-xs);font-weight:700;color:var(--blue-700);background:var(--blue-50);
-  border-radius:var(--r-pill);padding:6px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;border:1px solid transparent;
-}
-.ctx-pill:hover{border-color:var(--blue-100)}
-.habitual-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--sp-4)}
-.habitual-chip{
-  font-size:var(--fs-sm);font-weight:700;color:var(--green-600);background:var(--green-50);border:1px solid transparent;
-  border-radius:var(--r-pill);padding:8px 14px;cursor:pointer;min-height:40px;transition:transform .1s ease,background .1s ease;
-}
-.habitual-chip:hover{background:#d9f2e6;transform:translateY(-1px)}
-.habitual-chip .n{opacity:.65;font-weight:600;margin-left:4px;font-size:10.5px}
-.habitual-empty{font-size:var(--fs-sm);color:var(--ink-500)}
-
-.ini-row{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 var(--sp-3);flex-wrap:wrap;gap:6px}
+.card.kb-card{display:flex;flex-direction:column;gap:10px;min-height:0}
+.ini-row{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
+.ini-row .kb-legend{margin-left:auto}
+.ini-row .actions{display:flex;gap:6px}
 .ini-row .lb{font-size:var(--fs-sm);font-weight:800;color:var(--ink-700);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ini-row .lb .tag.soft{font-size:10px;font-weight:700;color:var(--ink-500);background:#f6f7fb;border:1px solid var(--line);border-radius:var(--r-pill);padding:3px 9px}
-
 .ini-display{
-  display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:60px;
-  background:#f6f7fb;border-radius:var(--r-md);padding:12px 14px;margin-bottom:var(--sp-3);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:50px;
+  padding:6px var(--sp-4);border-radius:var(--r-md);background:var(--surface-2);border:1.5px solid var(--line);
 }
 .ini-display.empty{color:var(--ink-300);font-size:var(--fs-base);font-weight:600}
 .wblock{
-  min-width:38px;min-height:38px;padding:6px 10px;border-radius:9px;border:1.5px solid var(--line-strong);
-  background:var(--surface);color:var(--blue-700);font-weight:800;font-size:1.15rem;display:grid;place-items:center;
+  display:inline-grid;place-items:center;min-width:40px;height:38px;padding:0 9px;border-radius:var(--r-sm);
+  border:1.5px solid var(--blue-200);background:var(--blue-50);color:var(--blue-700);font-size:1.25rem;font-weight:800;
 }
 .wblock.done{border-color:var(--green-500);color:var(--green-600);background:var(--green-50)}
 
-.ac-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:var(--sp-3)}
-.ac-row[hidden]{display:none}
-.ac-chip{
-  border:1.5px solid var(--blue-100);background:var(--blue-50);color:var(--blue-700);border-radius:var(--r-pill);
-  font-size:var(--fs-sm);font-weight:700;padding:8px 14px;cursor:pointer;min-height:38px;
-}
-.ac-chip:hover{border-color:var(--blue-500)}
-
-.kb-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:var(--sp-2);font-size:10.5px;color:var(--ink-500);font-weight:700}
+.kb-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10.5px;color:var(--ink-500);font-weight:700;align-items:center}
 .kb-legend i{width:8px;height:8px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle}
-
-.kb{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:var(--sp-3)}
-@media(max-width:640px){.kb{grid-template-columns:repeat(5,1fr)}}
+.kb{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
 .kb .key{
+  display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;padding:4px;
   background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-sm);cursor:pointer;
-  font-size:1.1rem;font-weight:700;color:var(--ink-900);min-height:46px;transition:transform .08s ease,box-shadow .08s ease,border-color .1s ease;
-  display:flex;align-items:center;justify-content:center;padding:4px;min-width:0;overflow:hidden;
+  font-size:1.15rem;font-weight:700;color:var(--ink-900);min-height:44px;
+  transition:transform .08s ease,box-shadow .08s ease,border-color .1s ease;
 }
 .kb .key:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
 .kb .key:active{transform:scale(.95)}
-.kb .key.cho{background:var(--blue-50);border-color:var(--blue-100);color:var(--blue-700)}
-.kb .key.jung{background:var(--green-50);border-color:#bfe9d5;color:var(--green-600)}
-.kb .key.cand{background:#f4f0ff;border-color:#ded2fb;color:#6d3fd4;font-size:var(--fs-sm);flex-direction:column;gap:1px;overflow:hidden}
-.kb .key.cand:not(:disabled){background:#efe9ff;border-color:#c9b6f7;box-shadow:0 1px 0 #c9b6f7}
-.kb .key.cand .cw{display:block;font-size:11px;font-weight:800;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-900)}
-.kb .key.cand .cw:empty{display:none}
-.kb .key.cand:disabled{opacity:.35}
-.kb .key.fn{background:#f6f7fb;border-color:var(--line-strong);color:var(--ink-700);font-size:var(--fs-sm);white-space:nowrap;text-overflow:ellipsis}
-
-.kb .key.fn.commit{background:var(--blue-500);border-color:transparent;color:#fff;font-weight:800}
-.kb .key.fn.commit:hover{filter:brightness(1.05)}
-@media(max-width:640px){.kb{gap:5px}.kb .key{font-size:1rem}.kb .key.fn{font-size:10.5px;white-space:normal;line-height:1.2;word-break:keep-all}.kb .key.cand{font-size:11px}.kb .key.cand .cw{font-size:9.5px}}
 .kb .key:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.kb .key.cho{background:var(--blue-50);border-color:var(--blue-100);color:var(--blue-700)}
+.kb .key.jung{background:var(--green-50);border-color:var(--green-100);color:var(--green-600)}
+.kb .key.cand{
+  flex-direction:column;gap:1px;font-size:var(--fs-sm);
+  background:var(--pick-50);border-color:var(--pick-100);color:var(--pick-600);
+}
+.kb .key.cand:not(:disabled){background:var(--pick-100);border-color:var(--pick-200)}
+.kb .key.cand .cw{
+  display:block;font-size:11px;font-weight:800;max-width:100%;color:var(--ink-900);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.kb .key.cand .cw:empty{display:none}
+.kb .key.fn{background:var(--surface-3);border-color:var(--line-strong);color:var(--ink-700);font-size:var(--fs-sm);white-space:nowrap;text-overflow:ellipsis}
+.kb .key.fn.commit{background:var(--blue-500);border-color:transparent;color:var(--on-solid);font-weight:800}
+.kb .key.fn.commit:hover{filter:brightness(1.05)}
+/* SSVEP 자극 창(실험 모드) — 고른 키만 점멸하고 나머지는 잠긴다 */
+.kb.stim .key{opacity:.3;pointer-events:none}
+.kb.stim .key.flicker{opacity:1;animation:ssvep .1s steps(1,end) infinite;border-color:var(--amber-600)}
+@keyframes ssvep{0%{background:var(--amber-600);color:var(--on-solid)}50%{background:var(--surface);color:var(--ink-900)}}
+@media(prefers-reduced-motion:reduce){.kb.stim .key.flicker{animation:none;background:var(--amber-50)}}
 
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--sp-4)}
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.actions{display:flex;flex-wrap:wrap;gap:8px}
 .btn{
-  border:1.5px solid var(--line);background:var(--surface);color:var(--ink-900);border-radius:var(--r-sm);
-  padding:11px 15px;font-size:var(--fs-sm);font-weight:700;cursor:pointer;min-height:44px;
-  transition:border-color .1s ease,background .1s ease,transform .1s ease;
+  min-height:44px;padding:11px 16px;border-radius:var(--r-sm);border:1.5px solid var(--line);
+  background:var(--surface);color:var(--ink-700);font-size:var(--fs-sm);font-weight:700;cursor:pointer;
+  transition:background .12s ease,border-color .12s ease,transform .08s ease;
 }
 .btn:hover{border-color:var(--blue-100);background:var(--blue-50)}
 .btn:active{transform:scale(.97)}
-.btn.primary{background:var(--blue-500);border-color:transparent;color:#fff;box-shadow:var(--shadow-primary)}
+.btn.primary{background:var(--blue-500);border-color:transparent;color:var(--on-solid);box-shadow:var(--shadow-primary)}
 .btn.primary:hover{filter:brightness(1.05);background:var(--blue-500)}
-.btn.accent{background:var(--green-500);border-color:transparent;color:#fff}
+.btn.accent{background:var(--green-500);border-color:transparent;color:var(--on-solid)}
 .btn.accent:hover{filter:brightness(1.05);background:var(--green-500)}
-.btn.danger{border-color:#f0cccc;color:var(--red-600);background:var(--surface)}
+.btn.danger{border-color:var(--red-200);color:var(--red-600);background:var(--surface)}
 .btn.danger:hover{background:var(--red-50)}
-.btn.sm{padding:9px 12px;font-size:var(--fs-xs);min-height:40px}
+.btn.sm{padding:9px 12px;font-size:var(--fs-xs);min-height:38px}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-/* recovery accordions (direct entry / settings) */
-.recovery{margin-top:var(--sp-4);border:1.5px dashed var(--line-strong);border-radius:var(--r-md);padding:var(--sp-4);background:#f8faff}
+/* ==========================================================================
+   Recovery (KeywordAE / FillMask) + settings
+   ========================================================================== */
+.recovery{margin-top:var(--sp-3);border:1.5px dashed var(--line-strong);border-radius:var(--r-md);padding:var(--sp-4);background:var(--surface-2)}
 .recovery label{display:block;font-size:var(--fs-sm);font-weight:700;color:var(--ink-700);margin:var(--sp-3) 0 6px}
 .recovery textarea{margin-bottom:var(--sp-3)}
-
-/* candidate card */
-.nudge{
-  display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);font-weight:700;color:var(--amber-600);
-  background:var(--amber-50);border:1px solid #f7dfae;border-radius:var(--r-sm);padding:10px 13px;margin-bottom:var(--sp-3);
-}
-.cand-list{display:flex;flex-direction:column;gap:var(--sp-3)}
-.candidate{
-  display:grid;grid-template-columns:38px 1fr;gap:var(--sp-3);align-items:center;position:relative;
-  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4);
-  transition:border-color .12s ease,box-shadow .12s ease;
-}
-.candidate:hover{border-color:var(--blue-100);box-shadow:var(--shadow-sm)}
-.candidate .rank{
-  width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:13px;
-  background:var(--blue-50);color:var(--blue-700);
-}
-.candidate:nth-child(1) .rank{background:var(--blue-500);color:#fff}
-.candidate .ct{font-size:1.15rem;font-weight:700;line-height:1.7;overflow-wrap:anywhere}
-.candidate .ct .unit{
-  border:1px solid var(--line-strong);background:#f7f9fc;color:inherit;font:inherit;border-radius:8px;
-  min-width:40px;min-height:44px;margin:2px;padding:4px 7px;cursor:pointer;
-}
-.candidate .ct .unit:hover{background:var(--blue-50);border-color:var(--blue-500);color:var(--blue-700)}
-.candidate .meta{grid-column:2;font-size:10.5px;color:var(--ink-300);font-variant-numeric:tabular-nums}
-.candidate .commit-candidate{
-  grid-column:1/-1;min-height:46px;border:none;border-radius:var(--r-sm);padding:9px 12px;margin-top:2px;
-  background:var(--blue-500);color:#fff;font-weight:700;font-size:var(--fs-sm);cursor:pointer;
-}
-.candidate .commit-candidate:hover{filter:brightness(1.05)}
-.key-hint{
-  position:absolute;top:-8px;right:-8px;width:19px;height:19px;border-radius:99px;background:var(--surface);
-  border:1.5px solid var(--line-strong);color:var(--ink-500);
-  font-size:9.5px;font-weight:800;display:grid;place-items:center;
-}
-.unit-hint{margin:var(--sp-1) 0 var(--sp-3);font-size:var(--fs-xs);color:var(--ink-500);line-height:1.6}
-.empty{padding:var(--sp-6) var(--sp-3);text-align:center;color:var(--ink-500);font-size:var(--fs-base);border:1.5px dashed var(--line);border-radius:var(--r-md)}
-
-/* recovery panel: KeywordAE + FillMask */
 .recovery-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3)}
 .recovery-head span{font-size:var(--fs-sm);font-weight:800;color:var(--blue-700)}
 .recovery-blocks{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--sp-3)}
 .rblock{
-  min-width:40px;min-height:40px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);
-  font-weight:800;font-size:var(--fs-md);text-align:center;cursor:pointer;color:var(--ink-500);
+  min-width:44px;height:44px;padding:0 10px;border-radius:var(--r-sm);border:1.5px solid var(--line-strong);
+  background:var(--surface);font-size:var(--fs-lg);font-weight:800;cursor:pointer;color:var(--ink-900);
 }
 .rblock.filled{border-color:var(--green-500);color:var(--green-600);background:var(--green-50)}
 .rblock.active{border-color:var(--blue-500);box-shadow:0 0 0 3px var(--blue-100)}
 .jamo-picker{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:var(--sp-3);margin-bottom:var(--sp-3)}
 .jamo-picker .row-lb{font-size:var(--fs-xs);color:var(--ink-500);font-weight:700;margin:2px 0 8px}
 .jamo-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
-.jamo-btn{background:#fbfcfe;border:1.5px solid var(--line);border-radius:9px;padding:10px 4px;font-size:var(--fs-md);font-weight:700;cursor:pointer;min-height:40px}
+.jamo-btn{background:var(--surface-2);border:1.5px solid var(--line);border-radius:9px;padding:10px 4px;font-size:var(--fs-md);font-weight:700;cursor:pointer;min-height:40px}
 .jamo-btn:hover{border-color:var(--blue-500);background:var(--blue-50)}
 @media(max-width:640px){.jamo-grid{grid-template-columns:repeat(6,1fr)}}
 .fillmask-box{margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px dashed var(--line)}
 .fillmask-box .lb{font-size:var(--fs-sm);color:var(--ink-700);font-weight:700;margin-bottom:var(--sp-2)}
 .alt-list{display:flex;flex-direction:column;gap:6px}
 .alt{
-  display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1.5px solid var(--line);
-  border-radius:10px;padding:10px 13px;cursor:pointer;font-size:var(--fs-base);font-weight:700;min-height:44px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;text-align:left;
+  padding:11px 13px;border-radius:var(--r-sm);border:1.5px solid var(--line);background:var(--surface);
+  font-size:var(--fs-base);font-weight:700;color:var(--ink-900);
 }
 .alt:hover{border-color:var(--green-500);background:var(--green-50)}
 
-/* metrics */
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:var(--sp-4)}
-.metric{padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fbfcfe}
+.settings-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;flex:0 0 auto}
+.settings-row>details{
+  flex:1 1 240px;margin:0;border:1.5px solid var(--line);border-radius:var(--r-md);
+  padding:0 var(--sp-4);background:var(--surface);
+}
+.settings-row>details>summary{min-height:38px;font-size:var(--fs-sm)}
+.settings-row>details[open]{padding-bottom:var(--sp-4)}
+.settings-row>details.exp-on{background:var(--amber-50);border-color:var(--amber-100)}
+.settings-row label{display:block;font-size:var(--fs-sm);font-weight:700;color:var(--ink-700);margin:var(--sp-3) 0 6px}
+.exp-strip{display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;font-size:var(--fs-sm)}
+.exp-strip label{display:flex;align-items:center;gap:7px;margin:0}
+.exp-strip input[type=number],.exp-strip input[type=text]{
+  width:82px;font:inherit;font-size:var(--fs-sm);padding:7px 9px;border:1.5px solid var(--line);
+  border-radius:var(--r-sm);background:var(--surface);color:var(--ink-900);
+}
+.habitual-row{display:flex;gap:8px;flex-wrap:wrap}
+.habitual-chip{
+  background:var(--green-50);border:1px solid var(--green-100);color:var(--green-600);cursor:pointer;
+  font-size:var(--fs-sm);font-weight:700;padding:8px 13px;border-radius:var(--r-pill);
+}
+.habitual-chip:hover{background:var(--green-100)}
+.habitual-chip .n{opacity:.65;font-weight:600;margin-left:4px;font-size:10.5px}
+.habitual-empty{font-size:var(--fs-sm);color:var(--ink-500)}
+.ctx-pill{background:var(--surface-3);color:var(--ink-700);border:1px solid var(--line)}
+
+.unit-hint{font-size:var(--fs-xs);color:var(--ink-500);line-height:1.6;margin:0}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:var(--sp-3);min-width:0}
+.metric{padding:9px 11px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface-2);min-width:0;overflow:hidden}
 .metric span{display:block;font-size:10.5px;color:var(--ink-500);font-weight:700}
 .metric b{display:block;margin-top:3px;font-size:var(--fs-sm);font-weight:800;word-break:break-all;color:var(--ink-900)}
+.empty{padding:var(--sp-6) var(--sp-3);text-align:center;color:var(--ink-500);font-size:var(--fs-base);border:1.5px dashed var(--line);border-radius:var(--r-md)}
 
-.footer-note{margin:var(--sp-8) auto 4px;max-width:1240px;width:100%;text-align:center}
+.footer-note{margin:var(--sp-3) auto 4px;max-width:1560px;width:100%;text-align:center;padding:0 var(--sp-4)}
 .footer-note p{margin:0;font-size:11px;color:var(--ink-300);line-height:1.7}
 
-/* large-text accessibility mode */
-body.large-text .buffer{font-size:1.7rem}
-body.large-text .candidate .ct{font-size:1.4rem}
-body.large-text .wblock{font-size:1.4rem;min-height:46px}
-body.large-text .kb .key{font-size:1.3rem;min-height:58px}
-body.large-text .btn,body.large-text summary,body.large-text .guide-body p,body.large-text .guide-body li{font-size:1.05rem}
-body.large-text .candidate .commit-candidate{font-size:var(--fs-md);min-height:50px}
+/* ==========================================================================
+   Responsive — 좁아지면 2단을 1단으로 풀고 그때만 페이지가 스크롤된다
+   ========================================================================== */
+@media(max-width:1100px){
+  .work{grid-template-columns:1fr}
+  .card.chat{flex:0 0 auto}
+  .chat-log{min-height:0;max-height:180px}
+}
+@media(max-width:640px){
+  .kb{gap:5px}
+  .kb .key{font-size:1rem;min-height:44px}
+  .kb .key.fn{font-size:10.5px;white-space:normal;line-height:1.2;word-break:keep-all}
+  .kb .key.cand{font-size:11px}
+  .kb .key.cand .cw{font-size:9.5px}
+  .cand-words{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card{padding:var(--sp-4)}
+  .settings-row>details{flex:1 1 100%}
+}
 
+/* 큰 글씨 모드 */
+.large-text .buffer{font-size:var(--fs-xl)}
+.large-text .cand .tx{font-size:var(--fs-lg)}
+.large-text .kb .key{font-size:1.35rem;min-height:56px}
+.large-text .wblock{font-size:1.5rem;height:50px;min-width:50px}
+.large-text .btn{font-size:var(--fs-base)}
 @media(max-width:480px){
-  .candidate{grid-template-columns:32px 1fr}
-  .candidate .meta{display:none}
+  .large-text .kb .key{min-height:50px;font-size:1.15rem}
 }
 
 /* ==========================================================================
-   Usage-guide dialog
+   Guide dialog
    ========================================================================== */
-dialog.guide{
-  width:min(860px,calc(100% - 32px));max-height:88vh;max-height:88dvh;padding:0;border:none;border-radius:var(--r-lg);
-  color:var(--ink-900);background:var(--surface);box-shadow:var(--shadow-md);overscroll-behavior:contain;
-}
-dialog::backdrop{background:rgba(19,27,41,.5)}
+.guide{width:min(760px,94vw);max-height:88vh;border:none;border-radius:var(--r-lg);padding:0;box-shadow:var(--shadow-md);overflow:auto}
+.guide::backdrop{background:rgba(19,27,41,.45)}
 .guide-head{
-  position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:16px;
-  padding:var(--sp-5) var(--sp-6);background:var(--surface);border-bottom:1px solid var(--line);
+  position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);
+  padding:var(--sp-5) var(--sp-6);background:var(--surface);border-bottom:1px solid var(--line);z-index:1;
 }
 .guide-head h2{font-size:var(--fs-xl);margin:0;font-weight:800}
 .guide-body{padding:var(--sp-6)}
 .guide-lead{font-size:var(--fs-lg);margin:0 0 8px;font-weight:700}
 .guide-body p,.guide-body li{font-size:var(--fs-base);line-height:1.8;color:var(--ink-700)}
 .guide-nav{display:flex;gap:8px;flex-wrap:wrap;margin:var(--sp-5) 0}
-.guide-nav a{background:#eef1f7;padding:9px 13px;border-radius:10px;font-size:var(--fs-sm);text-decoration:none;font-weight:700;color:var(--ink-700)}
+.guide-nav a{background:var(--surface-3);padding:9px 13px;border-radius:10px;font-size:var(--fs-sm);text-decoration:none;font-weight:700;color:var(--ink-700)}
 .guide-body section{scroll-margin-top:100px;border-top:1px solid var(--line);padding-top:var(--sp-5);margin-top:var(--sp-6)}
 .guide-body h3{font-size:var(--fs-lg);margin:0 0 var(--sp-3);font-weight:800}
 .guide-body h4{font-size:var(--fs-md);margin-bottom:4px;font-weight:800}
 .guide-body ol,.guide-body ul{padding-left:22px}
 .guide-callout{border-left:4px solid var(--blue-500);background:var(--blue-50);padding:12px 16px;border-radius:8px;color:var(--ink-700)}
-.guide-body kbd{border:1px solid var(--ink-200);border-bottom-width:2px;border-radius:4px;padding:2px 7px;background:#f4f6fb;font-size:.85em}
+.guide-body kbd{border:1px solid var(--ink-200);border-bottom-width:2px;border-radius:4px;padding:2px 7px;background:var(--surface-3);font-size:.85em}
 .guide-body details{border-bottom:1px solid var(--line);padding-bottom:8px}
 .guide-body a{color:var(--blue-600)}
 
 @media print{
-  body:has(dialog[open])>*:not(dialog){display:none!important}
-  dialog.guide[open]{position:static;max-height:none;width:100%;border:0;box-shadow:none}
-  .guide-head{position:static}.guide-nav,#btnGuideClose{display:none}
+  .topbar,.kb,.actions,.settings-row,.loop-hud,.chat-input-row{display:none!important}
+  body{background:var(--surface)}
+  .card{box-shadow:none;border-color:var(--line)}
 }
 </style>
 </head>
@@ -655,7 +617,7 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
       <button class="ghost-btn" id="btnNewSession" style="margin-left:auto">↺ 새 대화 시작</button>
     </div>
 
-    <!-- 루프 HUD: PDF의 4단계 루프를 그대로 올리고 선택당 실제 시간을 잰다 -->
+    <!-- 루프 HUD: 논문의 4단계를 그대로 올리고 선택당 실제 시간을 잰다 -->
     <div class="loop-hud">
       <div class="loop-bar" id="loopBar" title="문장 시작 → loop(① 후보 검토·결정 → ② 응시·EEG 수집 → ③ 선택 키 판독 → ④ 후보 갱신) → 종료">
         <div class="loop-step" data-step="1"><span class="n">1</span>후보 검토·결정<span class="t" id="t1">–</span></div>
@@ -675,134 +637,136 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
       </div>
     </div>
 
-    <div class="grid">
-      <!-- 대화 누적 (상대 / 나) -->
-      <section class="card">
-        <h3>대화 <span class="tag">상대 · 나 누적 → 후보 문맥</span></h3>
-        <div class="chat-log" id="chatLog"></div>
-        <div class="chat-input-row">
-          <input id="partnerText" maxlength="200" placeholder="상대방이 한 말을 입력하세요" aria-label="상대방이 한 말">
-          <button class="btn" id="btnPartnerSend">상대 말 추가</button>
-        </div>
-        <p class="who-note">상대방 전용 입력 · 환자 입력은 아래 40키만 사용합니다.</p>
-      </section>
-
-      <!-- 내가 전할 말 -->
-      <section class="card conversation-card" id="sayCard">
-        <h3>내가 전할 말 <span class="tag">확정한 문장만 추가</span></h3>
-        <div id="notice" role="status" aria-live="polite" class="unit-hint"></div>
-        <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
-        <div class="speech-actions">
-          <button class="btn accent" id="btnSpeak">문장 말하기</button>
-          <button class="btn" id="btnStopSpeak">말하기 중지</button>
-          <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
-        </div>
-      </section>
-
-      <!-- 후보: 단어 5 + 문장 2, 각 후보는 자신을 고르는 후보키 번호를 단다 -->
-      <section class="card cand-card">
-        <div class="cand-head">
-          <span class="lb">후보</span><span class="tag">후보키 1–7 · 숫자키</span>
-          <span class="ratio-tag" id="ratioTag">단어 5 · 문장 2</span>
-          <span id="nudgeBox"></span>
-        </div>
-        <div class="cand-words" id="candWords" aria-live="polite"></div>
-        <div class="cand-sents" id="candSents" aria-live="polite" aria-busy="false"></div>
-        <div class="cand-foot">
-          <span class="unit-hint" id="unitHint" style="margin:0" hidden>💡 문장 후보의 글자를 누르면 그 글자만 바꾼 대안을 찾습니다 (FillMask)</span>
-          <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding:0;margin-left:auto">🔎 글자를 직접 완성하기</button>
-          <details style="margin:0"><summary>응답 정보</summary><div class="metrics">
-            <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
-            <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
-            <div class="metric"><span>서버 지연</span><b id="mLat">-</b></div>
-            <div class="metric"><span>모드</span><b id="mMode">-</b></div>
-          </div></details>
-        </div>
-        <div class="recovery" id="recoveryPanel" hidden>
-          <div class="recovery-head">
-            <span>글자를 직접 완성해서 다시 찾기 (KeywordAE)</span>
-            <button class="ghost-btn" id="btnRecoveryClose">닫기</button>
+    <div class="work">
+      <!-- 왼쪽: 맥락 (대화 누적 + 지금까지 만든 말) -->
+      <div class="col">
+        <section class="card chat">
+          <h3>대화 <span class="tag">상대 · 나 누적 → 후보 문맥</span></h3>
+          <div class="chat-log" id="chatLog"></div>
+          <div class="chat-input-row">
+            <input id="partnerText" maxlength="200" placeholder="상대방이 한 말을 입력하세요" aria-label="상대방이 한 말">
+            <button class="btn" id="btnPartnerSend">추가</button>
           </div>
-          <div class="recovery-blocks" id="recoveryBlocks"></div>
-          <div class="jamo-picker" id="jamoPicker" hidden></div>
-          <div class="actions" style="margin-top:0">
-            <button class="btn primary sm" id="btnRecoveryPredict">이 글자로 다시 찾기</button>
-            <button class="btn sm" id="btnRecoveryReset">초기화</button>
-          </div>
-          <div class="fillmask-box" id="fillmaskBox" hidden>
-            <div class="lb" id="fillmaskLabel"></div>
-            <div class="alt-list" id="fillmaskAlts"></div>
-          </div>
-        </div>
-      </section>
+          <p class="who-note">상대방 전용 입력 · 환자 입력은 오른쪽 40키만 사용합니다.</p>
+        </section>
 
-      <!-- 입력: 현재 글자 + 40키 -->
-      <section class="card kb-card">
-        <div class="ini-row">
-          <span class="lb"><span class="step-chip">1</span> 입력 중 <span class="tag soft">최대 20글자</span></span>
-          <span id="expFlag"></span>
-        </div>
-        <div class="ini-display empty" id="iniDisplay">키를 눌러 시작하세요</div>
-        <div class="kb-legend">
-          <span><i style="background:var(--blue-500)"></i>초성 19</span>
-          <span><i style="background:var(--green-500)"></i>중성 10</span>
-          <span><i style="background:#6d3fd4"></i>후보 7</span>
-          <span><i style="background:var(--ink-500)"></i>기능 4</span>
-          <span style="margin-left:auto;color:var(--ink-300)">합계 40키 · 5×8</span>
-        </div>
-        <div class="keyboard kb" id="keyboard"></div>
-        <div class="actions">
-          <button class="btn" id="btnClear">단어 초기화</button>
-          <button class="btn" id="btnCancel" hidden>조회 취소</button>
-          <button class="btn danger" id="btnReset">전체 초기화</button>
-        </div>
-
-        <div class="settings-row">
-        <details class="recovery" id="expPanel">
-          <summary>Pseudo-online 실험 모드 · 결과 내보내기</summary>
-          <div class="exp-strip">
-            <label><input type="checkbox" id="expOn"> 실험 모드 켜기</label>
-            <label>SSVEP 자극 <input type="number" id="expStim" value="1500" min="0" max="6000" step="100"> ms</label>
-            <label>판독 정확도 <input type="number" id="expAcc" value="90" min="10" max="100" step="1"> %</label>
-            <label>참가자 <input type="text" id="expSubject" value="S01" maxlength="20" style="width:90px"></label>
+        <section class="card accent tight">
+          <h3>내가 전할 말 <span class="tag">확정한 문장만 추가</span></h3>
+          <div id="notice" role="status" aria-live="polite" class="unit-hint" style="margin-bottom:8px"></div>
+          <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
+          <div class="speech-actions">
+            <button class="btn accent" id="btnSpeak">문장 말하기</button>
+            <button class="btn" id="btnStopSpeak">말하기 중지</button>
+            <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
           </div>
-          <p class="unit-hint">실험 모드를 켜면 키를 누른 뒤 설정한 시간만큼 자극(점멸) 창이 유지되고, 설정한 정확도로 오판독이 주입됩니다(MindChat SSVEP 90% 기준). 모든 시행의 소요 시간·오판독 여부가 기록됩니다.</p>
-          <div class="actions" style="margin-top:0">
-            <button class="btn" id="btnExportTrials">시행 기록 CSV 내려받기</button>
-            <button class="btn" id="btnExportMetrics">사용 지표 JSON</button>
-            <button class="btn danger sm" id="btnResetTrials">기록 비우기</button>
+        </section>
+      </div>
+
+      <!-- 오른쪽: 행동 축. 후보와 40키를 세로로 붙여 시선 이동을 없앤다 -->
+      <div class="col">
+        <section class="card primary">
+          <div class="cand-head">
+            <span class="lb">후보</span>
+            <span class="tag">후보키 1–7 · 숫자키</span>
+            <span class="ratio-tag" id="ratioTag">단어 5 · 문장 2</span>
+            <span id="nudgeBox"></span>
           </div>
-        </details>
+          <div class="cand-words" id="candWords" aria-live="polite"></div>
+          <div class="cand-sents" id="candSents" aria-live="polite" aria-busy="false"></div>
+          <div class="cand-foot">
+            <span class="unit-hint" id="unitHint" hidden>💡 문장 후보의 글자를 누르면 그 글자만 바꾼 대안을 찾습니다 (FillMask)</span>
+            <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding:0;margin-left:auto">🔎 글자를 직접 완성하기</button>
+            <details><summary>응답 정보</summary><div class="metrics">
+              <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
+              <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
+              <div class="metric"><span>서버 지연</span><b id="mLat">-</b></div>
+              <div class="metric"><span>모드</span><b id="mMode">-</b></div>
+            </div></details>
+          </div>
+          <div class="recovery" id="recoveryPanel" hidden>
+            <div class="recovery-head">
+              <span>글자를 직접 완성해서 다시 찾기 (KeywordAE)</span>
+              <button class="ghost-btn" id="btnRecoveryClose">닫기</button>
+            </div>
+            <div class="recovery-blocks" id="recoveryBlocks"></div>
+            <div class="jamo-picker" id="jamoPicker" hidden></div>
+            <div class="actions">
+              <button class="btn primary sm" id="btnRecoveryPredict">이 글자로 다시 찾기</button>
+              <button class="btn sm" id="btnRecoveryReset">초기화</button>
+            </div>
+            <div class="fillmask-box" id="fillmaskBox" hidden>
+              <div class="lb" id="fillmaskLabel"></div>
+              <div class="alt-list" id="fillmaskAlts"></div>
+            </div>
+          </div>
+        </section>
 
-        <details class="recovery" id="directPanel">
-          <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
-          <label for="directText">예측 없이 입력한 문장을 그대로 사용합니다</label>
-          <textarea id="directText" rows="2" maxlength="300" placeholder="전하고 싶은 문장을 입력하세요"></textarea>
-          <button class="btn primary" id="btnDirectCommit">입력한 문장 확정</button>
-        </details>
+        <section class="card kb-card">
+          <div class="ini-row">
+            <span class="lb"><span class="step-chip">1</span> 입력 중</span>
+            <span id="expFlag"></span>
+            <span class="kb-legend">
+              <span><i style="background:var(--blue-500)"></i>초성 19</span>
+              <span><i style="background:var(--green-500)"></i>중성 10</span>
+              <span><i style="background:var(--pick-500)"></i>후보 7</span>
+              <span><i style="background:var(--ink-500)"></i>기능 4</span>
+            </span>
+            <span class="actions">
+              <button class="btn sm" id="btnCancel" hidden>조회 취소</button>
+              <button class="btn sm" id="btnClear">단어 초기화</button>
+              <button class="btn danger sm" id="btnReset">전체 초기화</button>
+            </span>
+          </div>
+          <div class="ini-display empty" id="iniDisplay">키를 눌러 시작하세요</div>
+          <div class="keyboard kb" id="keyboard"></div>
+        </section>
+      </div>
+    </div>
 
-        <details class="recovery">
-          <summary>입력 설정 · 자주 쓰는 표현 · 이 탭의 기록</summary>
-          <label>자주 쓰는 표현 (탭하면 바로 입력됨)</label>
-          <div class="habitual-row" id="habitualRow"></div>
-          <label for="context">상황 메모 (선택 · 후보 조회에 함께 전달)</label>
-          <textarea id="context" rows="2" maxlength="300" placeholder="예: 식사 중이고 보호자가 옆에 있어요"></textarea>
-          <label><input type="checkbox" id="autoPredict" checked> 초성을 입력할 때마다 문장 후보 자동 갱신</label>
-          <p class="unit-hint">단어 후보는 항상 즉시(로컬) 갱신됩니다. 문장 후보만 언어 모델을 호출하며, 입력이 멈춘 뒤 0.7초에 실행됩니다.</p>
-          <label for="candidateCount">문장 후보 최대 수</label>
-          <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
-          <p class="unit-hint">문장과 대화, 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 대화가 서버·언어 모델로 전달됩니다.</p>
-          <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
-        </details>
+    <div class="settings-row">
+      <details id="expPanel">
+        <summary>Pseudo-online 실험 모드 · 결과 내보내기</summary>
+        <div class="exp-strip">
+          <label><input type="checkbox" id="expOn"> 실험 모드 켜기</label>
+          <label>SSVEP 자극 <input type="number" id="expStim" value="1500" min="0" max="6000" step="100"> ms</label>
+          <label>판독 정확도 <input type="number" id="expAcc" value="90" min="10" max="100" step="1"> %</label>
+          <label>참가자 <input type="text" id="expSubject" value="S01" maxlength="20"></label>
         </div>
-      </section>
+        <p class="unit-hint" style="margin-top:12px">실험 모드를 켜면 키를 누른 뒤 설정한 시간만큼 자극(점멸) 창이 유지되고, 설정한 정확도로 오판독이 주입됩니다(MindChat SSVEP 90% 기준). 모든 시행의 소요 시간·오판독 여부가 기록됩니다.</p>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn" id="btnExportTrials">시행 기록 CSV 내려받기</button>
+          <button class="btn" id="btnExportMetrics">사용 지표 JSON</button>
+          <button class="btn danger sm" id="btnResetTrials">기록 비우기</button>
+        </div>
+      </details>
+
+      <details id="directPanel">
+        <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
+        <label for="directText">예측 없이 입력한 문장을 그대로 사용합니다</label>
+        <textarea id="directText" rows="2" maxlength="300" placeholder="전하고 싶은 문장을 입력하세요"></textarea>
+        <button class="btn primary" id="btnDirectCommit">입력한 문장 확정</button>
+      </details>
+
+      <details>
+        <summary>입력 설정 · 자주 쓰는 표현 · 이 탭의 기록</summary>
+        <label>자주 쓰는 표현 (탭하면 바로 입력됨)</label>
+        <div class="habitual-row" id="habitualRow"></div>
+        <label for="context">상황 메모 (선택 · 후보 조회에 함께 전달)</label>
+        <textarea id="context" rows="2" maxlength="300" placeholder="예: 식사 중이고 보호자가 옆에 있어요"></textarea>
+        <label><input type="checkbox" id="autoPredict" checked> 초성을 입력할 때마다 문장 후보 자동 갱신</label>
+        <p class="unit-hint">단어·문장 후보는 검수된 표현 사전에서 항상 즉시(0ms) 채워집니다. 언어 모델은 로컬이 못 맞춘 나머지만 채우며, 입력이 멈춘 뒤 0.7초에 실행됩니다.</p>
+        <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
+        <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
+        <p class="unit-hint">문장과 대화, 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 대화가 서버·언어 모델로 전달됩니다.</p>
+        <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
+      </details>
     </div>
   </section>
 
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독은 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v0.9.0</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 검수된 표현 281개를 로컬에서 먼저 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독은 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.0.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -821,6 +785,12 @@ dialog::backdrop{background:rgba(19,27,41,.5)}
 </dialog>
 <script>
 const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+/* 격자에 놓는 순서. 사전 순서(CHO)는 백엔드와 맞춰야 하므로 그대로 두고,
+   화면 배치만 실제 사용 빈도순으로 바꾼다. 빈도는 검수된 표현 사전에서 직접
+   센 값이다(ㅇ 371 · ㅈ 305 · ㄱ 155 … ㅆ 1). 자주 쓰는 초성이 격자 왼쪽 위
+   — 눈이 가장 먼저 닿는 자리 — 에 모이고 쌍자음처럼 드문 키는 끝으로 밀려서,
+   전체 시간의 가장 큰 덩어리인 "후보 검토·결정" 구간의 탐색 시간이 줄어든다. */
+const CHO_LAYOUT=["ㅇ","ㅈ","ㄱ","ㅁ","ㅅ","ㅎ","ㄹ","ㄴ","ㄷ","ㅂ","ㅊ","ㅍ","ㄲ","ㅋ","ㅌ","ㅉ","ㄸ","ㅃ","ㅆ"];
 const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
 const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
 
@@ -840,7 +810,10 @@ const FN_KEYS=[
 ];
 /* 로컬 자동완성 시드: research/phrase_memory/approved_bci_phrase_bank_v2.jsonl 에서
    실제 검수된 문장을 단어 단위로 쪼개 빈도를 센 것 (LLM 미사용, 클라우드 호출 없음). */
-const SEED_WORDS=[["ㅈ","좀",39],["ㅈㄱ","조금",19],["ㅈ","줘",17],["ㄴㅁ","너무",10],["ㅇㄴ","오늘",8],["ㄷㅅ","다시",8],["ㄱㅇ","거야",7],["ㄷ","더",6],["ㄲㅈ","꺼줘",6],["ㅇㅈ","언제",6],["ㅋㅈ","켜줘",5],["ㄷㅇ","다음",5],["ㅎㅈ","해줘",4],["ㄴㅊㅈ","낮춰줘",4],["ㄴㄹㅈ","내려줘",4],["ㅇㅍ","아파",4],["ㅇㄹㅈ","알려줘",4],["ㅁㅇ","뭐야",4],["ㅁㅇ","많이",4],["ㅁㅎㅈ","말해줘",4],["ㅎㄱ","할게",4],["ㄱㅈㅇㅈ","가져와줘",3],["ㅎㄷㅍ","휴대폰",3],["ㄷㅇㅈ","닫아줘",3],["ㅎ","한",3],["ㅁㅊㅈ","멈춰줘",3],["ㅁ","물",3],["ㅂ","밥",3],["ㄴㅇㅈ","높여줘",3],["ㅇㄹㅈ","올려줘",3],["ㅂㅊㅈ","받쳐줘",3],["ㄷㄷㅎ","답답해",3],["ㅎㅇㅎㅈㅅㅇ","확인해주세요",3],["ㄴㄱ","누가",3],["ㅇㅈ","일정",3],["ㅈㅁ","정말",3],["ㅈ","잘",3],["ㅂㄱ","방금",3],["ㄷ","다",3],["ㅇ","안",3],["ㅅㅁㅎㅈ","설명해줘",3],["ㅂㅇㅈ","보여줘",3],["ㅂㅉㄹ","번째로",3],["ㅂㅈ","봐줘",2],["ㄱㄷㄹㅈ","기다려줘",2],["ㅅ","손",2],["ㄴㅇㅈ","놓아줘",2],["ㅊㅊㅎ","천천히",2],["ㄴ","내",2],["ㄷㅇㅈ","들어줘",2],["ㅇㄱㅈ","옮겨줘",2],["ㅊ","차",2],["ㅁㅈ","먹자",2],["ㅇㅇㅋ","에어컨",2],["ㅅㅍㄱ","선풍기",2],["ㄴㅂ","난방",2],["ㅋㅌ","커튼",2],["ㅊㅁ","창문",2],["ㅇㅇㅈ","열어줘",2],["ㅂㄹ","볼륨",2],["ㅅㄹ","소리",2],["ㅋㅇㅈ","키워줘",2],["ㅈㅁㅇ","조명을",2],["ㄷㄹ","다리",2],["ㅍ","팔",2],["ㅂㄱ","베개",2],["ㅁㅇ","몸을",2],["ㄷㄹㅈ","돌려줘",2],["ㅊㄷㄹ","침대를",2],["ㅇㅇㄹ","옆으로",2],["ㅎㄹㄱ","허리가",2],["ㅃㄱㅎ","뻐근해",2],["ㅇㅇ","약을",2],["ㅁㅇㅇㅇ","먹었어요",2],["ㅇㅈ","아직",2],["ㅎㅈㅅㅇ","해주세요",2],["ㅇㄴㅇ","오나요",2],["ㄱㅅ","검사",2],["ㅅㄱㅇ","시간이",2],["ㄱ","것",2],["ㅇㄹㅈㅅㅇ","알려주세요",2],["ㅁ","몇",2],["ㅇ","올",2],["ㅁ","뭐",2],["ㅎ","해",2],["ㅇㅂ","이번",2],["ㅁㅇ","먹어",2],["ㅁㅅ","무슨",2],["ㄴㅇ","내일",2],["ㅈ","주",2],["ㅂㄱㅇ","반가워",2],["ㅂㅈ","보자",2],["ㅎㅇ","했어",2],["ㄴ","나",2],["ㅁㅇㅂㅈ","물어봐줘",2],["ㅈㄱㅇ","지금은",2],["ㅅㅇ","싶은",2],["ㄱㅂㅇㅇ","기분이야",2],["ㅅㅇ","싶어",2],["ㄱㅇ","곁에",2],["ㄱㅂㅇ","기분이",2],["ㄷ","돼",2],["ㅎㅁ","화면",2],["ㅈㅎ","전화",2],["ㅁㅅㅈ","메시지",2],["ㅌㄹㅂㅈ","텔레비전",2],["ㅅㄹㄹ","소리를",2],["ㄴㄹ","노래",2],["ㄱ","곡",2],["ㅌㅇㅈ","틀어줘",2],["ㅇㄹ","알람",2],["ㅇㅈ","있지",2],["ㅇㅈ","와줘",2],["ㅈㅈㅅㅇ","재주세요",2],["ㅇ","왜",2],["ㅁㅇㅇ","마음이",2],["ㅈㅇ","좋아",2],["ㅇㅉ","이쪽",1],["ㅈㅇㅈ","잡아줘",1],["ㅇㄱ","여기",1],["ㅈㄱ","저기",1],["ㅇㄱ","이거",1],["ㅇㄱ","안경",1],["ㄹㅁㅋ","리모컨",1],["ㅁ","문",1],["ㅂ","번",1],["ㅈㅅ","잠시",1],["ㅁ","말",1],["ㅇㅉㅇㄹ","이쪽으로",1],["ㅅㅇㅎ","시원한",1],["ㅈㅅ","주스",1],["ㅃㄷ","빨대",1],["ㄴㅇㅈ","넣어줘",1],["ㅋ","컵",1],["ㅈㄱㄹ","젓가락",1],["ㅈ","죽",1],["ㄱ","국",1],["ㅋㅇ","컵에",1],["ㄸㄹㅈ","따라줘",1],["ㅅㅅ","식사",1],["ㅅㅇㄷ","쉬었다",1],["ㅈㅇㅈ","줄여줘",1],["ㄱㄱㄱ","공기가",1],["ㄱㅈㅎ","건조해",1],["ㄷㅇ","등을",1],["ㅅㅇㅈ","세워줘",1],["ㄴㅎㅈ","눕혀줘",1],["ㄱㄱ","고개",1],["ㅍㅈ","펴줘",1],["ㅅㅇ","손을",1],["ㅂㅇ","발을",1],["ㅇㄲㄹ","어깨를",1],["ㅎㄹㄹ","허리를",1],["ㄱㅇㄷㄹ","가운데로",1],["ㅁㅇ","목이",1],["ㄷㄹㄱ","다리가",1],["ㄱㅅㅇ","가슴이",1],["ㅅㅇ","숨이",1],["ㅅㄲㅇ","손끝이",1],["ㅈㄹ","저려",1],["ㄴㅇ","눈이",1],["ㄸㄱㅇ","따가워",1],["ㅇㅇㅇ","입안이",1],["ㅁㄹ","말라",1],["ㅁㅇ","몸이",1],["ㅈㄲ","자꾸",1],["ㄸㄹ","떨려",1],["ㅂㄱ","배가",1],["ㄷㅂㄹㅎ","더부룩해",1],["ㅅㅇ","속이",1],["ㅆㄹ","쓰려",1],["ㅅㅅㅍㅎㄷ","산소포화도",1],["ㅎㅎ","호흡",1],["ㅅㅌ","상태",1],["ㅇㅁ","이미",1],["ㅁ","못",1],["ㅂㅎㅈㅇㄱ","보호자에게",1],["ㅇㄹㅎㅈㅅㅇ","연락해주세요",1],["ㅎㅇ","흡인",1],["ㅎㅂ","한번",1],["ㅈㅅㄹ","자세를",1],["ㄱㅎㅅ","간호사",1],["ㅇㅅ","의사",1],["ㅇㅈㅇㅇ","언제예요",1],["ㅈㅅ","주사",1],["ㅂㅇㄱ","부위가",1],["ㅇㅍㅇ","아파요",1],["ㅇㄱㅅㄹ","응급실로",1],["ㄱㅇ","가야",1],["ㅎ","할",1],["ㄱㅇㅇ","같아요",1],["ㅅㅅㄹ","산소를",1],["ㅇㄹㅈㅅㅇ","올려주세요",1],["ㅌㅈ","통증",1],["ㅇㅊㄹ","위치를",1],["ㅂㅈㅅㅇ","봐주세요",1],["ㅇ","약",1],["ㅇㄹㅇ","이름을",1],["ㅅㅇ","시에",1],["ㅊㅂㅎ","출발할",1],["ㅂㅇ","병원",1],["ㅇㅇ","있어",1],["ㅇㅎㅇㄴ","오후에는",1],["ㅈㄴㅇㄴ","저녁에는",1],["ㅇ","와",1],["ㅈㅁㅇ","주말에",1],["ㄷㅇ","달에",1],["ㅁㄴㅈ","만나자",1],["ㅇㅊㅇ","아침에",1],["ㄲㅇㅈㄹ","깨워줄래",1],["ㅈㅅㅇ","점심은",1],["ㅇㄴㅇ","오늘이",1],["ㅇㅇㅇㅇ","요일이야",1],["ㅇㅇ","예약",1],["ㅅㅇ","시야",1],["ㅇㅈㅇ","일정이",1],["ㅂㄱ","보고",1],["ㅅㅇㅇ","싶었어",1],["ㅁㄴㅅ","만나서",1],["ㅈㄴㅈ","지냈지",1]];
+/* 자동 생성 — tools/gen_seed.py. 직접 고치지 말고 스크립트를 다시 돌릴 것. */
+const SEED_CATS=["ambiguity","basic_request","communication_control","device_control","emotion_needs","environment","food_drink","medical_communication","pain_discomfort","positioning","questions_answers","schedule_time","social"];
+const SEED_PHRASES=[["ㅇㅉㅂㅈ","이쪽 봐줘",1],["ㅈㄱㄱㄷㄹㅈ","조금 기다려줘",1],["ㅅㅈㅈㅇㅈ","손 좀 잡아줘",1],["ㅇㄱㄴㅇㅈ","여기 놓아줘",1],["ㅈㄱㄴㅇㅈ","저기 놓아줘",1],["ㅇㄱㄱㅈㅇㅈ","이거 가져와줘",1],["ㅎㄷㅍㄱㅈㅇㅈ","휴대폰 가져와줘",1],["ㅇㄱㅈㅈ","안경 좀 줘",1],["ㄹㅁㅋㄱㅈㅇㅈ","리모컨 가져와줘",1],["ㅁㅈㄷㅇㅈ","문 좀 닫아줘",1],["ㅎㅂㄷㅎㅈ","한 번 더 해줘",1],["ㅈㄱㅊㅊㅎㅎㅈ","조금 천천히 해줘",1],["ㅈㅅㅁㅊㅈ","잠시 멈춰줘",1],["ㄴㅁㄷㅇㅈ","내 말 들어줘",1],["ㅇㅉㅇㄹㅇㄱㅈ","이쪽으로 옮겨줘",1],["ㅅㅇㅎㅁㅈ","시원한 물 줘",6],["ㅈㅅㅈㅈ","주스 좀 줘",6],["ㅊㅈㅈ","차 좀 줘",6],["ㅃㄷㄴㅇㅈ","빨대 넣어줘",6],["ㅋㅈㅈ","컵 좀 줘",6],["ㅈㄱㄹㅈㅈ","젓가락 좀 줘",6],["ㅈㅈㄱㅈ","죽 조금 줘",6],["ㄱㄷㅈ","국 더 줘",6],["ㅂㅈㄱㅈ","밥 조금 줘",6],["ㅋㅇㄸㄹㅈ","컵에 따라줘",6],["ㅅㅅㅁㅊㅈ","식사 멈춰줘",6],["ㅈㄱㅅㅇㄷㅁㅈ","조금 쉬었다 먹자",6],["ㅇㅇㅋㅈㄲㅈ","에어컨 좀 꺼줘",5],["ㅅㅍㄱㅈㅋㅈ","선풍기 좀 켜줘",5],["ㅅㅍㄱㅈㄲㅈ","선풍기 좀 꺼줘",5],["ㄴㅂㅈㅋㅈ","난방 좀 켜줘",5],["ㄴㅂㅈㄲㅈ","난방 좀 꺼줘",5],["ㅋㅌㅈㄷㅇㅈ","커튼 좀 닫아줘",5],["ㅊㅁㅈㅇㅇㅈ","창문 좀 열어줘",5],["ㅊㅁㅈㄷㅇㅈ","창문 좀 닫아줘",5],["ㅂㄹㅈㄴㅊㅈ","볼륨 좀 낮춰줘",5],["ㅂㄹㅈㄴㅇㅈ","볼륨 좀 높여줘",5],["ㅅㄹㅈㅈㅇㅈ","소리 좀 줄여줘",5],["ㅅㄹㅈㅋㅇㅈ","소리 좀 키워줘",5],["ㅈㅁㅇㄴㅊㅈ","조명을 낮춰줘",5],["ㅈㅁㅇㄴㅇㅈ","조명을 높여줘",5],["ㄱㄱㄱㄴㅁㄱㅈㅎ","공기가 너무 건조해",5],["ㄷㄹㅈㅇㄹㅈ","다리 좀 올려줘",9],["ㄷㄹㅈㄴㄹㅈ","다리 좀 내려줘",9],["ㅍㅈㅇㄹㅈ","팔 좀 올려줘",9],["ㅂㄱㅈㄴㅇㅈ","베개 좀 높여줘",9],["ㅂㄱㅈㄴㅊㅈ","베개 좀 낮춰줘",9],["ㄷㅇㅈㄱㅅㅇㅈ","등을 조금 세워줘",9],["ㅁㅇㅈㄱㄴㅎㅈ","몸을 조금 눕혀줘",9],["ㄱㄱㅈㄷㄹㅈ","고개 좀 돌려줘",9],["ㅅㅈㅍㅈ","손 좀 펴줘",9],["ㅅㅇㄴㄹㅈ","손을 내려줘",9],["ㅂㅇㅂㅊㅈ","발을 받쳐줘",9],["ㅊㄷㄹㅇㄹㅈ","침대를 올려줘",9],["ㅊㄷㄹㄴㄹㅈ","침대를 내려줘",9],["ㅇㄲㄹㅂㅊㅈ","어깨를 받쳐줘",9],["ㅎㄹㄹㅂㅊㅈ","허리를 받쳐줘",9],["ㅁㅇㄱㅇㄷㄹㅇㄱㅈ","몸을 가운데로 옮겨줘",9],["ㅈㄱㅇㅇㄹㄷㄹㅈ","조금 옆으로 돌려줘",9],["ㅁㅇㄴㅁㅇㅍ","목이 너무 아파",8],["ㅎㄹㄱㄴㅁㅇㅍ","허리가 너무 아파",8],["ㄷㄹㄱㄴㅁㅇㅍ","다리가 너무 아파",8],["ㄱㅅㅇㄷㄷㅎ","가슴이 답답해",8],["ㅅㅇㄴㅁㅊ","숨이 너무 차",8],["ㅅㄲㅇㅈㄹ","손끝이 저려",8],["ㄴㅇㄸㄱㅇ","눈이 따가워",8],["ㅇㅇㅇㄴㅁㅁㄹ","입안이 너무 말라",8],["ㅁㅇㅈㄲㄸㄹ","몸이 자꾸 떨려",8],["ㅎㄹㄱㅃㄱㅎ","허리가 뻐근해",8],["ㅂㄱㄷㅂㄹㅎ","배가 더부룩해",8],["ㅅㅇㅆㄹ","속이 쓰려",8],["ㅅㅅㅍㅎㄷㅎㅇㅎㅈㅅㅇ","산소포화도 확인해주세요",7],["ㅎㅎㅅㅌㅎㅇㅎㅈㅅㅇ","호흡 상태 확인해주세요",7],["ㅇㅇㅇㅁㅁㅇㅇㅇ","약을 이미 먹었어요",7],["ㅇㅇㅇㅈㅁㅁㅇㅇㅇ","약을 아직 못 먹었어요",7],["ㅂㅎㅈㅇㄱㅇㄹㅎㅈㅅㅇ","보호자에게 연락해주세요",7],["ㅎㅇㅎㅂㅎㅈㅅㅇ","흡인 한번 해주세요",7],["ㅈㅅㄹㅎㅇㅎㅈㅅㅇ","자세를 확인해주세요",7],["ㄱㅎㅅㅇㅈㅇㄴㅇ","간호사 언제 오나요",7],["ㅇㅅㅇㅈㅇㄴㅇ","의사 언제 오나요",7],["ㄱㅅㅅㄱㅇㅇㅈㅇㅇ","검사 시간이 언제예요",7],["ㅈㅅㅂㅇㄱㅇㅍㅇ","주사 부위가 아파요",7],["ㅇㄱㅅㄹㄱㅇㅎㄱㄱㅇㅇ","응급실로 가야 할 것 같아요",7],["ㅅㅅㄹㅈㄱㅇㄹㅈㅅㅇ","산소를 조금 올려주세요",7],["ㅌㅈㅇㅊㄹㅂㅈㅅㅇ","통증 위치를 봐주세요",7],["ㅇㅇㄹㅇㅇㄹㅈㅅㅇ","약 이름을 알려주세요",7],["ㅁㅅㅇㅇㄱㅇ","몇 시에 올 거야",11],["ㅇㅈㅊㅂㅎㄱㅇ","언제 출발할 거야",11],["ㅇㄴㅂㅇㅇㅇ","오늘 병원 있어",11],["ㅇㅎㅇㄴㅁㅎ","오후에는 뭐 해",11],["ㅈㄴㅇㄴㄴㄱㅇ","저녁에는 누가 와",11],["ㅇㅂㅈㅁㅇㅁㅎ","이번 주말에 뭐 해",11],["ㄷㅇㄷㅇㅁㄴㅈ","다음 달에 만나자",11],["ㅇㅊㅇㄲㅇㅈㄹ","아침에 깨워줄래",11],["ㅈㅅㅇㅇㅈㅁㅇ","점심은 언제 먹어",11],["ㅇㄴㅇㅁㅅㅇㅇㅇㅇ","오늘이 무슨 요일이야",11],["ㅇㅇㅅㄱㅇㅁㅅㅇ","예약 시간이 몇 시야",11],["ㄴㅇㅇㅈㅇㄹㅈ","내일 일정 알려줘",11],["ㅇㅂㅈㅇㅈㅇㄹㅈ","이번 주 일정 알려줘",11],["ㄷㅇㅇㅈㅇㅁㅇ","다음 일정이 뭐야",11],["ㅈㅁㅂㄱㅅㅇㅇ","정말 보고 싶었어",12],["ㅁㄴㅅㅂㄱㅇ","만나서 반가워",12],["ㅈㅈㄴㅈ","잘 지냈지",12],["ㅇㄴㅈㅁㅇㅇ","오늘 재밌었어",12],["ㅁㅇㅎㅇ","미안했어",12],["ㅈㅁㅊㅎㅎ","정말 축하해",12],["ㄴㄱㅊㅇ","너 괜찮아",12],["ㅁㅇㅅㄹㅎ","많이 사랑해",12],["ㅇㄹㅁㅇㄹㅂㄱㅇ","오랜만이라 반가워",12],["ㅊㄱㅇㄱㅇㄹㅎㅈ","친구에게 연락해줘",12],["ㅇㄴㄱㅅㅎㅇ","오늘 고생했어",12],["ㅈㅁㄱㅁㅇㅇ","정말 고마웠어",12],["ㄷㅇㅇㄸㅂㅈ","다음에 또 보자",12],["ㅇㄴㅈㄱㅇㄷ","오늘 즐거웠다",12],["ㅈㄱㄷㅇㅇㄱㅎㅈ","조금 더 이야기하자",12],["ㅇㄷㄹㄱㄴㄱㅇ","어디로 가는 거야",10],["ㄴㄱㅇㅈㅇㄹㅈ","누구인지 알려줘",10],["ㅂㄱㅁㄹㄱㅎㅇ","방금 뭐라고 했어",10],["ㅇㄱㅁㅇ","이게 뭐야",10],["ㅂㄱㄴㄱㅇㅇ","방금 누가 왔어",10],["ㅇㅈㄷㅎㅇ","이제 다 했어",10],["ㅇㅈㅇㄲㄴㅇ","아직 안 끝났어",10],["ㅈㅁㄹㄱㅇ","잘 모르겠어",10],["ㄱㅇㅇㅇㄴ","기억이 안 나",10],["ㄷㅅㅁㅇㅂㅈ","다시 물어봐줘",10],["ㄴㄱㄱㅈㄱㅇ","누가 가져갔어",10],["ㅈㄱㅁㅅㅇ","조금 무서워",4],["ㅁㅇㅂㅇㅎ","많이 불안해",4],["ㄴㅁㅇㄹㅇ","너무 외로워",4],["ㅈㄱㅅㅅㅎ","조금 심심해",4],["ㅈㄱㅅㅅㅎ","조금 속상해",4],["ㅇㄴㄴㅁㅍㄱㅎ","오늘 너무 피곤해",4],["ㅈㄱㅇㅍㅇㅎ","지금은 편안해",4],["ㅇㄴㅎㅂㅎ","오늘 행복해",4],["ㅎㄱㅁㅇㄴ","화가 많이 나",4],["ㅇㄱㅅㅇㄱㅂㅇㅇ","울고 싶은 기분이야",4],["ㅇㄱㅅㅇㄱㅂㅇㅇ","웃고 싶은 기분이야",4],["ㅈㄲㅎㅈㅇㄱㅅㅇ","잠깐 혼자 있고 싶어",4],["ㄴㄱㄱㄱㅇㅇㅇㅇㅁㅈㄱㅇ","누군가 곁에 있었으면 좋겠어",4],["ㅈㅇㅃㄹㄱㄱㅅㅇ","집에 빨리 가고 싶어",4],["ㅈㄱㅅㄱㅅㄷ","조금 쉬고 싶다",4],["ㄱㅂㅇㅈㄴㅇㅈㅇ","기분이 좀 나아졌어",4],["ㄱㅈㅇㅁㅇㄷ","걱정이 많이 돼",4],["ㅈㄱㅋㄱㅁㅎㅈ","조금 크게 말해줘",2],["ㅎㅂㅁㄷㅁㅎㅈ","한 번만 더 말해줘",2],["ㅉㄱㅅㅁㅎㅈ","짧게 설명해줘",2],["ㅅㄱㅅㅁㅎㅈ","쉽게 설명해줘",2],["ㅊㅊㅎㅅㅁㅎㅈ","천천히 설명해줘",2],["ㄴㄱㄲㄲㅈㅁㅎㄱ","내가 끝까지 말할게",2],["ㅈㄱㅇㄷㄷㅎㄱㅇㄹㅇ","지금은 대답하기 어려워",2],["ㅅㅌㅈㄹㄷㅅㅂㅇㅈ","선택지를 다시 보여줘",2],["ㅊㅂㅉㄹㅎㄱ","첫 번째로 할게",2],["ㅅㅂㅉㄹㅎㄱ","세 번째로 할게",2],["ㅊㅇㅂㅌㄷㅅㅎㄱ","처음부터 다시 할게",2],["ㅂㄱㅅㅌㅊㅅㅎㄱ","방금 선택 취소할게",2],["ㅇㅁㅈㅈㅇㅈ","이 문장 지워줘",2],["ㅇㄷㄹㅁㅎㅈ","이대로 말해줘",2],["ㅎㄷㅍㅎㅁㅋㅈ","휴대폰 화면 켜줘",3],["ㅎㄷㅍㅎㅁㄲㅈ","휴대폰 화면 꺼줘",3],["ㅈㅎㅂㅇㅈ","전화 받아줘",3],["ㅁㅅㅈㅂㄴㅈ","메시지 보내줘",3],["ㅌㄹㅂㅈㅋㅈ","텔레비전 켜줘",3],["ㅌㄹㅂㅈㄲㅈ","텔레비전 꺼줘",3],["ㅅㄹㄹㅋㅇㅈ","소리를 키워줘",3],["ㅅㄹㄹㄴㅊㅈ","소리를 낮춰줘",3],["ㄴㄹㅈㅅㅎㅈ","노래 재생해줘",3],["ㅇㅈㄱㅌㅇㅈ","이전 곡 틀어줘",3],["ㅇㄹㅁㅊㅈ","알람 맞춰줘",3],["ㅎㅊㅂㅌㄴㄹㅈ","호출 버튼 눌러줘",3],["ㅊㅈㄱㅇㄱㅎㅈ","충전기 연결해줘",3],["ㅁㅈ","물 줘",0],["ㅁㅈ","물 좀",0],["ㅁㅈ","맥주",0],["ㅁㅈ","먹자",0],["ㅁㅈ","맞지",0],["ㅁㅈ","뭐지",0],["ㅁㅈ","먼저",0],["ㅁㅈ","문제",0],["ㅁㅈ","모자",0],["ㅁㅈ","만져",0],["ㄷㅇㅈ","도와줘",0],["ㄷㅇㅈ","다음 주",0],["ㄷㅇㅈ","들어줘",0],["ㄷㅇㅈ","다 알지",0],["ㄷㅇㅈ","다 있지",0],["ㄷㅇㅈ","더 있죠",0],["ㅁㅇ","맞아",0],["ㅁㅇ","뭐야",0],["ㅁㅇ","미안",0],["ㅁㅇ","모여",0],["ㅁㅇ","매워",0],["ㅂㅈ","밥 줘",0],["ㅂㅈ","밥 좀",0],["ㅂㅈ","봐줘",0],["ㅂㅈ","보자",0],["ㅂㅈ","바지",0],["ㅂㅈ","부자",0],["ㅅㅇ","싫어",0],["ㅅㅇ","쉬어",0],["ㅅㅇ","사요",0],["ㅅㅇ","서요",0],["ㅅㅇ","세워",0],["ㄷㅇ","더워",0],["ㄷㅇ","도와",0],["ㄷㅇ","닫아",0],["ㄷㅇ","다음",0],["ㄷㅇ","들어",0],["ㅈㅈ","잘 자",0],["ㅈㅈ","자자",0],["ㅈㅈ","좀 줘",0],["ㄱㅁㅇ","고마워",0],["ㄱㅁㅇ","그만요",0],["ㄱㅁㅇ","그 말이",0],["ㄱㅁㅇ","귤 먹어",0],["ㄱㄲㅇㅇㅈ","가까이 와줘",1],["ㅈㄱㄷㄹㄱㅈ","조금 뒤로 가줘",1],["ㅈㄱㅊㅇㅈ","저거 치워줘",1],["ㅇㅇㄹㅇㅈ","옆으로 와줘",1],["ㅋㅍㅈㅈ","커피 좀 줘",6],["ㅇㅇㅈㅈ","우유 좀 줘",6],["ㅅㄱㄹㅈㅈ","숟가락 좀 줘",6],["ㄱㅇㅈㅈ","과일 좀 줘",6],["ㅎㅇㅁㅈ","한 입만 줘",6],["ㅇㅇㅋㅈㅋㅈ","에어컨 좀 켜줘",5],["ㅋㅌㅈㅇㅇㅈ","커튼 좀 열어줘",5],["ㅂㅇㄴㅁㄷㄷㅎ","방이 너무 답답해",5],["ㅎㄱㅈㅅㅋㅈ","환기 좀 시켜줘",5],["ㅈㄱㅈㅇㅎㅎㅈ","조금 조용히 해줘",5],["ㅍㅈㄴㄹㅈ","팔 좀 내려줘",9],["ㅍㅇㄴㅁㅇㅍ","팔이 너무 아파",8],["ㅁㄹㄱㅇㅈㄹㅇ","머리가 어지러워",8],["ㄱㅊㅇㄱㅅㄴㅇ","기침이 계속 나와",8],["ㅇㄲㄱㅃㄱㅎ","어깨가 뻐근해",8],["ㅎㅇㄷㅅㅈㅈㅅㅇ","혈압 다시 재주세요",7],["ㅊㅇㄷㅅㅈㅈㅅㅇ","체온 다시 재주세요",7],["ㅌㅈㅇㄷㅅㅎㅈㅇㅇ","통증이 더 심해졌어요",7],["ㅅㅁㅇㄷㅅㅎㅈㅅㅇ","설명을 다시 해주세요",7],["ㄱㅅㄱㄱㄹㅇㄹㅈㅅㅇ","검사 결과를 알려주세요",7],["ㄴㅇㅇㅅㅇㅈ","내일 약속 있지",11],["ㅇㅈㄷㅅㅇㄱㅇ","언제 다시 올 거야",11],["ㅇㄴㅇㅈㅇㄹㅈ","오늘 일정 알려줘",11],["ㅈㄱㅇㄷㄱㅎㅈ","조금 있다가 하자",11],["ㅈㅉㅇㄱㄷ","진짜 웃기다",12],["ㅅㅈㅈㅂㅇㅈ","사진 좀 보여줘",12],["ㄱㅇㅇㅇㅈ","곁에 있어줘",12],["ㅇㄱㄹㄱㅇ","왜 그런 거야",10],["ㅇㄸㄱㅎㅁㄷ","어떻게 하면 돼",10],["ㅇㅈㅇㄴㄱㅇ","언제 오는 거야",10],["ㅈㄱㅁㅇ","저게 뭐야",10],["ㄱㄱㅇㄴㄱㄱㅇ","그건 아닌 것 같아",10],["ㅁㅅㄸㅇㅇ","무슨 뜻이야",10],["ㅇㄷㅇㅇㄴㄱㅇ","어디에 있는 거야",10],["ㅇㄴㅇㅇ","왜 늦었어",10],["ㅁㅇㅇㄷㄷㅎ","마음이 답답해",4],["ㅇㄴㅇㄱㅂㅇㅇㅈㅇ","오늘은 기분이 안 좋아",4],["ㅁㅇㅇㅍㅎㅈㅇ","마음이 편해졌어",4],["ㅈㄱㅈㄱㅁㅎㅈ","조금 작게 말해줘",2],["ㅈㅁㅇㄷㅅㅎㅈ","질문을 다시 해줘",2],["ㄴㅁㅇㄱㄷㄹㅈ","내 말을 기다려줘",2],["ㅇㅇㄴㅇㄹㅁㅇㅂㅈ","예 아니오로 물어봐줘",2],["ㄷㅂㅉㄹㅎㄱ","두 번째로 할게",2],["ㄷㄹㅅㅌㅈㅂㅇㅈ","다른 선택지 보여줘",2],["ㅈㅎㄲㅇㅈ","전화 끊어줘",3],["ㅁㅅㅈㅇㅇㅈ","메시지 읽어줘",3],["ㅊㄴㅂㄲㅈ","채널 바꿔줘",3],["ㄴㄹㅁㅊㅈ","노래 멈춰줘",3],["ㄷㅇㄱㅌㅇㅈ","다음 곡 틀어줘",3],["ㅇㄹㄲㅈ","알람 꺼줘",3],["ㅎㅁㅇㄴㄱㅈ","화면을 넘겨줘",3],["ㅈㅇ","좋아",0],["ㅈㅇ","줘요",0],["ㅈㅇ","저요",0],["ㅈㅇ","자요",0],["ㅈㅇ","지워",0],["ㅈㅇ","주워",0],["ㅇㄴ","아니",0],["ㅇㄴ","안녕",0],["ㅇㄴ","오늘",0],["ㅇㄴ","언니",0],["ㅇㄴ","안내",0],["ㅈㅉ","저쪽",0]];
+const SEED_WORDS=[["ㅈ","좀",39,5],["ㅈㄱ","조금",19,4],["ㅈ","줘",17,6],["ㄴㅁ","너무",10,8],["ㅇㄴ","오늘",8,12],["ㄷㅅ","다시",8,2],["ㄱㅇ","거야",7,10],["ㄷ","더",6,1],["ㄲㅈ","꺼줘",6,5],["ㅇㅈ","언제",6,11],["ㅋㅈ","켜줘",5,5],["ㄷㅇ","다음",5,11],["ㅎㅈ","해줘",4,1],["ㄴㅊㅈ","낮춰줘",4,5],["ㄴㄹㅈ","내려줘",4,9],["ㅇㅍ","아파",4,8],["ㅇㄹㅈ","알려줘",4,11],["ㅁㅇ","뭐야",4,10],["ㅁㅇ","많이",4,4],["ㅁㅎㅈ","말해줘",4,2],["ㅎㄱ","할게",4,2],["ㄱㅈㅇㅈ","가져와줘",3,1],["ㅎㄷㅍ","휴대폰",3,3],["ㄷㅇㅈ","닫아줘",3,5],["ㅎ","한",3,1],["ㅁㅊㅈ","멈춰줘",3,1],["ㅁ","물",3,0],["ㅂ","밥",3,0],["ㄴㅇㅈ","높여줘",3,5],["ㅇㄹㅈ","올려줘",3,9],["ㅂㅊㅈ","받쳐줘",3,9],["ㄷㄷㅎ","답답해",3,8],["ㅎㅇㅎㅈㅅㅇ","확인해주세요",3,7],["ㄴㄱ","누가",3,10],["ㅇㅈ","일정",3,11],["ㅈㅁ","정말",3,12],["ㅈ","잘",3,12],["ㅂㄱ","방금",3,10],["ㄷ","다",3,0],["ㅇ","안",3,10],["ㅅㅁㅎㅈ","설명해줘",3,2],["ㅂㅇㅈ","보여줘",3,2],["ㅂㅉㄹ","번째로",3,2],["ㅂㅈ","봐줘",2,1],["ㄱㄷㄹㅈ","기다려줘",2,1],["ㅅ","손",2,1],["ㄴㅇㅈ","놓아줘",2,1],["ㅊㅊㅎ","천천히",2,1],["ㄴ","내",2,1],["ㄷㅇㅈ","들어줘",2,1],["ㅇㄱㅈ","옮겨줘",2,1],["ㅊ","차",2,6],["ㅁㅈ","먹자",2,6],["ㅇㅇㅋ","에어컨",2,5],["ㅅㅍㄱ","선풍기",2,5],["ㄴㅂ","난방",2,5],["ㅋㅌ","커튼",2,5],["ㅊㅁ","창문",2,5],["ㅇㅇㅈ","열어줘",2,5],["ㅂㄹ","볼륨",2,5],["ㅅㄹ","소리",2,5],["ㅋㅇㅈ","키워줘",2,5],["ㅈㅁㅇ","조명을",2,5],["ㄷㄹ","다리",2,9],["ㅍ","팔",2,9],["ㅂㄱ","베개",2,9],["ㅁㅇ","몸을",2,9],["ㄷㄹㅈ","돌려줘",2,9],["ㅊㄷㄹ","침대를",2,9],["ㅇㅇㄹ","옆으로",2,9],["ㅎㄹㄱ","허리가",2,8],["ㅃㄱㅎ","뻐근해",2,8],["ㅇㅇ","약을",2,7],["ㅁㅇㅇㅇ","먹었어요",2,7],["ㅇㅈ","아직",2,7],["ㅎㅈㅅㅇ","해주세요",2,7],["ㅇㄴㅇ","오나요",2,7],["ㄱㅅ","검사",2,7],["ㅅㄱㅇ","시간이",2,7],["ㄱ","것",2,7],["ㅇㄹㅈㅅㅇ","알려주세요",2,7],["ㅁ","몇",2,11],["ㅇ","올",2,11],["ㅁ","뭐",2,11],["ㅎ","해",2,11],["ㅇㅂ","이번",2,11],["ㅁㅇ","먹어",2,11],["ㅁㅅ","무슨",2,11],["ㄴㅇ","내일",2,11],["ㅈ","주",2,11],["ㅂㄱㅇ","반가워",2,12],["ㅂㅈ","보자",2,12],["ㅎㅇ","했어",2,10],["ㄴ","나",2,10],["ㅁㅇㅂㅈ","물어봐줘",2,10],["ㅈㄱㅇ","지금은",2,4],["ㅅㅇ","싶은",2,4],["ㄱㅂㅇㅇ","기분이야",2,4],["ㅅㅇ","싶어",2,4],["ㄱㅇ","곁에",2,4],["ㄱㅂㅇ","기분이",2,4],["ㄷ","돼",2,4],["ㅎㅁ","화면",2,3],["ㅈㅎ","전화",2,3],["ㅁㅅㅈ","메시지",2,3],["ㅌㄹㅂㅈ","텔레비전",2,3],["ㅅㄹㄹ","소리를",2,3],["ㄴㄹ","노래",2,3],["ㄱ","곡",2,3],["ㅌㅇㅈ","틀어줘",2,3],["ㅇㄹ","알람",2,3],["ㅇㅈ","있지",2,0],["ㅇㅈ","와줘",2,1],["ㅈㅈㅅㅇ","재주세요",2,7],["ㅇ","왜",2,10],["ㅁㅇㅇ","마음이",2,4],["ㅈㅇ","좋아",2,4],["ㅇㅉ","이쪽",1,1],["ㅈㅇㅈ","잡아줘",1,1],["ㅇㄱ","여기",1,1],["ㅈㄱ","저기",1,1],["ㅇㄱ","이거",1,1],["ㅇㄱ","안경",1,1],["ㄹㅁㅋ","리모컨",1,1],["ㅁ","문",1,1],["ㅂ","번",1,1],["ㅈㅅ","잠시",1,1],["ㅁ","말",1,1],["ㅇㅉㅇㄹ","이쪽으로",1,1],["ㅅㅇㅎ","시원한",1,6],["ㅈㅅ","주스",1,6],["ㅃㄷ","빨대",1,6],["ㄴㅇㅈ","넣어줘",1,6],["ㅋ","컵",1,6],["ㅈㄱㄹ","젓가락",1,6],["ㅈ","죽",1,6],["ㄱ","국",1,6],["ㅋㅇ","컵에",1,6],["ㄸㄹㅈ","따라줘",1,6],["ㅅㅅ","식사",1,6],["ㅅㅇㄷ","쉬었다",1,6],["ㅈㅇㅈ","줄여줘",1,5],["ㄱㄱㄱ","공기가",1,5],["ㄱㅈㅎ","건조해",1,5],["ㄷㅇ","등을",1,9],["ㅅㅇㅈ","세워줘",1,9],["ㄴㅎㅈ","눕혀줘",1,9],["ㄱㄱ","고개",1,9],["ㅍㅈ","펴줘",1,9],["ㅅㅇ","손을",1,9],["ㅂㅇ","발을",1,9],["ㅇㄲㄹ","어깨를",1,9],["ㅎㄹㄹ","허리를",1,9],["ㄱㅇㄷㄹ","가운데로",1,9],["ㅁㅇ","목이",1,8],["ㄷㄹㄱ","다리가",1,8],["ㄱㅅㅇ","가슴이",1,8],["ㅅㅇ","숨이",1,8],["ㅅㄲㅇ","손끝이",1,8],["ㅈㄹ","저려",1,8],["ㄴㅇ","눈이",1,8],["ㄸㄱㅇ","따가워",1,8],["ㅇㅇㅇ","입안이",1,8],["ㅁㄹ","말라",1,8],["ㅁㅇ","몸이",1,8],["ㅈㄲ","자꾸",1,8],["ㄸㄹ","떨려",1,8],["ㅂㄱ","배가",1,8],["ㄷㅂㄹㅎ","더부룩해",1,8],["ㅅㅇ","속이",1,8],["ㅆㄹ","쓰려",1,8],["ㅅㅅㅍㅎㄷ","산소포화도",1,7],["ㅎㅎ","호흡",1,7],["ㅅㅌ","상태",1,7],["ㅇㅁ","이미",1,7],["ㅁ","못",1,7],["ㅂㅎㅈㅇㄱ","보호자에게",1,7],["ㅇㄹㅎㅈㅅㅇ","연락해주세요",1,7],["ㅎㅇ","흡인",1,7],["ㅎㅂ","한번",1,7],["ㅈㅅㄹ","자세를",1,7],["ㄱㅎㅅ","간호사",1,7],["ㅇㅅ","의사",1,7],["ㅇㅈㅇㅇ","언제예요",1,7],["ㅈㅅ","주사",1,7],["ㅂㅇㄱ","부위가",1,7],["ㅇㅍㅇ","아파요",1,7],["ㅇㄱㅅㄹ","응급실로",1,7],["ㄱㅇ","가야",1,7],["ㅎ","할",1,7],["ㄱㅇㅇ","같아요",1,7],["ㅅㅅㄹ","산소를",1,7],["ㅇㄹㅈㅅㅇ","올려주세요",1,7],["ㅌㅈ","통증",1,7],["ㅇㅊㄹ","위치를",1,7],["ㅂㅈㅅㅇ","봐주세요",1,7],["ㅇ","약",1,7],["ㅇㄹㅇ","이름을",1,7],["ㅅㅇ","시에",1,11],["ㅊㅂㅎ","출발할",1,11],["ㅂㅇ","병원",1,11],["ㅇㅇ","있어",1,11],["ㅇㅎㅇㄴ","오후에는",1,11],["ㅈㄴㅇㄴ","저녁에는",1,11],["ㅇ","와",1,11],["ㅈㅁㅇ","주말에",1,11],["ㄷㅇ","달에",1,11],["ㅁㄴㅈ","만나자",1,11],["ㅇㅊㅇ","아침에",1,11],["ㄲㅇㅈㄹ","깨워줄래",1,11],["ㅈㅅㅇ","점심은",1,11],["ㅇㄴㅇ","오늘이",1,11],["ㅇㅇㅇㅇ","요일이야",1,11],["ㅇㅇ","예약",1,11],["ㅅㅇ","시야",1,11],["ㅇㅈㅇ","일정이",1,11],["ㅂㄱ","보고",1,12],["ㅅㅇㅇ","싶었어",1,12],["ㅁㄴㅅ","만나서",1,12],["ㅈㄴㅈ","지냈지",1,12],["ㅈㅁㅇㅇ","재밌었어",1,12],["ㅁㅇㅎㅇ","미안했어",1,12],["ㅊㅎㅎ","축하해",1,12],["ㄴ","너",1,12],["ㄱㅊㅇ","괜찮아",1,12],["ㅅㄹㅎ","사랑해",1,12],["ㅇㄹㅁㅇㄹ","오랜만이라",1,12],["ㅊㄱㅇㄱ","친구에게",1,12],["ㅇㄹㅎㅈ","연락해줘",1,12],["ㄱㅅㅎㅇ","고생했어",1,12],["ㄱㅁㅇㅇ","고마웠어",1,12],["ㄷㅇㅇ","다음에",1,12],["ㄸ","또",1,12],["ㅈㄱㅇㄷ","즐거웠다",1,12],["ㅇㅇㄱㅎㅈ","이야기하자",1,12],["ㅇㄷㄹ","어디로",1,10],["ㄱㄴ","가는",1,10],["ㄴㄱㅇㅈ","누구인지",1,10],["ㅁㄹㄱ","뭐라고",1,10],["ㅇㄱ","이게",1,10],["ㅇㅇ","왔어",1,10],["ㅇㅈ","이제",1,10],["ㄲㄴㅇ","끝났어",1,10],["ㅁㄹㄱㅇ","모르겠어",1,10],["ㄱㅇㅇ","기억이",1,10],["ㄱㅈㄱㅇ","가져갔어",1,10],["ㅁㅅㅇ","무서워",1,4],["ㅂㅇㅎ","불안해",1,4],["ㅇㄹㅇ","외로워",1,4],["ㅅㅅㅎ","심심해",1,4],["ㅅㅅㅎ","속상해",1,4],["ㅍㄱㅎ","피곤해",1,4],["ㅍㅇㅎ","편안해",1,4],["ㅎㅂㅎ","행복해",1,4],["ㅎㄱ","화가",1,4],["ㅇㄱ","울고",1,4],["ㅇㄱ","웃고",1,4],["ㅈㄲ","잠깐",1,4],["ㅎㅈ","혼자",1,4],["ㅇㄱ","있고",1,4],["ㄴㄱㄱ","누군가",1,4],["ㅇㅇㅇㅁ","있었으면",1,4],["ㅈㄱㅇ","좋겠어",1,4],["ㅈㅇ","집에",1,4],["ㅃㄹ","빨리",1,4],["ㄱㄱ","가고",1,4],["ㅅㄱ","쉬고",1,4],["ㅅㄷ","싶다",1,4],["ㄴㅇㅈㅇ","나아졌어",1,4],["ㄱㅈㅇ","걱정이",1,4],["ㅋㄱ","크게",1,2],["ㅂㅁ","번만",1,2],["ㅉㄱ","짧게",1,2],["ㅅㄱ","쉽게",1,2],["ㄴㄱ","내가",1,2],["ㄲㄲㅈ","끝까지",1,2],["ㅁㅎㄱ","말할게",1,2],["ㄷㄷㅎㄱ","대답하기",1,2],["ㅇㄹㅇ","어려워",1,2],["ㅅㅌㅈㄹ","선택지를",1,2],["ㅊ","첫",1,2],["ㅅ","세",1,2],["ㅊㅇㅂㅌ","처음부터",1,2],["ㅅㅌ","선택",1,2],["ㅊㅅㅎㄱ","취소할게",1,2],["ㅇ","이",1,2],["ㅁㅈ","문장",1,2],["ㅈㅇㅈ","지워줘",1,2],["ㅇㄷㄹ","이대로",1,2],["ㅂㅇㅈ","받아줘",1,3],["ㅂㄴㅈ","보내줘",1,3],["ㅈㅅㅎㅈ","재생해줘",1,3],["ㅇㅈ","이전",1,3],["ㅁㅊㅈ","맞춰줘",1,3],["ㅎㅊ","호출",1,3],["ㅂㅌ","버튼",1,3],["ㄴㄹㅈ","눌러줘",1,3],["ㅊㅈㄱ","충전기",1,3],["ㅇㄱㅎㅈ","연결해줘",1,3],["ㅁㅈ","맥주",1,0],["ㅁㅈ","맞지",1,0],["ㅁㅈ","뭐지",1,0],["ㅁㅈ","먼저",1,0],["ㅁㅈ","문제",1,0],["ㅁㅈ","모자",1,0],["ㅁㅈ","만져",1,0],["ㄷㅇㅈ","도와줘",1,0],["ㅇㅈ","알지",1,0],["ㅇㅈ","있죠",1,0],["ㅁㅇ","맞아",1,0],["ㅁㅇ","미안",1,0],["ㅁㅇ","모여",1,0],["ㅁㅇ","매워",1,0],["ㅂㅈ","바지",1,0],["ㅂㅈ","부자",1,0],["ㅅㅇ","싫어",1,0],["ㅅㅇ","쉬어",1,0],["ㅅㅇ","사요",1,0],["ㅅㅇ","서요",1,0],["ㅅㅇ","세워",1,0],["ㄷㅇ","더워",1,0],["ㄷㅇ","도와",1,0],["ㄷㅇ","닫아",1,0],["ㄷㅇ","들어",1,0],["ㅈ","자",1,0],["ㅈㅈ","자자",1,0],["ㄱㅁㅇ","고마워",1,0],["ㄱㅁㅇ","그만요",1,0],["ㄱ","그",1,0],["ㅁㅇ","말이",1,0],["ㄱ","귤",1,0],["ㄱㄲㅇ","가까이",1,1],["ㄷㄹ","뒤로",1,1],["ㄱㅈ","가줘",1,1],["ㅈㄱ","저거",1,1],["ㅊㅇㅈ","치워줘",1,1],["ㅋㅍ","커피",1,6],["ㅇㅇ","우유",1,6],["ㅅㄱㄹ","숟가락",1,6],["ㄱㅇ","과일",1,6],["ㅇㅁ","입만",1,6],["ㅂㅇ","방이",1,5],["ㅎㄱ","환기",1,5],["ㅅㅋㅈ","시켜줘",1,5],["ㅈㅇㅎ","조용히",1,5],["ㅍㅇ","팔이",1,8],["ㅁㄹㄱ","머리가",1,8],["ㅇㅈㄹㅇ","어지러워",1,8],["ㄱㅊㅇ","기침이",1,8],["ㄱㅅ","계속",1,8],["ㄴㅇ","나와",1,8],["ㅇㄲㄱ","어깨가",1,8],["ㅎㅇ","혈압",1,7],["ㅊㅇ","체온",1,7],["ㅌㅈㅇ","통증이",1,7],["ㅅㅎㅈㅇㅇ","심해졌어요",1,7],["ㅅㅁㅇ","설명을",1,7],["ㄱㄱㄹ","결과를",1,7],["ㅇㅅ","약속",1,11],["ㅇㄷㄱ","있다가",1,11],["ㅎㅈ","하자",1,11],["ㅈㅉ","진짜",1,12],["ㅇㄱㄷ","웃기다",1,12],["ㅅㅈ","사진",1,12],["ㅇㅇㅈ","있어줘",1,12],["ㄱㄹ","그런",1,10],["ㅇㄸㄱ","어떻게",1,10],["ㅎㅁ","하면",1,10],["ㅇㄴ","오는",1,10],["ㅈㄱ","저게",1,10],["ㄱㄱ","그건",1,10],["ㅇㄴ","아닌",1,10],["ㄱㅇ","같아",1,10],["ㄸㅇㅇ","뜻이야",1,10],["ㅇㄷㅇ","어디에",1,10],["ㅇㄴ","있는",1,10],["ㄴㅇㅇ","늦었어",1,10],["ㅇㄴㅇ","오늘은",1,4],["ㅍㅎㅈㅇ","편해졌어",1,4],["ㅈㄱ","작게",1,2],["ㅈㅁㅇ","질문을",1,2],["ㅁㅇ","말을",1,2],["ㅇ","예",1,2],["ㅇㄴㅇㄹ","아니오로",1,2],["ㄷ","두",1,2],["ㄷㄹ","다른",1,2],["ㅅㅌㅈ","선택지",1,2],["ㄲㅇㅈ","끊어줘",1,3],["ㅇㅇㅈ","읽어줘",1,3],["ㅊㄴ","채널",1,3],["ㅂㄲㅈ","바꿔줘",1,3],["ㅎㅁㅇ","화면을",1,3],["ㄴㄱㅈ","넘겨줘",1,3],["ㅈㅇ","줘요",1,0],["ㅈㅇ","저요",1,0],["ㅈㅇ","자요",1,0],["ㅈㅇ","지워",1,0],["ㅈㅇ","주워",1,0],["ㅇㄴ","아니",1,0],["ㅇㄴ","안녕",1,0],["ㅇㄴ","언니",1,0],["ㅇㄴ","안내",1,0],["ㅈㅉ","저쪽",1,0]];
 
 const PARTNERS=[
   {v:"family",icon:"👪",label:"가족",hint:"편안한 말투"},
@@ -878,6 +851,20 @@ let slots=[];
 /* 루프 계측: PDF의 ①후보검토 ②응시·EEG ③판독 ④후보갱신 각 구간을 실측한다 */
 let loop={readyAt:null, decisionMs:0, stimMs:0, decodeMs:0, refreshMs:0, refreshAt:null, waiting:false};
 let trials=[], selTotals=[], llmWaits=[];
+/* 같은 요청을 두 번 보내지 않는다. 지우기/다시치기처럼 방금 지나온 상태로
+   되돌아오는 일이 잦은데, 그때 LLM을 다시 기다릴 이유가 없다. */
+const predictCache=new Map();
+const CACHE_MAX=60;
+function cacheKey(body){
+  return JSON.stringify([body.bci_input,body.spelled_syllables||null,body.partner,body.situation,
+                         body.current_sentence,body.recent_context,body.top_k,
+                         body.fill_mask_reference_text||null,body.fill_mask_target_index??null]);
+}
+function cachePut(k,d){
+  predictCache.set(k,d);
+  if(predictCache.size>CACHE_MAX) predictCache.delete(predictCache.keys().next().value);
+}
+let prefetchTimer=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
 let metrics={version:"0.9.0",actions:0,commits:0,undos:0,requests:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
@@ -902,10 +889,11 @@ function cancelPending(){
 }
 function schedulePrediction(){
   clearTimeout(autoTimer);
-  if(el("autoPredict").checked && state.initials.length>=1){
-    // 문장 후보만 디바운스한다. 단어 후보는 매 키마다 이미 즉시 갱신돼 있다.
-    autoTimer=setTimeout(()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {}),700);
-  }
+  clearTimeout(prefetchTimer);
+  if(!el("autoPredict").checked || !state.initials) return;
+  // 문장 후보만 디바운스한다. 단어·로컬 문장 후보는 매 키마다 이미 즉시 떠 있으므로
+  // 여기서 기다리는 건 "더 나은 것"이지 "첫 후보"가 아니다.
+  autoTimer=setTimeout(()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {}),450);
 }
 function recordHabitual(text){
   const found=state.habitual.find(p=>p.text===text);
@@ -979,7 +967,7 @@ function loopFinish(extra){
   el("mCount").textContent=String(trials.length);
   const avg=selTotals.reduce((a,b)=>a+b,0)/selTotals.length;
   el("mAvg").textContent=(avg/1000).toFixed(2)+"s";
-  el("mWait").textContent = llmWaits.length ? Math.round(llmWaits.reduce((a,b)=>a+b,0)/llmWaits.length)+"ms" : "0ms";
+  el("mWait").textContent = llmWaits.length ? Math.round(llmWaits.reduce((a,b)=>a+b,0)/llmWaits.length)+"ms" : "–";
   loopStageText();
   loopReady(true);
 }
@@ -1124,7 +1112,7 @@ el("partnerBadge").onclick=()=>showView("partner");
 el("situationBadge").onclick=()=>showView("situation");
 
 function renderKeyboard(){
-  const cho=CHO.map(c=>`<button type="button" class="key cho" data-t="cho" data-v="${c}">${c}</button>`).join("");
+  const cho=CHO_LAYOUT.map(c=>`<button type="button" class="key cho" data-t="cho" data-v="${c}">${c}</button>`).join("");
   const jung=JUNG_BASIC.map(c=>`<button type="button" class="key jung" data-t="jung" data-v="${c}">${c}</button>`).join("");
   const cand=Array.from({length:CAND_SLOTS},(_,k)=>
     `<button type="button" class="key cand" data-t="cand" data-v="${k}" id="candKey${k}" disabled>${k+1}<span class="cw" id="candKeyW${k}"></span></button>`).join("");
@@ -1239,54 +1227,144 @@ function renderWordDisplay(){
 }
 
 /* ==========================================================================
-   단어 후보 — 전부 로컬. 서버도 LLM도 거치지 않으므로 0ms이고, 초성을 누를
-   때마다 무조건 새로 만들어진다 (PDF: "초성 입력마다 새로 생성").
-   출처는 검수된 phrase bank에서 뽑은 시드 + 이 탭에서 확정된 단어 학습치.
+   로컬 후보 엔진 — 정확도와 체감 속도를 동시에 잡는 지점.
+   --------------------------------------------------------------------------
+   예전에는 단어 220개만 로컬에 있었고 "단어의 초성이 입력으로 시작하는가"만
+   봤다. 그래서 ㅁㅈㅈㅅㅇ("물 좀 주세요")처럼 여러 어절짜리 의도는 로컬이
+   하나도 못 맞히고 전부 LLM을 기다려야 했다 — 타율도 속도도 여기서 무너졌다.
+
+   지금은 검수된 표현 사전 281개를 문장째로, 그 안의 단어 403개를 단어로,
+   둘 다 카테고리와 함께 들고 있다. 그래서:
+     · 입력 초성과 길이까지 정확히 같은 표현은 최우선으로 즉시(0ms) 뜬다
+     · 지금 상황(식사/통증/일정…)에 맞는 카테고리가 가산점을 받는다
+     · 내가 확정했던 표현과 단어가 사전보다 높은 가산점을 받는다
+   LLM은 로컬이 못 채운 자리만 메운다.
    ========================================================================== */
-function localWords(limit){
-  if(!state.initials) return [];
-  const merged=new Map();
-  for(const [ini,word,freq] of SEED_WORDS){ if(ini.startsWith(state.initials)) merged.set(word,(merged.get(word)||0)+freq); }
-  for(const [word,freq] of Object.entries(state.wordFreq||{})){
-    if(choseongOf(word).startsWith(state.initials)) merged.set(word,(merged.get(word)||0)+freq*5);
-  }
-  // 이미 글자를 확정해 둔 자리는 그 글자와 맞는 단어만 남긴다
-  const pinned=Object.entries(state.spelled);
-  const ok=(w)=>pinned.every(([i,ch])=>w[Number(i)]===ch);
-  return [...merged.entries()].filter(([w])=>ok(w)).sort((a,b)=>b[1]-a[1])
-    .slice(0,limit||5).map(([text,score])=>({kind:"word",text,score}));
+
+/* 상황 -> 표현 사전 카테고리. 맞으면 가산점을 주는 용도라 빠져도 동작한다. */
+const SITU_CATS={
+  meal:["food_drink"],
+  pain:["pain_discomfort"],
+  positioning:["positioning"],
+  schedule:["schedule_time"],
+  hospital:["medical_communication"],
+  entertainment:["device_control","communication_control"],
+  home:["environment","device_control"],
+  emergency:["medical_communication","pain_discomfort"],
+  general:[],
+};
+function boostedCats(){
+  return new Set((SITU_CATS[state.situation]||[]).map(c=>SEED_CATS.indexOf(c)).filter(i=>i>=0));
 }
 
-/* 점수제: 단어/문장 비율을 로컬 매칭 수로 유동 조절한다.
-   로컬에 딱 맞는 단어가 많으면 단어 슬롯을 채우고(빠르고 정확), 적으면 그만큼
-   문장 슬롯을 늘려 LLM에 맡긴다. 합은 항상 후보키 7개 안. */
+/* 이미 모음까지 눌러 확정해 둔 글자가 있으면 그 자리와 맞는 후보만 남긴다.
+   (ㅁ 다음 ㅜ 를 눌러 "무"로 굳혔다면 "물…"은 후보에서 빠진다) */
+function pinnedOk(text){
+  for(const [i,ch] of Object.entries(state.spelled)){
+    if(text[Number(i)]!==ch) return false;
+  }
+  return true;
+}
+
+/* 하나의 후보에 점수를 매긴다. 큰 덩어리부터: 완전 일치 > 학습한 것 >
+   상황이 맞는 것 > 자주 쓰이는 것 > 남은 글자가 적은 것. */
+function scoreSeed(cand, text, ini, freq, cat, cats, learned){
+  if(!cand.startsWith(ini) || !pinnedOk(text)) return -1;
+  const extra=cand.length-ini.length;
+  let sc = extra===0 ? 1000 : 300/(1+extra);   // 길이까지 같으면 압도적으로 우선
+  if(learned) sc += 600;                        // 내가 실제로 확정했던 표현/단어
+  if(cats.has(cat)) sc += 180;                  // 지금 상황에 맞는 카테고리
+  sc += Math.min(freq,20)*4;                    // 사전 안에서의 사용 빈도
+  return sc;
+}
+
+/* 단어 후보 (0ms). 사전 단어 + 이 탭에서 확정하며 쌓인 단어. */
+function localWords(limit){
+  if(!state.initials) return [];
+  const cats=boostedCats(), best=new Map();
+  const put=(text,sc)=>{ if(!(best.get(text)>=sc)) best.set(text,sc); };
+  for(const [ini,word,freq,cat] of SEED_WORDS){
+    const sc=scoreSeed(ini,word,state.initials,freq,cat,cats,(state.wordFreq||{})[word]>0);
+    if(sc>0) put(word,sc);
+  }
+  for(const [word,n] of Object.entries(state.wordFreq||{})){
+    const sc=scoreSeed(choseongOf(word),word,state.initials,n,-1,cats,true);
+    if(sc>0) put(word,sc);
+  }
+  return [...best.entries()].sort((a,b)=>b[1]-a[1]).slice(0,limit||5)
+    .map(([text,score])=>({kind:"word",text,score}));
+}
+
+/* 문장 후보 중 로컬로 즉시 낼 수 있는 것. 검수된 표현 + 내가 자주 쓰는 표현. */
+function localPhrases(limit){
+  if(!state.initials) return [];
+  const cats=boostedCats(), best=new Map();
+  const put=(text,sc)=>{ if(!(best.get(text)>=sc)) best.set(text,sc); };
+  for(const [ini,text,cat] of SEED_PHRASES){
+    const sc=scoreSeed(ini,text,state.initials,4,cat,cats,false);
+    if(sc>0) put(text,sc);
+  }
+  for(const p of state.habitual||[]){
+    const sc=scoreSeed(choseongOf(p.text),p.text,state.initials,p.count,-1,cats,true);
+    if(sc>0) put(p.text,sc);
+  }
+  return [...best.entries()].sort((a,b)=>b[1]-a[1]).slice(0,limit||5)
+    .map(([text,score])=>({kind:"sent",text,score,local:true}));
+}
+
+/* 점수제: 단어/문장 비율을 로컬이 실제로 맞힌 개수로 유동 조절한다.
+   합은 언제나 후보키 7개 안. */
 function candidateSplit(){
   const words=localWords(5);
-  const w=words.length;
-  return {words, wordN:w, sentN:Math.max(2, Math.min(5, CAND_SLOTS-w))};
+  return {words, wordN:words.length, sentN:Math.max(2, Math.min(5, CAND_SLOTS-words.length))};
 }
+
+/* 문장 슬롯 채우는 순서:
+     ① 초성 길이까지 똑같은 로컬 표현 — 검수돼 있고 입력과 정확히 맞으므로 최우선
+     ② 언어 모델이 생성한 것
+     ③ 나머지 로컬 접두어 매칭으로 빈자리 메움 (LLM이 늦거나 죽어도 빈칸이 없다) */
+function sentenceSlots(n){
+  const local=localPhrases(8);
+  const exactLen=state.initials.length;
+  const exact=local.filter(c=>choseongOf(c.text).length===exactLen);
+  const rest=local.filter(c=>!exact.includes(c));
+  const llm=(state.latest||[]).map(c=>({kind:"sent",text:c.text,candidate_id:c.candidate_id}));
+  // 로컬 -> LLM 순서로 쌓는다. LLM 응답이 늦게 도착해도 이미 화면에 떠 있던
+  // 후보의 번호가 밀리지 않아야 한다 — 번호가 곧 눌러야 할 키이고, 읽는 도중
+  // 자리가 바뀌면 엉뚱한 키를 응시하게 된다.
+  const out=[], at=new Map();
+  for(const c of [...exact,...rest,...llm]){
+    const t=(c.text||"").trim();
+    if(!t) continue;
+    if(at.has(t)){
+      // 같은 말을 LLM도 내놨다면 candidate_id 만 물려받는다(서버가 선택을
+      // 기록할 수 있도록). 자리는 먼저 잡은 쪽을 그대로 둔다.
+      if(c.candidate_id && !out[at.get(t)].candidate_id) out[at.get(t)].candidate_id=c.candidate_id;
+      continue;
+    }
+    if(out.length>=n) continue;
+    at.set(t,out.length); out.push({...c});
+  }
+  return out;
+}
+
 function renderCandidatePanel(){
   const {words,sentN}=candidateSplit();
-  const sents=(state.latest||[]).slice(0,sentN).map(c=>({kind:"sent",text:c.text,candidate_id:c.candidate_id}));
+  const sents=sentenceSlots(sentN);
   slots=[...words,...sents];
   el("ratioTag").textContent=`단어 ${words.length} · 문장 ${sents.length}`;
   el("ratioTag").classList.toggle("llm", words.length<2);
 
-  const wordHtml = words.length
+  el("candWords").innerHTML = words.length
     ? words.map((sl,k)=>`<button type="button" class="cand word" data-k="${k}"><span class="kb-badge">${k+1}</span><span class="tx">${esc(sl.text)}</span></button>`).join("")
     : `<div class="cand ph" style="grid-column:1/-1"><span class="kb-badge">–</span><span class="tx">${state.initials?"이 초성으로 아는 단어가 없어요 · 문장 후보를 보세요":"초성을 누르면 단어 후보가 바로 나옵니다 (0ms · 로컬)"}</span></div>`;
-  el("candWords").innerHTML=wordHtml;
 
   const off=words.length;
-  let sentHtml;
-  if(sents.length){
-    sentHtml = sents.map((sl,k)=>`<button type="button" class="cand sent" data-k="${off+k}"><span class="kb-badge">${off+k+1}</span><span class="tx">${renderCandidateUnits(sl.text)}</span></button>`).join("");
-  } else if(loop.waiting){
-    sentHtml = `<div class="cand ph loading"><span class="kb-badge">…</span><span class="tx">문장 후보 생성 중…</span></div>`;
-  } else {
-    sentHtml = `<div class="cand ph"><span class="kb-badge">–</span><span class="tx">${state.initials?"곧 문장 후보가 채워집니다":"문장 후보는 초성을 입력하면 생성됩니다"}</span></div>`;
-  }
-  el("candSents").innerHTML=sentHtml;
+  el("candSents").innerHTML = sents.length
+    ? sents.map((sl,k)=>`<button type="button" class="cand sent" data-k="${off+k}"><span class="kb-badge">${off+k+1}</span><span class="tx">${renderCandidateUnits(sl.text)}</span></button>`).join("")
+    : (loop.waiting
+        ? `<div class="cand ph loading"><span class="kb-badge">…</span><span class="tx">문장 후보 생성 중…</span></div>`
+        : `<div class="cand ph"><span class="kb-badge">–</span><span class="tx">${state.initials?"이 초성에 맞는 문장을 찾지 못했어요 · 글자를 더 입력하거나 직접 입력해보세요":"문장 후보는 초성을 입력하면 생성됩니다"}</span></div>`);
 
   for(const node of [...el("candWords").children, ...el("candSents").children]){
     if(!node.dataset || node.dataset.k===undefined) continue;
@@ -1301,7 +1379,7 @@ function renderCandidatePanel(){
       span.onclick=(ev)=>{ ev.stopPropagation(); openFillMask(slots[k].text, parseInt(span.dataset.u,10)); };
     });
   }
-  // 후보키에 실제 후보를 실어 준다 — 키만 보고도 무엇이 선택될지 알 수 있게
+  // 후보키에 후보 텍스트를 실어 준다 — 키만 보고도 무엇이 선택될지 알 수 있게
   for(let k=0;k<CAND_SLOTS;k++){
     const key=el("candKey"+k); if(!key) continue;
     const sl=slots[k];
@@ -1428,6 +1506,25 @@ function clearRecoveryState(){
 }
 
 /* ---------------- predict (base + recovery variants) ---------------- */
+/* /predict 요청 바디. predict()와 prefetch()가 반드시 같은 모양을 만들어야
+   캐시 키가 맞으므로 한 군데서만 만든다. */
+function predictBody(ini, extra){
+  const manualCtx = el("context").value.trim();
+  const {sentN}=candidateSplit();
+  return Object.assign({
+    input_mode:"initials", bci_input:ini,
+    top_k: Math.max(1, Math.min(Number(el("candidateCount").value)||3, sentN)),
+    experiment_mode:"hybrid",
+    partner: state.partner || "other", situation: state.situation || "general",
+    current_sentence: state.committed.slice(-300),
+    // 화자를 붙여 누적 대화를 그대로 넘긴다 (context = 현재 진행중인 대화 전체)
+    recent_context: [
+      ...state.history.slice(-5).map(h=>`${h.who==="me"?"나":"상대"}: ${h.text}`),
+      ...(manualCtx ? [`상황: ${manualCtx}`] : []),
+    ].slice(-5),
+  }, extra||{});
+}
+
 async function predict(extra){
   if(!state.initials){ return; }
   // ④ 후보 갱신 구간 시작 — 여기서 재는 것이 "사용자가 실제로 기다린 LLM 시간"
@@ -1446,20 +1543,20 @@ async function predict(extra){
   el("btnCancel").hidden=false;
   el("candSents").setAttribute("aria-busy","true");
   renderCandidatePanel();
-  const manualCtx = el("context").value.trim();
-  const {sentN}=candidateSplit();
-  const body=Object.assign({
-    input_mode:"initials", bci_input:state.initials,
-    top_k: Math.max(1, Math.min(Number(el("candidateCount").value)||3, sentN)),
-    experiment_mode:"hybrid",
-    partner: state.partner || "other", situation: state.situation || "general",
-    current_sentence: state.committed.slice(-300),
-    // 화자를 붙여 누적 대화를 그대로 넘긴다 (PDF: context = 현재 진행중인 대화 전체)
-    recent_context: [
-      ...state.history.slice(-5).map(h=>`${h.who==="me"?"나":"상대"}: ${h.text}`),
-      ...(manualCtx ? [`상황: ${manualCtx}`] : []),
-    ].slice(-5),
-  }, extra||{});
+  const body=predictBody(state.initials, extra);
+  const ck=cacheKey(body);
+  if(predictCache.has(ck)){
+    // 캐시 적중 — LLM 대기 0ms
+    state.latest=predictCache.get(ck).candidates||[];
+    loop.waiting=false;
+    renderCandidates(predictCache.get(ck));
+    announce("이전에 조회한 후보를 바로 표시했습니다.");
+    pendingController=null; el("btnCancel").hidden=true;
+    el("candSents").setAttribute("aria-busy","false");
+    loopReady();
+    clearTimeout(timeout);
+    return predictCache.get(ck);
+  }
   try{
     const sessionId=state.sessionId;
     const url = sessionId ? `/session/${sessionId}/predict` : "/predict";
@@ -1481,6 +1578,7 @@ async function predict(extra){
       d={...d,candidates:(d.candidates||[]).filter(c=>c.text!==extra.fill_mask_reference_text)};
     }
     state.latest=d.candidates||[];
+    cachePut(ck,d);
     const waited=performance.now()-started;
     metrics.latencies_ms.push(Math.round(waited));
     metrics.latencies_ms=metrics.latencies_ms.slice(-100);
@@ -1488,6 +1586,7 @@ async function predict(extra){
     el("mWait").textContent=Math.round(llmWaits.reduce((a,b)=>a+b,0)/llmWaits.length)+"ms";
     loop.waiting=false;
     renderCandidates(d);
+    schedulePrefetch();
     if(d.fallback && d.fallback!=="none") announce("현재 대체 후보를 표시하고 있습니다. 원하는 말이 없으면 직접 입력해주세요.");
     else announce("원하는 표현을 확인하고 후보키로 선택해주세요.");
     return d;
@@ -1506,6 +1605,36 @@ async function predict(extra){
       loopReady();
     }
   }
+}
+
+/* 사용자가 후보를 읽는 "후보 검토·결정" 구간(논문 기준 3초)은 네트워크가
+   놀고 있는 시간이다. 그 사이에 가장 그럴듯한 다음 초성 하나에 대한 문장
+   후보를 미리 받아 캐시에 넣어 둔다. 맞으면 다음 선택의 LLM 대기가 0ms가
+   되고, 틀려도 호출 한 번을 버리는 것뿐이다.
+   ponytail: 후보 1개만 앞서 본다. 여러 갈래를 동시에 프리페치하면 호출 수가
+   갈래 수만큼 곱해진다 — 적중률 로그를 보고 나서 늘릴 일. */
+function schedulePrefetch(){
+  clearTimeout(prefetchTimer);
+  if(!el("autoPredict").checked || !state.initials || state.initials.length>=20) return;
+  const top=localWords(1)[0] || localPhrases(1)[0];
+  if(!top) return;
+  const nextIni=choseongOf(top.text).slice(0,state.initials.length+1);
+  if(nextIni.length!==state.initials.length+1 || !nextIni.startsWith(state.initials)) return;
+  prefetchTimer=setTimeout(()=>prefetch(nextIni),900);
+}
+async function prefetch(nextIni){
+  // 진짜 조회가 진행 중이면 앞질러 가지 않는다 — 대역폭도, 서버 순서도 양보한다.
+  if(pendingController) return;
+  const body=predictBody(nextIni,{});
+  const k=cacheKey(body);
+  if(predictCache.has(k)) return;
+  try{
+    const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body),signal:AbortSignal.timeout(20000)});
+    if(!r.ok) return;
+    const d=await r.json();
+    if(d && d.candidates) cachePut(k,d);
+  }catch(e){ /* 프리페치 실패는 아무것도 망가뜨리지 않는다 */ }
 }
 
 function renderCandidates(d){
