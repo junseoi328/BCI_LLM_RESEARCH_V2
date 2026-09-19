@@ -73,6 +73,9 @@ summary::before{content:"›";display:inline-block;margin-right:8px;font-size:1.
 details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 :focus-visible{outline:3px solid var(--blue-600);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+/* 테마를 바꾸는 순간에는 전환을 끈다 — 화면 전체가 0.12초 동안 크로스페이드되면
+   그 자체가 깜빡임으로 보인다. */
+.theme-switching,.theme-switching *{transition:none!important}
 
 /* 공통 알갱이 — 한 번만 정의하고 어디서나 재사용 */
 .step-chip{
@@ -300,7 +303,7 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
    ========================================================================== */
 .cand-head{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:10px}
 .cand-head .lb{font-size:var(--fs-base);font-weight:800;color:var(--ink-900)}
-.cand-words{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.cand-words{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-bottom:8px}
 .cand-sents{display:flex;flex-direction:column;gap:8px}
 .cand{
   display:flex;align-items:center;gap:9px;text-align:left;cursor:pointer;min-width:0;
@@ -626,6 +629,119 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 
 /* 이 화면들에서는 실험실 배너를 숨긴다 — 대화 중에 낄 자리가 아니다 */
 body:has(#view-speller:not([hidden])) .lab-link{display:none}
+
+/* ==========================================================================
+   한눈에 — 화면에서 경쟁하는 것들을 줄인다
+   --------------------------------------------------------------------------
+   이 화면에서 사용자가 하는 일은 딱 둘이다: 고를 것을 읽고, 키를 누른다.
+   그래서 후보 글자를 화면에서 가장 크게 만들고, 나머지(계기판 수치, 카드
+   제목, 범례, 태그)는 전부 작게 물리거나 접었다. 카드 테두리와 그림자도
+   줄였다 — 선이 많으면 그 자체가 읽을 거리가 된다.
+   ========================================================================== */
+
+/* --- 한 줄 머리: 상대/상황 + 루프 + 속도. 수치는 '기록'에 접어 둔다 --- */
+.topline{
+  display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;flex:0 0 auto;
+  padding:var(--sp-2) var(--sp-4);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill);
+}
+.topline .badge-row{gap:4px}
+.topline .badge{padding:4px 11px;border:none;background:transparent;color:var(--ink-500)}
+.topline .badge.done{color:var(--ink-700)}
+.topline .badge .num{width:15px;height:15px;font-size:9px}
+.loop-bar{display:flex;align-items:center;gap:2px;flex-wrap:wrap;margin-left:var(--sp-2)}
+.loop-step{
+  display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--ink-300);
+  padding:4px 7px;border-radius:var(--r-pill);white-space:nowrap;transition:background .18s,color .18s;
+}
+.loop-step .n{width:15px;height:15px;border-radius:99px;background:var(--ink-200);color:var(--on-solid);display:grid;place-items:center;font-size:9px;flex:0 0 auto}
+/* 지금 어느 단계인지만 글자로 알려준다. 네 단계 이름이 늘 떠 있을 이유가 없다. */
+.loop-step .lb,.loop-step .t{display:none}
+.loop-step.active .lb{display:inline}
+.loop-step.active{background:var(--blue-50);color:var(--blue-700)}
+.loop-step.active .n{background:var(--blue-500)}
+.loop-step.stim.active{background:var(--amber-50);color:var(--amber-600)}
+.loop-step.stim.active .n{background:var(--amber-600)}
+.pace{display:flex;align-items:baseline;gap:6px;margin-left:auto}
+.pace b{font-size:var(--fs-md);font-weight:800;color:var(--blue-600);font-variant-numeric:tabular-nums}
+.pace span{font-size:10px;font-weight:700;color:var(--ink-300)}
+.hud-more{margin:0;position:relative}
+.hud-more>summary{min-height:30px;font-size:var(--fs-xs);color:var(--ink-500)}
+.hud-grid{
+  position:absolute;right:0;top:calc(100% + 8px);z-index:15;width:max(260px,100%);
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:var(--sp-4);
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow-md);
+}
+.hud-grid .wide{grid-column:1/-1}
+.hud-grid span{display:block;font-size:10px;font-weight:700;color:var(--ink-300)}
+.hud-grid b{font-size:var(--fs-sm);font-weight:800;color:var(--ink-900);font-variant-numeric:tabular-nums;word-break:break-all}
+.topline .ghost-btn{font-size:var(--fs-xs);padding:6px 2px}
+
+/* --- 카드: 선을 줄이고 면으로 구분한다 --- */
+.card{border-width:1px;box-shadow:none;background:var(--surface)}
+.card.accent,.card.primary{border-top:1px solid var(--line)}
+
+/* --- 대화 한 덩어리: 상대 말 → 내 말 → 내가 만드는 중인 말 --- */
+.card.chat{gap:0;padding:var(--sp-4)}
+.chat-log{border:none;background:transparent;padding:0 var(--sp-1);min-height:60px}
+.mine{
+  margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px dashed var(--line);flex:0 0 auto;
+}
+.mine .unit-hint:empty{display:none}
+.mine .unit-hint{margin-bottom:6px}
+.buffer{
+  min-height:52px;padding:var(--sp-3);border-radius:var(--r-md);background:var(--blue-50);
+  border:none;font-size:var(--fs-lg);font-weight:700;line-height:1.55;overflow-wrap:anywhere;color:var(--ink-900);
+}
+.speech-actions{margin-top:var(--sp-2)}
+.speech-actions .btn{font-size:var(--fs-xs);min-height:38px;padding:9px 13px}
+.chat-input-row{margin-top:var(--sp-3)}
+.chat-input-row input{font-size:var(--fs-sm);padding:9px 12px}
+.chat-input-row .btn{font-size:var(--fs-xs);min-height:38px;padding:9px 14px}
+
+/* --- 후보: 화면에서 가장 큰 글자. 라벨은 최소한으로 --- */
+.card.cand-card{padding:var(--sp-4)}
+.cand-words{grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:7px;margin-bottom:7px}
+.cand-sents{gap:7px}
+.cand{padding:8px 11px;min-height:54px;border-width:1px}
+.cand .kb-badge{width:22px;height:22px;font-size:11px;border-radius:6px}
+.cand .tx{font-size:1.25rem;font-weight:800;letter-spacing:-.01em}
+.cand.sent .tx{font-size:1.35rem}
+.cand.ph .tx{font-size:var(--fs-sm);font-weight:600}
+.cand-foot{margin-top:8px;gap:var(--sp-2)}
+.cand-foot .unit-hint,.cand-foot .ghost-btn{font-size:10.5px}
+
+/* --- 입력 줄: 조합 중인 글자 + 작은 도구. 제목도 범례도 없다 --- */
+.card.kb-card{padding:var(--sp-4);gap:8px}
+.ini-row{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
+.ini-display{flex:1 1 220px;min-width:0;min-height:56px;padding:6px var(--sp-3);gap:7px}
+.ini-tools{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.ini-tools .btn{font-size:10.5px;min-height:34px;padding:7px 11px}
+.wblock{min-width:42px;height:42px;font-size:1.35rem}
+
+/* --- 설정 줄: 있는 줄도 모르게 --- */
+.settings-row>details{border:1px solid var(--line);background:transparent}
+.settings-row>details>summary{color:var(--ink-500);font-size:var(--fs-xs)}
+.settings-row>details[open]{background:var(--surface)}
+.footer-note p{font-size:10px;opacity:.75}
+
+@media(max-width:1100px){
+  .card.chat{flex:0 0 auto}
+  .chat-log{max-height:150px}
+}
+@media(max-width:640px){
+  .topline{border-radius:var(--r-md);padding:var(--sp-3)}
+  .pace{margin-left:0}
+  .cand .tx{font-size:1.1rem}
+  .cand.sent .tx{font-size:1.15rem}
+  /* 좁은 화면에서는 안내 문구가 한 줄을 통째로 쓰게 해서 태그를 밀지 않게 한다 */
+  .cand-foot{gap:6px}
+  .cand-foot>*{min-width:0}
+  .cand-foot .unit-hint{flex:1 1 100%;order:2}
+  .ratio-tag{white-space:normal}
+}
+/* 큰 글씨 모드에서 한 번 더 키운다 */
+.large-text .cand .tx{font-size:1.5rem}
+.large-text .cand.sent .tx{font-size:1.6rem}
 </style>
 </head>
 <body>
@@ -701,84 +817,68 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 
   <!-- STEP 3: speller -->
   <section class="step-wrap wide" id="view-speller" hidden>
-    <div class="badge-row">
-      <button class="badge done" id="partnerBadge" type="button"><span class="num">✓</span>가족</button>
-      <span class="arrow">›</span>
-      <button class="badge done" id="situationBadge" type="button"><span class="num">✓</span>일반</button>
-      <span class="arrow">›</span>
-      <div class="badge"><span class="num">3</span>대화 중</div>
-      <button class="ghost-btn" id="btnNewSession" style="margin-left:auto">↺ 새 대화 시작</button>
-    </div>
 
-    <!-- 루프 HUD: 논문의 4단계를 그대로 올리고 선택당 실제 시간을 잰다 -->
-    <div class="loop-hud">
+    <!-- 한 줄 머리: 지금 누구와 어떤 상황인지 + 계기판 요약. 자세한 수치는 접어 둔다. -->
+    <div class="topline">
+      <div class="badge-row">
+        <button class="badge done" id="partnerBadge" type="button"><span class="num">✓</span>가족</button>
+        <button class="badge done" id="situationBadge" type="button"><span class="num">✓</span>일반</button>
+      </div>
       <div class="loop-bar" id="loopBar" title="문장 시작 → loop(① 후보 검토·결정 → ② 응시·EEG 수집 → ③ 선택 키 판독 → ④ 후보 갱신) → 종료">
-        <div class="loop-step" data-step="1"><span class="n">1</span>후보 검토·결정<span class="t" id="t1">–</span></div>
-        <span class="loop-arrow">→</span>
-        <div class="loop-step stim" data-step="2"><span class="n">2</span>응시·EEG 수집<span class="t" id="t2">–</span></div>
-        <span class="loop-arrow">→</span>
-        <div class="loop-step" data-step="3"><span class="n">3</span>선택 키 판독<span class="t" id="t3">–</span></div>
-        <span class="loop-arrow">→</span>
-        <div class="loop-step" data-step="4"><span class="n">4</span>후보 갱신<span class="t" id="t4">–</span></div>
+        <div class="loop-step" data-step="1"><span class="n">1</span><span class="lb">후보 검토·결정</span><span class="t" id="t1">–</span></div>
+        <div class="loop-step stim" data-step="2"><span class="n">2</span><span class="lb">응시·EEG</span><span class="t" id="t2">–</span></div>
+        <div class="loop-step" data-step="3"><span class="n">3</span><span class="lb">판독</span><span class="t" id="t3">–</span></div>
+        <div class="loop-step" data-step="4"><span class="n">4</span><span class="lb">후보 갱신</span><span class="t" id="t4">–</span></div>
       </div>
-      <div class="loop-metrics">
-        <div class="hi"><span>이번 선택</span><b id="mSel">–</b></div>
-        <div class="hi"><span>평균 초/선택</span><b id="mAvg">–</b></div>
-        <div><span>선택 수</span><b id="mCount">0</b></div>
-        <div><span>LLM 실대기</span><b id="mWait">–</b></div>
-        <div class="ref"><span>논문 비교</span><b>ChatBCI 24.56s · MindChat 5.5–6.5s</b></div>
-      </div>
+      <div class="pace"><b id="mAvg">–</b><span>평균 초/선택</span></div>
+      <details class="hud-more">
+        <summary>기록</summary>
+        <div class="hud-grid">
+          <div><span>이번 선택</span><b id="mSel">–</b></div>
+          <div><span>선택 수</span><b id="mCount">0</b></div>
+          <div><span>LLM 실대기</span><b id="mWait">–</b></div>
+          <div class="wide"><span>논문 비교</span><b>ChatBCI 24.56s · MindChat 5.5–6.5s</b></div>
+          <div class="wide"><span>응답</span><b><span id="mGen">-</span> · <span id="mRank">-</span> · <span id="mLat">-</span> · <span id="mMode">-</span></b></div>
+        </div>
+      </details>
+      <button class="ghost-btn" id="btnNewSession">↺ 새 대화</button>
     </div>
 
     <div class="work">
-      <!-- 왼쪽: 맥락 (대화 누적 + 지금까지 만든 말) -->
+      <!-- 왼쪽: 대화 한 덩어리. 내가 만들고 있는 말이 마지막 차례로 이어진다. -->
       <div class="col">
         <section class="card chat">
-          <h3>대화 <span class="tag">상대 · 나 누적 → 후보 문맥</span></h3>
           <div class="chat-log" id="chatLog"></div>
-          <div class="chat-input-row">
-            <input id="partnerText" maxlength="200" placeholder="상대방이 한 말을 입력하세요" aria-label="상대방이 한 말">
-            <button class="btn" id="btnPartnerSend">추가</button>
+          <div class="mine">
+            <div id="notice" role="status" aria-live="polite" class="unit-hint"></div>
+            <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">고른 문장이 여기 쌓입니다</span></div>
+            <div class="speech-actions">
+              <button class="btn accent" id="btnSpeak">문장 말하기</button>
+              <button class="btn" id="btnStopSpeak">중지</button>
+              <button class="btn" id="btnUndo">↶ 취소</button>
+            </div>
           </div>
-          <p class="who-note">상대방 전용 입력 · 환자 입력은 오른쪽 40키만 사용합니다.</p>
-        </section>
-
-        <section class="card accent tight">
-          <h3>내가 전할 말 <span class="tag">확정한 문장만 추가</span></h3>
-          <div id="notice" role="status" aria-live="polite" class="unit-hint" style="margin-bottom:8px"></div>
-          <div class="buffer"><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">완성된 문장이 여기 표시됩니다</span></div>
-          <div class="speech-actions">
-            <button class="btn accent" id="btnSpeak">문장 말하기</button>
-            <button class="btn" id="btnStopSpeak">말하기 중지</button>
-            <button class="btn" id="btnUndo">↶ 마지막 문장 취소</button>
+          <div class="chat-input-row">
+            <input id="partnerText" maxlength="200" placeholder="상대방이 한 말" aria-label="상대방이 한 말">
+            <button class="btn" id="btnPartnerSend">추가</button>
           </div>
         </section>
       </div>
 
-      <!-- 오른쪽: 행동 축. 후보와 40키를 세로로 붙여 시선 이동을 없앤다 -->
+      <!-- 오른쪽: 고를 것과 누를 것. 이 열에만 시선이 머물면 된다. -->
       <div class="col">
-        <section class="card primary">
-          <div class="cand-head">
-            <span class="lb">후보</span>
-            <span class="tag">후보키 1–7 · 숫자키</span>
-            <span class="ratio-tag" id="ratioTag">단어 5 · 문장 2</span>
-            <span id="nudgeBox"></span>
-          </div>
+        <section class="card cand-card">
           <div class="cand-words" id="candWords" aria-live="polite"></div>
           <div class="cand-sents" id="candSents" aria-live="polite" aria-busy="false"></div>
           <div class="cand-foot">
-            <span class="unit-hint" id="unitHint" hidden>💡 문장 후보의 글자를 누르면 그 글자만 바꾼 대안을 찾습니다 (FillMask)</span>
-            <button class="ghost-btn" id="btnOpenRecovery" style="display:none;padding:0;margin-left:auto">🔎 글자를 직접 완성하기</button>
-            <details><summary>응답 정보</summary><div class="metrics">
-              <div class="metric"><span>생성기</span><b id="mGen">-</b></div>
-              <div class="metric"><span>랭커</span><b id="mRank">-</b></div>
-              <div class="metric"><span>서버 지연</span><b id="mLat">-</b></div>
-              <div class="metric"><span>모드</span><b id="mMode">-</b></div>
-            </div></details>
+            <span class="ratio-tag" id="ratioTag">단어 5 · 문장 2</span>
+            <span class="unit-hint" id="unitHint" hidden>글자를 누르면 그 글자만 바꿉니다</span>
+            <span id="nudgeBox"></span>
+            <button class="ghost-btn" id="btnOpenRecovery" style="display:none;margin-left:auto">글자 직접 완성</button>
           </div>
           <div class="recovery" id="recoveryPanel" hidden>
             <div class="recovery-head">
-              <span>글자를 직접 완성해서 다시 찾기 (KeywordAE)</span>
+              <span>글자를 직접 완성해서 다시 찾기</span>
               <button class="ghost-btn" id="btnRecoveryClose">닫기</button>
             </div>
             <div class="recovery-blocks" id="recoveryBlocks"></div>
@@ -795,22 +895,17 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
         </section>
 
         <section class="card kb-card">
+          <!-- #iniDisplay 는 JS가 innerHTML로 통째로 다시 그린다. 버튼을 그 안에
+               두면 매 입력마다 사라지므로 도구는 반드시 형제로 둔다. -->
           <div class="ini-row">
-            <span class="lb"><span class="step-chip">1</span> 입력 중</span>
-            <span id="expFlag"></span>
-            <span class="kb-legend">
-              <span><i style="background:var(--blue-500)"></i>초성 19</span>
-              <span><i style="background:var(--green-500)"></i>중성 10</span>
-              <span><i style="background:var(--pick-500)"></i>후보 7</span>
-              <span><i style="background:var(--ink-500)"></i>기능 4</span>
-            </span>
-            <span class="actions">
+            <div class="ini-display empty" id="iniDisplay">키를 눌러 시작하세요</div>
+            <span class="ini-tools">
+              <span id="expFlag"></span>
               <button class="btn sm" id="btnCancel" hidden>조회 취소</button>
-              <button class="btn sm" id="btnClear">단어 초기화</button>
+              <button class="btn sm" id="btnClear">지우기</button>
               <button class="btn danger sm" id="btnReset">전체 초기화</button>
             </span>
           </div>
-          <div class="ini-display empty" id="iniDisplay">키를 눌러 시작하세요</div>
           <div class="keyboard kb" id="keyboard"></div>
         </section>
       </div>
@@ -847,7 +942,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
         <label for="context">상황 메모 (선택 · 후보 조회에 함께 전달)</label>
         <textarea id="context" rows="2" maxlength="300" placeholder="예: 식사 중이고 보호자가 옆에 있어요"></textarea>
         <label><input type="checkbox" id="autoPredict" checked> 초성을 입력할 때마다 문장 후보 자동 갱신</label>
-        <p class="unit-hint">단어·문장 후보는 검수된 표현 사전에서 항상 즉시(0ms) 채워집니다. 언어 모델은 로컬이 못 맞춘 나머지만 채우며, 입력이 멈춘 뒤 0.7초에 실행됩니다.</p>
+        <p class="unit-hint">단어·문장 후보는 검수된 표현 사전에서 항상 즉시(0ms) 채워집니다. 언어 모델은 로컬이 못 맞힌 나머지만 채웁니다.</p>
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
         <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
         <p class="unit-hint">문장과 대화, 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 대화가 서버·언어 모델로 전달됩니다.</p>
@@ -859,7 +954,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 검수된 표현 281개를 로컬에서 먼저 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독은 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.0.1</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 검수된 표현 281개를 로컬에서 먼저 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독은 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.1.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1987,7 +2082,10 @@ el("btnGuideClose").onclick=()=>el("guideDialog").close();
 el("guideDialog").addEventListener("close",()=>el("btnGuide").focus());
 /* 테마 토글. 색이 전부 토큰이라 data-theme 한 글자만 바꾸면 화면 전체가 따라온다. */
 function applyTheme(dark){
-  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  const root=document.documentElement;
+  root.classList.add("theme-switching");
+  root.dataset.theme = dark ? "dark" : "light";
+  requestAnimationFrame(()=>requestAnimationFrame(()=>root.classList.remove("theme-switching")));
   el("btnTheme").textContent = dark ? "◐ 어둡게" : "☀ 밝게";
   el("btnTheme").setAttribute("aria-pressed", String(dark));
   try{ localStorage.setItem("bci_theme", dark ? "dark" : "light"); }catch(e){}
