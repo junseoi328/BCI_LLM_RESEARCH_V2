@@ -71,8 +71,10 @@ test('40-key grid carries the candidates, and candidate keys commit what they di
     assert.equal(await page.locator('#keyboard .key.cand').count(),7);
     assert.equal(await page.locator('#keyboard .key.fn').count(),4);
 
-    // 후보키는 초성을 누르기 전에는 잠겨 있어야 한다
-    assert.equal(await page.locator('#candKey0').isDisabled(),true);
+    // 초성을 누르기 전에는 '다음에 할 말' 예측이 후보 자리를 채운다 (타건 0회 경로)
+    const guesses=await page.locator('#candWords .cand.guess .tx').allTextContents();
+    assert.ok(guesses.length>0,'next-word predictions fill the slots before any keypress');
+    assert.equal(await page.locator('#candWords .cand.guess .cand-mark.guess').first().textContent(),'다음');
 
     // 단어 후보는 로컬이므로 서버가 죽어 있어도(503) 즉시 떠야 한다
     await page.locator('#keyboard .key.cho[data-v="ㅁ"]').click();

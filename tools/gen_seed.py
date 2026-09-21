@@ -49,11 +49,27 @@ for r in rows:
         wcat[w][ci] += 1
 words = [[choseong(w), w, n, wcat[w].most_common(1)[0][0]] for w, n in wfreq.most_common()]
 
+# 다음 단어 예측용 바이그램. "물" 다음에 무엇이 오는지 알면 초성을 한 글자도
+# 누르지 않고 후보를 띄울 수 있다 — 가장 큰 타건 절감은 여기서 나온다.
+# "" 키는 문장 첫 단어(=시작 분포).
+bi = collections.defaultdict(collections.Counter)
+for r in rows:
+    prev = ""
+    for w in r["text"].split():
+        w = w.strip(".,!?·").strip()
+        if not w:
+            continue
+        bi[prev][w] += 1
+        prev = w
+bigrams = [[prev, [[w, n] for w, n in c.most_common(6)]] for prev, c in bi.items() if c]
+
 j = lambda o: json.dumps(o, ensure_ascii=False, separators=(",", ":"))
 out = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else "build/seed.js")
 out.write_text(
     "/* 자동 생성 — tools/gen_seed.py. 직접 고치지 말고 스크립트를 다시 돌릴 것. */\n"
     f"const SEED_CATS={j(cats)};\n"
     f"const SEED_PHRASES={j(phrases)};\n"
-    f"const SEED_WORDS={j(words)};\n", encoding="utf-8")
-print(f"카테고리 {len(cats)} / 문장 {len(phrases)} / 단어 {len(words)} -> {out} ({out.stat().st_size//1024}KB)")
+    f"const SEED_WORDS={j(words)};\n"
+    f"const SEED_BIGRAMS={j(bigrams)};\n", encoding="utf-8")
+print(f"카테고리 {len(cats)} / 문장 {len(phrases)} / 단어 {len(words)} / 바이그램 {len(bigrams)}"
+      f" -> {out} ({out.stat().st_size//1024}KB)")
