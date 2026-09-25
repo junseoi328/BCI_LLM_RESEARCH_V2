@@ -845,7 +845,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
       <div class="hero-field" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
 
-      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v1.9</i></p>
+      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v2.0</i></p>
 
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
 
@@ -1048,7 +1048,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.9.0</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v2.0.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1405,7 +1405,9 @@ function contextScores(){
      절감률이 3.2%p 날아갔다. */
   for(const [w,n] of Object.entries(learn.next[p2]||{})) add(w, SCORE.biBase+n*SCORE.biPer);
   for(const [p,list] of SEED_BIGRAMS) if(p===p2) for(const [w,n] of list) add(w, n*10);
-  if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===p2) list.forEach((w,i)=>add(w,(30-i*5)*SCORE.lex));
+  /* 말뭉치 바이그램은 검수 사전(n*10, 최소 10점)보다 아래에 둬야 한다.
+     같은 점수대에 두면 일반 말뭉치의 흔한 단어가 검수된 추측을 밀어낸다. */
+  if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===p2) list.forEach((w,i)=>add(w,(6-Math.min(i,5))*SCORE.lexGuess));
   /* 상대가 쓴 단어를 여기(초성 0개 구간)에도 올려 봤지만 카테고리 때와 똑같이
      나빴다 — 250점만 줘도 54.7% -> 52.4%, 2000점이면 51.1%. 이 구간의 단어 칸은
      5개뿐이라, 무엇을 밀어 넣든 예측력이 훨씬 높은 n-gram 추측이 밀려난다.
@@ -1941,7 +1943,7 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 앞 단어 가산점. bgMine=내가 실제로 그 순서로 썼던 것, bgSeed=검수 사전,
      bgLex=일반 말뭉치. 값은 bench_bigram.js 측정으로 고른다. */
   bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6,
-  bgTri:1400, bgTriPer:120, echo:700,
+  bgTri:1400, bgTriPer:120, echo:700, lexGuess:1.2,
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1};
 function scoreSeed(cand, text, ini, freq, cat, cats, learned){
