@@ -2,6 +2,6 @@
   "name": "bci-speller-ui-checks",
   "private": true,
   "version": "0.7.0",
-  "scripts": {"test": "node --test tests/speller_ui.test.cjs"},
+  "scripts": {"test": "node --test tests/speller_ui.test.cjs tests/research_speller.test.cjs"},
   "devDependencies": {"playwright": "1.62.1"}
 }

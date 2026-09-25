@@ -327,7 +327,7 @@
         <div class="row">
           <h2 style="margin: 0">내가 전할 문장</h2>
           <button id="start" class="primary">새 문장 시작</button
-          ><button id="finish">문장 종료</button
+          ><button id="abort" disabled>시행 중단</button><button id="finish">문장 종료</button
           ><button id="undo">마지막 선택 취소</button>
         </div>
         <div id="sentence" class="sentence" aria-live="polite">
@@ -456,6 +456,8 @@
         </p>
       </section>
     </main>
+    <section class="card" style="max-width:1240px;margin:0 auto 24px" aria-labelledby="comparisonTitle">
+<h2 id="comparisonTitle">조건별 비교 결과</h2><label><input id="learning" type="checkbox" checked> 완료한 문장으로 개인 기억 갱신</label><p class="source">체크를 끄면 기억을 갱신하지 않습니다. 조건·입력 전략·기억 설정별 비교입니다. 목표 난이도와 시행 순서가 통제되지 않으므로 가장 빠른 조건을 곧바로 우수하다고 판단하지 마세요.</p><div id="comparison" aria-live="polite"></div></section>
     <footer>
       연구 제안서의 초성/자모 비교와 사용자 선택 루프를 위한 UX/UI 초안 · 사용자
       평가 전 “최적” 성능을 가정하지 않습니다.
@@ -660,6 +662,7 @@
         $("finish").disabled = !active;
         $("condition").disabled = active;
         $("strategy").disabled = active;
+        $("forget").disabled = active;
         $("target").disabled = active;
         $("undo").disabled = !active || !undos.length;
         $("lookup").disabled = !active || $("condition").value === "direct";
@@ -954,7 +957,7 @@
         }
         const cached = cache.get(cacheKey);
         if (cached && Date.now() - cached.at < 60000) {
-          if (!local.length)
+          if (!local.length && cached.items.length)
             trial.first_candidate_ms.push(performance.now() - start);
           candidates(cached.items);
           trial.cache_hits++;
@@ -984,7 +987,7 @@
           if (current !== version || !active) return;
           const elapsed = performance.now() - start;
           trial.server_ms.push(elapsed);
-          if (!local.length) trial.first_candidate_ms.push(elapsed);
+
           const remote = (d.candidates || [])
             .filter(
               (x) =>
@@ -995,6 +998,8 @@
           const items = [...local, ...remote]
             .filter((x, i, a) => a.findIndex((y) => y.text === x.text) === i)
             .slice(0, 8);
+          if (!local.length && items.length) trial.first_candidate_ms.push(elapsed);
+          if (!items.length) trial.empty_responses++;
           cache.set(cacheKey, { at: Date.now(), items });
           if (cache.size > 30) cache.delete(cache.keys().next().value);
           candidates(items);
@@ -1005,7 +1010,8 @@
             " / " +
             Math.round(elapsed) +
             " ms";
-          status("후보를 확인하고 선택하세요.");
+          if (!items.length) $('latency').textContent = '후보 없음 / ' + Math.round(elapsed) + ' ms';
+          status(items.length ? '후보를 확인하고 선택하세요.' : '일치하는 후보가 없습니다. 입력을 수정하거나 그대로 추가하세요.');
           phase("후보 결정 → 선택(SSVEP 모의)");
         } catch (e) {
           if (current === version) {
@@ -1038,6 +1044,48 @@
         }
         return row[b.length];
       }
+      // Nearest-rank quantiles; empty samples remain unmeasured, never zero.
+      function percentile(values, fraction) {
+        const sorted = values.filter(Number.isFinite).sort((a, b) => a - b);
+        return sorted.length ? sorted[Math.max(0, Math.ceil(sorted.length * fraction) - 1)] : null;
+      }
+      function evaluationSummary() {
+        const groups = new Map();
+        for (const row of trials) {
+          const key = [row.condition, row.strategy, row.learning_enabled !== false].join('/');
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(row);
+        }
+        return [...groups].map(([key, rows]) => {
+          const done = rows.filter(row => row.outcome !== 'aborted');
+          const mean = values => values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+          return {condition: key, completed: done.length, aborted: rows.length - done.length,
+            median_duration_ms: percentile(done.map(r => r.duration_ms), .5),
+            median_actions: percentile(done.map(r => r.actions), .5),
+            mean_cer: mean(done.map(r => r.cer).filter(Number.isFinite)),
+            first_candidate_p50_ms: percentile(done.flatMap(r => r.first_candidate_ms), .5),
+            server_p95_ms: percentile(done.flatMap(r => r.server_ms), .95),
+            requests: rows.reduce((n, r) => n + r.requests, 0)};
+        });
+      }
+      function renderEvaluation() {
+        $('comparison').replaceChildren();
+        for (const row of evaluationSummary()) {
+          const card = document.createElement('div'); card.className = 'candidate';
+          const title = document.createElement('strong');
+          const [condition, strategy, learning] = row.condition.split('/');
+          title.textContent = ({fast:'빠른 LLM',balanced:'기존 LLM',local:'개인 표현',direct:'직접 입력'})[condition] + ' · ' + (strategy === 'jamo' ? '자모' : '초성') + ' · 기억 ' + (learning === 'true' ? '갱신' : '고정');
+          const info = document.createElement('p');
+          const time = value => value === null ? '측정 없음' : (value / 1000).toFixed(2) + '초';
+          info.textContent = `완료 ${row.completed} / 중단 ${row.aborted} · 문장 시간 중앙값 ${time(row.median_duration_ms)} · 동작 중앙값 ${row.median_actions ?? '—'} · 평균 문자 오류율 ${row.mean_cer === null ? '목표 없음' : (row.mean_cer * 100).toFixed(1) + '%'} · 서버 요청 ${row.requests}회`;
+          const latency = document.createElement('p');latency.className = 'source';
+          latency.textContent = `첫 후보 P50 ${time(row.first_candidate_p50_ms)} · 성공 응답 P95 ${time(row.server_p95_ms)}. 실패·취소는 이 지연시간 분포에 포함되지 않습니다.`;
+          card.append(title, info, latency);$('comparison').append(card);
+        }
+        $('trialCount').textContent = '완료 ' + trials.filter(r => r.outcome !== 'aborted').length + ' / 중단 ' + trials.filter(r => r.outcome === 'aborted').length;
+        $('abort').disabled = !active;
+        $('learning').disabled = active;
+      }
       function finish() {
         if (!active) return;
         if ($("entry").value.trim()) {
@@ -1057,6 +1105,7 @@
           actual = [...sentence];
         const result = {
           ...trial,
+          outcome: 'completed',
           duration_ms: Math.round(duration),
           characters: actual.length,
           cer: goal.length ? distance(goal, actual) / goal.length : null,
@@ -1064,9 +1113,11 @@
         };
         delete result.started;
         trials.push(result);
-        for (const s of selection) if (s.mode === "word") learn("word", s.text);
-        learn("sentence", sentence);
-        saveMemory();
+        if (trial.learning_enabled) {
+          for (const s of selection) if (s.mode === "word") learn("word", s.text);
+          learn("sentence", sentence);
+          saveMemory();
+        }
         $("time").textContent = (duration / 1000).toFixed(1) + "초";
         $("accuracy").textContent =
           result.cer === null ? "—" : (100 * result.cer).toFixed(1) + "%";
@@ -1075,6 +1126,7 @@
         render();
         candidates([]);
         related();
+        renderEvaluation();
       }
       $("start").onclick = () => {
         cancel();
@@ -1087,14 +1139,17 @@
           started: performance.now(),
           condition: $("condition").value,
           strategy: $("strategy").value,
+          learning_enabled: $('learning').checked,
+          initial_memory_words: memory.word.length,
+          initial_memory_sentences: memory.sentence.length,
           actions: 0,
           corrections: 0,
           requests: 0,
-          errors: 0,
+          errors: 0, empty_responses: 0,
           cache_hits: 0,
           first_candidate_ms: [],
           server_ms: [],
-          modes: [],
+          modes: [mode],
         };
         cache.clear();
         $("actions").textContent = "0";
@@ -1105,8 +1160,18 @@
         status("초성이나 글자를 입력하세요.");
         render();
         changed();
+        renderEvaluation();
       };
       $("finish").onclick = finish;
+      $('abort').onclick = () => {
+        if (!active) return;
+        cancel();
+        const result = {...trial, outcome:'aborted', duration_ms:Math.round(performance.now()-trial.started), characters:[...sentence].length, cer:null, burden:null};
+        delete result.started; trials.push(result); active = false;
+        $('time').textContent = '중단';
+        status('시행을 중단했습니다. 개인 기억은 갱신하지 않았습니다. 작성한 문장은 새 시행을 시작할 때까지 유지됩니다.');
+        phase('시행 중단'); render(); candidates([]); related(); renderEvaluation();
+      };
       $("lookup").onclick = lookup;
       $("cancel").onclick = () => {
         cancel();
@@ -1175,12 +1240,13 @@
           trials[trials.length - 1].burden = $("burden").value
             ? Number($("burden").value)
             : null;
+        renderEvaluation();
       };
       $("export").onclick = () => {
         const blob = new Blob(
           [
             JSON.stringify(
-              { version: 1, measurement: "pre-EEG UI events; not ITR", trials },
+              { version: 2, measurement: "pre-EEG UI events; not ITR", trials, summary:evaluationSummary() },
               null,
               2,
             ),

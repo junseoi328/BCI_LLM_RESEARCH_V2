@@ -175,3 +175,30 @@ test("Research guide and large-text layouts fit narrow screens", async () => {
     await browser.close();
   }
 });
+
+test('Evaluation separates aborted trials, freezes learning and excludes empty response latency', async () => {
+ const {browser,page}=await setup(r=>r.fulfill({json:{candidates:[]}}));
+ try {
+  await page.locator('#learning').uncheck();
+  await page.locator('#start').click();
+  assert.equal(await page.locator('#learning').isDisabled(),true);
+  assert.equal(await page.locator('#forget').isDisabled(),true);
+  await page.locator('#entry').fill('ㅃㅃㅃ');
+  await page.locator('#lookup').click();
+  await page.waitForFunction(()=>controller===null);
+  assert.equal(await page.evaluate(()=>trial.first_candidate_ms.length),0);
+  assert.equal(await page.evaluate(()=>trial.empty_responses),1);
+  await page.locator('#entry').fill('시험 문장');
+  await page.locator('#literal').click();
+  await page.locator('#finish').click();
+  assert.equal(await page.evaluate(()=>memory.sentence.length),0);
+  await page.locator('#start').click();
+  await page.locator('#abort').click();
+  const summary=await page.evaluate(()=>evaluationSummary());
+  assert.equal(summary.length,1);
+  assert.equal(summary[0].completed,1);
+  assert.equal(summary[0].aborted,1);
+  assert.equal(summary[0].first_candidate_p50_ms,null);
+  assert.match(await page.locator('#comparison').textContent(),/완료 1 \/ 중단 1/);
+ } finally {await browser.close();}
+});
