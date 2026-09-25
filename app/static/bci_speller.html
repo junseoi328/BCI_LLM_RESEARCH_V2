@@ -371,6 +371,11 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 .kb .key.fn{background:var(--surface-3);border-color:var(--line-strong);color:var(--ink-700);font-size:var(--fs-sm);white-space:nowrap;text-overflow:ellipsis}
 .kb .key.fn.commit{background:var(--blue-500);border-color:transparent;color:var(--on-solid);font-weight:800}
 .kb .key.fn.commit:hover{filter:brightness(1.05)}
+/* 물리 키보드로 누른 키를 화면에서 한 번 짚어 준다. 어느 키가 들어갔는지
+   눈으로 확인되지 않으면 물리 키보드 입력은 믿고 쓸 수가 없다. */
+.kb .key.kbd-hit{outline:2.5px solid var(--blue-500);outline-offset:1px;transform:translateY(-1px)}
+@media(prefers-reduced-motion:reduce){.kb .key.kbd-hit{transform:none}}
+
 /* SSVEP 자극 창(실험 모드) — 고른 키만 점멸하고 나머지는 잠긴다 */
 .kb.stim .key{opacity:.3;pointer-events:none}
 .kb.stim .key.flicker{opacity:1;animation:ssvep .1s steps(1,end) infinite;border-color:var(--amber-600)}
@@ -840,7 +845,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
       <div class="hero-field" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
 
-      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v1.5</i></p>
+      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v1.6</i></p>
 
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
 
@@ -1028,6 +1033,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
         <label for="context">상황 메모 (선택 · 후보 조회에 함께 전달)</label>
         <textarea id="context" rows="2" maxlength="300" placeholder="예: 식사 중이고 보호자가 옆에 있어요"></textarea>
         <label><input type="checkbox" id="autoPredict" checked> 초성을 입력할 때마다 문장 후보 자동 갱신</label>
+        <p class="unit-hint"><strong>물리 키보드로도 입력됩니다</strong> — 두벌식 자판 그대로 누르면 화면의 해당 키가 눌립니다(ㅂㅈㄷㄱㅅ / ㅁㄴㅇㄹㅎ / ㅋㅌㅊㅍ, 쌍자음은 Shift). 후보는 숫자 <b>1~7</b>, 띄어쓰기는 <b>Space</b>, 문장 확정은 <b>Enter</b>, 글자 삭제는 <b>Backspace</b>(단어 삭제는 <b>Shift+Backspace</b> 또는 <b>Delete</b>). 한/영 상태와 무관하게 동작합니다. ㅐㅔㅒㅖ는 40키 격자에 없어 후보가 채웁니다.</p>
         <p class="unit-hint">단어·문장 후보는 항상 즉시(0ms) 채워집니다. 세 층을 차례로 씁니다 — ① 내가 전에 쓴 말(이 기기에 저장), ② 검수된 AAC 표현 사전 281개, ③ 일반 한국어 대화 말뭉치에서 만든 넓은 단어·다음단어 사전. 언어 모델은 로컬이 못 맞힌 나머지만 채웁니다.</p>
         <p class="unit-hint">넓은 사전 출처: KLUE 벤치마크의 WoS 과제지향 대화(CC BY-SA 4.0)에서 만든 빈도표입니다. 원문은 포함하지 않습니다.</p>
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
@@ -1041,7 +1047,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.5.0</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.6.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1089,6 +1095,22 @@ const FN_KEYS=[
   {code:"space",  label:"␣ 띄어쓰기", cls:"space"},
   {code:"commit", label:"✓ 문장확정", cls:"commit"},
 ];
+
+/* 물리 키보드 → 화면 40키 (두벌식 자판 배치).
+   e.key 가 아니라 e.code(자판의 물리적 위치)로 맞춘다. e.key 를 쓰면
+   영문 모드에서는 "q"가 오고 한글 모드에서는 IME가 조합을 가로채
+   key === "Process" 가 와서 양쪽 다 놓친다. e.code 는 한/영 상태와
+   무관하게 늘 "KeyQ" 다.
+   ㅐㅔㅒㅖ(o,p)는 40키 격자에 없으므로 매핑하지 않는다 — 후보가 채운다. */
+const QWERTY_JAMO={
+  KeyQ:"ㅂ",KeyW:"ㅈ",KeyE:"ㄷ",KeyR:"ㄱ",KeyT:"ㅅ",
+  KeyY:"ㅛ",KeyU:"ㅕ",KeyI:"ㅑ",
+  KeyA:"ㅁ",KeyS:"ㄴ",KeyD:"ㅇ",KeyF:"ㄹ",KeyG:"ㅎ",
+  KeyH:"ㅗ",KeyJ:"ㅓ",KeyK:"ㅏ",KeyL:"ㅣ",
+  KeyZ:"ㅋ",KeyX:"ㅌ",KeyC:"ㅊ",KeyV:"ㅍ",
+  KeyB:"ㅠ",KeyN:"ㅜ",KeyM:"ㅡ",
+};
+const QWERTY_JAMO_SHIFT={KeyQ:"ㅃ",KeyW:"ㅉ",KeyE:"ㄸ",KeyR:"ㄲ",KeyT:"ㅆ"};
 /* 로컬 자동완성 시드: research/phrase_memory/approved_bci_phrase_bank_v2.jsonl 에서
    실제 검수된 문장을 단어 단위로 쪼개 빈도를 센 것 (LLM 미사용, 클라우드 호출 없음). */
 /* 자동 생성 — tools/gen_seed.py. 직접 고치지 말고 스크립트를 다시 돌릴 것. */
@@ -1581,6 +1603,19 @@ async function startSession(){
 
 el("partnerBadge").onclick=()=>showView("partner");
 el("situationBadge").onclick=()=>showView("situation");
+
+/* 물리 키 입력을 화면 키 클릭과 같은 경로로 흘려보낸다. 직접 handleKey 를
+   부르면 실험 모드의 자극 창·오판독 주입을 건너뛰게 되므로 반드시
+   ssvepGate 를 거친다 — 마우스로 누른 것과 완전히 같아야 측정이 성립한다. */
+function pressGridKey(sel){
+  const btn=el("keyboard").querySelector(sel);
+  if(!btn || btn.disabled) return false;
+  metrics.actions++;
+  btn.classList.add("kbd-hit");
+  setTimeout(()=>btn.classList.remove("kbd-hit"),150);
+  ssvepGate(btn,(chosen)=>handleKey(chosen.dataset.t, chosen.dataset.v));
+  return true;
+}
 
 function renderKeyboard(){
   const cho=CHO_LAYOUT.map(c=>`<button type="button" class="key cho" data-t="cho" data-v="${c}">${c}</button>`).join("");
@@ -2396,8 +2431,12 @@ document.addEventListener("keydown",(e)=>{
     return;
   }
   if(el("view-speller").hidden) return;
-  if(e.repeat || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
+  // isComposing 은 여기서 거르지 않는다 — 한글 IME 가 켜져 있으면 자모 키가
+  // 전부 조합 중으로 들어오는데, 그걸 버리면 한글 상태에서 아무것도 안 먹는다.
+  // 입력란으로 가는 키는 바로 아래 tagName 검사에서 이미 걸러진다.
+  if(e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
   if(["TEXTAREA","INPUT","SELECT"].includes(e.target.tagName)) return;
+  if(e.target.isContentEditable) return;
   if(e.key==="Escape"){ el("btnCancel").click(); return; }
   if(["1","2","3","4","5","6","7"].includes(e.key)){
     const idx=parseInt(e.key,10)-1;
@@ -2406,6 +2445,30 @@ document.addEventListener("keydown",(e)=>{
       const key=el("candKey"+idx);
       if(key && !key.disabled) ssvepGate(key,()=>chooseSlot(idx)); else chooseSlot(idx);
     }
+    return;
+  }
+
+  /* 자모 — 두벌식 위치 그대로. Shift 는 쌍자음만. */
+  const jamo = e.shiftKey ? QWERTY_JAMO_SHIFT[e.code] : QWERTY_JAMO[e.code];
+  if(jamo){
+    e.preventDefault();
+    pressGridKey('.key[data-v="'+jamo+'"]');
+    return;
+  }
+
+  /* 편집키. 단, 버튼이나 링크에 포커스가 있을 때의 Space·Enter 는
+     그 컨트롤을 누르는 것이 맞으므로 가로채지 않는다. */
+  const ae=document.activeElement;
+  const onControl = ae && ae!==document.body &&
+    ["BUTTON","A","SUMMARY","DETAILS","LABEL"].includes(ae.tagName);
+  const fn = e.key==="Backspace" ? (e.shiftKey ? "delword" : "back")
+           : e.key==="Delete"    ? "delword"
+           : (e.key===" "     && !onControl) ? "space"
+           : (e.key==="Enter" && !onControl) ? "commit"
+           : null;
+  if(fn){
+    e.preventDefault();
+    pressGridKey('.key.fn[data-v="'+fn+'"]');
   }
 });
 

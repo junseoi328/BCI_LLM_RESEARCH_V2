@@ -388,3 +388,44 @@ test('Pseudo-online mode holds the stimulus window, injects misdecodes and expor
     assert.match(text,/decision_ms,stimulus_ms,decode_ms/);
   }finally{await browser.close();}
 });
+
+test('Physical keyboard drives the on-screen grid without hijacking text fields', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1440,height:900}});
+    const html=HTML();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>route.fulfill(new URL(route.request().url()).pathname==='/speller'?{contentType:'text/html',body:html}:{json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();renderBuffer();});
+
+    // 두벌식 위치 그대로: a=ㅁ, n=ㅜ -> "무", w=ㅈ
+    await page.keyboard.press('a');
+    await page.keyboard.press('n');
+    await page.keyboard.press('w');
+    assert.equal(await page.evaluate(()=>state.initials),'ㅁㅈ','consonants land as 초성');
+    assert.equal(await page.evaluate(()=>state.spelled[0]),'무','a vowel composes the syllable in place');
+
+    // Shift 는 쌍자음
+    await page.keyboard.press('Shift+q');
+    assert.equal(await page.evaluate(()=>state.initials),'ㅁㅈㅃ','Shift reaches the double consonants');
+
+    // 편집키
+    await page.keyboard.press('Backspace');
+    assert.equal(await page.evaluate(()=>state.initials),'ㅁㅈ','Backspace deletes one letter');
+
+    // 눌린 키가 화면에서 짚인다
+    await page.keyboard.down('a');
+    assert.equal(await page.evaluate(()=>!!document.querySelector('.kb .key.kbd-hit')),true,'the pressed key is marked on screen');
+    await page.keyboard.up('a');
+
+    // 입력란에 포커스가 있으면 격자로 새지 않는다
+    const before=await page.evaluate(()=>state.initials);
+    await page.locator('#partnerText').click();
+    await page.keyboard.type('안녕');
+    assert.equal(await page.locator('#partnerText').inputValue(),'안녕','text goes to the focused field');
+    assert.equal(await page.evaluate(()=>state.initials),before,'and not to the grid');
+
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
