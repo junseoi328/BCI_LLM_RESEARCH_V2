@@ -845,7 +845,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
       <div class="hero-field" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
 
-      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v1.7</i></p>
+      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v1.8</i></p>
 
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
 
@@ -1047,7 +1047,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.7.0</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.8.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1178,6 +1178,7 @@ let state={
   jamoMedial:null,     // medial chosen so far for jamoTarget (before jong/commit)
   fillMaskFor:null,    // {referenceText, targetIndex} while showing FillMask alternatives
   lastWord:"",         // 직전에 확정한 단어 — 다음 단어 예측의 출발점
+  lastWord2:"",        // 그 앞 단어. 둘을 합쳐 트라이그램 문맥이 된다
 };
 /* ==========================================================================
    학습 저장소
@@ -1197,8 +1198,9 @@ let state={
    기록으로 자연스럽게 떨어진다.
    ========================================================================== */
 const LEARN_KEY="bci_learn_v2";
+const CTX_SEP="\u0001";   // "앞앞단어\u0001앞단어" -> 다음 단어
 const HALF_LIFE_DAYS=30;   // 한 달 쓰지 않은 기록은 절반의 무게만 갖는다
-let learn={word:{}, next:{}, phrase:{}, ctx:{}, day:today()};
+let learn={word:{}, next:{}, next2:{}, phrase:{}, ctx:{}, day:today()};
 
 function today(){ return Math.floor(Date.now()/86400000); }
 function ctxKey(){ return (state.partner||"other")+"|"+(state.situation||"general"); }
@@ -1215,11 +1217,12 @@ function loadLearn(){
   try{
     const raw=JSON.parse(localStorage.getItem(LEARN_KEY)||"null");
     if(!raw || typeof raw!=="object") return;
-    learn={word:raw.word||{}, next:raw.next||{}, phrase:raw.phrase||{}, ctx:raw.ctx||{}, day:raw.day||today()};
+    learn={word:raw.word||{}, next:raw.next||{}, next2:raw.next2||{}, phrase:raw.phrase||{}, ctx:raw.ctx||{}, day:raw.day||today()};
     const gap=today()-learn.day;
     if(gap>0){
       decayAll(learn.word,gap); decayAll(learn.phrase,gap);
       for(const m of Object.values(learn.next)) decayAll(m,gap);
+      for(const m of Object.values(learn.next2)) decayAll(m,gap);
       for(const c of Object.values(learn.ctx)){ decayAll(c.word||{},gap); decayAll(c.phrase||{},gap); }
       learn.day=today();
     }
@@ -1231,6 +1234,8 @@ function saveLearn(){
     learn.word=topN(learn.word,600); learn.phrase=topN(learn.phrase,300);
     for(const k of Object.keys(learn.next)) learn.next[k]=topN(learn.next[k],8);
     if(Object.keys(learn.next).length>400) learn.next=Object.fromEntries(Object.entries(learn.next).slice(-400));
+    for(const k of Object.keys(learn.next2)) learn.next2[k]=topN(learn.next2[k],6);
+    if(Object.keys(learn.next2).length>600) learn.next2=Object.fromEntries(Object.entries(learn.next2).slice(-600));
     localStorage.setItem(LEARN_KEY, JSON.stringify(learn));
   }catch(e){}
 }
@@ -1242,18 +1247,20 @@ function bump(store,key,by){ store[key]=(store[key]||0)+(by||1); }
 
 /* 확정한 문장 하나에서 뽑아낼 수 있는 학습 신호를 전부 기록한다. */
 /* 커밋을 되돌리면 그때 올린 카운트를 그대로 내린다. */
-function unlearnCommit(text, prevBefore){
+function unlearnCommit(text, prevBefore, prevBefore2){
   const words=String(text||"").trim().split(/\s+/).filter(Boolean);
   if(!words.length) return;
   const c=learn.ctx[ctxKey()];
   const dec=(store,k)=>{ if(!store) return; store[k]=(store[k]||0)-1; if(store[k]<=0) delete store[k]; };
   dec(learn.phrase,text); if(c) dec(c.phrase,text);
   // 되돌릴 때도 앞 단어를 똑같이 이어 줘야 learnFromCommit 이 올린 짝이 정확히 내려간다
-  let prev=prevBefore||"";
+  let p1=prevBefore2||"", p2=prevBefore||"";
   for(const w of words){
     dec(learn.word,w); if(c) dec(c.word,w);
-    if(learn.next[prev]) dec(learn.next[prev],w);
-    prev=w;
+    if(learn.next[p2]) dec(learn.next[p2],w);
+    const k2=p1+CTX_SEP+p2;
+    if(p1&&p2&&(learn.next2||{})[k2]) dec((learn.next2||{})[k2],w);
+    p1=p2; p2=w;
   }
   bgKey=null;
   saveLearn();
@@ -1268,16 +1275,19 @@ function learnFromCommit(text){
      커밋 한 번이 대개 단어 하나다 — prev 를 "" 로 시작하면 learn.next 에는
      영원히 문장 첫 단어만 쌓이고 "물 -> 좀" 같은 짝은 한 번도 기록되지 않는다.
      방금 고른 단어가 다음 후보에 영향을 주려면 여기서 이어 줘야 한다. */
-  let prev=state.lastWord||"";
+  let p1=state.lastWord2||"", p2=state.lastWord||"";
   for(const w of words){
     if(w.length>12) continue;
     bump(learn.word,w); bump(c.word,w);
-    const m=learn.next[prev]||(learn.next[prev]={});
-    bump(m,w);
-    prev=w;
+    bump(learn.next[p2]||(learn.next[p2]={}), w);
+    // 앞 두 단어까지 본다. "사랑해 + 많이" 다음에 무엇을 골랐는지가
+    // "많이" 하나만 보는 것보다 훨씬 좁게 짚어 준다.
+    if(p1&&p2) bump((learn.next2||{})[p1+CTX_SEP+p2]||((learn.next2||{})[p1+CTX_SEP+p2]={}), w);
+    p1=p2; p2=w;
   }
   // 마지막 단어 다음에 무엇이 오는지는 다음 문장의 첫 단어가 알려준다
-  state.lastWord = words[words.length-1];
+  state.lastWord2 = p1;
+  state.lastWord  = p2;
   bgKey=null;                 // learn.next 가 바뀌었으니 앞 단어 표를 다시 만든다
   primeFromMine(text);        // 내가 고른 말도 카테고리를 민다
   learn.day=today();
@@ -1301,27 +1311,54 @@ function primeFromPartner(text){ primedCats=readCats(text,2); }
    다음 후보는 식사 쪽으로 기울어야 한다 — 상대 말만 보던 것을 양쪽으로 넓혔다. */
 function primeFromMine(text){ const c=readCats(text,1); if(c.size) mineCats=c; }
 
-/* 다음에 올 만한 단어. 초성을 아직 하나도 누르지 않았을 때 쓰인다. */
-function nextWordGuesses(limit){
-  const prev=state.lastWord||"";
+/* 지금까지 고른 말이 만드는 문맥에서 다음 단어 점수를 뽑는다.
+   n-gram 스펠러의 표준인 stupid backoff: 긴 문맥이 맞으면 그걸 쓰고,
+   없으면 한 칸 짧은 문맥으로 물러나고, 그것도 없으면 그냥 내가 자주 쓰는
+   말로 떨어진다. 어느 단계에서 걸리든 후보 칸이 비지 않는 게 중요하다 —
+   빈 칸은 그 자리만큼 응시 목표를 잃는 것이다.
+
+     ③ 트라이그램  "사랑해 + 많이" -> ?     내 기록에만 있다 (가장 좁고 정확)
+     ② 바이그램    "많이" -> ?              내 기록 + 검수 사전 + 일반 말뭉치
+     ① 유니그램    문맥 없음                내가 자주 쓴 말 -> 사전 빈출어
+*/
+function contextScores(){
+  const p2=state.lastWord||"", p1=state.lastWord2||"";
   const out=new Map();
-  const add=(w,s)=>{ if(!(out.get(w)>=s)) out.set(w,s); };
-  for(const [p,list] of SEED_BIGRAMS){
-    if(p!==prev) continue;
-    for(const [w,n] of list) add(w, n*10);
+  const add=(w,s)=>{ if(w && w!==p2 && !(out.get(w)>=s)) out.set(w,s); };
+
+  // ③ 앞 두 단어 — 내가 실제로 그 순서로 말한 것만. 가장 무겁게 본다.
+  if(p1&&p2) for(const [w,n] of Object.entries((learn.next2||{})[p1+CTX_SEP+p2]||{})){
+    add(w, SCORE.triBase + Math.min(n,SCORE.learnCap)*SCORE.triPer);
   }
-  for(const [w,n] of Object.entries(learn.next[prev]||{})) add(w, 400+n*60);
-  if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS){
-    if(p!==prev) continue;
-    list.forEach((w,i)=>add(w,(30-i*5)*SCORE.lex));
+  /* ② 앞 한 단어. p2 가 "" 인 경우를 빼면 안 된다 — 그건 "내 차례의 첫 단어"
+     라는 어엿한 문맥이고, 세 사전 모두 그 분포를 들고 있다. 한 번 빼 봤다가
+     절감률이 3.2%p 날아갔다. */
+  for(const [w,n] of Object.entries(learn.next[p2]||{})) add(w, SCORE.biBase+n*SCORE.biPer);
+  for(const [p,list] of SEED_BIGRAMS) if(p===p2) for(const [w,n] of list) add(w, n*10);
+  if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===p2) list.forEach((w,i)=>add(w,(30-i*5)*SCORE.lex));
+  return out;
+}
+
+function nextWordGuesses(limit){
+  const n=limit||5;
+  /* 문맥 점수끼리만 경쟁시키고, 남는 칸만 유니그램으로 채운다.
+     한 점수판에 섞으면 안 된다 — 사전 바이그램 점수는 10~60점대라서
+     "내가 자주 쓰는 말" 같은 흔한 후보와 같은 저울에 올리면 통째로 밀린다
+     (실측 53.2% -> 47.7%). backoff 는 점수가 아니라 순서로 구현한다. */
+  const ranked=[...contextScores().entries()].sort((a,b)=>b[1]-a[1]).map(([w])=>w);
+  const out=ranked.slice(0,n), seen=new Set(out);
+  if(out.length<n && SCORE.backoff){
+    const p2=state.lastWord||"";
+    const push=w=>{ if(w&&w!==p2&&!seen.has(w)&&out.length<n){ seen.add(w); out.push(w); } };
+    // ① 내가 자주 쓴 말 -> ② 지금 상황에 맞는 사전 빈출어
+    for(const [w] of Object.entries(learn.word).sort((a,b)=>b[1]-a[1]).slice(0,n+6)) push(w);
+    if(out.length<n){
+      const cats=boostedCats();
+      for(const [,w,f,cat] of [...SEED_WORDS].filter(([,w])=>w.length>=2)
+          .sort((a,b)=>(b[2]+(cats.has(b[3])?30:0))-(a[2]+(cats.has(a[3])?30:0))).slice(0,n+8)) push(w);
+    }
   }
-  /* 여기에 상황 카테고리 가산점을 넣어 봤지만 측정 결과 확실히 나빴다
-     (절감 53.3% -> 48.5%, guessCat 150~600 모두). 이 구간의 단어 칸은 5개뿐이고,
-     카테고리가 맞는 흔한 단어를 밀어 넣으면 훨씬 예측력이 높은 바이그램 추측이
-     자리에서 밀려난다. 상황 정보는 초성이 들어온 뒤(scoreSeed)에만 쓴다.
-     측정: tools/bench_context.js */
-  return [...out.entries()].sort((a,b)=>b[1]-a[1]).slice(0,limit||5)
-    .map(([text,score])=>({kind:"word",text,score,guess:true}));
+  return out.map((text,i)=>({kind:"word",text,score:1000-i,guess:true,mine:usedCount("word",text)>0}));
 }
 
 let predictionVersion=0;
@@ -1391,7 +1428,8 @@ function recordWordFreq(word){
 }
 function rememberUndo(text){
   undoStack.push({committed:state.committed,history:[...state.history],
-                  habitual:state.habitual.map(p=>({...p})),lastText:text||null,lastWord:state.lastWord});
+                  habitual:state.habitual.map(p=>({...p})),lastText:text||null,
+                  lastWord:state.lastWord,lastWord2:state.lastWord2});
   if(undoStack.length>50) undoStack.shift();
 }
 
@@ -1796,16 +1834,18 @@ function boostedCats(){
    prev 가 바뀔 때만 다시 만든다 — 사전 두 개를 매 렌더마다 훑을 이유가 없다. */
 let bgKey=null, bgMap=null;
 function bigramMap(){
-  const prev=state.lastWord||"";
-  if(bgKey===prev && bgMap) return bgMap;
+  const p2=state.lastWord||"", p1=state.lastWord2||"", key=p1+CTX_SEP+p2;
+  if(bgKey===key && bgMap) return bgMap;
   const m=new Map();
   const add=(w,sc)=>{ if(!(m.get(w)>=sc)) m.set(w,sc); };
-  if(prev){
-    for(const [p,list] of SEED_BIGRAMS) if(p===prev) for(const [w,n] of list) add(w, SCORE.bgSeed*Math.min(n,6));
-    if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===prev) list.forEach((w,i)=>add(w, SCORE.bgLex*(6-Math.min(i,5))));
-    for(const [w,n] of Object.entries(learn.next[prev]||{})) add(w, SCORE.bgMine+Math.min(n,SCORE.learnCap)*SCORE.bgMinePer);
+  if(p2){
+    for(const [p,list] of SEED_BIGRAMS) if(p===p2) for(const [w,n] of list) add(w, SCORE.bgSeed*Math.min(n,6));
+    if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===p2) list.forEach((w,i)=>add(w, SCORE.bgLex*(6-Math.min(i,5))));
+    for(const [w,n] of Object.entries(learn.next[p2]||{})) add(w, SCORE.bgMine+Math.min(n,SCORE.learnCap)*SCORE.bgMinePer);
+    // 앞 두 단어가 맞는 것은 앞 한 단어만 맞는 것보다 위에 둔다
+    if(p1) for(const [w,n] of Object.entries((learn.next2||{})[key]||{})) add(w, SCORE.bgTri+Math.min(n,SCORE.learnCap)*SCORE.bgTriPer);
   }
-  bgKey=prev; bgMap=m; return m;
+  bgKey=key; bgMap=m; return m;
 }
 const firstWord=t=>String(t||"").trim().split(/\s+/)[0]||"";
 
@@ -1831,7 +1871,10 @@ function pinnedOk(text){
 const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, cat:500, freq:4, guessPenalty:0, lex:1,
   /* 앞 단어 가산점. bgMine=내가 실제로 그 순서로 썼던 것, bgSeed=검수 사전,
      bgLex=일반 말뭉치. 값은 bench_bigram.js 측정으로 고른다. */
-  bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6};
+  bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6,
+  bgTri:1400, bgTriPer:120,
+  /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
+  triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1};
 function scoreSeed(cand, text, ini, freq, cat, cats, learned){
   if(!cand.startsWith(ini) || !pinnedOk(text)) return -1;
   const extra=cand.length-ini.length;
@@ -2005,7 +2048,7 @@ el("btnPartnerSend").onclick=()=>{
   if(!v) return;
   pushTurn("partner",v);
   primeFromPartner(v);              // 상대 말에서 상황을 읽어 후보 순위에 즉시 반영
-  state.lastWord="";                // 상대 차례가 지났으니 다음은 내 문장의 첫 단어
+  state.lastWord=""; state.lastWord2="";   // 상대 차례가 지났으니 다음은 내 문장의 첫 단어
   el("partnerText").value="";
   renderCandidatePanel();
   announce("상대방의 말을 대화에 추가했습니다. 다음 후보부터 반영됩니다.");
@@ -2063,9 +2106,9 @@ el("btnStopSpeak").onclick=()=>{ if("speechSynthesis" in window) speechSynthesis
 el("btnUndo").onclick=()=>{
   const snapshot=undoStack.pop(); if(!snapshot) return;
   cancelPending(); state.sessionId=null;
-  if(snapshot.lastText) unlearnCommit(snapshot.lastText, snapshot.lastWord);
+  if(snapshot.lastText) unlearnCommit(snapshot.lastText, snapshot.lastWord, snapshot.lastWord2);
   Object.assign(state,snapshot); state.initials=""; metrics.undos++;
-  state.lastWord=snapshot.lastWord||"";
+  state.lastWord=snapshot.lastWord||""; state.lastWord2=snapshot.lastWord2||"";
   clearRecoveryState(); renderBuffer(); renderChat(); renderHabitual();
   announce("마지막 문장 확정을 되돌렸습니다.");
 };
@@ -2078,7 +2121,7 @@ el("context").oninput=()=>{ clearRecoveryState(); saveDraft(); schedulePredictio
 el("autoPredict").onchange=()=>{ saveDraft(); schedulePrediction(); };
 el("candidateCount").onchange=()=>{ clearRecoveryState(); saveDraft(); };
 el("btnForget").onclick=()=>{
-  state.habitual=[]; state.wordFreq={}; state.lastWord="";
+  state.habitual=[]; state.wordFreq={}; state.lastWord=""; state.lastWord2="";
   learn={word:{},next:{},phrase:{},ctx:{},day:today()};
   try{ localStorage.removeItem(LEARN_KEY); sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
   resetToStart();

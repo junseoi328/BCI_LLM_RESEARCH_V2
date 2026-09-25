@@ -441,7 +441,7 @@ test('A chosen word conditions the next candidates (bigrams chain across single-
 
     const out=await page.evaluate(()=>{
       try{localStorage.clear()}catch(e){}
-      learn={word:{},next:{},phrase:{},ctx:{},day:today()};
+      learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
       bgKey=null; primedCats=new Set(); mineCats=new Set();
       state.partner='family'; state.situation='general';
       showView('speller'); renderKeyboard();
@@ -468,7 +468,22 @@ test('A chosen word conditions the next candidates (bigrams chain across single-
       renderCandidatePanel();
       const rankNoPrev = slots.findIndex(s=>s.text==='좀');
 
-      return {pairLearned, guessed, rankWithPrev, rankNoPrev};
+      // 앞 두 단어(트라이그램) — 같은 흐름을 한 번 더 태워 기록을 쌓는다
+      state.lastWord=''; state.lastWord2='';
+      learnFromCommit('물'); learnFromCommit('좀'); learnFromCommit('주세요');
+      const triLearned = !!(learn.next2 && learn.next2['물\u0001좀'] && learn.next2['물\u0001좀']['주세요']);
+
+      state.lastWord='좀'; state.lastWord2='물'; bgKey=null;
+      state.initials=''; state.spelled={}; state.latest=[];
+      renderCandidatePanel();
+      const triFirst = slots.length && slots[0].text==='주세요';
+
+      // 처음 보는 단어 뒤에서도 후보 칸이 비면 안 된다 (backoff)
+      state.lastWord='존재하지않는단어'; state.lastWord2=''; bgKey=null;
+      state.initials=''; renderCandidatePanel();
+      const neverEmpty = slots.filter(s=>s.kind==='word').length>0;
+
+      return {pairLearned, guessed, rankWithPrev, rankNoPrev, triLearned, triFirst, neverEmpty};
     });
 
     assert.equal(out.pairLearned,true,'선택한 단어끼리의 짝이 기록된다');
@@ -476,6 +491,9 @@ test('A chosen word conditions the next candidates (bigrams chain across single-
     assert.ok(out.rankWithPrev>=0,'초성을 눌러도 후보에 남는다');
     assert.ok(out.rankNoPrev<0 || out.rankWithPrev<=out.rankNoPrev,
       '앞 단어가 있을 때의 순위가 없을 때보다 앞서거나 같다');
+    assert.equal(out.triLearned,true,'앞 두 단어 문맥(트라이그램)이 기록된다');
+    assert.equal(out.triFirst,true,'트라이그램이 걸리면 그 단어가 1번 자리에 온다');
+    assert.equal(out.neverEmpty,true,'문맥이 하나도 안 걸려도 후보 칸이 비지 않는다');
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
