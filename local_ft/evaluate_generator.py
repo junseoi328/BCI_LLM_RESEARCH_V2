@@ -3,9 +3,9 @@ import json, statistics, time
 from collections import defaultdict
 from pathlib import Path
 from local_ft.common import normalize_text, read_jsonl
-from local_ft.inference import LocalBCIGenerator
+from local_ft.inference_final import LocalBCIGenerator
 DEV=Path("training_v2/data/dev_semantic_v2.jsonl")
-OUT=Path("eval_v2/reports/local_lora_generator_final.json")
+OUT=Path("eval_v2/reports/local_lora_generator_final_v2_fixed.json")
 def main()->int:
     rows=read_jsonl(DEV); gold=defaultdict(set)
     for r in rows:
