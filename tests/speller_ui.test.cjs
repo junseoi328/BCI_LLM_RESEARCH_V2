@@ -429,3 +429,53 @@ test('Physical keyboard drives the on-screen grid without hijacking text fields'
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+test('A chosen word conditions the next candidates (bigrams chain across single-word commits)', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1440,height:900}});
+    const html=HTML();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>route.fulfill(new URL(route.request().url()).pathname==='/speller'?{contentType:'text/html',body:html}:{json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+
+    const out=await page.evaluate(()=>{
+      try{localStorage.clear()}catch(e){}
+      learn={word:{},next:{},phrase:{},ctx:{},day:today()};
+      bgKey=null; primedCats=new Set(); mineCats=new Set();
+      state.partner='family'; state.situation='general';
+      showView('speller'); renderKeyboard();
+
+      // 단어를 하나씩 고르는 실제 흐름. 예전에는 커밋마다 prev 가 "" 로
+      // 초기화돼 "물 -> 좀" 같은 짝이 한 번도 기록되지 않았다.
+      state.lastWord='';
+      learnFromCommit('물');
+      learnFromCommit('좀');
+      learnFromCommit('주세요');
+
+      const pairLearned = !!(learn.next['물'] && learn.next['물']['좀']);
+
+      // 다시 "물"을 고른 직후라면 초성 0개 상태에서 "좀"이 후보에 떠야 한다
+      state.lastWord='물'; bgKey=null;
+      state.initials=''; state.spelled={}; state.latest=[];
+      renderCandidatePanel();
+      const guessed = slots.some(s=>s.text==='좀');
+
+      // 초성을 눌러도 앞 단어 가산점이 계속 작용해야 한다
+      state.initials='ㅈ'; renderCandidatePanel();
+      const rankWithPrev = slots.findIndex(s=>s.text==='좀');
+      state.lastWord=''; bgKey=null;
+      renderCandidatePanel();
+      const rankNoPrev = slots.findIndex(s=>s.text==='좀');
+
+      return {pairLearned, guessed, rankWithPrev, rankNoPrev};
+    });
+
+    assert.equal(out.pairLearned,true,'선택한 단어끼리의 짝이 기록된다');
+    assert.equal(out.guessed,true,'앞 단어만으로 다음 단어가 초성 0개에 뜬다');
+    assert.ok(out.rankWithPrev>=0,'초성을 눌러도 후보에 남는다');
+    assert.ok(out.rankNoPrev<0 || out.rankWithPrev<=out.rankNoPrev,
+      '앞 단어가 있을 때의 순위가 없을 때보다 앞서거나 같다');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});

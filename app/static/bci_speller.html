@@ -845,7 +845,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
       <div class="hero-field" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
 
-      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v1.6</i></p>
+      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v1.7</i></p>
 
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
 
@@ -1047,7 +1047,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.6.0</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(초성19+중성10+후보7+기능4) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v1.7.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1242,18 +1242,20 @@ function bump(store,key,by){ store[key]=(store[key]||0)+(by||1); }
 
 /* 확정한 문장 하나에서 뽑아낼 수 있는 학습 신호를 전부 기록한다. */
 /* 커밋을 되돌리면 그때 올린 카운트를 그대로 내린다. */
-function unlearnCommit(text){
+function unlearnCommit(text, prevBefore){
   const words=String(text||"").trim().split(/\s+/).filter(Boolean);
   if(!words.length) return;
   const c=learn.ctx[ctxKey()];
   const dec=(store,k)=>{ if(!store) return; store[k]=(store[k]||0)-1; if(store[k]<=0) delete store[k]; };
   dec(learn.phrase,text); if(c) dec(c.phrase,text);
-  let prev="";
+  // 되돌릴 때도 앞 단어를 똑같이 이어 줘야 learnFromCommit 이 올린 짝이 정확히 내려간다
+  let prev=prevBefore||"";
   for(const w of words){
     dec(learn.word,w); if(c) dec(c.word,w);
     if(learn.next[prev]) dec(learn.next[prev],w);
     prev=w;
   }
+  bgKey=null;
   saveLearn();
 }
 function learnFromCommit(text){
@@ -1262,7 +1264,11 @@ function learnFromCommit(text){
   const ck=ctxKey();
   const c=learn.ctx[ck]||(learn.ctx[ck]={word:{},phrase:{}});
   bump(learn.phrase,text); bump(c.phrase,text);
-  let prev="";
+  /* 앞 단어에서 이어 센다. 이 스펠러는 후보에서 단어를 하나씩 고르는 구조라
+     커밋 한 번이 대개 단어 하나다 — prev 를 "" 로 시작하면 learn.next 에는
+     영원히 문장 첫 단어만 쌓이고 "물 -> 좀" 같은 짝은 한 번도 기록되지 않는다.
+     방금 고른 단어가 다음 후보에 영향을 주려면 여기서 이어 줘야 한다. */
+  let prev=state.lastWord||"";
   for(const w of words){
     if(w.length>12) continue;
     bump(learn.word,w); bump(c.word,w);
@@ -1272,6 +1278,8 @@ function learnFromCommit(text){
   }
   // 마지막 단어 다음에 무엇이 오는지는 다음 문장의 첫 단어가 알려준다
   state.lastWord = words[words.length-1];
+  bgKey=null;                 // learn.next 가 바뀌었으니 앞 단어 표를 다시 만든다
+  primeFromMine(text);        // 내가 고른 말도 카테고리를 민다
   learn.day=today();
   saveLearn();
 }
@@ -1279,15 +1287,19 @@ function learnFromCommit(text){
 /* 상대가 방금 한 말에서 상황을 읽는다. 사전 단어가 어느 카테고리에 속하는지
    세어, 가장 많이 나온 카테고리를 후보 점수에 얹는다. 서버도 LLM도 거치지
    않으므로 상대 말을 넣는 즉시(0ms) 후보 순위가 달라진다. */
-let primedCats=new Set();
-function primeFromPartner(text){
+let primedCats=new Set();   // 상대가 한 말에서 읽은 카테고리
+let mineCats=new Set();     // 내가 방금 고른 말에서 읽은 카테고리
+function readCats(text,keep){
   const hit=new Map();
   for(const [,word,,cat] of SEED_WORDS){
     if(cat>=0 && word.length>=2 && text.includes(word)) hit.set(cat,(hit.get(cat)||0)+1);
   }
-  const best=[...hit.entries()].sort((a,b)=>b[1]-a[1]).slice(0,2).map(([c])=>c);
-  primedCats=new Set(best);
+  return new Set([...hit.entries()].sort((a,b)=>b[1]-a[1]).slice(0,keep||2).map(([c])=>c));
 }
+function primeFromPartner(text){ primedCats=readCats(text,2); }
+/* 내가 방금 고른 말도 지금 무슨 얘기 중인지를 말해 준다. "물"을 골랐으면
+   다음 후보는 식사 쪽으로 기울어야 한다 — 상대 말만 보던 것을 양쪽으로 넓혔다. */
+function primeFromMine(text){ const c=readCats(text,1); if(c.size) mineCats=c; }
 
 /* 다음에 올 만한 단어. 초성을 아직 하나도 누르지 않았을 때 쓰인다. */
 function nextWordGuesses(limit){
@@ -1303,6 +1315,11 @@ function nextWordGuesses(limit){
     if(p!==prev) continue;
     list.forEach((w,i)=>add(w,(30-i*5)*SCORE.lex));
   }
+  /* 여기에 상황 카테고리 가산점을 넣어 봤지만 측정 결과 확실히 나빴다
+     (절감 53.3% -> 48.5%, guessCat 150~600 모두). 이 구간의 단어 칸은 5개뿐이고,
+     카테고리가 맞는 흔한 단어를 밀어 넣으면 훨씬 예측력이 높은 바이그램 추측이
+     자리에서 밀려난다. 상황 정보는 초성이 들어온 뒤(scoreSeed)에만 쓴다.
+     측정: tools/bench_context.js */
   return [...out.entries()].sort((a,b)=>b[1]-a[1]).slice(0,limit||5)
     .map(([text,score])=>({kind:"word",text,score,guess:true}));
 }
@@ -1768,8 +1785,29 @@ const SITU_CATS={
 function boostedCats(){
   const out=new Set((SITU_CATS[state.situation]||[]).map(c=>SEED_CATS.indexOf(c)).filter(i=>i>=0));
   for(const c of primedCats) out.add(c);   // 상대가 방금 한 말에서 읽은 카테고리
+  for(const c of mineCats)   out.add(c);   // 내가 방금 고른 말에서 읽은 카테고리
   return out;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   방금 고른 말 -> 다음 후보. nextWordGuesses 는 초성이 0개일 때만 쓰이므로,
+   초성을 한 글자라도 누르는 순간 앞 단어가 순위에서 통째로 사라졌다.
+   여기서 앞 단어 기반 가산점을 붙여 초성 검색 중에도 계속 작용하게 한다.
+   prev 가 바뀔 때만 다시 만든다 — 사전 두 개를 매 렌더마다 훑을 이유가 없다. */
+let bgKey=null, bgMap=null;
+function bigramMap(){
+  const prev=state.lastWord||"";
+  if(bgKey===prev && bgMap) return bgMap;
+  const m=new Map();
+  const add=(w,sc)=>{ if(!(m.get(w)>=sc)) m.set(w,sc); };
+  if(prev){
+    for(const [p,list] of SEED_BIGRAMS) if(p===prev) for(const [w,n] of list) add(w, SCORE.bgSeed*Math.min(n,6));
+    if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===prev) list.forEach((w,i)=>add(w, SCORE.bgLex*(6-Math.min(i,5))));
+    for(const [w,n] of Object.entries(learn.next[prev]||{})) add(w, SCORE.bgMine+Math.min(n,SCORE.learnCap)*SCORE.bgMinePer);
+  }
+  bgKey=prev; bgMap=m; return m;
+}
+const firstWord=t=>String(t||"").trim().split(/\s+/)[0]||"";
 
 /* 이미 모음까지 눌러 확정해 둔 글자가 있으면 그 자리와 맞는 후보만 남긴다.
    (ㅁ 다음 ㅜ 를 눌러 "무"로 굳혔다면 "물…"은 후보에서 빠진다) */
@@ -1790,7 +1828,10 @@ function pinnedOk(text){
        learn 120+20 / cat 180        62.9%
        learn 200+30 / cat 500        63.6%   <- 채택
    상황·상대 말에서 읽은 카테고리 가산점(cat)이 생각보다 크게 기여한다. */
-const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, cat:500, freq:4, guessPenalty:0, lex:1};
+const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, cat:500, freq:4, guessPenalty:0, lex:1,
+  /* 앞 단어 가산점. bgMine=내가 실제로 그 순서로 썼던 것, bgSeed=검수 사전,
+     bgLex=일반 말뭉치. 값은 bench_bigram.js 측정으로 고른다. */
+  bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6};
 function scoreSeed(cand, text, ini, freq, cat, cats, learned){
   if(!cand.startsWith(ini) || !pinnedOk(text)) return -1;
   const extra=cand.length-ini.length;
@@ -1811,23 +1852,23 @@ function localWords(limit){
   // 아직 한 글자도 누르지 않았다면 다음에 올 만한 말을 먼저 보여준다.
   // 맞으면 초성 입력이 0회가 된다 — 가장 큰 타건 절감.
   if(!state.initials) return SCORE.guessPenalty<0 ? [] : nextWordGuesses(limit||5);
-  const cats=boostedCats(), best=new Map();
+  const cats=boostedCats(), bg=bigramMap(), best=new Map();
   const put=(text,sc)=>{ if(!(best.get(text)>=sc)) best.set(text,sc); };
   for(const [ini,word,freq,cat] of SEED_WORDS){
     const sc=scoreSeed(ini,word,state.initials,freq,cat,cats,usedCount("word",word));
-    if(sc>0) put(word,sc);
+    if(sc>0) put(word,sc+(bg.get(word)||0));
   }
   for(const word of Object.keys(learn.word)){
     const n=usedCount("word",word);
     const sc=scoreSeed(choseongOf(word),word,state.initials,n,-1,cats,n);
-    if(sc>0) put(word,sc);
+    if(sc>0) put(word,sc+(bg.get(word)||0));
   }
   // 일반 한국어 대화 말뭉치에서 온 넓은 층. 검수된 사전·내 기록보다 항상 낮게
   // 둬서 자리를 빼앗지 않고, 그들이 못 채운 칸만 메운다.
   if(SCORE.lex>0) for(const [ini,word,f] of lexMatches(state.initials)){
     if(!pinnedOk(word)) continue;
     const extra=ini.length-state.initials.length;
-    const sc=((extra===0?60:18/(1+extra))+f*4)*SCORE.lex;
+    const sc=((extra===0?60:18/(1+extra))+f*4)*SCORE.lex+(bg.get(word)||0);
     if(sc>0) put(word, Math.max(best.get(word)||0, sc));
   }
   return [...best.entries()].sort((a,b)=>b[1]-a[1]).slice(0,limit||5)
@@ -1837,16 +1878,18 @@ function localWords(limit){
 /* 문장 후보 중 로컬로 즉시 낼 수 있는 것. 검수된 표현 + 내가 자주 쓰는 표현. */
 function localPhrases(limit){
   if(!state.initials) return [];
-  const cats=boostedCats(), best=new Map();
+  const cats=boostedCats(), bg=bigramMap(), best=new Map();
   const put=(text,sc)=>{ if(!(best.get(text)>=sc)) best.set(text,sc); };
+  // 문장도 첫 어절이 앞 단어와 이어지면 가산점을 받는다(단어보다는 약하게).
+  const bgOf=t=>(bg.get(firstWord(t))||0)*SCORE.bgPhrase;
   for(const [ini,text,cat] of SEED_PHRASES){
     const sc=scoreSeed(ini,text,state.initials,4,cat,cats,usedCount("phrase",text));
-    if(sc>0) put(text,sc);
+    if(sc>0) put(text,sc+bgOf(text));
   }
   for(const text of Object.keys(learn.phrase)){
     const n=usedCount("phrase",text);
     const sc=scoreSeed(choseongOf(text),text,state.initials,n,-1,cats,n);
-    if(sc>0) put(text,sc);
+    if(sc>0) put(text,sc+bgOf(text));
   }
   return [...best.entries()].sort((a,b)=>b[1]-a[1]).slice(0,limit||5)
     .map(([text,score])=>({kind:"sent",text,score,local:true,mine:usedCount("phrase",text)>0}));
@@ -2020,7 +2063,7 @@ el("btnStopSpeak").onclick=()=>{ if("speechSynthesis" in window) speechSynthesis
 el("btnUndo").onclick=()=>{
   const snapshot=undoStack.pop(); if(!snapshot) return;
   cancelPending(); state.sessionId=null;
-  if(snapshot.lastText) unlearnCommit(snapshot.lastText);
+  if(snapshot.lastText) unlearnCommit(snapshot.lastText, snapshot.lastWord);
   Object.assign(state,snapshot); state.initials=""; metrics.undos++;
   state.lastWord=snapshot.lastWord||"";
   clearRecoveryState(); renderBuffer(); renderChat(); renderHabitual();
