@@ -442,7 +442,7 @@ test('A chosen word conditions the next candidates (bigrams chain across single-
     const out=await page.evaluate(()=>{
       try{localStorage.clear()}catch(e){}
       learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
-      bgKey=null; primedCats=new Set(); mineCats=new Set();
+      bgKey=null; markContextDirty();
       state.partner='family'; state.situation='general';
       showView('speller'); renderKeyboard();
 
@@ -494,6 +494,64 @@ test('A chosen word conditions the next candidates (bigrams chain across single-
     assert.equal(out.triLearned,true,'앞 두 단어 문맥(트라이그램)이 기록된다');
     assert.equal(out.triFirst,true,'트라이그램이 걸리면 그 단어가 1번 자리에 온다');
     assert.equal(out.neverEmpty,true,'문맥이 하나도 안 걸려도 후보 칸이 비지 않는다');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+test('Every form of context feeds the local candidate engine', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1440,height:900}});
+    const html=HTML();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>route.fulfill(new URL(route.request().url()).pathname==='/speller'?{contentType:'text/html',body:html}:{json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+
+    const out=await page.evaluate(()=>{
+      try{localStorage.clear()}catch(e){}
+      learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
+      state.partner='family'; state.situation='general';
+      state.history=[]; state.committed=''; state.lastWord=''; state.lastWord2='';
+      el('context').value=''; showView('speller'); renderKeyboard(); markContextDirty();
+      const foodCat=SEED_CATS.indexOf('food_drink');
+      const w=()=>contextCats().get(foodCat)||0;
+
+      const base=w();                                   // 아무 신호도 없을 때
+
+      state.situation='meal'; markContextDirty();
+      const bySituation=w();
+
+      state.situation='general';
+      el('context').value='식사 중이고 주스를 드시고 싶어 합니다'; markContextDirty();
+      const byMemo=w();
+
+      el('context').value='';
+      state.history=[{who:'partner',text:'식사 하시겠어요?'}]; markContextDirty();
+      const byPartner=w();
+
+      // 상대가 쓴 단어 자체가 초성 검색에서 후보로 밀려 올라와야 한다(에코).
+      // "물"은 한 글자 — AAC 에서 가장 자주 쓰는 말들이 대부분 한 글자다.
+      state.history=[{who:'partner',text:'물 한 잔 드릴까요?'}];
+      state.lastWord=''; state.lastWord2=''; markContextDirty();
+      const echoHasMul = (echoMap().get('물')||0)>0;
+      state.initials='ㅁ'; state.spelled={}; state.latest=[];
+      renderCandidatePanel();
+      const rankWithEcho=slots.findIndex(s=>s.text==='물');
+      state.history=[]; markContextDirty();
+      renderCandidatePanel();
+      const rankNoEcho=slots.findIndex(s=>s.text==='물');
+
+      return {base,bySituation,byMemo,byPartner,echoHasMul,rankWithEcho,rankNoEcho};
+    });
+
+    assert.equal(out.base,0,'신호가 없으면 가중치도 0');
+    assert.ok(out.bySituation>0,'고른 상황이 문맥에 들어간다');
+    assert.ok(out.byMemo>0,'직접 적은 상황 메모가 문맥에 들어간다');
+    assert.ok(out.byPartner>0,'상대가 한 말이 문맥에 들어간다');
+    assert.ok(out.bySituation>=out.byPartner,'직접 고른 값이 추론한 값보다 무겁다');
+    assert.equal(out.echoHasMul,true,'상대가 쓴 단어가 에코 목록에 오른다');
+    assert.ok(out.rankWithEcho>=0,'에코 단어는 초성 검색 후보에 뜬다');
+    assert.ok(out.rankNoEcho<0 || out.rankWithEcho<=out.rankNoEcho,'에코가 있을 때 순위가 앞서거나 같다');
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
