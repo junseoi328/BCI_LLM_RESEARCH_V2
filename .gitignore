@@ -22,3 +22,4 @@ __pycache__/
 backup_before_render_merge/
 backup_before_render_merge/
 data/
+build/

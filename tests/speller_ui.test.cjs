@@ -48,7 +48,9 @@ test('Guide isolates keyboard shortcuts, restores focus and supports large text 
   }finally{await browser.close();}
 });
 
-// 40키 = 초성19 + 중성10 + 후보7 + 기능4. 후보 선택이 키보드 안에 있어야 SSVEP로
+// 40키 = 4행 × 10열, 두벌식 컴퓨터 자판 배치.
+//   후보7 + 확정·글자삭제·띄기 3 | 초성 14(+⇧ 쌍자음 5) | 중성 12(+⇧ 겹모음 2) | ⇧ 1 | 부호 3
+// 후보 선택이 키보드 안에 있어야 SSVEP로
 // 옮길 수 있으므로(ChatBCI의 단어키 10, MindChat의 번호키 0~6과 같은 구조),
 // 후보키의 존재와 후보↔키 결합은 UI의 계약이다.
 test('40-key grid carries the candidates, and candidate keys commit what they display', {timeout:60000}, async()=>{
@@ -66,10 +68,25 @@ test('40-key grid carries the candidates, and candidate keys commit what they di
     await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();renderBuffer();});
 
     assert.equal(await page.locator('#keyboard .key').count(),40,'40 keys');
-    assert.equal(await page.locator('#keyboard .key.cho').count(),19);
-    assert.equal(await page.locator('#keyboard .key.jung').count(),10);
+    assert.equal(await page.locator('#keyboard .key.cho').count(),14,'기본 자음 14 (쌍자음은 ⇧)');
+    assert.equal(await page.locator('#keyboard .key.jung').count(),12,'기본 모음 12 (ㅒㅖ 는 ⇧)');
     assert.equal(await page.locator('#keyboard .key.cand').count(),7);
-    assert.equal(await page.locator('#keyboard .key.fn').count(),4);
+    assert.equal(await page.locator('#keyboard .key.fn').count(),3,'확정·글자삭제·띄기');
+    assert.equal(await page.locator('#keyboard .key.shift').count(),1);
+    assert.equal(await page.locator('#keyboard .key.punct').count(),3,', . ?');
+
+    // 자판과 같은 자리인가 — 2행 첫 다섯 칸이 ㅂㅈㄷㄱㅅ
+    const row2=(await page.locator('#keyboard .key').allTextContents()).slice(10,15).map(t=>t.trim());
+    assert.deepEqual(row2,['ㅂ','ㅈ','ㄷ','ㄱ','ㅅ'],'두벌식 상단 행');
+
+    // ⇧ 를 켜면 쌍자음·겹모음으로 바뀌고, 한 글자 뒤 자동으로 풀린다
+    await page.locator('#keyboard .key.shift').click();
+    assert.equal(await page.locator('#keyboard .key.cho[data-v="ㅃ"]').count(),1,'⇧ 에서 ㅃ');
+    assert.equal(await page.locator('#keyboard .key.jung[data-v="ㅒ"]').count(),1,'⇧ 에서 ㅒ');
+    await page.locator('#keyboard .key.cho[data-v="ㅃ"]').click();
+    assert.equal(await page.evaluate(()=>shiftOn),false,'한 글자 뒤 ⇧ 자동 해제');
+    assert.equal(await page.evaluate(()=>state.initials),'ㅃ');
+    await page.evaluate(()=>{state.initials='';state.spelled={};renderBuffer();});
 
     // 초성을 누르기 전에는 '다음에 할 말' 예측이 후보 자리를 채운다 (타건 0회 경로)
     const guesses=await page.locator('#candWords .cand.guess .tx').allTextContents();
@@ -110,8 +127,11 @@ test('40-key grid carries the candidates, and candidate keys commit what they di
     await page.locator('#keyboard .key.cho[data-v="ㅁ"]').click();
     await page.locator('#keyboard .key.fn.back').click();
     assert.equal(await page.evaluate(()=>state.initials),'ㅈ');
+    // 단어삭제는 ⇧ 층에 있다 (자판의 Ctrl+Backspace 자리)
+    await page.locator('#keyboard .key.shift').click();
     await page.locator('#keyboard .key.fn.delword').click();
     assert.equal(await page.evaluate(()=>state.initials),'');
+    await page.locator('#keyboard .key.shift').click();
     await page.locator('#keyboard .key.fn.delword').click();
     assert.equal((await page.locator('#committed').textContent()).trim(),'','delword removes the last committed eojeol');
 
@@ -413,6 +433,21 @@ test('Physical keyboard drives the on-screen grid without hijacking text fields'
     // 편집키
     await page.keyboard.press('Backspace');
     assert.equal(await page.evaluate(()=>state.initials),'ㅁㅈ','Backspace deletes one letter');
+
+    // o·p 는 ㅐ·ㅔ (자판 그대로), Shift+o 는 ㅒ
+    await page.evaluate(()=>{state.initials='';state.spelled={};renderBuffer();});
+    await page.keyboard.press('a');            // ㅁ
+    await page.keyboard.press('o');            // ㅐ -> "매"
+    assert.equal(await page.evaluate(()=>state.spelled[0]),'매','o 는 ㅐ');
+
+    // 문장부호 — , . / 자리 그대로, 완성된 단어 뒤에 붙는다
+    await page.evaluate(()=>{state.committed='';state.initials='';state.spelled={};renderBuffer();});
+    await page.keyboard.press('s'); await page.keyboard.press('k');   // ㄴ+ㅏ = 나
+    await page.keyboard.press('Comma');
+    assert.equal(await page.evaluate(()=>state.committed),'나,','쉼표가 띄어쓰기 없이 붙는다');
+    await page.keyboard.press('Shift+Slash');
+    assert.equal(await page.evaluate(()=>state.committed),'나,!','Shift+/ 는 느낌표');
+    await page.evaluate(()=>{state.committed='';state.initials='';state.spelled={};renderBuffer();});
 
     // 눌린 키가 화면에서 짚인다
     await page.keyboard.down('a');
