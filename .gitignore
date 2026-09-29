@@ -23,3 +23,4 @@ backup_before_render_merge/
 backup_before_render_merge/
 data/
 build/
+package-lock.json
