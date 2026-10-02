@@ -374,7 +374,9 @@ test('Pseudo-online mode holds the stimulus window, injects misdecodes and expor
     });
     await page.goto('http://bci.test/speller');
     await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();renderBuffer();
-      el('autoPredict').checked=false;el('expStim').value='300';el('expAcc').value='100';el('expOn').checked=true;});
+      el('autoPredict').checked=false;el('expStim').value='300';el('expAcc').value='100';el('expOn').checked=true;
+      // 동적 정지가 켜져 있으면 창이 120~300ms 로 줄어 아래 290ms 검사가 운에 달린다
+      el('expStop').checked=false;});
 
     const t0=Date.now();
     await page.locator('#keyboard .key.cho[data-v="ㅁ"]').click();
@@ -587,6 +589,90 @@ test('Every form of context feeds the local candidate engine', {timeout:60000}, 
     assert.equal(out.echoHasMul,true,'상대가 쓴 단어가 에코 목록에 오른다');
     assert.ok(out.rankWithEcho>=0,'에코 단어는 초성 검색 후보에 뜬다');
     assert.ok(out.rankNoEcho<0 || out.rankWithEcho<=out.rankNoEcho,'에코가 있을 때 순위가 앞서거나 같다');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+// 사전보다 긴 초성을 한 번에 치면(예: "뭐하고 있어" -> ㅁㅎㄱㅇㅇ) 단어·문장 두 줄이
+// 모두 비어 막다른 길이 됐다. 맞는 가장 긴 앞부분까지 물러서고, 고르면 쓴 만큼만 지운다.
+test('A too-long initial run falls back to the longest matching prefix instead of going empty', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const html=HTML();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>route.fulfill(new URL(route.request().url()).pathname==='/speller'
+      ?{contentType:'text/html',body:html}:{status:503,json:{detail:'offline'}}));
+    await page.goto('http://bci.test/speller');
+
+    const out=await page.evaluate(()=>{
+      showView('speller'); el('autoPredict').checked=false;
+      state.partner='family'; state.situation='general';
+      try{localStorage.clear()}catch(e){}
+      learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
+
+      const probe=ini=>{ state.initials=ini; state.spelled={}; state.latest=[];
+        renderCandidatePanel();
+        return {n:slots.length, partial:slots.filter(s=>s.partial).length, top:slots[0]}; };
+
+      const long=probe('ㅁㅎㄱㅇㅇ');        // 사전에 없는 5초성
+      const junk=probe('ㅈㅋㅋㅌㅍㅎ');       // 아무것도 안 맞는 입력
+      const short=probe('ㅁㅎ');            // 정상 경로 — 후퇴가 일어나면 안 된다
+
+      // 부분 후보를 고르면 쓴 초성만 지우고 나머지는 버퍼에 남아야 한다
+      state.initials='ㅁㅎㄱㅇㅇ'; state.spelled={}; state.latest=[];
+      renderCandidatePanel();
+      const k=slots.findIndex(s=>s.partial);
+      const used=slots[k].partial;
+      chooseSlot(k);
+      return {long,junk,short,used};
+    });
+
+    assert.ok(out.long.n>0,'사전에 없는 긴 초성에도 후보가 남는다');
+    assert.ok(out.long.partial>0,'그 후보들은 부분 일치로 표시된다');
+    assert.ok(out.junk.n>0,'아무것도 안 맞는 입력에도 빈 줄이 되지 않는다');
+    assert.equal(out.short.partial,0,'정상 경로에서는 후퇴하지 않는다');
+    assert.ok(out.short.n>0);
+
+    await page.waitForFunction(()=>state.committed!=='',null,{timeout:5000});
+    assert.equal(await page.evaluate(()=>state.initials),'ㅁㅎㄱㅇㅇ'.slice(out.used),
+      '부분 후보를 고르면 남은 초성이 버퍼에 남는다');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+// 서버가 문장 후보를 못 줬을 때 "사전에 없음"과 같은 문구가 뜨면 사용자는 무엇을 해야
+// 할지 알 수 없다. 실패는 실패라고 말하고, 다시 시도할 수 있어야 한다.
+test('A failed sentence request says so and can be retried', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const html=HTML();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    let up=false, calls=0;
+    await page.route('**/*',route=>{
+      const path=new URL(route.request().url()).pathname;
+      if(path==='/speller') return route.fulfill({contentType:'text/html',body:html});
+      if(path.endsWith('/predict')){ calls++;
+        return up ? route.fulfill({json:{candidates:[{candidate_id:'c1',text:'뭐 하고 있어'}]}})
+                  : route.fulfill({status:503,json:{detail:{code:'timeout',message:'x',retryable:true}}}); }
+      return route.fulfill({status:503,json:{detail:'offline'}});
+    });
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();
+      try{localStorage.clear()}catch(e){}
+      learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
+      state.initials='ㅁㅎㄱㅇㅇ';state.spelled={};renderBuffer();predict({});});
+
+    await page.locator('#btnRetryLLM').waitFor({timeout:5000});
+    assert.match(await page.locator('#candSents').textContent(),/불러오지 못했어요/,'실패를 실패라고 말한다');
+
+    up=true;
+    await page.locator('#btnRetryLLM').click();
+    await page.locator('#candSents .cand.sent').first().waitFor({timeout:5000});
+    assert.match(await page.locator('#candSents').textContent(),/뭐 하고 있어/,'다시 시도하면 후보가 뜬다');
+    assert.equal(await page.locator('#btnRetryLLM').count(),0,'성공하면 실패 표시는 사라진다');
+    assert.ok(calls>=2);
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
