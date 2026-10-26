@@ -1036,7 +1036,7 @@ body:has(.kb.stim)::before{opacity:.15}
       <div class="hero-field" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
 
-      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v2.3</i></p>
+      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v2.4</i></p>
 
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
 
@@ -1243,7 +1243,7 @@ body:has(.kb.stim)::before{opacity:.15}
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v2.3.1</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v2.4.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1261,12 +1261,14 @@ body:has(.kb.stim)::before{opacity:.15}
       <p><b>연구용 프로토타입입니다.</b> 실제 EEG 측정은 연결되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다. 웹에서는 클릭·키보드로 입력합니다.</p>
       <p>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 고르세요.</p>
       <p><b>자판</b> 40키 = 4행 × 10열 두벌식 배치(자음 14 · 모음 12 · 후보 7 · 기능 3 · ⇧ · 부호 3). ⇧로 쌍자음·겹모음.</p>
-      <p><b>후보를 찾는 순서</b> 내 기록 → 검수된 AAC 표현 281개 → 대화 말뭉치 → 사전 층(약 40만 단어, 대사 n-gram 확률로 순위) → 언어 모델.</p>
+      <p><b>후보를 찾는 순서</b> 내 기록 → 검수된 AAC 표현 281개 → 환자 표현 약 4천 문장 → 대화 말뭉치 → 사전 층(약 40만 단어, 대사 n-gram 확률로 순위) → 언어 모델.</p>
+      <p><b>띄어쓰기 없이 쳐도 됩니다</b> 초성을 문장째 쭉 치면(ㅁㅈㅈㅅㅇㅈㅂ) 단어로 나눠 띄어 쓴 문장(물 좀 주세요 제발)을 바로 만듭니다.</p>
       <ul>
         <li>대화 말뭉치: KLUE-WoS (CC BY-SA 4.0), songys/Chatbot_data (MIT)</li>
         <li>대사 n-gram: OPUS OpenSubtitles 2018 한국어 (Lison &amp; Tiedemann, 2016) — 원문이 아니라 다음 단어 빈도표만 싣습니다</li>
         <li>어절 빈도: hermitdave/FrequencyWords (CC BY-SA 4.0)</li>
         <li>국어사전 어휘: mecab-ko-dic 2.1.1 (Apache 2.0), 동사·형용사 활용은 kiwipiepy</li>
+        <li>환자 표현: 병상에서 쓰는 요청·통증·증상·감정·질문을 이 프로젝트를 위해 직접 쓴 문장 (research/patient_corpus)</li>
       </ul>
     </section>
     <p class="unit-hint">디자인 기준: 읽기 쉬운 대비, 큰 조작 영역, 키보드 초점 표시. <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">WCAG 2.2 참고</a> · 실제 사용자 평가를 통한 추가 개선이 필요합니다.</p>
@@ -1735,7 +1737,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"2.3.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"2.4.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2278,7 +2280,9 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1, lexTri:500,
   /* ⑤ 사전 층(구어 빈도 + 국어사전 어휘). 말뭉치 층과 같은 눈금에 둔다. */
-  dict:1, lmA:200, lmB:25, lmExact:2};
+  dict:1, lmA:200, lmB:25, lmExact:2,   /* 초성 문장 짓기. 단어당 가산점·빔 16·유니그램 가중 0.05/0.5 는 모두 시험했으나 나아지지 않았다.
+     환자 표현 층은 0.5: 1이면 검수 표현 281개의 접두어 적중을 밀어내 문장 절감이 45.5% -> 33.7%. */
+  decode:1, decodeBeam:8, decodeN:3, decodeK:20, decodeEnd:1, decodeUni:0.16, decodeMin:4, patient:0.5, patientLM:1};
 /* ==========================================================================
    ⑤ 사전 층 — 영화·드라마 자막 어절 빈도(OpenSubtitles, CC BY-SA 4.0) +
    국어사전 어휘 전부(mecab-ko-dic, Apache 2.0; 동사·형용사는 -다/-어/-어요 꼴).
@@ -2299,12 +2303,14 @@ function loadDict(){
     const lines=text.split(/\r?\n/), n=lines.length;   // 윈도에서 체크아웃하면 CRLF 일 수 있다
     const w=new Array(n), cho=new Array(n), f=new Uint8Array(n);
     const buckets=new Map(), first=new Map();
-    const bi=new Map(), tri=new Map();
+    const bi=new Map(), tri=new Map(), ph=[], ends=new Map();
     let k=0, ln=0, part="w";
     for(const line of lines){
       // 40만 줄을 한 번에 돌면 폰에서 1초 넘게 화면이 멈춘다 — 2만 줄마다 손을 놓는다
       if(++ln%20000===0) await new Promise(r=>setTimeout(r,0));
-      if(line==="#bi"||line==="#tri"){ part=line; continue; }
+      if(line==="#bi"||line==="#tri"||line==="#ph"||line==="#end"){ part=line; continue; }
+      if(part==="#end"){ const t=line.indexOf("\t"); if(t>0) ends.set(line.slice(0,t),+line.slice(t+1)); continue; }
+      if(part==="#ph"){ if(line) ph.push([choseongOf(line),line]); continue; }   // 환자 표현(직접 쓴 약 4천 문장)
       if(part!=="w"){
         // 문맥<TAB>전체횟수<TAB>다음:횟수 … — 12만 문맥을 미리 다 풀면 메모리가 두 배가 된다.
         // 줄 그대로 두고 그 문맥을 처음 볼 때 푼다(ngramEntry).
@@ -2321,13 +2327,40 @@ function loadDict(){
       let t=first.get(c[0]); if(!t) first.set(c[0],t=[]); if(t.length<60 || c.length===1) t.push(k);
       k++;
     }
-    DICT={w,cho,f,buckets,first,bi,tri,size:k};
+    DICT={w,cho,f,buckets,first,bi,tri,ph,ends,pt:patientModel(ph),size:k};
     bgKey=null;                       // 앞 단어 가산점 캐시를 큰 표로 다시 계산
     if(!el("view-speller").hidden) renderCandidatePanel();
     return DICT;
   }).catch(()=>{ dictLoading=null; });
   return dictLoading;
 }
+/* 환자 표현 n-gram. 대사 230만 줄로 만든 표는 문맥마다 상위 몇 개만 남기므로
+   "물 → 좀 → 주세요" 같은 병상 이음새가 일상 대화 빈도에 밀려 잘려 나간다.
+   그래서 환자 표현만으로 따로 세어 둔다(약 4천 문장, 자르지 않음). */
+function patientModel(ph){
+  const tab=new Map();                       // 문맥 -> {t:전체, m:Map(다음 -> 횟수)}
+  const bump=(ctx,w)=>{ let e=tab.get(ctx); if(!e) tab.set(ctx,e={t:0,m:new Map()}); e.t++; e.m.set(w,(e.m.get(w)||0)+1); };
+  for(const [,text] of ph){
+    let p1="", p2="";
+    for(const w of text.split(" ")){ bump("2"+p2,w); if(p2) bump("3"+p1+CTX_SEP+p2,w); p1=p2; p2=w; }
+    bump("$"+p2,"");                         // 이 단어로 말이 끝났다
+  }
+  for(const e of tab.values()) e.l=[...e.m].map(([w,n])=>[w,n,choseongOf(w)]);
+  return tab;
+}
+/* 앞 단어(들) 다음에 올 단어와 확률 — 대사 표와 환자 표 중 큰 값 */
+function nextProbs(p1,p2){
+  const out=new Map(), up=(w,p,c)=>{ const o=out.get(w); if(!o || o[0]<p) out.set(w,[p,c]); };
+  const tri=p1&&p2 ? ngramEntry(DICT.tri,p1+CTX_SEP+p2) : null;
+  if(tri) for(const [w,n,c] of tri.l) up(w, n/tri.t, c);
+  const bi=ngramEntry(DICT.bi,p2);
+  if(bi) for(const [w,n,c] of bi.l) up(w, 0.4*n/bi.t, c);
+  const P=DICT.pt, pt3=p1&&p2 ? P.get("3"+p1+CTX_SEP+p2) : null, pt2=P.get("2"+p2);
+  if(pt3) for(const [w,n,c] of pt3.l) up(w, SCORE.patientLM*n/pt3.t, c);
+  if(pt2) for(const [w,n,c] of pt2.l) up(w, SCORE.patientLM*0.4*n/pt2.t, c);
+  return out;
+}
+
 /* 사전 층의 순위 = 대화 말뭉치 n-gram 확률. 초성에 맞는 단어만 남긴 뒤
      P(w | 앞앞, 앞) -> 0.4·P(w | 앞) -> 0.16·P(w)   (stupid backoff, Brants et al. 2007)
    중 가장 큰 값을 점수로 바꾼다. P(w) 는 빈도 순위로 근사한다(지프 법칙, 1/(순위·14)).
@@ -2336,10 +2369,7 @@ function dictWords(ini, best, boost){
   const D=DICT, p2=state.lastWord||"", p1=state.lastWord2||"";
   const prob=new Map();
   const up=(w,p)=>{ if(!(prob.get(w)>=p)) prob.set(w,p); };
-  const tri=p1&&p2 ? ngramEntry(D.tri,p1+CTX_SEP+p2) : null;
-  if(tri) for(const [w,n,c] of tri.l) if(c.startsWith(ini)) up(w, n/tri.t);
-  const bi=ngramEntry(D.bi,p2);
-  if(bi) for(const [w,n,c] of bi.l) if(c.startsWith(ini)) up(w, 0.4*n/bi.t);
+  for(const [w,[p,c]] of nextProbs(p1,p2)) if(c.startsWith(ini)) up(w,p);
   // 단어 자체의 빈도. 빈도 순이라 앞쪽 40개씩이면 충분하다 — 길이까지 맞는 것과 접두어인 것을
   // 따로 세야 드문 사전 단어도 초성을 끝까지 치면 반드시 후보 목록에 든다.
   const idx = ini.length>=2 ? (D.buckets.get(ini.slice(0,2))||[]) : (D.first.get(ini)||[]);
@@ -2356,6 +2386,58 @@ function dictWords(ini, best, boost){
     const sc=Math.max(0, SCORE.lmA + SCORE.lmB*Math.log10(p))*SCORE.dict + boost(w);
     if(!(best.get(w)>=sc)) best.set(w,sc);
   }
+}
+
+/* ==========================================================================
+   띄어쓰기 없이 친 초성을 문장으로 — ㅁㅈㅈㅅㅇㅈㅂ -> "물 좀 주세요 제발"
+   초성 열을 1~6개씩 끊어 그 초성과 정확히 같은 단어를 붙여 나가며 n-gram 확률
+   P(w | 앞앞, 앞)(stupid backoff)을 곱한다. 끊는 자리마다 가장 그럴듯한 몇 갈래만
+   남긴다(위치별 빔). 언어 모델 없이 0ms 로 띄어 쓴 문장 후보가 나온다.
+   ========================================================================== */
+const SEG_CACHE=new Map();
+function wordsWithCho(c){                 // 초성이 정확히 c 인 단어, 빈도 순 상위 8개
+  let r=SEG_CACHE.get(c); if(r) return r;
+  const D=DICT; r=[];
+  const idx = c.length>=2 ? (D.buckets.get(c.slice(0,2))||[]) : (D.first.get(c)||[]);
+  for(const i of idx){ if(D.cho[i]===c){ r.push(i); if(r.length>=SCORE.decodeK) break; } }
+  if(SEG_CACHE.size>4000) SEG_CACHE.clear();
+  SEG_CACHE.set(c,r); return r;
+}
+function endProb(w){
+  const g=DICT.ends.get(w)||0.005;
+  const e=DICT.pt.get("2"+w), c=DICT.pt.get("$"+w);   // 환자 표현에서 이 단어 뒤에 말이 끝난 비율
+  const p = c ? c.t/((e?e.t:0)+c.t) : 0;
+  return Math.max(g, p*SCORE.patientLM);
+}
+function decodeSentences(ini, k){
+  if(!DICT || ini.length<2 || SCORE.decode<=0) return [];
+  const n=ini.length, B=SCORE.decodeBeam, at=[];
+  for(let i=0;i<=n;i++) at.push([]);
+  at[0].push({p1:state.lastWord2||"", p2:state.lastWord||"", lp:0, words:[]});
+  const pinOk=(w,pos)=>{ for(let j=0;j<w.length;j++){ const sp=state.spelled[pos+j]; if(sp && sp!==w[j]) return false; } return true; };
+  for(let pos=0; pos<n; pos++){
+    at[pos].sort((a,b)=>b.lp-a.lp); at[pos].length=Math.min(at[pos].length,B);
+    for(const st of at[pos]){
+      const np=nextProbs(st.p1,st.p2);
+      const mine=(learn.next||{})[st.p2]||{};
+      for(let L=1; L<=Math.min(6,n-pos); L++){
+        const seg=ini.slice(pos,pos+L), cand=new Map();
+        const up=(w,p)=>{ if(pinOk(w,pos) && !(cand.get(w)>=p)) cand.set(w,p); };
+        for(const i of wordsWithCho(seg)) up(DICT.w[i], SCORE.decodeUni/((i+1)*14));
+        for(const [w,[p,ch]] of np) if(ch===seg) up(w,p);
+        for(const [w,c] of Object.entries(mine)) if(choseongOf(w)===seg) up(w, Math.min(0.9, 0.3+0.1*c));   // 내가 실제로 이어 쓴 말
+        for(const [w,p] of cand) at[pos+L].push({p1:st.p2, p2:w, lp:st.lp+Math.log10(p), words:[...st.words,w]});
+      }
+    }
+  }
+  // 말끝 확률을 곱한다 — "켜줘"로 끝나는 문장이 "좀"으로 끝나는 문장보다 그럴듯하다
+  for(const st of at[n]) st.lp+=Math.log10(endProb(st.p2))*SCORE.decodeEnd;
+  const out=[], seen=new Set();
+  for(const st of at[n].sort((a,b)=>b.lp-a.lp)){
+    const t=st.words.join(" "); if(seen.has(t)) continue;
+    seen.add(t); out.push(t); if(out.length>=k) break;
+  }
+  return out;
 }
 
 function scoreSeed(cand, text, ini, freq, cat, cats, learned){
@@ -2417,6 +2499,11 @@ function localPhrases(limit, ini){
     const sc=scoreSeed(cho,text,ini,4,cat,cats,usedCount("phrase",text));
     if(sc>0) put(text,sc+bgOf(text));
   }
+  // 환자 표현 층: 검수 사전과 같은 눈금, 빈도만 한 단계 낮게
+  if(DICT && SCORE.patient>0) for(const [cho,text] of DICT.ph){
+    const sc=scoreSeed(cho,text,ini,2,-1,cats,usedCount("phrase",text));
+    if(sc>0) put(text,(sc+bgOf(text))*SCORE.patient);
+  }
   for(const text of Object.keys(learn.phrase)){
     const n=usedCount("phrase",text);
     const sc=scoreSeed(choseongOf(text),text,ini,n,-1,cats,n);
@@ -2442,12 +2529,20 @@ function sentenceSlots(n){
   const exactLen=state.initials.length;
   const exact=local.filter(c=>choseongOf(c.text).length===exactLen);
   const rest=local.filter(c=>!exact.includes(c));
+  // 표현 사전에 없어도 초성 전체를 단어로 나눠 띄어 쓴 문장을 바로 낸다
+  // 표현 사전에 길이까지 맞는 말이 있으면 그것을 믿는다. 초성 4개부터만 짓는다 — 더 짧을 때
+  // 지은 문장은 대개 단어 하나라 단어 줄과 겹치고, 검수 표현의 접두어 적중(절감)을 밀어낸다.
+  const decoded= exact.length || state.initials.length<SCORE.decodeMin ? []
+    : decodeSentences(state.initials, SCORE.decodeN).map(text=>({kind:"sent",text,local:true,decoded:true}));
   const llm=(state.latest||[]).map(c=>({kind:"sent",text:c.text,candidate_id:c.candidate_id}));
   // 로컬 -> LLM 순서로 쌓는다. LLM 응답이 늦게 도착해도 이미 화면에 떠 있던
   // 후보의 번호가 밀리지 않아야 한다 — 번호가 곧 눌러야 할 키이고, 읽는 도중
   // 자리가 바뀌면 엉뚱한 키를 응시하게 된다.
   const out=[], at=new Map();
-  for(const c of [...exact,...rest,...llm]){
+  // 자리 나누기: 길이까지 맞는 표현 > 접두어가 맞는 표현 1개 > 초성 전체로 지은 문장 1개 > 나머지.
+  // 앞부분만 친 상태에서는 접두어 표현이 먼저 맞히고(절감), 끝까지 친 새 문장은 지은 문장이 맞힌다.
+  const order=[...exact,...rest.slice(0,1),...decoded.slice(0,1),...rest.slice(1),...decoded.slice(1),...llm];
+  for(const c of order){
     const t=(c.text||"").trim();
     if(!t) continue;
     if(at.has(t)){

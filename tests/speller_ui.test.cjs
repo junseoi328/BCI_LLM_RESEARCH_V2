@@ -793,3 +793,36 @@ test('Dictionary layer loads lazily and reaches rare dictionary words', {timeout
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+// 띄어쓰기 없이 문장 초성을 쭉 쳐도 띄어 쓴 문장이 나온다(화면 사례: ㅁㅈㅈㅅㅇㅈㅂ).
+// 환자 표현에 있는 말은 그대로, 없는 말은 초성을 단어로 나눠 지은 문장이 뜬다.
+test('Continuous initials become spaced sentences, patient phrases first', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const html=HTML();
+    const dict=fs.readFileSync(path.join(__dirname,'../app/static/dict.txt'),'utf8');
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>{
+      const p=new URL(route.request().url()).pathname;
+      if(p==='/speller') return route.fulfill({contentType:'text/html',body:html});
+      if(p==='/speller/dict.txt') return route.fulfill({contentType:'text/plain',body:dict});
+      return route.fulfill({status:503,json:{detail:'offline'}});
+    });
+    await page.goto('http://bci.test/speller');
+    const out=await page.evaluate(async()=>{
+      try{localStorage.clear()}catch(e){}
+      learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
+      state.partner='family';state.situation='general';showView('speller');el('autoPredict').checked=false;
+      await loadDict();
+      const sents=ini=>{state.lastWord='';state.lastWord2='';state.initials=ini;state.spelled={};state.latest=[];
+        renderCandidatePanel();return slots.filter(s=>s.kind==='sent').map(s=>s.text);};
+      return {water:sents('ㅁㅈㅈㅅㅇㅈㅂ'), toilet:sents(choseongOf('화장실 가고 싶어요')),
+              decoded:decodeSentences(choseongOf('가래 좀 뽑아주세요'),3)};
+    });
+    assert.equal(out.water[0],'물 좀 주세요 제발', out.water.join(' | '));
+    assert.ok(out.toilet.includes('화장실 가고 싶어요'), out.toilet.join(' | '));
+    assert.equal(out.decoded[0],'가래 좀 뽑아주세요','초성을 단어로 나눠 띄어 쓴다');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
