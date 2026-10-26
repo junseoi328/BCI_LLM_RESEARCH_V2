@@ -716,3 +716,75 @@ test('Sentence requests use the fast path and the keyboard fits an iPhone', {tim
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+// 이어서 고른 단어는 대화 기록에서 한 발화다. 문장부호로 끝맺으면 다음 단어부터 새 발화.
+// 서버 세션 문장은 부호를 모르므로 화면 문장이 그것으로 덮이면 안 된다.
+test('Consecutive words form one turn and punctuation survives a server session', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const html=HTML();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>{
+      const path=new URL(route.request().url()).pathname;
+      if(path==='/speller') return route.fulfill({contentType:'text/html',body:html});
+      // 부호 없는 서버 문장을 돌려준다 — 화면은 이것을 따르면 안 된다
+      if(path.endsWith('/select_text')) return route.fulfill({json:{sentence:'서버가 아는 문장'}});
+      return route.fulfill({status:503,json:{detail:'offline'}});
+    });
+    await page.goto('http://bci.test/speller');
+    const out=await page.evaluate(async()=>{
+      state.partner='family';state.situation='general';showView('speller');renderKeyboard();
+      state.sessionId='s1';
+      await commitText('낫겠네요'); await commitText('맛집은');
+      const merged=state.history.map(h=>h.who+':'+h.text);
+      await pressPunct('?');
+      const afterPunct={committed:state.committed, turns:state.history.map(h=>h.who+':'+h.text)};
+      await commitText('어디야');
+      const next=state.history.map(h=>h.who+':'+h.text);
+      el('btnUndo').click();
+      return {merged, afterPunct, next, undone:state.history.map(h=>h.who+':'+h.text), committed:state.committed};
+    });
+    assert.deepEqual(out.merged,['me:낫겠네요 맛집은'],'단어마다 줄이 생기지 않는다');
+    assert.equal(out.afterPunct.committed,'낫겠네요 맛집은?','서버 문장이 화면 문장을 덮지 않는다');
+    assert.deepEqual(out.afterPunct.turns,['me:낫겠네요 맛집은?']);
+    assert.deepEqual(out.next,['me:낫겠네요 맛집은?','me:어디야'],'부호로 끝맺으면 새 발화');
+    assert.deepEqual(out.undone,['me:낫겠네요 맛집은?'],'되돌리기는 마지막 단어만 걷어낸다');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+// 사전 층: 페이지와 따로 받는 약 40만 단어. 흔한 말은 바로 위에, 드문 사전 단어도
+// 초성을 다 치고 글자 하나를 직접 쓰면 후보에 오른다.
+test('Dictionary layer loads lazily and reaches rare dictionary words', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const html=HTML();
+    const dict=fs.readFileSync(path.join(__dirname,'../app/static/dict.txt'),'utf8');
+    const rare=dict.trimEnd().split('\n').reverse().find(l=>/^[가-힣]{2,4}$/.test(l));   // 빈도 정보 없는 사전 단어
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>{
+      const p=new URL(route.request().url()).pathname;
+      if(p==='/speller') return route.fulfill({contentType:'text/html',body:html});
+      if(p==='/speller/dict.txt') return route.fulfill({contentType:'text/plain',body:dict});
+      return route.fulfill({status:503,json:{detail:'offline'}});
+    });
+    await page.goto('http://bci.test/speller');
+    const out=await page.evaluate(async(rare)=>{
+      try{localStorage.clear()}catch(e){}
+      learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
+      state.partner='friend';state.situation='general';
+      const before=(state.initials='ㅊㄱ', state.spelled={}, renderCandidatePanel(), slots.map(s=>s.text));
+      showView('speller'); await loadDict();
+      const words=ini=>{state.initials=ini;state.spelled={};renderCandidatePanel();return slots.filter(s=>s.kind==='word').map(s=>s.text);};
+      const common=words('ㅅㄹㅎ');
+      state.initials=choseongOf(rare); state.spelled={0:rare[0]}; renderCandidatePanel();
+      return {size:DICT.size, common, rareHit:slots.some(s=>s.text===rare), rare, before};
+    },rare);
+    assert.ok(out.size>300000,'사전 '+out.size);
+    assert.ok(out.common.includes('사랑해'),out.common.join(','));
+    assert.ok(out.rareHit,'드문 사전 단어 '+out.rare+' 도 후보에 오른다');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});

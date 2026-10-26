@@ -36,3 +36,12 @@ def test_home_screen_app_files():
     assert m.status_code == 200 and m.json()["start_url"] == "/speller"
     icon = client.get(m.json()["icons"][0]["src"])
     assert icon.status_code == 200 and icon.content[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+def test_dictionary_layer_file():
+    r = client.get("/speller/dict.txt")
+    assert r.status_code == 200 and r.headers["content-type"].startswith("text/plain")
+    lines = r.text.splitlines()
+    assert len(lines) > 300_000                      # 국어사전 어휘 전부 + 구어 빈도
+    assert {"사람", "괜찮아", "먹어요"} <= {l.rstrip("0123456789n") for l in lines[:200_000]}
+    assert client.get("/speller/dict.txt", headers={"If-None-Match": r.headers["etag"]}).status_code == 304

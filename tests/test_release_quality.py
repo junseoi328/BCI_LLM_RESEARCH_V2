@@ -98,3 +98,21 @@ def test_eeg_top_hypothesis_is_not_lost_by_input_order():
 def test_invalid_recovery_does_not_silently_change_intent(extra):
     with pytest.raises(HTTPException):
         normalize_request(PredictionRequest(bci_input='ㅁㅈ', **extra))
+
+
+def test_session_drops_fragments_the_page_already_sent(monkeypatch, tmp_path):
+    monkeypatch.setattr(session_api, 'habitual_store', HabitualPhraseStore(tmp_path / 'phrases.json'))
+    seen = []
+    def run(request):
+        seen.append(request)
+        return BCILanguagePipeline(MockLanguageModelClient()).predict(request)
+    monkeypatch.setattr(session_api, 'run_prediction', run)
+    with TestClient(app) as api:
+        sid = api.post('/session/start', json={'partner': 'family', 'situation': 'general'}).json()['session_id']
+        for w in ('낫겠네요', '맛집은'):
+            api.post(f'/session/{sid}/select_text', json={'text': w})
+        page_ctx = ['상대: 어디 갈까?', '나: 낫겠네요 맛집은']
+        api.post(f'/session/{sid}/predict', json={'bci_input': 'ㅇㄷ', 'recent_context': page_ctx,
+                                                  'current_sentence': '낫겠네요 맛집은?'})
+        assert seen[0].recent_context == page_ctx
+        assert seen[0].current_sentence == '낫겠네요 맛집은?'

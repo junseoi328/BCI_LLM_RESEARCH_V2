@@ -16,7 +16,7 @@ def _load(path: str, mtime_ns: int) -> tuple[bytes, str]:
     return body, '"' + hashlib.sha256(body).hexdigest()[:16] + '"'
 
 
-def _page(request: Request, path: Path) -> Response:
+def _page(request: Request, path: Path, media_type: str = "text/html; charset=utf-8") -> Response:
     """640KB 페이지를 요청마다 디스크에서 읽어 다시 보내지 않는다.
 
     no-cache 는 "매번 서버에 확인하라"는 뜻이라 배포 즉시 새 버전이 보이는 건 그대로다.
@@ -27,12 +27,18 @@ def _page(request: Request, path: Path) -> Response:
     # 앞단 프록시가 압축하면서 W/ 를 붙이거나 여러 값을 보낼 수 있어 포함 여부로 본다.
     if etag in request.headers.get("if-none-match", ""):
         return Response(status_code=304, headers=headers)
-    return Response(body, media_type="text/html; charset=utf-8", headers=headers)
+    return Response(body, media_type=media_type, headers=headers)
 
 
 @router.get("/speller", response_class=HTMLResponse)
 def bci_speller(request: Request):
     return _page(request, HTML_PATH)
+
+
+@router.get("/speller/dict.txt", include_in_schema=False)
+def speller_dict(request: Request):
+    # 약 40만 단어(4.8MB, 압축 약 1.8MB). 페이지와 같은 ETag 재검증이라 두 번째부터는 304.
+    return _page(request, HTML_PATH.with_name("dict.txt"), "text/plain; charset=utf-8")
 
 
 @router.get("/speller/research", response_class=HTMLResponse)

@@ -60,8 +60,13 @@ def session_predict(session_id: str, request: PredictionRequest) -> PredictionRe
             "session_id": session_id,
             "partner": session.partner,
             "situation": session.situation,
-            "current_sentence": session.sentence[-300:],
-            "recent_context": list(dict.fromkeys(session.history[-5:] + request.recent_context))[-5:],
+            # 화면이 보낸 문장을 우선한다 — 문장부호는 화면에서만 붙는다.
+            "current_sentence": request.current_sentence or session.sentence[-300:],
+            # 세션 기록은 확정한 단어 조각이다. 화면이 이미 "나: 낫겠네요 맛집은" 처럼 묶어
+            # 보낸 조각은 빼야 5줄 자리를 중복이 차지하지 않는다.
+            "recent_context": list(dict.fromkeys(
+                [h for h in session.history[-5:] if not any(h in c for c in request.recent_context)]
+                + request.recent_context))[-5:],
         }
     )
     response = run_prediction(patched)
