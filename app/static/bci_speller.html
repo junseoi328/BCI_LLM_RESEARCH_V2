@@ -1055,6 +1055,9 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
         <p class="unit-hint">넓은 사전 출처: KLUE 벤치마크의 WoS 과제지향 대화(CC BY-SA 4.0)에서 만든 빈도표입니다. 원문은 포함하지 않습니다.</p>
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
         <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
+        <label for="latencyStrategy">문장 추천 방식</label>
+        <select id="latencyStrategy"><option value="fast">빠르게 · 생성 후 로컬 정렬</option><option value="balanced" selected>정밀하게 · 기존 모델 정렬</option></select>
+        <p class="unit-hint">빠른 방식은 추가 모델 호출을 줄입니다. 추천 품질은 달라질 수 있어요. 같은 입력·문맥의 정상 후보는 60초 동안 재사용합니다.</p>
         <p class="unit-hint">문장과 대화, 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 대화가 서버·언어 모델로 전달됩니다.</p>
         <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
       </details>
@@ -1507,18 +1510,27 @@ let trials=[], selTotals=[], llmWaits=[];
    되돌아오는 일이 잦은데, 그때 LLM을 다시 기다릴 이유가 없다. */
 const predictCache=new Map();
 const CACHE_MAX=60;
+const CACHE_TTL_MS=60000;
 function cacheKey(body){
-  return JSON.stringify([body.bci_input,body.spelled_syllables||null,body.partner,body.situation,
-                         body.current_sentence,body.recent_context,body.top_k,
-                         body.fill_mask_reference_text||null,body.fill_mask_target_index??null]);
+  return JSON.stringify(body);
 }
 function cachePut(k,d){
-  predictCache.set(k,d);
+  // Empty and fallback responses must not prevent a fresh recovery attempt.
+  if(!Array.isArray(d.candidates) || !d.candidates.length || (d.fallback && d.fallback!=="none")) return;
+  predictCache.delete(k);
+  predictCache.set(k,{data:d,expiresAt:Date.now()+CACHE_TTL_MS});
   if(predictCache.size>CACHE_MAX) predictCache.delete(predictCache.keys().next().value);
 }
-let prefetchTimer=null;
+function cacheGet(k){
+  const entry=predictCache.get(k);
+  if(!entry) return null;
+  if(entry.expiresAt<=Date.now()){predictCache.delete(k);return null;}
+  predictCache.delete(k);predictCache.set(k,entry);
+  return entry.data;
+}
+let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"0.9.0",actions:0,commits:0,undos:0,requests:0,errors:0,latencies_ms:[]};
+let metrics={version:"2.2.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -1526,11 +1538,14 @@ function saveDraft(){
     committed:state.committed,history:state.history.slice(-100),habitual:state.habitual.slice(0,100),
     context:el("context").value,autoPredict:el("autoPredict").checked,
     candidateCount:el("candidateCount").value,
+    latencyStrategy:el("latencyStrategy").value,
     expStim:el("expStim").value,expAcc:el("expAcc").value,expSubject:el("expSubject").value,
   })); }catch(e){}
 }
 function cancelPending(){
   clearTimeout(autoTimer);
+  clearTimeout(prefetchTimer);
+  if(prefetchController){prefetchController.abort();prefetchController=null;metrics.prefetch_cancelled++;}
   if(pendingController) pendingController.abort();
   pendingController=null;
   predictionVersion++;
@@ -2300,9 +2315,11 @@ el("btnDirectCommit").onclick=async ()=>{
 };
 /* 상황 메모는 이제 로컬 후보 점수에도 쓰인다 — 적는 즉시(0ms) 순위가 바뀐다. */
 el("context").oninput=()=>{ markContextDirty(); clearRecoveryState(); saveDraft(); renderCandidatePanel(); schedulePrediction(); };
-el("autoPredict").onchange=()=>{ saveDraft(); schedulePrediction(); };
+el("autoPredict").onchange=()=>{ cancelPending(); saveDraft(); schedulePrediction(); };
 el("candidateCount").onchange=()=>{ clearRecoveryState(); saveDraft(); };
+el("latencyStrategy").onchange=()=>{clearRecoveryState();saveDraft();renderCandidatePanel();schedulePrediction();};
 el("btnForget").onclick=()=>{
+  cancelPending();predictCache.clear();
   state.habitual=[]; state.lastWord=""; state.lastWord2=""; markContextDirty();
   learn={word:{},next:{},phrase:{},ctx:{},day:today()};
   try{ localStorage.removeItem(LEARN_KEY); sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
@@ -2337,6 +2354,7 @@ function predictBody(ini, extra){
     input_mode:"initials", bci_input:ini,
     top_k: Math.max(1, Math.min(Number(el("candidateCount").value)||3, sentN)),
     experiment_mode:"hybrid",
+    latency_strategy:el("latencyStrategy").value,
     partner: state.partner || "other", situation: state.situation || "general",
     current_sentence: state.committed.slice(-300),
     // 화자를 붙여 누적 대화를 그대로 넘긴다 (context = 현재 진행중인 대화 전체)
@@ -2356,7 +2374,7 @@ async function predict(extra){
   cancelPending();
   const controller=new AbortController(); pendingController=controller;
   const timeout=setTimeout(()=>controller.abort(),60000);
-  const started=performance.now(); metrics.requests++;
+  const started=performance.now();
   const version=++predictionVersion;
   state.latest=[]; llmError=null;
   if(extra?.fill_mask_reference_text===undefined) hideFillmaskBox();
@@ -2366,22 +2384,25 @@ async function predict(extra){
   renderCandidatePanel();
   const body=predictBody(state.initials, extra);
   const ck=cacheKey(body);
-  if(predictCache.has(ck)){
+  const cached=cacheGet(ck);
+  if(cached){
+    metrics.cache_hits++;
     // 캐시 적중 — LLM 대기 0ms
-    state.latest=predictCache.get(ck).candidates||[];
+    state.latest=cached.candidates||[];
     loop.waiting=false;
-    renderCandidates(predictCache.get(ck));
+    renderCandidates(cached);
     announce("이전에 조회한 후보를 바로 표시했습니다.");
     pendingController=null; el("btnCancel").hidden=true;
     el("candSents").setAttribute("aria-busy","false");
     loopReady();
     clearTimeout(timeout);
-    return predictCache.get(ck);
+    return cached;
   }
   try{
     const sessionId=state.sessionId;
     const url = sessionId ? `/session/${sessionId}/predict` : "/predict";
     const options={method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:controller.signal};
+    metrics.requests++;
     let r=await fetch(url,options);
     let d=await r.json();
     if(version!==predictionVersion) return;
@@ -2390,6 +2411,7 @@ async function predict(extra){
     if(sessionId && r.status===404 && d.detail==="session not found"){
       state.sessionId=null;
       try{ localStorage.removeItem("bci_session_id"); }catch(e){}
+      metrics.requests++;
       r=await fetch("/predict",options);
       d=await r.json();
       if(version!==predictionVersion) return;
@@ -2446,17 +2468,22 @@ function schedulePrefetch(){
 }
 async function prefetch(nextIni){
   // 진짜 조회가 진행 중이면 앞질러 가지 않는다 — 대역폭도, 서버 순서도 양보한다.
-  if(pendingController) return;
+  if(pendingController || prefetchController || !el("autoPredict").checked || el("view-speller").hidden) return;
   const body=predictBody(nextIni,{});
   const k=cacheKey(body);
-  if(predictCache.has(k)) return;
+  if(cacheGet(k)) return;
+  const controller=new AbortController();prefetchController=controller;
+  const version=predictionVersion;
+  const timer=setTimeout(()=>controller.abort(),20000);
   try{
+    metrics.prefetch_requests++;
     const r=await fetch("/predict",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(body),signal:AbortSignal.timeout(20000)});
+      body:JSON.stringify(body),signal:controller.signal});
     if(!r.ok) return;
     const d=await r.json();
-    if(d && d.candidates) cachePut(k,d);
+    if(!controller.signal.aborted && version===predictionVersion && d && d.candidates) cachePut(k,d);
   }catch(e){ /* 프리페치 실패는 아무것도 망가뜨리지 않는다 */ }
+  finally{clearTimeout(timer);if(prefetchController===controller)prefetchController=null;}
 }
 
 function renderCandidates(d){
@@ -2801,6 +2828,7 @@ function restoreDraft(){
     if(draft.expAcc) el("expAcc").value=draft.expAcc;
     if(draft.expSubject) el("expSubject").value=draft.expSubject;
     el("candidateCount").value=draft.candidateCount==="5" ? "5" : "3";
+    el("latencyStrategy").value=draft.latencyStrategy==="fast" ? "fast" : "balanced";
     el("partnerBadge").textContent=partnerLabel(state.partner);
     el("situationBadge").textContent=situationLabel(state.situation);
     renderKeyboard();renderBuffer();renderChat();renderHabitual();renderCandidatesEmpty();showView("speller");
