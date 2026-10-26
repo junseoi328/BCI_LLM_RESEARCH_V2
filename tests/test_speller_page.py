@@ -45,3 +45,14 @@ def test_dictionary_layer_file():
     assert len(lines) > 300_000                      # 국어사전 어휘 전부 + 구어 빈도
     assert {"사람", "괜찮아", "먹어요"} <= {l.rstrip("0123456789n") for l in lines[:200_000]}
     assert client.get("/speller/dict.txt", headers={"If-None-Match": r.headers["etag"]}).status_code == 304
+
+
+def test_dictionary_url_is_versioned_and_cached_for_a_year():
+    page = client.get("/speller").text
+    assert "__DICT_V__" not in page
+    import re
+    v = re.search(r'/speller/dict\.txt\?v=([0-9a-f]{16})', page).group(1)
+    r = client.get(f"/speller/dict.txt?v={v}")
+    assert r.status_code == 200 and "immutable" in r.headers["cache-control"]
+    # 옛 버전 주소로 오면 오래 캐시하지 않는다
+    assert "immutable" not in client.get("/speller/dict.txt?v=0000000000000000").headers["cache-control"]

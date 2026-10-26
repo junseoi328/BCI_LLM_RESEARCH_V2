@@ -30,15 +30,36 @@ def _page(request: Request, path: Path, media_type: str = "text/html; charset=ut
     return Response(body, media_type=media_type, headers=headers)
 
 
+DICT_PATH = HTML_PATH.with_name("dict.txt")
+
+
+@lru_cache(maxsize=4)
+def _speller(html_mtime: int, dict_mtime: int) -> tuple[bytes, str, str]:
+    """페이지 안의 __DICT_V__ 를 사전 파일 해시로 바꿔 둔다. 사전 주소가 내용마다 달라지므로
+    브라우저가 사전을 1년 동안 캐시해도 배포하면 바로 새 것을 받는다."""
+    _, dict_etag = _load(str(DICT_PATH), dict_mtime)
+    html, _ = _load(str(HTML_PATH), html_mtime)
+    body = html.replace(b"__DICT_V__", dict_etag.strip('"').encode())
+    return body, '"' + hashlib.sha256(body).hexdigest()[:16] + '"', dict_etag
+
+
 @router.get("/speller", response_class=HTMLResponse)
 def bci_speller(request: Request):
-    return _page(request, HTML_PATH)
+    body, etag, _ = _speller(HTML_PATH.stat().st_mtime_ns, DICT_PATH.stat().st_mtime_ns)
+    headers = {"Cache-Control": "no-cache", "ETag": etag}
+    if etag in request.headers.get("if-none-match", ""):
+        return Response(status_code=304, headers=headers)
+    return Response(body, media_type="text/html; charset=utf-8", headers=headers)
 
 
 @router.get("/speller/dict.txt", include_in_schema=False)
-def speller_dict(request: Request):
-    # 약 40만 단어(4.8MB, 압축 약 1.8MB). 페이지와 같은 ETag 재검증이라 두 번째부터는 304.
-    return _page(request, HTML_PATH.with_name("dict.txt"), "text/plain; charset=utf-8")
+def speller_dict(request: Request, v: str = ""):
+    # 약 40만 단어 + 다음 단어 표. 페이지가 붙여 준 v 가 지금 파일 해시와 같으면 내용이 바뀔
+    # 일이 없으므로 1년 캐시(immutable). 다르거나 없으면 ETag 재검증.
+    r = _page(request, DICT_PATH, "text/plain; charset=utf-8")
+    if v and f'"{v}"' == r.headers.get("etag"):
+        r.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    return r
 
 
 @router.get("/speller/research", response_class=HTMLResponse)

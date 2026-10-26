@@ -400,7 +400,6 @@ details[open]>summary::before{transform:rotate(90deg);color:var(--blue-500)}
 body:has(.kb.stim) .card:not(.kb-card),
 body:has(.kb.stim) .topbar,
 body:has(.kb.stim) .topline,
-body:has(.kb.stim) .lab-link,
 body:has(.kb.stim) .footer-note,
 body:has(.kb.stim) .settings-row{opacity:.2;transition:opacity .1s ease}
 body:has(.kb.stim) .kb-card{box-shadow:var(--shadow-md)}
@@ -605,12 +604,6 @@ body:has(.kb.stim) .kb-card{box-shadow:var(--shadow-md)}
 /* ==========================================================================
    Kiosk hero — 한 화면에 큰 문장 하나와 버튼 하나. 그 외에는 아무것도 없다.
    ========================================================================== */
-.lab-link{
-  display:block;padding:9px 24px;text-align:center;text-decoration:none;
-  background:var(--surface-2);color:var(--ink-500);
-  font-size:var(--fs-xs);font-weight:700;border-bottom:1px solid var(--line);
-}
-.lab-link:hover{color:var(--blue-600);background:var(--blue-50)}
 
 .hero{
   position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -702,8 +695,6 @@ body:has(.kb.stim) .kb-card{box-shadow:var(--shadow-md)}
 .pick-card .ico{font-size:30px}
 .headline h1{font-size:clamp(1.5rem,1.1rem + 1.4vw,2rem)}
 
-/* 이 화면들에서는 실험실 배너를 숨긴다 — 대화 중에 낄 자리가 아니다 */
-body:has(#view-speller:not([hidden])) .lab-link{display:none}
 
 /* ==========================================================================
    한눈에 — 화면에서 경쟁하는 것들을 줄인다
@@ -877,12 +868,8 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
   --key-shadow:0 1px 0 rgba(0,0,0,.22);
   --material:blur(28px) saturate(185%);
   /* 배경화면 — 이미지 파일 없이 그라디언트 네 겹. 고정 레이어라 스크롤해도 다시 그리지 않는다. */
-  --wallpaper:
-    radial-gradient(60% 55% at 12% 8%,  #8ec5ff 0%, transparent 70%),
-    radial-gradient(55% 50% at 92% 14%, #f5b3d8 0%, transparent 70%),
-    radial-gradient(70% 60% at 78% 92%, #b9a6ff 0%, transparent 72%),
-    radial-gradient(60% 55% at 6% 96%,  #9fe6d4 0%, transparent 70%),
-    linear-gradient(160deg,#e9eefb 0%,#f4eef8 55%,#eef3f7 100%);
+  /* 배경은 조용하게 — 위쪽에서 은은하게 번지는 빛 하나. 색 덩어리 여러 개는 시선을 뺏는다. */
+  --wallpaper:radial-gradient(120% 55% at 50% -12%, rgba(0,122,255,.13) 0%, transparent 62%), linear-gradient(180deg,#f5f5f8 0%,#eeeef3 100%);
 }
 :root[data-theme="dark"]{
   --blue-50:rgba(10,132,255,.16);  --blue-100:rgba(10,132,255,.26); --blue-200:rgba(10,132,255,.40);
@@ -907,12 +894,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
   --shadow-md:0 28px 70px -18px rgba(0,0,0,.75);
   --shadow-primary:0 10px 26px -8px rgba(10,132,255,.6);
   --key-shadow:0 1px 0 rgba(0,0,0,.55);
-  --wallpaper:
-    radial-gradient(55% 50% at 14% 10%, rgba(10,92,255,.55) 0%, transparent 70%),
-    radial-gradient(50% 48% at 90% 12%, rgba(191,64,191,.42) 0%, transparent 70%),
-    radial-gradient(65% 55% at 80% 95%, rgba(94,72,255,.45) 0%, transparent 72%),
-    radial-gradient(55% 50% at 6% 94%,  rgba(0,160,150,.32) 0%, transparent 70%),
-    linear-gradient(170deg,#06070c 0%,#0b0a16 60%,#05070b 100%);
+  --wallpaper:radial-gradient(120% 55% at 50% -12%, rgba(10,132,255,.22) 0%, transparent 62%), linear-gradient(180deg,#0b0c11 0%,#07080b 100%);
 }
 /* 다크에서도 iOS 의 채운 버튼 글자는 흰색이다 (예전 규칙은 배경색 글자를 썼다) */
 :root[data-theme="dark"] .brand .mark,:root[data-theme="dark"] .ring-btn,:root[data-theme="dark"] .big-cta,
@@ -937,7 +919,6 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--wallp
   border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);
   height:calc(var(--topbar-h) + env(safe-area-inset-top));
 }
-.lab-link{background:transparent;border-bottom:1px solid var(--line);padding-top:max(9px,env(safe-area-inset-top))}
 .shell{padding-left:max(var(--sp-4),env(safe-area-inset-left));padding-right:max(var(--sp-4),env(safe-area-inset-right))}
 .footer-note{padding-bottom:max(var(--sp-4),env(safe-area-inset-bottom))}
 
@@ -984,12 +965,8 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--wallp
 .buffer{border-radius:var(--r-md)}
 .cand .kb-badge{border-radius:7px}
 
-/* 강조 문구는 iOS 배경화면 색을 그대로 끌어온 그라디언트 글자 */
-.hero h1 em,:root[data-theme="dark"] .hero h1 em{
-  background:linear-gradient(95deg,#2f8cff 0%,#7a5cff 55%,#d55ce0 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;opacity:1;
-}
-:root[data-theme="dark"] .hero h1 em{background-image:linear-gradient(95deg,#5eaaff 0%,#a48bff 55%,#f08be8 100%)}
+/* 강조 문구는 시스템 파랑 한 색 */
+.hero h1 em,:root[data-theme="dark"] .hero h1 em{color:var(--blue-500);opacity:1;background:none}
 :root[data-theme="dark"] .kb .key.fn.commit{background:var(--blue-500);color:var(--on-solid)}
 
 /* iPhone: 두벌식 10열을 가로 스크롤 없이 한 화면에. iOS 키보드도 같은 너비(약 32pt)다.
@@ -1015,6 +992,10 @@ body:has(.kb.stim)::before{opacity:.15}
 /* SSVEP 점멸의 밝은 반쪽도 불투명 면으로 — 반투명이면 뒤 색에 따라 자극 대비가 달라진다 */
 @keyframes ssvep{0%{background:var(--amber-600);color:var(--on-solid)}50%{background:var(--solid);color:var(--ink-900)}}
 
+.footer-note p{font-size:11.5px;opacity:1;color:var(--ink-300)}
+.footer-note a,.link-btn{color:var(--ink-500);background:none;border:0;padding:0;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.footer-note a:hover,.link-btn:hover{color:var(--blue-500)}
+
 /* 투명도를 줄이라고 설정한 사람에게는 불투명 면으로 */
 @media (prefers-reduced-transparency:reduce){
   :root{--surface:#ffffff;--surface-2:#f7f7fa;--topbar-bg:#f7f7fa}
@@ -1030,7 +1011,6 @@ body:has(.kb.stim)::before{opacity:.15}
 </style>
 </head>
 <body>
-<a class="lab-link" href="/speller/research">새 입력 실험실 · 40키 · 속도 비교 →</a>
 
 <div class="topbar">
   <div class="brand">
@@ -1263,7 +1243,7 @@ body:has(.kb.stim)::before{opacity:.15}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(4행×10열 두벌식 자판 배치 · 자음14+모음12+후보7+기능3+⇧+부호3, ⇧로 쌍자음·겹모음) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0 · songys/Chatbot_data, MIT · 단어·다음단어·앞두단어) · 사전 층 약 40만 단어(영화·드라마 자막 어절 빈도 hermitdave/FrequencyWords, CC BY-SA 4.0 · 국어사전 어휘 mecab-ko-dic, Apache 2.0) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v2.3.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v2.3.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1271,12 +1251,24 @@ body:has(.kb.stim)::before{opacity:.15}
   <div class="guide-body">
     <p class="guide-lead">내가 원하는 말을, 나의 속도로.</p>
     <p>초성으로 문장을 찾고, 뜻에 맞게 고친 다음 상대방에게 보여주거나 소리로 전하세요. 설명서를 닫으면 작성 중이던 화면으로 돌아갑니다.</p>
-    <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a></nav>
+    <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a><a href="#guide-about">정보·출처</a></nav>
     <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> ‘물 줘’는 <strong>ㅁ → ㅈ</strong>처럼 초성만 눌러도 되고, ㅁ 다음에 모음 <strong>ㅜ</strong>를 눌러 ‘무’를 그 자리에서 확정해도 됩니다(받침은 후보가 채워줍니다). 한 번에 최대 20글자입니다.</li><li><strong>후보키로 선택:</strong> 키를 누를 때마다 <strong>단어 후보</strong>가 즉시(로컬·0ms) 갱신되고, <strong>문장 후보</strong>는 언어 모델이 0.7초 뒤 채웁니다. 원하는 후보의 번호가 붙은 <strong>후보키 1~7</strong>(또는 숫자키)을 누르면 바로 확정됩니다. 단어/문장 개수 비율은 로컬에 맞는 단어가 몇 개인지에 따라 자동으로 조절됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
     <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
     <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>마지막 문장 취소:</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>글자삭제 / 단어삭제:</strong> 마지막 글자 하나 / 작성 중인 단어(없으면 확정된 마지막 어절)를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>7</kbd>은 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
     <section id="guide-settings"><h3>4. 나에게 맞게 조절하기</h3><ul><li><strong>큰 글씨:</strong> 화면 위쪽 ‘가 큰 글씨’로 입력·후보·주요 버튼을 확대합니다. 같은 버튼으로 기본 크기로 돌아옵니다.</li><li><strong>자동 후보 조회:</strong> ‘입력 설정 · 이 탭의 기록’에서 켭니다. 초성 2개 이상 입력 후 1.2초 동안 입력을 멈추면 조회합니다. 문장은 자동 확정되지 않습니다.</li><li><strong>후보 수:</strong> 3개 또는 5개로 선택합니다.</li><li><strong>대화 문맥:</strong> ‘자주 쓰는 표현 · 대화 문맥’을 열어 상대방의 말이나 상황을 적으면 조회에 참고합니다. 최근 대화도 자동 반영됩니다.</li><li><strong>자주 쓰는 표현:</strong> 확정한 표현이 모입니다. 이 버튼은 누르면 바로 문장에 추가됩니다.</li></ul><h4>내 대화는 어디에 저장되나요?</h4><p>작성 중인 문장과 최근 대화, 자주 쓰는 표현은 현재 브라우저 탭의 세션 저장소에 보관되어 새로고침 뒤 복원됩니다. 후보 조회 시 초성·문맥 등 필요한 입력이 서버와 언어 모델로 전송됩니다. 탭 복원 기능에 따라 기록이 다시 열릴 수 있으므로 공용 기기에서는 ‘이 탭의 기록 삭제’를 사용하세요.</p><p>‘사용 지표 내려받기’는 입력 횟수·조회 지연시간 등의 JSON 파일을 저장합니다. 문장 원문은 포함하지 않습니다. 실제 EEG 정확도나 의사소통 성능을 측정하는 기능은 아닙니다.</p></section>
     <section id="guide-trouble"><h3>5. 잘 안 될 때</h3><details><summary>문장 후보가 늦게 나와요</summary><p>단어 후보는 언어 모델을 거치지 않으므로 항상 즉시 뜹니다 — 서버가 느리거나 끊겨도 단어 후보만으로 계속 입력할 수 있습니다. 문장 후보만 언어 모델을 기다리며, 이 대기 시간은 위쪽 HUD의 ‘LLM 실대기’에 실측으로 표시됩니다.</p></details><details><summary>원하는 표현이 없거나 초성을 잘못 눌렀어요</summary><p>‘지우기’로 잘못 입력한 초성을 수정하세요. 글자 하나의 대안은 FillMask, 일부 글자를 지정하는 것은 KeywordAE, 정확한 문장을 알고 있을 때는 전체 직접 입력을 사용하세요.</p></details><details><summary>눈으로 바라보면 선택되나요?</summary><p>아직 아닙니다. 현재 웹 버전은 클릭·터치·키보드로 조작하는 연구용 인터페이스입니다. 다만 <strong>Pseudo-online 실험 모드</strong>를 켜면 SSVEP 자극 시간(기본 1.5초)과 판독 정확도(기본 90%)를 흉내 내어, 실제 EEG를 붙이기 전에 전체 루프가 얼마나 걸리는지 측정하고 CSV로 저장할 수 있습니다.</p></details><details><summary>새 대화와 기록 삭제는 어떻게 다른가요?</summary><p>‘새 대화 시작’은 상대와 상황을 다시 선택하며 현재 대화를 초기화합니다. 자주 쓰는 표현은 유지됩니다. 개인 기록까지 비우려면 ‘입력 설정 · 이 탭의 기록’의 ‘이 탭의 기록 삭제’를 선택하세요.</p></details></section>
+    <section id="guide-about"><h3>6. 정보·출처</h3>
+      <p><b>연구용 프로토타입입니다.</b> 실제 EEG 측정은 연결되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다. 웹에서는 클릭·키보드로 입력합니다.</p>
+      <p>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 고르세요.</p>
+      <p><b>자판</b> 40키 = 4행 × 10열 두벌식 배치(자음 14 · 모음 12 · 후보 7 · 기능 3 · ⇧ · 부호 3). ⇧로 쌍자음·겹모음.</p>
+      <p><b>후보를 찾는 순서</b> 내 기록 → 검수된 AAC 표현 281개 → 대화 말뭉치 → 사전 층(약 40만 단어, 대사 n-gram 확률로 순위) → 언어 모델.</p>
+      <ul>
+        <li>대화 말뭉치: KLUE-WoS (CC BY-SA 4.0), songys/Chatbot_data (MIT)</li>
+        <li>대사 n-gram: OPUS OpenSubtitles 2018 한국어 (Lison &amp; Tiedemann, 2016) — 원문이 아니라 다음 단어 빈도표만 싣습니다</li>
+        <li>어절 빈도: hermitdave/FrequencyWords (CC BY-SA 4.0)</li>
+        <li>국어사전 어휘: mecab-ko-dic 2.1.1 (Apache 2.0), 동사·형용사 활용은 kiwipiepy</li>
+      </ul>
+    </section>
     <p class="unit-hint">디자인 기준: 읽기 쉬운 대비, 큰 조작 영역, 키보드 초점 표시. <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">WCAG 2.2 참고</a> · 실제 사용자 평가를 통한 추가 개선이 필요합니다.</p>
   </div>
 </dialog>
@@ -1643,6 +1635,23 @@ function lexTriMap(){
   if(!LEX_TRI_MAP){ LEX_TRI_MAP=new Map(); for(const [k,v] of LEX_TRIGRAMS) LEX_TRI_MAP.set(k,v); }
   return LEX_TRI_MAP;
 }
+let LEX_BI_MAP=null;
+/* 다음 단어 표: 사전 파일과 함께 온 큰 표(대사 230만 줄)가 있으면 그것, 없으면 페이지에 실린 작은 표. */
+function ngramEntry(table,key){
+  const raw=table.get(key); if(raw===undefined) return null;
+  if(typeof raw!=="string") return raw;
+  const [total,list]=raw.split("\t");
+  const e={t:+total, l:list.split(" ").map(x=>{ const c=x.lastIndexOf(":"), w=x.slice(0,c); return [w,+x.slice(c+1),choseongOf(w)]; })};
+  table.set(key,e);                         // 한 번 푼 문맥은 그대로 둔다(대화에서 쓰는 문맥 수는 많지 않다)
+  return e;
+}
+function lexNext(p2){
+  const e=DICT && ngramEntry(DICT.bi,p2);
+  if(e) return e.l.map(x=>x[0]);
+  if(!LEX_BI_MAP){ LEX_BI_MAP=new Map(LEX_BIGRAMS); }
+  return LEX_BI_MAP.get(p2)||null;
+}
+function lexTri(key){ const t=DICT && ngramEntry(DICT.tri,key); return t ? t.l.map(e=>e[0]) : (lexTriMap().get(key) || null); }
 
 function contextScores(){
   const p2=state.lastWord||"", p1=state.lastWord2||"";
@@ -1656,7 +1665,7 @@ function contextScores(){
   /* 말뭉치 트라이그램. 내 기록(3000점대)과 바이그램(400점대) 사이에 둔다 —
      내 기록보다는 못 믿지만 앞 한 단어만 보는 것보다는 좁다. */
   if(p1&&p2&&SCORE.lexTri>0){
-    const list=lexTriMap().get(p1+CTX_SEP+p2);
+    const list=lexTri(p1+CTX_SEP+p2);
     if(list) list.forEach((w,i)=>add(w, SCORE.lexTri*(3-i)));
   }
   /* ② 앞 한 단어. p2 가 "" 인 경우를 빼면 안 된다 — 그건 "내 차례의 첫 단어"
@@ -1666,7 +1675,7 @@ function contextScores(){
   for(const [p,list] of SEED_BIGRAMS) if(p===p2) for(const [w,n] of list) add(w, n*10);
   /* 말뭉치 바이그램은 검수 사전(n*10, 최소 10점)보다 아래에 둬야 한다.
      같은 점수대에 두면 일반 말뭉치의 흔한 단어가 검수된 추측을 밀어낸다. */
-  if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===p2) list.forEach((w,i)=>add(w,(6-Math.min(i,5))*SCORE.lexGuess));
+  if(SCORE.lex>0) (lexNext(p2)||[]).forEach((w,i)=>add(w,(6-Math.min(i,5))*SCORE.lexGuess));
   /* 상대가 쓴 단어를 여기(초성 0개 구간)에도 올려 봤지만 카테고리 때와 똑같이
      나빴다 — 250점만 줘도 54.7% -> 52.4%, 2000점이면 51.1%. 이 구간의 단어 칸은
      5개뿐이라, 무엇을 밀어 넣든 예측력이 훨씬 높은 n-gram 추측이 밀려난다.
@@ -1726,7 +1735,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"2.3.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"2.3.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -1929,7 +1938,7 @@ function showView(name){
   ["start","partner","situation","speller"].forEach(v=>{
     el("view-"+v).hidden = (v!==name);
   });
-  if(name==="speller") loadDict();
+  if(name==="speller") loadDict();   // 보통은 이미 받아 둔 상태다(아래 미리 받기)
 }
 
 /* ---------------- step 1: partner ---------------- */
@@ -2233,7 +2242,7 @@ function bigramMap(){
   const add=(w,sc)=>{ if(!(m.get(w)>=sc)) m.set(w,sc); };
   if(p2){
     for(const [p,list] of SEED_BIGRAMS) if(p===p2) for(const [w,n] of list) add(w, SCORE.bgSeed*Math.min(n,6));
-    if(SCORE.lex>0) for(const [p,list] of LEX_BIGRAMS) if(p===p2) list.forEach((w,i)=>add(w, SCORE.bgLex*(6-Math.min(i,5))));
+    if(SCORE.lex>0) (lexNext(p2)||[]).forEach((w,i)=>add(w, SCORE.bgLex*(6-Math.min(i,5))));
     for(const [w,n] of Object.entries(learn.next[p2]||{})) add(w, SCORE.bgMine+Math.min(n,SCORE.learnCap)*SCORE.bgMinePer);
     // 앞 두 단어가 맞는 것은 앞 한 단어만 맞는 것보다 위에 둔다
     if(p1) for(const [w,n] of Object.entries((learn.next2||{})[key]||{})) add(w, SCORE.bgTri+Math.min(n,SCORE.learnCap)*SCORE.bgTriPer);
@@ -2269,7 +2278,7 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1, lexTri:500,
   /* ⑤ 사전 층(구어 빈도 + 국어사전 어휘). 말뭉치 층과 같은 눈금에 둔다. */
-  dict:1, dictExact:10, dictPrefix:3, dictFreq:1};
+  dict:1, lmA:200, lmB:25, lmExact:2};
 /* ==========================================================================
    ⑤ 사전 층 — 영화·드라마 자막 어절 빈도(OpenSubtitles, CC BY-SA 4.0) +
    국어사전 어휘 전부(mecab-ko-dic, Apache 2.0; 동사·형용사는 -다/-어/-어요 꼴).
@@ -2284,14 +2293,26 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
 let DICT=null, dictLoading=null;
 function loadDict(){
   if(DICT || dictLoading) return dictLoading;
-  dictLoading=fetch("/speller/dict.txt").then(r=>r.ok?r.text():Promise.reject(new Error(r.status))).then(async text=>{
+  // __DICT_V__ 는 서버가 파일 해시로 바꿔 넣는다. 주소가 내용마다 달라서 브라우저가
+  // 1년 동안 다시 묻지 않고 디스크에서 바로 꺼낸다(두 번째 방문부터 네트워크 0).
+  dictLoading=fetch("/speller/dict.txt?v=__DICT_V__").then(r=>r.ok?r.text():Promise.reject(new Error(r.status))).then(async text=>{
     const lines=text.split(/\r?\n/), n=lines.length;   // 윈도에서 체크아웃하면 CRLF 일 수 있다
     const w=new Array(n), cho=new Array(n), f=new Uint8Array(n);
     const buckets=new Map(), first=new Map();
-    let k=0, ln=0;
+    const bi=new Map(), tri=new Map();
+    let k=0, ln=0, part="w";
     for(const line of lines){
       // 40만 줄을 한 번에 돌면 폰에서 1초 넘게 화면이 멈춘다 — 2만 줄마다 손을 놓는다
       if(++ln%20000===0) await new Promise(r=>setTimeout(r,0));
+      if(line==="#bi"||line==="#tri"){ part=line; continue; }
+      if(part!=="w"){
+        // 문맥<TAB>전체횟수<TAB>다음:횟수 … — 12만 문맥을 미리 다 풀면 메모리가 두 배가 된다.
+        // 줄 그대로 두고 그 문맥을 처음 볼 때 푼다(ngramEntry).
+        const tab=line.indexOf("\t"); if(tab<0) continue;
+        const ctx=line.slice(0,tab), rest=line.slice(tab+1);
+        if(part==="#bi") bi.set(ctx,rest); else tri.set(ctx.replace(" ",CTX_SEP),rest);
+        continue;
+      }
       const m=/^([가-힣]+)(\d?)$/.exec(line); if(!m) continue;
       const c=choseongOf(m[1]); if(!c) continue;
       w[k]=m[1]; cho[k]=c; f[k]=m[2]?+m[2]:0;
@@ -2300,23 +2321,40 @@ function loadDict(){
       let t=first.get(c[0]); if(!t) first.set(c[0],t=[]); if(t.length<60 || c.length===1) t.push(k);
       k++;
     }
-    DICT={w,cho,f,buckets,first,size:k};
+    DICT={w,cho,f,buckets,first,bi,tri,size:k};
+    bgKey=null;                       // 앞 단어 가산점 캐시를 큰 표로 다시 계산
     if(!el("view-speller").hidden) renderCandidatePanel();
     return DICT;
   }).catch(()=>{ dictLoading=null; });
   return dictLoading;
 }
+/* 사전 층의 순위 = 대화 말뭉치 n-gram 확률. 초성에 맞는 단어만 남긴 뒤
+     P(w | 앞앞, 앞) -> 0.4·P(w | 앞) -> 0.16·P(w)   (stupid backoff, Brants et al. 2007)
+   중 가장 큰 값을 점수로 바꾼다. P(w) 는 빈도 순위로 근사한다(지프 법칙, 1/(순위·14)).
+   예전처럼 앞 단어 몇 개에 고정 가산점을 주는 방식보다 보류 대화에서 절감이 크게 높았다. */
 function dictWords(ini, best, boost){
-  const D=DICT, put=(word,sc)=>{ if(pinnedOk(word) && !(best.get(word)>=sc)) best.set(word,sc); };
+  const D=DICT, p2=state.lastWord||"", p1=state.lastWord2||"";
+  const prob=new Map();
+  const up=(w,p)=>{ if(!(prob.get(w)>=p)) prob.set(w,p); };
+  const tri=p1&&p2 ? ngramEntry(D.tri,p1+CTX_SEP+p2) : null;
+  if(tri) for(const [w,n,c] of tri.l) if(c.startsWith(ini)) up(w, n/tri.t);
+  const bi=ngramEntry(D.bi,p2);
+  if(bi) for(const [w,n,c] of bi.l) if(c.startsWith(ini)) up(w, 0.4*n/bi.t);
+  // 단어 자체의 빈도. 빈도 순이라 앞쪽 40개씩이면 충분하다 — 길이까지 맞는 것과 접두어인 것을
+  // 따로 세야 드문 사전 단어도 초성을 끝까지 치면 반드시 후보 목록에 든다.
   const idx = ini.length>=2 ? (D.buckets.get(ini.slice(0,2))||[]) : (D.first.get(ini)||[]);
-  // 빈도 순이라 앞쪽 40개씩이면 충분하다. 길이까지 맞는 단어와 접두어 단어를 따로 세야
-  // 드문 사전 단어도 초성을 끝까지 치면 반드시 후보에 오른다.
   let nExact=0, nPrefix=0;
   for(const i of idx){
     const c=D.cho[i]; if(!c.startsWith(ini) || !pinnedOk(D.w[i])) continue;   // 직접 쓴 글자로 먼저 거른 뒤 센다
-    const extra=c.length-ini.length;
-    if(extra===0 ? nExact++>=40 : nPrefix++>=40) continue;
-    put(D.w[i], ((extra===0?SCORE.dictExact:SCORE.dictPrefix/(1+extra))+D.f[i]*SCORE.dictFreq)*SCORE.dict+boost(D.w[i]));
+    if(c.length===ini.length ? nExact++>=40 : nPrefix++>=40) continue;
+    up(D.w[i], 0.16/((i+1)*14));
+  }
+  for(const [w,p0] of prob){
+    if(!pinnedOk(w)) continue;
+    // 초성 개수까지 딱 맞는 단어를 조금 더 믿는다 — 끝까지 친 초성은 대개 그 단어에서 끝난다
+    const p = choseongOf(w).length===ini.length ? p0*SCORE.lmExact : p0;
+    const sc=Math.max(0, SCORE.lmA + SCORE.lmB*Math.log10(p))*SCORE.dict + boost(w);
+    if(!(best.get(w)>=sc)) best.set(w,sc);
   }
 }
 
@@ -2355,7 +2393,8 @@ function localWords(limit, ini){
   }
   // 일반 한국어 대화 말뭉치에서 온 넓은 층. 검수된 사전·내 기록보다 항상 낮게
   // 둬서 자리를 빼앗지 않고, 그들이 못 채운 칸만 메운다.
-  if(SCORE.lex>0) for(const [cho,word,f] of lexMatches(ini)){
+  // 사전 층이 오면 이 작은 층은 물러난다 — 같은 단어를 더 정확한 확률로 다시 매긴다
+  if(SCORE.lex>0 && !DICT) for(const [cho,word,f] of lexMatches(ini)){
     if(!pinnedOk(word)) continue;
     const extra=cho.length-ini.length;
     const sc=((extra===0?60:18/(1+extra))*SCORE.lex+f*4*SCORE.lex)+boost(word);
@@ -3052,6 +3091,7 @@ document.addEventListener("keydown",(e)=>{
 });
 
 el("btnGuide").onclick=()=>{el("guideDialog").showModal();};
+el("btnAbout").onclick=()=>{el("guideDialog").showModal(); el("guide-about").scrollIntoView({block:"start"});};
 el("btnGuideClose").onclick=()=>el("guideDialog").close();
 el("guideDialog").addEventListener("close",()=>el("btnGuide").focus());
 /* 테마 토글. 색이 전부 토큰이라 data-theme 한 글자만 바꾸면 화면 전체가 따라온다. */
@@ -3117,6 +3157,9 @@ renderSituationGrid();
 restoreDraft();
 health();
 setInterval(()=>{ if(!document.hidden) health(); },60000);
+// 사전은 첫 화면이 그려진 뒤 바로 받기 시작한다. 상대·상황을 고르는 몇 초 사이에
+// 준비가 끝나므로 대화 화면에서 기다릴 일이 없다.
+(window.requestIdleCallback||(f=>setTimeout(f,300)))(()=>loadDict());
 
 </script>
 </body>

@@ -28,7 +28,7 @@ const bank=fs.readFileSync('/home/claude/repo2/research/phrase_memory/approved_b
    let list=sents;
    if(mode==='aac'){const pool=[...sents].sort(()=>rnd()-0.5);const w=pool.map((_,i)=>1/(i+1)),t=w.reduce((a,c)=>a+c,0);
      list=Array.from({length:300},()=>{let r=rnd()*t;for(let i=0;i<pool.length;i++){r-=w[i];if(r<=0)return pool[i];}return pool[0];});}
-   let keys=0,base=0,words=0,z=0,cov=0;
+   let keys=0,base=0,words=0,z=0,cov=0,eff=0,effBase=0;
    for(const item of list){
      const [text,cat]=Array.isArray(item)?item:[item,null];
      state.situation=cat?(inv[cat]||'general'):'general';state.lastWord='';state.lastWord2='';
@@ -40,15 +40,17 @@ const bank=fs.readFileSync('/home/claude/repo2/research/phrase_memory/approved_b
          if(slots.some(s=>s.text===w)){hit=true;used=k;break;}
        }
        keys+=used+1;if(hit&&used===0)z++;if(hit)cov++;
+       // 실효: 끝내 안 뜨면 글자마다 모음까지 직접 쳐야 한다(초성+모음, 확정 1)
+       effBase+=2*ini.length+1; eff+= hit ? used+1 : 2*ini.length+1;
        state.initials='';state.spelled={};
        if(mode==='aac') learnFromCommit(w); else {state.lastWord2=state.lastWord;state.lastWord=w;}
      }
    }
-   return {ksr:1-keys/base,zero:z/words,cov:cov/words,words};
+   return {ksr:1-keys/base,zero:z/words,cov:cov/words,words,eff:1-eff/effBase};
  },{sents,mode,seed});
  const c=await run(chat,'chat',0);
  let a={ksr:0,zero:0};for(const s of [42,1337,20260921]){const r=await run(bank,'aac',s);a.ksr+=r.ksr/3;a.zero+=r.zero/3;}
  const pct=x=>(x*100).toFixed(1)+'%';
- console.log(`${label.padEnd(18)} chat: 절감 ${pct(c.ksr)} · 0초성 ${pct(c.zero)} · 후보에 뜸 ${pct(c.cov)} (${c.words}어절) | aac: 절감 ${pct(a.ksr)} · 0초성 ${pct(a.zero)} | ${(html.length/1024|0)}KB`);
+ console.log(`${label.padEnd(18)} chat: 절감 ${pct(c.ksr)} · 0초성 ${pct(c.zero)} · 후보에 뜸 ${pct(c.cov)} · 실효 ${pct(c.eff)} (${c.words}어절) | aac: 절감 ${pct(a.ksr)} · 0초성 ${pct(a.zero)} | ${(html.length/1024|0)}KB`);
  await b.close();
 })();

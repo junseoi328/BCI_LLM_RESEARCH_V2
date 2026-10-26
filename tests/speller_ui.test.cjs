@@ -779,11 +779,16 @@ test('Dictionary layer loads lazily and reaches rare dictionary words', {timeout
       showView('speller'); await loadDict();
       const words=ini=>{state.initials=ini;state.spelled={};renderCandidatePanel();return slots.filter(s=>s.kind==='word').map(s=>s.text);};
       const common=words('ㅅㄹㅎ');
+      // 앞 단어가 있으면 대사 n-gram 확률로 순위가 바뀐다
+      state.lastWord='맛집은'; state.lastWord2='';
+      const afterContext=words('ㅇㄸ');
+      state.lastWord=''; 
       state.initials=choseongOf(rare); state.spelled={0:rare[0]}; renderCandidatePanel();
-      return {size:DICT.size, common, rareHit:slots.some(s=>s.text===rare), rare, before};
+      return {size:DICT.size, common, afterContext, rareHit:slots.some(s=>s.text===rare), rare, before};
     },rare);
     assert.ok(out.size>300000,'사전 '+out.size);
     assert.ok(out.common.includes('사랑해'),out.common.join(','));
+    assert.ok(out.afterContext.includes('어떠신가요'),'맛집은 + ㅇㄸ -> '+out.afterContext.join(','));
     assert.ok(out.rareHit,'드문 사전 단어 '+out.rare+' 도 후보에 오른다');
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
