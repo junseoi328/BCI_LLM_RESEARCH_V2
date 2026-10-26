@@ -29,3 +29,10 @@ def test_speller_page_revalidates_with_etag():
 def test_research_page_is_served():
     r = client.get("/speller/research")
     assert r.status_code == 200 and "etag" in r.headers
+
+
+def test_home_screen_app_files():
+    m = client.get("/speller/manifest.webmanifest")
+    assert m.status_code == 200 and m.json()["start_url"] == "/speller"
+    icon = client.get(m.json()["icons"][0]["src"])
+    assert icon.status_code == 200 and icon.content[:8] == b"\x89PNG\r\n\x1a\n"

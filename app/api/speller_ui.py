@@ -3,7 +3,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 
 router = APIRouter(tags=["speller-ui"])
 HTML_PATH = Path(__file__).resolve().parents[1] / "static" / "bci_speller.html"
@@ -38,3 +38,28 @@ def bci_speller(request: Request):
 @router.get("/speller/research", response_class=HTMLResponse)
 def research_speller(request: Request):
     return _page(request, HTML_PATH.with_name("research_speller.html"))
+
+
+# iPhone '홈 화면에 추가' 로 열면 주소창 없이 앱처럼 뜬다.
+MANIFEST = {
+    "name": "이심전심 BCI Speller",
+    "short_name": "이심전심",
+    "start_url": "/speller",
+    "scope": "/speller",
+    "display": "standalone",
+    "background_color": "#07080d",
+    "theme_color": "#07080d",
+    "lang": "ko",
+    "icons": [{"src": "/speller/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}],
+}
+
+
+@router.get("/speller/manifest.webmanifest", include_in_schema=False)
+def manifest():
+    return JSONResponse(MANIFEST, media_type="application/manifest+json")
+
+
+@router.get("/speller/icon.png", include_in_schema=False)
+def icon():
+    return FileResponse(HTML_PATH.with_name("icon.png"), media_type="image/png",
+                        headers={"Cache-Control": "public, max-age=604800"})

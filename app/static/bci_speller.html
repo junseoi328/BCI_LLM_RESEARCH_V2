@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>이심전심 BCI Speller</title>
 <meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#eef0f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#07080d" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="이심전심">
+<link rel="manifest" href="/speller/manifest.webmanifest">
+<link rel="icon" href="/speller/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/speller/icon.png">
 <meta name="description" content="한국어 초성 입력, 글자 수정, 직접 입력을 함께 지원하는 BCI·AAC 의사소통 연구용 스펠러">
 <style>
 /* ==========================================================================
@@ -831,6 +840,193 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 .cand.guess{border-style:dashed;border-color:var(--green-200)}
 .cand.guess .kb-badge{background:var(--green-500)}
 .cand.guess:hover{border-color:var(--green-500);background:var(--green-50)}
+/* ==========================================================================
+   v2.2 · iOS 결 — 배경화면 위에 떠 있는 유리
+   --------------------------------------------------------------------------
+   iPhone 홈 화면처럼 색이 번지는 배경화면 한 장을 깔고, 카드는 그 위의 반투명
+   재질(material)로 둔다. 색은 iOS 시스템 색(blue·green·orange·red·purple)으로
+   맞추고, 위 토큰 이름은 그대로 둔 채 값만 바꾼다 — 규칙은 건드리지 않는다.
+   예외 하나: 키보드 카드는 블러를 쓰지 않는다. SSVEP 자극이 깜빡이는 자리라
+   뒤 배경이 비치거나 합성이 바뀌면 자극 대비가 흔들린다.
+   ========================================================================== */
+:root{
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Pretendard","Noto Sans KR",system-ui,sans-serif;
+  --blue-50:rgba(0,122,255,.10);  --blue-100:rgba(0,122,255,.18); --blue-200:rgba(0,122,255,.30);
+  --blue-500:#007aff; --blue-600:#0062cc;
+  --blue-700:#0050a8;
+  --green-50:rgba(52,199,89,.12); --green-100:rgba(52,199,89,.22); --green-200:rgba(52,199,89,.38);
+  --green-500:#34c759; --green-600:#1f7a37;
+  --amber-50:rgba(255,149,0,.13); --amber-100:rgba(255,149,0,.28); --amber-500:#ff9500; --amber-600:#b35c00;
+  --red-50:rgba(255,59,48,.10); --red-200:rgba(255,59,48,.28); --red-600:#e0281e;
+  --pick-50:rgba(175,82,222,.09); --pick-100:rgba(175,82,222,.17); --pick-200:rgba(175,82,222,.30);
+  --pick-500:#af52de; --pick-600:#8a2fb8;
+  --ink-900:#1c1c1e; --ink-700:#3a3a3c; --ink-500:#5b5b62; --ink-300:#8e8e93; --ink-200:#c7c7cc;
+  --line:rgba(60,60,67,.14); --line-strong:rgba(60,60,67,.24);
+  --surface:rgba(255,255,255,.64);
+  --surface-2:rgba(255,255,255,.50);
+  --surface-3:rgba(120,120,128,.14);
+  --solid:#f7f7fa;                      /* 블러 없이 쓰는 불투명 면 (키보드) */
+  --bg:#eef0f6;
+  --on-solid:#ffffff;
+  --topbar-bg:rgba(255,255,255,.58);
+  --glass-edge:rgba(255,255,255,.75);   /* 유리 위쪽 가장자리의 빛 */
+  --r-sm:12px; --r-md:16px; --r-lg:26px;
+  --shadow-sm:0 1px 1px rgba(0,0,0,.03),0 8px 28px -6px rgba(31,38,64,.14);
+  --shadow-md:0 24px 60px -18px rgba(31,38,64,.28);
+  --shadow-primary:0 10px 24px -8px rgba(0,122,255,.55);
+  --key-shadow:0 1px 0 rgba(0,0,0,.22);
+  --material:blur(28px) saturate(185%);
+  /* 배경화면 — 이미지 파일 없이 그라디언트 네 겹. 고정 레이어라 스크롤해도 다시 그리지 않는다. */
+  --wallpaper:
+    radial-gradient(60% 55% at 12% 8%,  #8ec5ff 0%, transparent 70%),
+    radial-gradient(55% 50% at 92% 14%, #f5b3d8 0%, transparent 70%),
+    radial-gradient(70% 60% at 78% 92%, #b9a6ff 0%, transparent 72%),
+    radial-gradient(60% 55% at 6% 96%,  #9fe6d4 0%, transparent 70%),
+    linear-gradient(160deg,#e9eefb 0%,#f4eef8 55%,#eef3f7 100%);
+}
+:root[data-theme="dark"]{
+  --blue-50:rgba(10,132,255,.16);  --blue-100:rgba(10,132,255,.26); --blue-200:rgba(10,132,255,.40);
+  --blue-500:#0a84ff; --blue-600:#409cff; --blue-700:#8ec3ff;
+  --green-50:rgba(48,209,88,.14); --green-100:rgba(48,209,88,.24); --green-200:rgba(48,209,88,.40);
+  --green-500:#30d158; --green-600:#63e283;
+  --amber-50:rgba(255,159,10,.15); --amber-100:rgba(255,159,10,.30); --amber-500:#ff9f0a; --amber-600:#ffbf5c;
+  --red-50:rgba(255,69,58,.15); --red-200:rgba(255,69,58,.32); --red-600:#ff6961;
+  --pick-50:rgba(191,90,242,.13); --pick-100:rgba(191,90,242,.22); --pick-200:rgba(191,90,242,.38);
+  --pick-500:#bf5af2; --pick-600:#d99bff;
+  --ink-900:#f5f5f7; --ink-700:#d1d1d6; --ink-500:#a1a1aa; --ink-300:#7c7c84; --ink-200:#48484a;
+  --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.18);
+  --surface:rgba(28,28,32,.58);
+  --surface-2:rgba(18,18,22,.42);
+  --surface-3:rgba(118,118,128,.24);
+  --solid:#1c1c20;
+  --bg:#07080d;
+  --on-solid:#ffffff;
+  --topbar-bg:rgba(22,22,26,.55);
+  --glass-edge:rgba(255,255,255,.10);
+  --shadow-sm:0 1px 1px rgba(0,0,0,.3),0 10px 30px -8px rgba(0,0,0,.55);
+  --shadow-md:0 28px 70px -18px rgba(0,0,0,.75);
+  --shadow-primary:0 10px 26px -8px rgba(10,132,255,.6);
+  --key-shadow:0 1px 0 rgba(0,0,0,.55);
+  --wallpaper:
+    radial-gradient(55% 50% at 14% 10%, rgba(10,92,255,.55) 0%, transparent 70%),
+    radial-gradient(50% 48% at 90% 12%, rgba(191,64,191,.42) 0%, transparent 70%),
+    radial-gradient(65% 55% at 80% 95%, rgba(94,72,255,.45) 0%, transparent 72%),
+    radial-gradient(55% 50% at 6% 94%,  rgba(0,160,150,.32) 0%, transparent 70%),
+    linear-gradient(170deg,#06070c 0%,#0b0a16 60%,#05070b 100%);
+}
+/* 다크에서도 iOS 의 채운 버튼 글자는 흰색이다 (예전 규칙은 배경색 글자를 썼다) */
+:root[data-theme="dark"] .brand .mark,:root[data-theme="dark"] .ring-btn,:root[data-theme="dark"] .big-cta,
+:root[data-theme="dark"] .btn.primary,:root[data-theme="dark"] .btn.accent,:root[data-theme="dark"] .kb .key.fn.commit,
+:root[data-theme="dark"] .cand .kb-badge,:root[data-theme="dark"] .chat-turn .who,:root[data-theme="dark"] .badge .num,
+:root[data-theme="dark"] .step-chip,:root[data-theme="dark"] .start-steps b,:root[data-theme="dark"] .loop-step .n{color:var(--on-solid)}
+
+body{background:var(--bg);-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--wallpaper);pointer-events:none}
+
+/* --- 재질: 카드·상단바·펼침 패널 --- */
+.card,.topline,.settings-row>details,.pick-card,.guide{
+  background:var(--surface);
+  -webkit-backdrop-filter:var(--material);backdrop-filter:var(--material);
+  border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 var(--glass-edge),var(--shadow-sm);
+}
+.card{border-radius:var(--r-lg)}
+.settings-row>details[open]{background:var(--surface)}
+.topbar{
+  background:var(--topbar-bg);-webkit-backdrop-filter:var(--material);backdrop-filter:var(--material);
+  border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);
+  height:calc(var(--topbar-h) + env(safe-area-inset-top));
+}
+.lab-link{background:transparent;border-bottom:1px solid var(--line);padding-top:max(9px,env(safe-area-inset-top))}
+.shell{padding-left:max(var(--sp-4),env(safe-area-inset-left));padding-right:max(var(--sp-4),env(safe-area-inset-right))}
+.footer-note{padding-bottom:max(var(--sp-4),env(safe-area-inset-bottom))}
+
+/* 키보드 카드: 유리 대신 불투명 면. 자극 영역은 뒤가 비치면 안 된다. */
+.card.kb-card{background:var(--solid);-webkit-backdrop-filter:none;backdrop-filter:none}
+
+/* --- 버튼: iOS 알약 --- */
+.brand .mark{border-radius:10px;background:linear-gradient(160deg,#3d9bff,var(--blue-500));box-shadow:var(--shadow-primary)}
+.tool-btn{background:var(--surface-3);border:none;color:var(--ink-900)}
+.tool-btn:hover{background:var(--blue-50);color:var(--blue-600)}
+.tool-btn[aria-pressed="true"]{background:var(--blue-500);color:var(--on-solid)}
+.btn{border-radius:var(--r-pill)}
+.health{background:var(--surface-3)}
+
+/* --- 시작 화면: 배경화면이 그대로 보이게, 위젯 같은 수치 --- */
+.hero-field,.hero-grain{display:none}
+.hero h1{font-weight:800;letter-spacing:-.04em}
+.hero h1 em{color:var(--blue-500)}
+:root[data-theme="dark"] .hero h1 em{color:var(--ink-900);opacity:.72}
+.hero-eyebrow{font-family:var(--font);letter-spacing:.06em;font-weight:700;background:var(--surface);
+  -webkit-backdrop-filter:var(--material);backdrop-filter:var(--material);border-color:var(--glass-edge)}
+.ring-btn{background:var(--blue-500);border-color:transparent;color:var(--on-solid);box-shadow:var(--shadow-primary)}
+.ring-btn:hover{filter:brightness(1.06)}
+.hero-stats{background:transparent;border:none;gap:10px;overflow:visible;max-width:720px}
+.hero-stats>div{
+  background:var(--surface);border-radius:22px;border:1px solid var(--line);padding:var(--sp-4) var(--sp-2);
+  -webkit-backdrop-filter:var(--material);backdrop-filter:var(--material);
+  box-shadow:inset 0 1px 0 var(--glass-edge),var(--shadow-sm);
+}
+.hero-stats dt{font-family:var(--font);letter-spacing:.02em;font-size:11px;color:var(--ink-500);text-transform:none}
+.hero-stats dd i{color:var(--blue-500)}
+
+/* --- 키: iOS 키보드처럼 밑면 그림자 한 줄, 색은 역할별 옅은 틴트 --- */
+.kb .key{border-radius:12px;border-color:transparent;box-shadow:var(--key-shadow)}
+.kb .key.cho{background:rgba(0,122,255,.11)}
+.kb .key.jung{background:rgba(52,199,89,.13)}
+:root[data-theme="dark"] .kb .key.cho{background:#13243f}
+:root[data-theme="dark"] .kb .key.jung{background:#12301f}
+.kb .key.fn,.kb .key.shift,.kb .key.punct{background:var(--surface-3)}
+:root[data-theme="dark"] .kb .key.fn,:root[data-theme="dark"] .kb .key.shift,:root[data-theme="dark"] .kb .key.punct{background:#2c2c31}
+
+/* --- 후보·버퍼 --- */
+.cand{border-radius:var(--r-md)}
+.buffer{border-radius:var(--r-md)}
+.cand .kb-badge{border-radius:7px}
+
+/* 강조 문구는 iOS 배경화면 색을 그대로 끌어온 그라디언트 글자 */
+.hero h1 em,:root[data-theme="dark"] .hero h1 em{
+  background:linear-gradient(95deg,#2f8cff 0%,#7a5cff 55%,#d55ce0 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;opacity:1;
+}
+:root[data-theme="dark"] .hero h1 em{background-image:linear-gradient(95deg,#5eaaff 0%,#a48bff 55%,#f08be8 100%)}
+:root[data-theme="dark"] .kb .key.fn.commit{background:var(--blue-500);color:var(--on-solid)}
+
+/* iPhone: 두벌식 10열을 가로 스크롤 없이 한 화면에. iOS 키보드도 같은 너비(약 32pt)다.
+   기능키는 기호만 남기고, 후보키 밑의 낱말은 숨긴다 — 같은 번호의 큰 후보 카드가 바로 위에 있다. */
+@media(max-width:640px){
+  .topbar{height:auto}
+  .shell{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+  .card.kb-card{padding:8px;overflow-x:visible}
+  .kb{min-width:0;gap:4px}
+  .kb .key{padding:0;font-size:1rem;min-height:44px;border-radius:9px}
+  .kb .key .lb,.kb .key.cand .cw{display:none}
+  .kb .key .ic{font-size:1.05rem}
+}
+
+/* 키 안은 flex 라 낱말 앞 공백이 접힌다 — 간격은 여백으로 */
+.kb .key .lb{margin-left:.28em}
+/* 설명서는 오래 읽는 글이라 배경이 덜 비치게 */
+.guide{background:color-mix(in srgb,var(--solid) 88%,transparent)}
+/* 자극 중에는 배경화면도 물러난다. 밝은 색 덩어리가 주변 시야에 남으면 자극과 경쟁한다. */
+body::before{transition:opacity .1s ease}
+body:has(.kb.stim)::before{opacity:.15}
+
+/* SSVEP 점멸의 밝은 반쪽도 불투명 면으로 — 반투명이면 뒤 색에 따라 자극 대비가 달라진다 */
+@keyframes ssvep{0%{background:var(--amber-600);color:var(--on-solid)}50%{background:var(--solid);color:var(--ink-900)}}
+
+/* 투명도를 줄이라고 설정한 사람에게는 불투명 면으로 */
+@media (prefers-reduced-transparency:reduce){
+  :root{--surface:#ffffff;--surface-2:#f7f7fa;--topbar-bg:#f7f7fa}
+  :root[data-theme="dark"]{--surface:#1c1c20;--surface-2:#141418;--topbar-bg:#141418}
+  .card,.topline,.settings-row>details,.pick-card,.topbar,.hero-stats>div,.hero-eyebrow,.guide{-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+/* 블러를 못 하는 브라우저도 글자가 배경에 묻히지 않게 */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  :root{--surface:rgba(255,255,255,.92)}
+  :root[data-theme="dark"]{--surface:rgba(28,28,32,.94)}
+}
+
 </style>
 </head>
 <body>
@@ -860,7 +1056,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
       <div class="hero-field" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
 
-      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v2.0</i></p>
+      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v2.2</i></p>
 
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
 
@@ -869,9 +1065,9 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
       <button class="ring-btn" id="btnStart">대화 시작하기 <span aria-hidden="true">→</span></button>
 
       <dl class="hero-stats">
-        <div><dt>후보 적중</dt><dd>93.6<i>%</i></dd></div>
+        <div><dt>초성 없이 맞힘</dt><dd>69.4<i>%</i></dd></div>
         <div><dt>평균 자극</dt><dd>903<i>ms</i></dd></div>
-        <div><dt>타수 절감</dt><dd>63.6<i>%</i></dd></div>
+        <div><dt>타수 절감</dt><dd>55.3<i>%</i></dd></div>
         <div><dt>입력 키</dt><dd>40<i>키</i></dd></div>
       </dl>
     </div>
@@ -1056,7 +1252,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
         <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
         <label for="latencyStrategy">문장 추천 방식</label>
-        <select id="latencyStrategy"><option value="fast">빠르게 · 생성 후 로컬 정렬</option><option value="balanced" selected>정밀하게 · 기존 모델 정렬</option></select>
+        <select id="latencyStrategy"><option value="fast" selected>빠르게 · 생성 후 로컬 정렬</option><option value="balanced">정밀하게 · 기존 모델 정렬</option></select>
         <p class="unit-hint">빠른 방식은 추가 모델 호출을 줄입니다. 추천 품질은 달라질 수 있어요. 같은 입력·문맥의 정상 후보는 60초 동안 재사용합니다.</p>
         <p class="unit-hint">문장과 대화, 자주 쓰는 표현은 이 브라우저 탭에 저장됩니다. 후보 조회 시 입력과 최근 대화가 서버·언어 모델로 전달됩니다.</p>
         <button class="btn danger" id="btnForget">이 탭의 기록 삭제</button>
@@ -1067,7 +1263,7 @@ body:has(#view-speller:not([hidden])) .lab-link{display:none}
 </div>
 
 <div class="footer-note">
-  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(4행×10열 두벌식 자판 배치 · 자음14+모음12+후보7+기능3+⇧+부호3, ⇧로 쌍자음·겹모음) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0 · 단어·다음단어·앞두단어) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v2.1.2</p>
+  <p>한국어 BCI·AAC 연구용 스펠러 · 40키(4행×10열 두벌식 자판 배치 · 자음14+모음12+후보7+기능3+⇧+부호3, ⇧로 쌍자음·겹모음) · 후보는 내 기록 · 검수된 표현 281개 · 일반 대화 말뭉치(KLUE WoS, CC BY-SA 4.0 · 단어·다음단어·앞두단어) 순으로 찾고 언어 모델이 나머지를 채웁니다 · 웹에서는 클릭·키보드 입력을 사용합니다. 실제 EEG 측정은 활성화되어 있지 않으며, 실험 모드의 SSVEP 자극·판독·동적 정지는 시뮬레이션입니다.<br>언어 모델의 추천은 사용자의 의도를 확정하지 않습니다. 글자 수정, 직접 입력, 되돌리기로 원하는 말을 선택하세요. · v2.2.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1823,7 +2019,10 @@ function renderKeyboard(){
     }
     const label = (shiftOn && k.sl) ? k.sl : (k.l || v);
     const pressed = k.t==="shift" ? ` aria-pressed="${shiftOn}"` : "";
-    return `<button type="button" class="${cls}" data-t="${k.t}" data-v="${esc2(v)}"${pressed}>${esc2(label)}</button>`;
+    // "✓ 확정" -> 기호와 낱말을 나눠 둔다. 폰 너비에서는 기호만 보인다(aria-label 은 전체).
+    const sp=label.indexOf(" ");
+    const body = sp>0 ? `<span class="ic">${esc2(label.slice(0,sp))}</span><span class="lb">${esc2(label.slice(sp))}</span>` : esc2(label);
+    return `<button type="button" class="${cls}" data-t="${k.t}" data-v="${esc2(v)}" aria-label="${esc2(label)}"${pressed}>${body}</button>`;
   }).join("");
   el("keyboard").innerHTML = html;
   el("keyboard").classList.toggle("shift-on", shiftOn);
@@ -2354,7 +2553,10 @@ function predictBody(ini, extra){
     input_mode:"initials", bci_input:ini,
     top_k: Math.max(1, Math.min(Number(el("candidateCount").value)||3, sentN)),
     experiment_mode:"hybrid",
-    latency_strategy:el("latencyStrategy").value,
+    // 기본은 빠르게(라이브 측정 5개 입력: 중앙값 7.7s vs 19.7s, 1위 적중 같음).
+    // 설정에서 정밀하게를 고를 수 있다. 이미 한 번 실패한 복구 요청은 언제나 정밀 경로.
+    latency_strategy: (extra && (extra.spelled_syllables || extra.fill_mask_reference_text!==undefined))
+      ? "balanced" : el("latencyStrategy").value,
     partner: state.partner || "other", situation: state.situation || "general",
     current_sentence: state.committed.slice(-300),
     // 화자를 붙여 누적 대화를 그대로 넘긴다 (context = 현재 진행중인 대화 전체)
@@ -2828,7 +3030,7 @@ function restoreDraft(){
     if(draft.expAcc) el("expAcc").value=draft.expAcc;
     if(draft.expSubject) el("expSubject").value=draft.expSubject;
     el("candidateCount").value=draft.candidateCount==="5" ? "5" : "3";
-    el("latencyStrategy").value=draft.latencyStrategy==="fast" ? "fast" : "balanced";
+    el("latencyStrategy").value=draft.latencyStrategy==="balanced" ? "balanced" : "fast";
     el("partnerBadge").textContent=partnerLabel(state.partner);
     el("situationBadge").textContent=situationLabel(state.situation);
     renderKeyboard();renderBuffer();renderChat();renderHabitual();renderCandidatesEmpty();showView("speller");

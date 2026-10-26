@@ -676,3 +676,43 @@ test('A failed sentence request says so and can be retried', {timeout:60000}, as
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+// 문장 후보는 빠른 경로(생성 1회, 순위 모델 생략)로 요청한다. 라이브 실측에서 중앙값
+// 19.7s -> 7.7s. 한 번 실패한 뒤의 복구 요청만 넓게 뽑는 정밀 경로로 보낸다.
+// 그리고 iPhone 너비(390px)에서 40키가 가로 스크롤 없이 한 화면에 들어와야 한다.
+test('Sentence requests use the fast path and the keyboard fits an iPhone', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:390,height:844}});
+    const html=HTML();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',route=>route.fulfill(new URL(route.request().url()).pathname==='/speller'
+      ?{contentType:'text/html',body:html}:{status:503,json:{detail:'offline'}}));
+    await page.goto('http://bci.test/speller');
+    const out=await page.evaluate(()=>{
+      state.partner='family';state.situation='general';showView('speller');renderKeyboard();
+      state.initials='ㅁㅈ';state.spelled={};renderBuffer();
+      const kb=el('keyboard'), card=kb.closest('.kb-card');
+      const keys=[...kb.querySelectorAll('.key')];
+      const commit=kb.querySelector('.key.fn.commit');
+      return {
+        base:predictBody('ㅁㅈ').latency_strategy,
+        keyword:predictBody('ㅁㅈ',{spelled_syllables:{0:'물'}}).latency_strategy,
+        fillmask:predictBody('ㅁㅈ',{fill_mask_reference_text:'물 줘',fill_mask_target_index:1}).latency_strategy,
+        overflow:card.scrollWidth-card.clientWidth,
+        offscreen:keys.filter(k=>k.getBoundingClientRect().right>window.innerWidth+0.5).length,
+        minW:Math.min(...keys.map(k=>k.getBoundingClientRect().width)),
+        commitLabel:commit.getAttribute('aria-label'), commitText:commit.textContent,
+      };
+    });
+    assert.equal(out.base,'fast');
+    assert.equal(out.keyword,'balanced');
+    assert.equal(out.fillmask,'balanced');
+    assert.equal(out.offscreen,0,'40키가 모두 화면 안에 있다');
+    assert.ok(out.overflow<=0,'키보드 카드가 가로로 스크롤되지 않는다');
+    assert.ok(out.minW>=28,'키 너비 '+out.minW);
+    assert.equal(out.commitLabel,'✓ 확정','기호만 보여도 스크린리더는 전체 이름을 읽는다');
+    assert.equal(out.commitText,'✓ 확정');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
