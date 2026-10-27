@@ -32,6 +32,10 @@ services:
       - key: OPENAI_TIMEOUT_SEC
         value: "45"
 
+      # 응답 시간의 대부분이 추론 토큰이다. 모델이 none 을 모르면 서버가 minimal -> low 로 물러난다.
+      - key: OPENAI_REASONING_EFFORT
+        value: "none"
+
       - key: OPENAI_MAX_RETRIES
         value: "2"
 

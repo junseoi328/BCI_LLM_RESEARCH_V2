@@ -2,16 +2,16 @@
    usage: node bench_general.cjs <html> [label]
    - chat: 학습에 쓰지 않은 일상 대화 300문장. 문장 안에서 앞 단어를 이어 붙인다.
    - aac : 검수 표현 사전을 Zipf 로 뽑은 300문장 × 3시드, 학습 누적(실사용 흉내). */
-const {chromium}=require('/opt/node-tools/node_modules/playwright');const fs=require('fs');
+const {chromium}=require('playwright');const fs=require('fs');
 const [,,file,label='']=process.argv;
-const chat=fs.readFileSync(process.env.CHAT_TEST||'/home/claude/data/chat_test.txt','utf8').split('\n').filter(Boolean);
-const bank=fs.readFileSync('/home/claude/repo2/research/phrase_memory/approved_bci_phrase_bank_v2.jsonl','utf8')
+const chat=fs.readFileSync(process.env.CHAT_TEST||'data/chat_test.txt','utf8').split('\n').filter(Boolean);
+const bank=fs.readFileSync(__dirname+'/../research/phrase_memory/approved_bci_phrase_bank_v2.jsonl','utf8')
   .split('\n').filter(Boolean).map(JSON.parse).map(r=>[r.text,r.category]);
 (async()=>{
  const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1243/chrome-linux64/chrome'});
  const page=await b.newPage();
  const html=fs.readFileSync(file,'utf8');
- const dict=fs.existsSync('/home/claude/repo2/app/static/dict.txt')?fs.readFileSync('/home/claude/repo2/app/static/dict.txt','utf8'):'{}';
+ const dict=fs.readFileSync(process.env.DICT_FILE||__dirname+'/../app/static/dict.txt','utf8');
  await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
    if(p==='/speller')return r.fulfill({contentType:'text/html',body:html});
    if(p==='/speller/dict.txt')return r.fulfill({contentType:'text/plain',body:dict});
@@ -19,7 +19,7 @@ const bank=fs.readFileSync('/home/claude/repo2/research/phrase_memory/approved_b
  await page.goto('http://bci.test/speller');
  await page.evaluate(()=>{showView('speller');return typeof loadDict==='function'?loadDict():null;}).catch(()=>{});
  console.error('dict entries', await page.evaluate(()=>typeof DICT!=='undefined'&&DICT?DICT.size:0));
- const run=(sents,mode,seed)=>page.evaluate(({sents,mode,seed})=>{
+ const run=(sents,mode,seed)=>page.evaluate(({sents,mode,seed})=>{ window.__NO_SIT=!!window.__NO_SIT;
    try{localStorage.clear()}catch(e){}
    learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
    showView('speller');el('autoPredict').checked=false;state.partner='friend';state.situation='general';
@@ -30,8 +30,10 @@ const bank=fs.readFileSync('/home/claude/repo2/research/phrase_memory/approved_b
      list=Array.from({length:300},()=>{let r=rnd()*t;for(let i=0;i<pool.length;i++){r-=w[i];if(r<=0)return pool[i];}return pool[0];});}
    let keys=0,base=0,words=0,z=0,cov=0,eff=0,effBase=0;
    for(const item of list){
-     const [text,cat]=Array.isArray(item)?item:[item,null];
-     state.situation=cat?(inv[cat]||'general'):'general';state.lastWord='';state.lastWord2='';
+     let [text,cat]=Array.isArray(item)?item:[item,null];
+     let sit=cat?(inv[cat]||'general'):'general';
+     if(!cat && text.includes('\t')){ const [s,t]=text.split('\t'); text=t; sit=(window.__NO_SIT?'general':s); }
+     state.situation=sit;state.lastWord='';state.lastWord2='';
      for(const raw of String(text).trim().split(/\s+/)){
        const w=raw.replace(/[.,!?~]+$/,''); const ini=choseongOf(w); if(!ini||!w)continue;
        words++;base+=ini.length+1;let used=ini.length,hit=false;

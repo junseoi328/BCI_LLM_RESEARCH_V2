@@ -19,6 +19,9 @@ import collections, csv, glob, math, os, re, sys
 
 H = re.compile(r"^[가-힣]{1,10}$")
 sub_path, dic_dir, *corpora = sys.argv[1:]
+# "--min2 파일" 로 넘긴 말뭉치는 그 안에서 두 번 이상 나온 어절만 센다(사전 용례의 인명 등)
+min2 = {corpora[i + 1] for i, a in enumerate(corpora) if a == "--min2"}
+corpora = [c for c in corpora if c != "--min2"]
 
 count = collections.Counter()
 for line in open(sub_path, encoding="utf-8"):
@@ -28,11 +31,15 @@ for line in open(sub_path, encoding="utf-8"):
 count = collections.Counter({w: n for w, n in count.items() if n >= 3})   # 1~2회는 대부분 오탈자
 
 for f in corpora:
+    local = collections.Counter()
     for line in open(f, encoding="utf-8"):
         for w in line.split():
             w = w.strip(".,!?~·\"'()[]…:;")
             if H.match(w):
-                count[w] += 1
+                local[w] += 1
+    for w, n in local.items():
+        if n >= 2 or f not in min2:
+            count[w] += n
 
 def rows(name):
     path = os.path.join(dic_dir, name)
@@ -61,10 +68,12 @@ for name, tag in (("VV.csv", "VV"), ("VA.csv", "VA")):
         t = toks[0].tag
         for ending, etag in (("다", "EF"), ("어", "EF"), ("어요", "EF")):
             form = kiwi.join([(stem, t), (ending, etag)])
-            if H.match(form):
+            back = kiwi.tokenize(form) if H.match(form) else None
+            if back and back[0].form == stem:      # 되짚어 읽어 같은 줄기일 때만("뫄요" 같은 꼴 제외)
                 plain.add(form)
                 cost[form] = min(cost.get(form, 99999), int(r[3]))
 
+# 대화 말뭉치 어절은 한 번만 나와도 싣는다 — 줄이면 처음 보는 대화에서 '후보에 뜸'이 3%p 떨어졌다.
 words = set(count) | nouns | plain
 mx = max(count.values())
 def f(w):

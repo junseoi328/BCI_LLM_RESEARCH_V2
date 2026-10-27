@@ -1,11 +1,11 @@
 /* 띄어쓰기 없이 친 문장 초성 -> 문장 복원 정확도. node bench_decode.cjs <html> [label] */
-const {chromium}=require('/opt/node-tools/node_modules/playwright');const fs=require('fs');
+const {chromium}=require('playwright');const fs=require('fs');
 const [,,file,label='']=process.argv;
-const chat=fs.readFileSync(process.env.CHAT_TEST||'/home/claude/data/chat_test.txt','utf8').split('\n').filter(Boolean);
-const bank=fs.readFileSync('/home/claude/repo2/research/phrase_memory/approved_bci_phrase_bank_v2.jsonl','utf8').split('\n').filter(Boolean).map(l=>JSON.parse(l).text);
+const chat=fs.readFileSync(process.env.CHAT_TEST||'data/chat_test.txt','utf8').split('\n').filter(Boolean);
+const bank=fs.readFileSync(__dirname+'/../research/phrase_memory/approved_bci_phrase_bank_v2.jsonl','utf8').split('\n').filter(Boolean).map(l=>JSON.parse(l).text);
 const extra=process.env.EXTRA_TEST?fs.readFileSync(process.env.EXTRA_TEST,'utf8').split('\n').filter(Boolean):[];
 (async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1243/chrome-linux64/chrome'});
-const page=await b.newPage();const html=fs.readFileSync(file,'utf8');const dict=fs.readFileSync(process.env.DICT_FILE||'/home/claude/repo2/app/static/dict.txt','utf8');
+const page=await b.newPage();const html=fs.readFileSync(file,'utf8');const dict=fs.readFileSync(process.env.DICT_FILE||__dirname+'/../app/static/dict.txt','utf8');
 await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
  if(p==='/speller')return r.fulfill({contentType:'text/html',body:html});
  if(p==='/speller/dict.txt')return r.fulfill({contentType:'text/plain',body:dict});
