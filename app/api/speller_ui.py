@@ -74,9 +74,10 @@ MANIFEST = {
     "start_url": "/speller",
     "scope": "/speller",
     "display": "standalone",
-    "background_color": "#07080d",
-    "theme_color": "#07080d",
+    "background_color": "#0C0D11",
+    "theme_color": "#0C0D11",
     "lang": "ko",
+    "description": "초성만으로 문장을 만드는 BCI·AAC 의사소통 스펠러",
     "icons": [{"src": "/speller/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}],
 }
 
@@ -90,3 +91,11 @@ def manifest():
 def icon():
     return FileResponse(HTML_PATH.with_name("icon.png"), media_type="image/png",
                         headers={"Cache-Control": "public, max-age=604800"})
+
+
+@router.get("/speller/sw.js", include_in_schema=False)
+def service_worker(request: Request):
+    # 파일은 /speller/ 아래에 있지만 페이지 주소 /speller 자체도 맡아야 해서 범위를 넓혀 준다.
+    r = _page(request, HTML_PATH.with_name("sw.js"), "text/javascript; charset=utf-8")
+    r.headers["Service-Worker-Allowed"] = "/speller"
+    return r

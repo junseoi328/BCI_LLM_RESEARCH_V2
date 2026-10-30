@@ -56,3 +56,12 @@ def test_dictionary_url_is_versioned_and_cached_for_a_year():
     assert r.status_code == 200 and "immutable" in r.headers["cache-control"]
     # 옛 버전 주소로 오면 오래 캐시하지 않는다
     assert "immutable" not in client.get("/speller/dict.txt?v=0000000000000000").headers["cache-control"]
+
+
+def test_service_worker_covers_speller_page():
+    # /speller/sw.js 가 페이지 주소 /speller 까지 맡으려면 이 헤더가 있어야 한다
+    r = client.get("/speller/sw.js")
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/javascript")
+    assert r.headers["service-worker-allowed"] == "/speller"
+    assert 'serviceWorker.register("/speller/sw.js"' in client.get("/speller").text

@@ -660,6 +660,21 @@ html.no-splash #splash{display:none}
 .pick-card[data-v="entertainment"]{--sc:#32ADE6} .pick-card[data-v="hospital"]{--sc:#00C7BE}
 .pick-card[data-v="emergency"]{--sc:#FF3B30}
 .pick-card[data-v="emergency"] .ico,.pick-card[data-v="emergency"].sel .ico{color:#fff;background:linear-gradient(160deg,color-mix(in srgb,var(--sc) 65%,#fff),var(--sc))}
+
+/* --- 작업 화면 다듬기 (v2.7) --- */
+/* 시행 단계 막대·초/선택은 실험용 계기판 — 실험 모드를 켰을 때만 보인다. '기록'은 늘 열 수 있다 */
+body:not(:has(#expOn:checked)) .topline .loop-bar,
+body:not(:has(#expOn:checked)) .topline .pace{display:none}
+body:not(:has(#expOn:checked)) .topline .hud-more{margin-left:auto}
+/* 문장 후보가 없을 때: 큰 점선 상자 대신 조용한 한 줄 */
+.cand-sents .cand.ph:not(.err):not(.loading){min-height:0;padding:6px 4px;border:0;background:none}
+.cand-sents .cand.ph:not(.err):not(.loading) .kb-badge{display:none}
+.cand-sents .cand.ph:not(.err):not(.loading) .tx{font-size:var(--fs-xs);color:var(--ink-300)}
+.cand-sents .cand.loading{border-style:solid;border-color:transparent;background:var(--surface-2);min-height:48px}
+.cand-sents .cand.loading .kb-badge{animation:breathe 1.2s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35}}
+/* 비어 있는 후보키(6·7)는 보라 대신 빈 칸처럼 */
+.kb .key.cand:disabled{background:var(--surface-2);border-color:var(--line);border-style:dashed;color:var(--ink-300);box-shadow:none}
 </style>
 </head>
 <body>
@@ -676,6 +691,8 @@ setTimeout(()=>{ const s=document.getElementById("splash"); if(s) s.remove(); },
 document.addEventListener("pointerdown", e=>{
   if(e.pointerType==="touch" && navigator.vibrate && e.target.closest(".kb .key,.cand,.pick-card,.big-cta,.ring-btn")) try{ navigator.vibrate(6); }catch(_){}
 }, {passive:true});
+/* 오프라인에서도 열리게: 페이지·사전·글꼴을 서비스 워커가 보관한다 */
+if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=>navigator.serviceWorker.register("/speller/sw.js",{scope:"/speller"}).catch(()=>{}));
 </script>
 
 <div class="topbar">
@@ -702,7 +719,7 @@ document.addEventListener("pointerdown", e=>{
       <div class="hero-field" aria-hidden="true"></div>
       <div class="hero-grain" aria-hidden="true"></div>
 
-      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v2.6</i></p>
+      <p class="hero-eyebrow"><span class="hero-dot" aria-hidden="true"></span>KOREAN HYBRID BCI · AAC SPELLER<i>v2.7</i></p>
 
       <h1>전하고 싶은 마음을<br><em>한 글자씩, 편안하게.</em></h1>
 
@@ -909,7 +926,7 @@ document.addEventListener("pointerdown", e=>{
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v2.6.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v2.7.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1404,7 +1421,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"2.6.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"2.7.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -1947,7 +1964,8 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1, lexTri:500,
   /* ⑤ 사전 층(구어 빈도 + 국어사전 어휘). 말뭉치 층과 같은 눈금에 둔다. */
-  dict:1, lmA:200, lmB:25, lmExact:2,   /* 초성 문장 짓기. 단어당 가산점·빔 16·유니그램 가중 0.05/0.5 는 모두 시험했으나 나아지지 않았다.
+  dict:1, lmA:300, lmB:25, lmExact:2,   /* lmA 200->300(낮은 확률 사전어를 0으로 자르지 않음): 보류 대화 실효 31.9->32.4%, 사전 용례 29.4->29.9%, 환자 64.7->66.0%, AAC 52.7->52.5%.
+     초성 문장 짓기. 단어당 가산점·빔 16·유니그램 가중 0.05/0.5 는 모두 시험했으나 나아지지 않았다.
      환자 표현 층은 0.5: 1이면 검수 표현 281개의 접두어 적중을 밀어내 문장 절감이 45.5% -> 33.7%. */
   decode:1, decodeBeam:8, decodeN:3, decodeK:20, decodeEnd:1, decodeUni:0.16, decodeMin:4, patient:0.5, patientLM:1, sitBoost:3};   /* 상황 가중: 보류 상황 문장 300개에서 실효 29.7 -> 30.1%. 목록 밖 상황어를 후보로 끼워 넣는 것은 오히려 나빴다. */
 /* ==========================================================================
@@ -2265,7 +2283,7 @@ function renderCandidatePanel(){
         ? `<div class="cand ph loading"><span class="kb-badge">…</span><span class="tx">문장 후보 생성 중…</span></div>`
         : llmError && state.initials
         ? `<div class="cand ph err"><span class="kb-badge">!</span><span class="tx">문장 후보를 불러오지 못했어요 · ${llmError}</span><button type="button" class="btn" id="btnRetryLLM">다시 시도</button></div>`
-        : `<div class="cand ph"><span class="kb-badge">–</span><span class="tx">${state.initials?"이 초성에 맞는 문장을 찾지 못했어요 · 글자를 더 입력하거나 직접 입력해보세요":"문장 후보는 초성을 입력하면 생성됩니다"}</span></div>`);
+        : `<div class="cand ph"><span class="kb-badge">–</span><span class="tx">${state.initials?"맞는 문장 후보가 없어요 · 단어를 고르거나 초성을 더 입력하세요":"문장 후보는 초성을 입력하면 생성됩니다"}</span></div>`);
   if(el("btnRetryLLM")) el("btnRetryLLM").onclick=()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {});
 
   for(const node of [...el("candWords").children, ...el("candSents").children]){

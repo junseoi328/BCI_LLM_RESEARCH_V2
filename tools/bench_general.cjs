@@ -18,6 +18,7 @@ const bank=fs.readFileSync(__dirname+'/../research/phrase_memory/approved_bci_ph
    return r.fulfill({status:503,json:{}});});
  await page.goto('http://bci.test/speller');
  await page.evaluate(()=>{showView('speller');return typeof loadDict==='function'?loadDict():null;}).catch(()=>{});
+ if(process.env.SCORE_JSON) await page.evaluate(o=>Object.assign(SCORE,o), JSON.parse(process.env.SCORE_JSON));  // 매개변수 탐색용
  console.error('dict entries', await page.evaluate(()=>typeof DICT!=='undefined'&&DICT?DICT.size:0));
  const run=(sents,mode,seed)=>page.evaluate(({sents,mode,seed})=>{ window.__NO_SIT=!!window.__NO_SIT;
    try{localStorage.clear()}catch(e){}
