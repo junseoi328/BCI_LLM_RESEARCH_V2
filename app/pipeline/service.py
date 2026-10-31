@@ -249,6 +249,11 @@ class BCILanguagePipeline:
         context = build_context(
             request
         )
+        # 화면에서 초성 사이에 띄어쓰기를 쳤다면(ㅇㅅㅇ ㅎㄷㄷ) 그 어절 경계를 생성기에 알려 준다.
+        # 정규화는 공백을 지우므로 원래 요청에서 읽는다.
+        spaced = " ".join((raw_request.bci_input or "").split())
+        if request.input_mode.value == "initials" and " " in spaced:
+            context += f"\n사용자가 띄어 친 초성: {spaced} (공백 자리에서 어절이 나뉜다. 후보도 그 자리에서 띄어 쓴다)"
         if request.candidate_unit == "word":
             context += "\n출력 단위: 공백 없는 한국어 단어 또는 어절 하나. 문장 대신 단어 후보를 제시한다."
 

@@ -52,7 +52,7 @@ class EEGScoreType(str, Enum):
 
 
 class EEGHypothesis(BaseModel):
-    initials: str = Field(min_length=1, max_length=20)
+    initials: str = Field(min_length=1, max_length=40)
     score: float = Field(allow_inf_nan=False)
 
 
@@ -63,7 +63,7 @@ class PredictionRequest(BaseModel):
     trial_id: str | None = Field(default=None, max_length=80)
     experiment_mode: ExperimentMode = ExperimentMode.initials_llm
     input_mode: InputMode = InputMode.initials
-    bci_input: str = Field(min_length=1, max_length=20)
+    bci_input: str = Field(min_length=1, max_length=60)  # 초성 최대 40 + 띄어쓰기
     partner: Partner = Partner.other
     situation: Situation = Situation.general
     current_sentence: str = Field(default="", max_length=300)
@@ -92,7 +92,7 @@ class PredictionRequest(BaseModel):
     # are provided KeywordAE takes priority (it is the team's stated
     # priority: "KeywordAE >> FillMask").
     # ------------------------------------------------------------------
-    spelled_syllables: dict[int, str] | None = Field(default=None, max_length=20)
+    spelled_syllables: dict[int, str] | None = Field(default=None, max_length=40)
     fill_mask_reference_text: str | None = Field(default=None, max_length=80)
     fill_mask_target_index: int | None = Field(default=None, ge=0)
 

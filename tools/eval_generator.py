@@ -42,7 +42,7 @@ def slot_input(initials: str, count: int) -> str:
     )
 
 
-def run(texts: list[str], builder, count: int, retry: bool = False) -> dict:
+def run(texts: list[str], builder, count: int, retry: bool = False, spaced: bool = False) -> dict:
     oc.build_generator_input = builder
     client = oc.OpenAILanguageModelClient()
 
@@ -50,7 +50,10 @@ def run(texts: list[str], builder, count: int, retry: bool = False) -> dict:
         ini = extract_initials(target)
         t = time.perf_counter()
         try:
-            res = client.generate_candidates(ini, count)
+            # spaced: 화면에서 띄어 친 것처럼 어절 경계를 문맥으로 알려 준다(서비스와 같은 문구)
+            ctx = (f"사용자가 띄어 친 초성: {' '.join(extract_initials(w) for w in target.split())} "
+                   "(공백 자리에서 어절이 나뉜다. 후보도 그 자리에서 띄어 쓴다)") if spaced else ""
+            res = client.generate_candidates(ini, count, context=ctx)
             raw = res.candidates
             if retry and not filter_candidates([GeneratedCandidate(candidate_id=f"r{i}", text=x, source_initials=ini, generation_order=i + 1)
                                                 for i, x in enumerate(raw)], ini):
@@ -83,9 +86,9 @@ if __name__ == "__main__":
     texts = [l.strip() for l in open(args[0], encoding="utf-8") if l.strip()] if args else DEFAULT
     if "--n" in sys.argv:
         texts = texts[: int(sys.argv[sys.argv.index("--n") + 1])]
-    configs = [("기본", BASE, 5), ("기본", BASE, 8), ("음절칸", slot_input, 5), ("음절칸", slot_input, 8), ("재시도", BASE, 5)]
+    configs = [("기본", BASE, 5), ("기본", BASE, 8), ("음절칸", slot_input, 5), ("음절칸", slot_input, 8), ("재시도", BASE, 5), ("띄어쓰기", BASE, 5)]
     if "--only" in sys.argv:  # 예: --only 기본5,음절칸8
         keep = sys.argv[sys.argv.index("--only") + 1].split(",")
         configs = [c for c in configs if f"{c[0]}{c[2]}" in keep]
     for name, builder, count in configs:
-        print(name, f"후보수={count}", run(texts, builder, count, retry=name == "재시도"), flush=True)
+        print(name, f"후보수={count}", run(texts, builder, count, retry=name == "재시도", spaced=name == "띄어쓰기"), flush=True)

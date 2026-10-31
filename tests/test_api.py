@@ -27,3 +27,11 @@ def test_predict_api():
 def test_invalid_initials_rejected():
     r = client.post("/predict", json={"bci_input": "도와줘"})
     assert r.status_code == 422
+
+
+def test_predict_accepts_spaced_and_long_initials():
+    # 화면에서 띄어 친 초성(ㅇㅅㅇ ㅎㄷㄷ)과 20자를 넘는 초성도 받는다
+    r = client.post("/predict", json={"bci_input": "ㅇㅅㅇ ㅎㄷㄷ"})
+    assert r.status_code == 200
+    r = client.post("/predict", json={"bci_input": "ㅁㅈ" * 15})
+    assert r.status_code == 200

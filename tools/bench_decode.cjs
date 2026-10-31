@@ -12,7 +12,7 @@ await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
  return r.fulfill({status:503,json:{}});});
 await page.goto('http://bci.test/speller');
 await page.evaluate(async()=>{showView('speller');if(typeof loadDict==='function')await loadDict();});
-const run=list=>page.evaluate(list=>{
+const run=list=>page.evaluate(({list,spaced})=>{
   try{localStorage.clear()}catch(e){}
   learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
   state.partner='family';state.situation='general';el('autoPredict').checked=false;
@@ -21,18 +21,20 @@ const run=list=>page.evaluate(list=>{
   for(const raw of list){
     const t=norm(raw); const ini=choseongOf(t); if(ini.length<2) continue;
     state.lastWord='';state.lastWord2='';state.initials=ini;state.spelled={};state.latest=[];
+    // SPACED=1: 어절마다 띄기를 눌렀다고 본다(경계 = 앞 어절들의 초성 수)
+    state.breaks=[]; if(spaced){ let k=0; for(const w of t.split(' ').slice(0,-1)){ k+=choseongOf(w).length; state.breaks.push(k); } }
     const s=performance.now(); renderCandidatePanel(); ms+=performance.now()-s;
     const sents=slots.filter(x=>x.kind==='sent').map(x=>norm(x.text));
     const dec=(typeof decodeSentences==='function'?decodeSentences(ini,3):[]).map(norm);
     if(dec[0]===t) top1++; if(dec.includes(t)) top3++; if(sents.includes(t)) shown++;
     // 문장 단위 절감: 초성을 하나씩 칠 때 몇 번째에 문장 칸에 뜨나 (끝까지 안 뜨면 전부 친 것으로)
-    let used=ini.length;
+    state.breaks=[]; let used=ini.length;
     for(let k=1;k<=ini.length;k++){ state.initials=ini.slice(0,k); renderCandidatePanel();
       if(slots.some(x=>x.kind==='sent'&&norm(x.text)===t)){used=k;break;} }
     keys+=used+1; base+=ini.length+1;
   }
   return {n:list.length,top1:top1/list.length,top3:top3/list.length,shown:shown/list.length,ms:ms/list.length,ksr:1-keys/base};
-},list);
+},{list,spaced:!!process.env.SPACED});
 const pct=x=>(x*100).toFixed(1)+'%';
 for(const [name,list] of [['AAC 표현',bank],['일상 대화',chat],...(extra.length?[['추가',extra]]:[])]){
   const r=await run(list); console.log(`${label.padEnd(14)} ${name}(${r.n}): 1위 ${pct(r.top1)} · 3위 안 ${pct(r.top3)} · 문장 칸에 뜸 ${pct(r.shown)} · 문장 절감 ${pct(r.ksr)} · ${r.ms.toFixed(1)}ms`);
