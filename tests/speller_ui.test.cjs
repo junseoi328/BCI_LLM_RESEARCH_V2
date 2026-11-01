@@ -11,6 +11,43 @@ const launch = () => chromium.launch({
   ...(process.env.BCI_TEST_BROWSER ? { executablePath: process.env.BCI_TEST_BROWSER } : {}),
 });
 
+test('Input focus preserves drafts, candidate semantics and responsive 40-key layout', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:768}});
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML()} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();renderBuffer();});
+    const before=await page.evaluate(()=>JSON.stringify(state));
+    const guess=page.locator('#keyboard .key.cand.guess').first();
+    assert.ok(await guess.count());
+    assert.match(await guess.getAttribute('aria-label'),/후보 \d, 단어:/);
+    await page.locator('#btnFocusInput').click();
+    assert.equal(await page.locator('#conversationColumn').isVisible(),false);
+    assert.equal(await page.evaluate(()=>JSON.stringify(state)),before);
+    await page.waitForTimeout(600);
+    assert.equal(await page.locator('#keyboard .key').count(),40);
+    const bounds=await page.locator('#keyboard').boundingBox();
+    if(process.env.BCI_SCREENSHOT_DIR){fs.mkdirSync(process.env.BCI_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.BCI_SCREENSHOT_DIR,'speller-layout-check.png')});}
+    assert.ok(bounds.y+bounds.height<=768,`keyboard bottom ${bounds.y+bounds.height}`);
+    for(const width of [320,390,768,1440]){
+      await page.setViewportSize({width,height:900});
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+      assert.ok(await page.locator('#keyboard .key').first().evaluate(n=>n.getBoundingClientRect().height>=44));
+    }
+    await page.locator('#btnFocusInput').click();
+    assert.equal(await page.locator('#conversationColumn').isVisible(),true);
+    assert.equal(await page.evaluate(()=>JSON.stringify(state)),before);
+    await page.locator('#btnFocusInput').click();
+    await page.reload();
+    assert.equal(await page.locator('#btnFocusInput').getAttribute('aria-pressed'),'true');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();renderBuffer();applyTheme(false);});
+    await page.setViewportSize({width:1366,height:768});
+    if(process.env.BCI_SCREENSHOT_DIR){fs.mkdirSync(process.env.BCI_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.BCI_SCREENSHOT_DIR,'speller-focus-desktop.png')});}
+  }finally{await browser.close();}
+});
+
 test('Guide isolates keyboard shortcuts, restores focus and supports large text on mobile', {timeout:60000}, async()=>{
   const browser=await launch();
   try{
@@ -762,7 +799,8 @@ test('Dictionary layer loads lazily and reaches rare dictionary words', {timeout
     const page=await browser.newPage();
     const html=HTML();
     const dict=fs.readFileSync(path.join(__dirname,'../app/static/dict.txt'),'utf8');
-    const rare=dict.trimEnd().split('\n').reverse().find(l=>/^[가-힣]{2,4}$/.test(l));   // 빈도 정보 없는 사전 단어
+    const rare=dict.trimEnd().split(/\r?\n/).reverse().find(l=>/^[가-힣]{2,4}$/.test(l));   // Windows 줄바꿈도 허용
+    assert.ok(rare,'사전에서 빈도 정보 없는 단어를 선택한다');
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     await page.route('**/*',route=>{
       const p=new URL(route.request().url()).pathname;

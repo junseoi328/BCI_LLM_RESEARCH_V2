@@ -390,6 +390,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .kb .key.shifted{box-shadow:inset 0 0 0 2px var(--amber)}
 .kb .key.cand{flex-direction:column;gap:1px;background:var(--pick-50);border-color:var(--pick-100);color:var(--pick-600);font-size:var(--fs-sm);font-weight:800}
 .kb .key.cand:not(:disabled){background:var(--pick-100);border-color:var(--pick-200)}
+.kb .key.cand.guess:not(:disabled){background:var(--green-50);border-color:var(--green-100);color:var(--green-600)}
 .kb .key.cand .cw{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-2xs);font-weight:700;color:var(--ink-900)}
 .kb .key.cand .cw:empty{display:none}
 .kb .key .lb{margin-left:.28em}
@@ -800,6 +801,33 @@ html.no-splash #splash{display:none}
 }
 @media(prefers-reduced-motion:reduce){#splash{display:none}}
 @media print{body::before,#splash{display:none}}
+
+/* 입력 영역은 고정된 40개 표적을 유지한다. 집중 모드는 대화만 접는다. */
+.keyboard-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.keyboard-heading .sec-title{margin:0}
+.keyboard-legend{font-size:var(--fs-xs);color:var(--ink-500)}
+.focus-input .work{grid-template-columns:minmax(0,1fr)}
+.focus-input .conversation-column{display:none}
+#btnFocusInput{min-height:44px}
+#btnFocusInput[aria-pressed="true"]{background:var(--accent-50);color:var(--accent-700)}
+.chat-empty,.sec-title span{color:var(--ink-500)}
+@media(max-width:1100px){
+  .conversation-column{order:2}
+}
+@media(min-width:1101px) and (max-height:850px){
+  body:not(.large-text) .card.mine{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;align-items:center}
+  body:not(.large-text) .mine>.sec-title,body:not(.large-text) .mine>#notice{grid-column:1/-1}
+  body:not(.large-text) .shell:has(#view-speller:not([hidden])){padding-top:8px;padding-bottom:8px}
+  body:not(.large-text) #view-speller,body:not(.large-text) .work,body:not(.large-text) .work .col{gap:8px}
+  body:not(.large-text) .work .card{padding:12px}
+  body:not(.large-text) .buffer{min-height:48px;padding:8px 12px}
+  body:not(.large-text) .speech-actions{margin-top:0}
+  body:not(.large-text) .cand{padding:8px 10px;min-height:48px}
+  body:not(.large-text) .ini-display{min-height:44px;padding:4px 8px}
+  body:not(.large-text) .kb{gap:6px}
+  body:not(.large-text) .kb .key{min-height:44px}
+  body:not(.large-text) .kb .key.cand{min-height:52px}
+}
 </style>
 </head>
 <body>
@@ -849,7 +877,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.0</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.1</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -946,12 +974,13 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
           <div class="wide"><span>응답</span><b><span id="mGen">-</span> · <span id="mRank">-</span> · <span id="mLat">-</span> · <span id="mMode">-</span></b></div>
         </div>
       </details>
+      <button class="btn sm" id="btnFocusInput" aria-pressed="false" aria-controls="conversationColumn">입력 집중</button>
       <button class="ghost-btn" id="btnNewSession">↺ 새 대화</button>
     </div>
 
     <div class="work">
       <!-- 왼쪽: 대화 한 덩어리. 내가 만들고 있는 말이 마지막 차례로 이어진다. -->
-      <div class="col">
+      <div class="col conversation-column" id="conversationColumn">
         <section class="card chat">
           <p class="sec-title">대화</p>
           <div class="chat-log" id="chatLog"></div>
@@ -1006,6 +1035,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         </section>
 
         <section class="card kb-card">
+          <div class="keyboard-heading"><p class="sec-title" id="keyboardTitle">입력 키보드 <span>40키 · 두벌식</span></p><span class="keyboard-legend">1–7 후보 선택 · Enter 확정 · ⇧ 된소리</span></div>
           <!-- #iniDisplay 는 JS가 innerHTML로 통째로 다시 그린다. 버튼을 그 안에
                두면 매 입력마다 사라지므로 도구는 반드시 형제로 둔다. -->
           <div class="ini-row">
@@ -1017,7 +1047,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
               <button class="btn danger sm" id="btnReset">전체 초기화</button>
             </span>
           </div>
-          <div class="keyboard kb" id="keyboard"></div>
+          <div class="keyboard kb" id="keyboard" role="group" aria-labelledby="keyboardTitle"></div>
         </section>
       </div>
     </div>
@@ -1056,7 +1086,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <label><input type="checkbox" id="autoPredict" checked> 초성을 입력할 때마다 문장 후보 자동 갱신</label>
         <p class="unit-hint"><strong>화면 배열 = 컴퓨터 자판 배열입니다.</strong> 두벌식 자판을 그대로 옮겨 놨으니 손이 아는 자리를 눈이 그대로 따라가면 됩니다 — 2행 <b>ㅂㅈㄷㄱㅅ ㅛㅕㅑㅐㅔ</b>, 3행 <b>ㅁㄴㅇㄹㅎ ㅗㅓㅏㅣ</b>, 4행 <b>ㅋㅌㅊㅍ ㅠㅜㅡ , . ?</b>. <b>⇧</b>를 누르면 자판과 똑같이 쌍자음(ㅃㅉㄸㄲㅆ)·겹모음(ㅒㅖ)·단어삭제·느낌표로 바뀌고, 한 글자를 누르면 저절로 풀립니다.</p>
         <p class="unit-hint"><strong>물리 키보드도 같은 자리입니다</strong> — q·w·e는 ㅂ·ㅈ·ㄷ, o·p는 ㅐ·ㅔ, 쉼표·마침표·물음표는 <b>, . /</b> 자리 그대로(물음표는 Shift+/). 후보는 숫자 <b>1~7</b>, 띄어쓰기 <b>Space</b>, 문장 확정 <b>Enter</b>, 글자 삭제 <b>Backspace</b>, 단어 삭제 <b>Shift+Backspace</b> 또는 <b>Delete</b>. 한/영 상태와 무관하게 동작합니다.</p>
-        <p class="unit-hint">단어·문장 후보는 항상 즉시(0ms) 채워집니다. 세 층을 차례로 씁니다 — ① 내가 전에 쓴 말(이 기기에 저장), ② 검수된 AAC 표현 사전 281개, ③ 일반 한국어 대화 말뭉치에서 만든 넓은 단어·다음단어 사전. 언어 모델은 로컬이 못 맞힌 나머지만 채웁니다.</p>
+        <p class="unit-hint">기기 안에서 찾은 단어·문장 후보를 먼저 보여줍니다. ① 내가 전에 쓴 말(이 기기에 저장), ② 검수된 AAC 표현 사전 281개, ③ 일반 한국어 대화 말뭉치에서 만든 단어·다음단어 사전을 사용합니다. 맞는 표현이 없으면 초성을 더 입력하거나 직접 입력할 수 있습니다. 언어 모델 응답 시간은 연결 상태와 모델에 따라 달라집니다.</p>
         <p class="unit-hint"><strong>지금 무슨 얘기 중인지</strong>도 함께 봅니다 — 고른 상황, 여기 적은 상황 메모, 상대가 최근에 한 말(최근일수록 무겁게), 내가 방금 고른 말, 그리고 만들고 있는 문장. 상대가 쓴 단어는 그 단어 자체로도 후보에 밀어 올립니다. 앞 단어는 두 개까지 봅니다 — <b>사랑해 + 많이</b> 다음에 무엇을 골랐는지를 기억하고, 그런 기록이 없으면 앞 한 단어, 그것도 없으면 자주 쓰는 말 순으로 물러납니다.</p>
         <p class="unit-hint">넓은 사전 출처: KLUE 벤치마크의 WoS 과제지향 대화(CC BY-SA 4.0)에서 만든 빈도표입니다. 원문은 포함하지 않습니다.</p>
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
@@ -1073,7 +1103,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.0.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.1.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1082,7 +1112,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
     <p class="guide-lead">내가 원하는 말을, 나의 속도로.</p>
     <p>초성으로 문장을 찾고, 뜻에 맞게 고친 다음 상대방에게 보여주거나 소리로 전하세요. 설명서를 닫으면 작성 중이던 화면으로 돌아갑니다.</p>
     <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a><a href="#guide-about">정보·출처</a></nav>
-    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> ‘물 줘’는 <strong>ㅁ → ㅈ</strong>처럼 초성만 눌러도 되고, ㅁ 다음에 모음 <strong>ㅜ</strong>를 눌러 ‘무’를 그 자리에서 확정해도 됩니다(받침은 후보가 채워줍니다). 단어 사이에서 <strong>␣ 띄기</strong>를 누르면 ㅇㅅㅇ ㅎㄷㄷ처럼 나뉘어 <strong>인생이 힘들다</strong>를 더 정확히 찾습니다. 한 번에 최대 40글자입니다.</li><li><strong>후보키로 선택:</strong> 키를 누를 때마다 <strong>단어 후보</strong>가 즉시(로컬·0ms) 갱신되고, <strong>문장 후보</strong>는 언어 모델이 0.7초 뒤 채웁니다. 원하는 후보의 번호가 붙은 <strong>후보키 1~7</strong>(또는 숫자키)을 누르면 바로 확정됩니다. 단어/문장 개수 비율은 로컬에 맞는 단어가 몇 개인지에 따라 자동으로 조절됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
+    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><p><strong>입력 집중:</strong> 상단의 ‘입력 집중’을 누르면 대화 영역을 접고 문장·후보·40키에 집중할 수 있습니다. ‘대화 함께 보기’로 언제든 돌아옵니다. 작성 내용과 대화 문맥은 유지됩니다. 휴대전화에서는 입력부 아래에 대화가 표시됩니다. 초록색 다음 단어 후보는 같은 색의 후보키와 연결되며, 번호로도 구분할 수 있습니다.</p><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> ‘물 줘’는 <strong>ㅁ → ㅈ</strong>처럼 초성만 눌러도 되고, ㅁ 다음에 모음 <strong>ㅜ</strong>를 눌러 ‘무’를 그 자리에서 확정해도 됩니다(받침은 후보가 채워줍니다). 단어 사이에서 <strong>␣ 띄기</strong>를 누르면 ㅇㅅㅇ ㅎㄷㄷ처럼 나뉘어 <strong>인생이 힘들다</strong>를 더 정확히 찾습니다. 한 번에 최대 40글자입니다.</li><li><strong>후보키로 선택:</strong> 키를 누를 때마다 <strong>단어 후보</strong>가 기기 안에서 먼저 갱신되고, <strong>문장 후보</strong>는 로컬 후보와 언어 모델 응답으로 채워집니다. 서버 조회는 연속 입력이 멈춘 뒤 시작하며, 완료 시간은 연결 상태와 모델에 따라 달라집니다. 원하는 후보의 번호가 붙은 <strong>후보키 1~7</strong>(또는 숫자키)을 누르면 바로 확정됩니다. 단어/문장 개수 비율은 로컬에 맞는 단어가 몇 개인지에 따라 자동으로 조절됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
     <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
     <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>마지막 문장 취소:</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>글자삭제 / 단어삭제:</strong> 마지막 글자 하나 / 작성 중인 단어(없으면 확정된 마지막 어절)를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>7</kbd>은 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
     <section id="guide-settings"><h3>4. 나에게 맞게 조절하기</h3><ul><li><strong>큰 글씨:</strong> 화면 위쪽 ‘가 큰 글씨’로 입력·후보·주요 버튼을 확대합니다. 같은 버튼으로 기본 크기로 돌아옵니다.</li><li><strong>자동 후보 조회:</strong> ‘입력 설정 · 이 탭의 기록’에서 켭니다. 초성 2개 이상 입력 후 1.2초 동안 입력을 멈추면 조회합니다. 문장은 자동 확정되지 않습니다.</li><li><strong>후보 수:</strong> 3개 또는 5개로 선택합니다.</li><li><strong>대화 문맥:</strong> ‘자주 쓰는 표현 · 대화 문맥’을 열어 상대방의 말이나 상황을 적으면 조회에 참고합니다. 최근 대화도 자동 반영됩니다.</li><li><strong>자주 쓰는 표현:</strong> 확정한 표현이 모입니다. 이 버튼은 누르면 바로 문장에 추가됩니다.</li></ul><h4>내 대화는 어디에 저장되나요?</h4><p>작성 중인 문장과 최근 대화, 자주 쓰는 표현은 현재 브라우저 탭의 세션 저장소에 보관되어 새로고침 뒤 복원됩니다. 후보 조회 시 초성·문맥 등 필요한 입력이 서버와 언어 모델로 전송됩니다. 탭 복원 기능에 따라 기록이 다시 열릴 수 있으므로 공용 기기에서는 ‘이 탭의 기록 삭제’를 사용하세요.</p><p>‘사용 지표 내려받기’는 입력 횟수·조회 지연시간 등의 JSON 파일을 저장합니다. 문장 원문은 포함하지 않습니다. 실제 EEG 정확도나 의사소통 성능을 측정하는 기능은 아닙니다.</p></section>
@@ -1569,7 +1599,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.0.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.1.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2497,6 +2527,9 @@ function renderCandidatePanel(){
     const key=el("candKey"+k); if(!key) continue;
     const sl=slots[k];
     key.disabled=!sl;
+    key.classList.toggle("guess",!!sl?.guess);
+    key.setAttribute("aria-label",sl ? `후보 ${k+1}, ${sl.kind==="word"?"단어":"문장"}: ${sl.text}` : `후보 ${k+1}, 아직 없음`);
+    key.title=sl ? sl.text : "아직 후보가 없습니다";
     el("candKeyW"+k).textContent = sl ? (sl.text.length>16 ? sl.text.slice(0,16)+"…" : sl.text) : "";   // 두 줄까지 보이므로 16자. 넘치는 줄은 CSS가 자른다
   }
   el("unitHint").hidden = !sents.length;
@@ -3091,6 +3124,14 @@ el("btnLargeText").onclick=()=>{
   el("btnLargeText").setAttribute("aria-pressed",String(enabled));
   try{sessionStorage.setItem("bci_large_text",String(enabled));}catch(e){}
 };
+function applyInputFocus(enabled){
+  document.body.classList.toggle("focus-input",enabled);
+  el("btnFocusInput").setAttribute("aria-pressed",String(enabled));
+  el("btnFocusInput").textContent=enabled ? "대화 함께 보기" : "입력 집중";
+  try{sessionStorage.setItem("bci_input_focus",String(enabled));}catch(e){}
+}
+el("btnFocusInput").onclick=()=>applyInputFocus(!document.body.classList.contains("focus-input"));
+try{applyInputFocus(sessionStorage.getItem("bci_input_focus")==="true");}catch(e){}
 try{if(sessionStorage.getItem("bci_large_text")==="true"){document.body.classList.add("large-text");el("btnLargeText").setAttribute("aria-pressed","true");}}catch(e){}
 
 /* ---------------- health check ---------------- */
