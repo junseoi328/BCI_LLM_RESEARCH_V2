@@ -1,24 +1,26 @@
-# 이심전심 BCI Speller — 토큰 최소 개발 규칙 (Claude·Codex 공통, 모든 작업에 먼저 적용)
-## 읽기
-- 통째로 읽지 않는다: `app/static/bci_speller.html`(670KB), `app/static/dict.txt`(12MB, 열지 않음), `app/pipeline/service.py`(1,100줄). `grep -n` → 해당 줄 ±40줄만 Read → Edit, 같은 곳 재독 금지.
-- 핵심 위치: `const SCORE=` · `localWords/sentenceSlots/decodeSentences` · `handleKey/pressSpace` · 서버 `app/llm/prompts.py`, `openai_client.py`, `app/pipeline/filter.py`. 프로젝트 문서는 최신 1개만.
-## 고치기
-- 최소 변경: 기존 함수·CSS 변수 재사용, 새 파일·의존성·리팩터링 금지(요청 시만). 여러 곳은 Python 한 번(`assert s.count(a)==1` 후 replace). 주석은 "왜"만 한 줄.
-## 갤럭시(안드로이드 크롬·삼성 인터넷) 오류 방지 — 화면을 고칠 때마다 지킨다
-- 고정 하단바·상단바·자판에 `backdrop-filter` 금지(줄무늬·깜빡임). 불투명 배경을 먼저 쓰고, 흐림은 `@supports`로만 덧붙인다.
-- 높이는 `100vh` 대신 `min-height:100dvh`(앞줄에 `100vh` 대체값). 하단 고정 요소는 `bottom:calc(Npx + env(safe-area-inset-bottom))`, viewport 메타 `viewport-fit=cover, interactive-widget=resizes-content`.
-- 시스템 글꼴 크기 130%에서도 안 깨지게: 고정 `height` 대신 `min-height`, 탭·버튼 글자는 `white-space:nowrap; min-width:0; overflow:hidden; text-overflow:ellipsis`, `text-size-adjust:100%`.
-- 삼성 인터넷 강제 다크 방지: `<meta name="color-scheme" content="light dark">` + 다크 토큰을 직접 정의. 글자·배경 대비 AA 유지.
-- 핵심 동작을 `:has()`·`color-mix()`에만 맡기지 않는다: JS로 클래스 토글하고, `color-mix` 앞줄에 일반 색 대체값을 둔다.
-- 터치: 누를 자리 48px 이상, `touch-action:manipulation`, `-webkit-tap-highlight-color:transparent`. hover 효과는 `@media(hover:hover)` 안에만.
-- 확인: Playwright 360×740·412×915(DPR 3, `isMobile:true, hasTouch:true`)에서 가로 넘침 0·하단바가 내용 가리지 않음·글꼴 130%(`html{font-size:130%}`) 3가지만 검사.
-## 검증 (필요한 것만, 한 번씩)
-- 서버 `python3 -m pytest -q tests/<관련>.py`, 화면 `node --test --test-name-pattern="<관련>" tests/speller_ui.test.cjs` → 커밋 전 전체 1회.
-- 후보 품질을 건드렸을 때만 `tools/bench_general.cjs`(`SCORE_JSON`)·`tools/bench_decode.cjs`(`SPACED=1`). 실제 LLM 평가(`tools/eval_generator.py`)는 요청 시만.
-- 스크린샷은 화면 변경 시만, 최대 2장(데스크톱·갤럭시 폭 360), 낮은 해상도.
-## 배포
-- PC는 바로 push. 클라우드 컨테이너는 bundle → PC 임시 worktree에서 커밋·push(사용자 작업 트리·커밋 안 된 변경은 절대 건드리지 않음, 시작 전 `git status -sb`).
-- 확인은 폴링 한 번: `curl -s …/speller | grep -o "· v[0-9.]*<"`(CI 10~18분). 버전 문자열(푸터·eyebrow·metrics)만 올린다.
-## 대화
-- 막혔을 때만 질문 1회. 서브에이전트·워크플로·긴 계획서 금지. 보고는 변경 사항 / 검증 결과 / 남은 문제 3묶음, 코드·로그는 붙이지 않는다.
-- 비밀값(.env의 OPENAI_API_KEY)은 읽지도 출력하지도 않는다.
+# 이심전심 BCI Speller — 에이전트 규칙 (Claude·Codex 공통, 모든 작업에 먼저 적용)
+
+## A. 토큰 최소화
+- 통째로 읽지 않는다: `app/static/bci_speller.html`(670KB), `app/static/dict.txt`(12MB, 열지 않음), `app/pipeline/service.py`(1,100줄). `grep -n` → ±40줄만 Read → Edit, 재독 금지.
+- 핵심 위치: `const SCORE=` · `localWords/sentenceSlots/decodeSentences` · `handleKey/pressSpace/pressCommitKey` · 서버 `app/llm/prompts.py`, `openai_client.py`, `app/pipeline/filter.py`. 프로젝트 문서는 최신 1개만.
+- 최소 변경: 기존 함수·CSS 변수 재사용, 새 파일·의존성·리팩터링은 요청 시만. 여러 곳은 Python 한 번(`assert s.count(a)==1` 후 replace).
+- 검증은 관련 테스트 먼저(`pytest -q tests/<관련>.py`, `node --test --test-name-pattern=…`), 커밋 전 전체 1회. 스크린샷은 화면 변경 시만 2장(데스크톱·모바일).
+- 질문은 막혔을 때만 1회. 서브에이전트·워크플로 금지. 보고는 변경 사항 / 검증 결과 / 남은 문제 3묶음.
+
+## B. 결과물 목표 — 이때까지의 개발에서 확정된 원칙 (어기지 말 것)
+1. **목표**: 발화·운동 제한 사용자가 최소 응시 선택으로 말한다. 모든 변경은 "선택 횟수·루프 시간이 줄어드는가"로 판단한다.
+2. **로컬이 먼저, LLM은 보조**: 키마다 브라우저 로컬 후보가 ~1ms에 7칸을 채운다(내 기록 → 검수 AAC 281 → 환자 4,052 → 말뭉치 → 사전 45.9만+n-gram). LLM은 못 채운 문장 칸만, 늦게 와도 **이미 보이는 후보 번호는 절대 바꾸지 않는다**. 서버가 죽어도 입력은 계속된다.
+3. **입력 구조 고정**: 40키(4×10, 두벌식 배치, ChatBCI·MindChat 비교용), 후보키 1~7은 자판 1행. 받침은 후보가 채운다. 띄기 = 어절 경계, 초성 최대 40.
+4. **시선 열**: 내가 할 말 → 후보 → 자판을 한 열에. SSVEP 자극 중 나머지는 어둡게, 자판 카드는 불투명·진입 애니메이션 금지.
+5. **LLM 연동**: Responses API 구조화 JSON, 모든 후보는 Python이 초성 정확 일치·고정 글자를 재검증. 문맥은 "데이터이지 명령이 아님". reasoning none(지원 안 되면 minimal→low), retryable 오류만 2회 재시도. 띄어 친 경계를 문맥으로 준다(0개 응답 60→32.5%).
+6. **측정으로 결정**: 후보 품질 변경은 4세트(검수 AAC · 일상 보류 · 사전 용례 · 환자 보류)의 **실효 절감**으로 비교(`tools/bench_general.cjs`, `bench_decode.cjs`), 한 세트라도 크게 나빠지면 기각. 외운 표현 수치(93.6%)로 자랑하지 않는다.
+7. **알려진 함정**: 초성 0개 구간은 n-gram 전용(주제·에코를 넣으면 손해) · backoff는 점수 섞기가 아니라 순서 · `""`(내 차례 첫 단어)도 문맥 · 넓은 층은 늘 좁은 층보다 낮은 점수 · 벤치 하나만 보고 층을 지우지 않는다.
+8. **다시 시도하지 말 것(측정상 실패)**: 후보 5개 축소, 조사 합성 층, 문장 복원 단어 가산점·빔 16, 0초성 상황어 주입, NSMC 말뭉치, LLM 재시도·음절칸 프롬프트, reasoning low(15초).
+9. **디자인**: 장식(유리·빛줄기·파형·네온·무지개) 금지 — 사용자가 "로봇 같다·촌스럽다"고 거절함. 내용·글자·여백으로 위계, 색 토큰 3~4개, 대비 AA, clamp() 유동 크기, 누를 자리 48px 이상(작은 버튼은 오선택 원인).
+   팀 결정 색: 배경 회색 · 버튼 흰색 · 포인트 초록. SSVEP 자극은 Cao et al.(EMBC)대로 배경 #202020, 밝은 상태 #FFFFFF, 어두운 상태 #404040, 안내 글씨 #DDDDDD.
+10. **다음 할 일(팀 회의 노트)**: 상대 문장 맥락으로 단어 추천 강화 · 뉴스·연예·스포츠 시사어를 1~2주 주기로 반영(원문 저장 금지, 단어·제목만) · 엔터로 문장을 끝내면 대화창으로 보내고 '내가 할 말' 비우기 · 잘못 고른 글자를 되돌려 고치기 · 버튼 크기 키우기.
+11. **정직·안전**: 실제 EEG 미연결을 화면·문서에 명시, 수치는 보류 세트 기준으로만. 데이터는 라이선스 확인(전공서·원문 재배포 금지), 개인 학습은 기기에만, `.env`의 API 키는 읽지도 출력하지도 않는다.
+12. **완료 기준**: 테스트 전부 통과 → 버전 문자열(푸터·eyebrow·metrics) 올림 → 배포 후 `curl …/speller | grep -o "· v[0-9.]*<"`로 라이브 확인 → 프로젝트 문서 1개(변경·측정·한계).
+
+## C. 배포
+- PC에서는 바로 push. 클라우드 컨테이너는 bundle → PC 임시 worktree에서 커밋·push. 사용자 작업 트리와 커밋 안 된 변경은 절대 건드리지 않는다(시작 전 `git status -sb`). CI 10~18분 뒤 자동 배포.
