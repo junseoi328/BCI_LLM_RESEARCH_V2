@@ -828,6 +828,23 @@ html.no-splash #splash{display:none}
   body:not(.large-text) .kb .key{min-height:44px}
   body:not(.large-text) .kb .key.cand{min-height:52px}
 }
+/* Feedback: stable 40-key layout with targets that do not shrink on phones. */
+:root{--bg:#E9EBEA;--surface:#FFFFFF;--surface-2:#F4F5F4;--surface-3:#E4E7E5;--line:#D5DAD7;--line-strong:#BFC6C2;
+  --primary:#176A50;--primary-hover:#12523E;--accent:#176A50;--accent-600:#12523E;--accent-50:#E8F4EF;--accent-100:#C5E3D5;--pick:#245FAD;--pick-600:#245FAD;--pick-50:#EDF3FB;--pick-100:#C7D9EF;--pick-200:#A9C4E5}
+:root[data-theme="dark"]{--bg:#202020;--surface:#292929;--surface-2:#303030;--surface-3:#404040;--line:#505050;--line-strong:#666;--ink-900:#FFF;--ink-700:#DDD;--ink-500:#BBB;--accent:#8EDAB9;--accent-600:#A6E5CA;--accent-50:#263F35;--accent-100:#365B49;--pick:#9FC8FF;--pick-600:#C2DDFF;--pick-50:#29394D;--pick-100:#3C526E;--pick-200:#6383A8}
+body::before{display:none}
+.btn,.btn.sm,.ghost-btn,.jamo-btn,.rblock,.habitual-chip{min-width:48px;min-height:48px}
+.cand .tx .unit{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+.kb .key{min-height:56px}.kb .key.cand{min-height:60px}
+/* SSVEP 자극: Cao et al.(EMBC) 권장값 — 배경 #202020, 밝은 상태 #FFFFFF, 어두운 상태 #404040, 안내 글씨 #DDDDDD */
+body:has(.kb.stim),body.stim-on{background:#202020}
+body.stim-on::before{display:none}
+@keyframes ssvep{0%{background:#FFFFFF;color:#202020}50%{background:#404040;color:#DDDDDD}}
+.kb.stim .key.flicker{border-color:#FFFFFF}
+.keyboard-scroll{overflow-x:auto;padding:3px}
+.keyboard-scroll .kb{min-width:494px}
+.news-items{display:grid;gap:8px;margin-top:10px}
+.news-items button{text-align:left;white-space:normal;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -1002,7 +1019,8 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
           <div class="speech-actions">
             <button class="btn accent" id="btnSpeak">문장 말하기</button>
             <button class="btn" id="btnStopSpeak">중지</button>
-            <button class="btn" id="btnUndo">↶ 취소</button>
+            <button class="btn" id="btnUndo">↶ 되돌리기</button>
+            <button class="btn" id="btnFinish">문장 완료 ↵</button>
           </div>
         </section>
 
@@ -1070,6 +1088,14 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         </div>
       </details>
 
+      <details id="newsPanel">
+        <summary>최근 뉴스 · 대화 주제</summary>
+        <p class="unit-hint">최근 14일의 시사·연예·스포츠 기사 제목을 추천에 참고합니다. 열 때 갱신하며, 이용 중에는 주기적으로 확인합니다.</p>
+        <button class="btn" id="btnNewsRefresh">뉴스 확인</button>
+        <button class="btn" id="btnNewsClear">선택한 주제 해제</button>
+        <p id="newsStatus" role="status" class="unit-hint">뉴스를 불러오기 전입니다.</p>
+        <div id="newsItems" class="news-items"></div>
+      </details>
       <details id="directPanel">
         <summary>원하는 말이 없나요? 문장을 직접 입력하기</summary>
         <label for="directText">예측 없이 입력한 문장을 그대로 사용합니다</label>
@@ -1416,6 +1442,52 @@ function learnFromCommit(text){
      0.90  상대의 마지막 말   0.55  그 앞   0.35  그 앞앞
    ========================================================================== */
 const CTX_W={situation:1, memo:1, buffer:.8, mine:.7, partner:[.9,.55,.35]};
+let newsEntries=[], selectedNews=null, newsBusy=false;
+function freshNews(){
+  const cutoff=Date.now()-14*86400000;
+  return newsEntries.filter(n=>Date.parse(n.published_at)>=cutoff);
+}
+function relevantNews(){
+  const current=freshNews();
+  if(selectedNews) return current.filter(n=>n.url===selectedNews).slice(0,1);
+  const latest=[...(state.history||[])].reverse().find(h=>h.who!=="me");
+  const terms=(latest?.text||"").match(/[가-힣A-Za-z0-9]{2,}/g)||[];
+  return current.filter(n=>terms.some(t=>n.title.includes(t.replace(/(에서|은|는|이|가|을|를|도)$/,"")))).slice(0,2);
+}
+function newsContext(){
+  return relevantNews().map(n=>`${n.published_at.slice(0,10)} ${n.source}: ${n.title}`).join(" / ").slice(0,270);
+}
+async function refreshNews(){
+  if(newsBusy) return;
+  newsBusy=true; el("btnNewsRefresh").disabled=true;
+  el("newsStatus").textContent="뉴스를 확인하고 있습니다…";
+  try{
+    const r=await fetch("/speller/news",{signal:AbortSignal.timeout(30000)});
+    if(!r.ok) throw new Error();
+    const d=await r.json();
+    if(!Array.isArray(d.items)) throw new Error();
+    newsEntries=d.items.filter(n=>typeof n.title==="string" && typeof n.url==="string" && n.url.startsWith("https://www.yna.co.kr/"));
+    rebuildTrends();
+    if(!freshNews().some(n=>n.url===selectedNews)) selectedNews=null;
+    const items=freshNews();
+    el("newsStatus").textContent=`최근 기사 ${items.length}개 · ${d.updated_at ? new Date(d.updated_at).toLocaleString("ko-KR") : "갱신 기록 없음"}${d.unavailable?.length ? " · 일부 분야 연결 실패" : ""}`;
+    // Reserve space for each category instead of allowing one fast-moving feed to dominate.
+    const visible=["시사","연예","스포츠"].flatMap(c=>items.filter(n=>n.category===c).slice(0,4));
+    el("newsItems").innerHTML=visible.map(n=>`<div><button class="btn" data-news="${esc(n.url)}" aria-pressed="${selectedNews===n.url}">[${esc(n.category)}] ${esc(n.title)}</button> <a href="${esc(n.url)}" target="_blank" rel="noopener noreferrer">원문</a></div>`).join("");
+    el("newsItems").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      selectedNews=b.dataset.news;
+      el("newsItems").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+      clearCandidates(); markContextDirty(); renderCandidatePanel(); schedulePrediction();
+      el("newsStatus").textContent="선택한 기사 주제를 단어와 문장 추천에 반영합니다.";
+    });
+    markContextDirty(); renderCandidatePanel();
+  }catch(e){el("newsStatus").textContent="뉴스 연결에 실패했습니다. 기존 대화로 계속 입력할 수 있습니다.";}
+  finally{newsBusy=false;el("btnNewsRefresh").disabled=false;}
+}
+el("btnNewsRefresh").onclick=refreshNews;
+el("newsPanel").addEventListener("toggle",()=>{if(el("newsPanel").open) refreshNews();});
+el("btnNewsClear").onclick=()=>{selectedNews=null;clearCandidates();markContextDirty();renderCandidatePanel();schedulePrediction();el("newsItems").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed","false"));el("newsStatus").textContent="선택을 해제했습니다. 상대방의 최근 대화와 관련된 기사만 참고합니다.";};
+setInterval(()=>{if(!document.hidden && newsEntries.length) refreshNews();},3600000);
 let ctxCats=new Map();       // 카테고리 index -> 가중치(최댓값)
 let ctxDirty=true;
 function markContextDirty(){ ctxDirty=true; }
@@ -1476,6 +1548,42 @@ function rebuildEcho(){
       }
     }
   });
+  for(const token of newsContext().match(/[가-힣]{2,12}/g)||[]){
+    if(!ECHO_STOP.has(token)) echoWords.set(token,Math.max(echoWords.get(token)||0,SCORE.echo*.8));
+  }
+  // 상대 말에 답할 만한 단어(서버 LLM이 상대 차례마다 한 번 뽑아 둔 것)
+  for(const w of replyWords) if(!(echoWords.get(w)>=SCORE.reply)) echoWords.set(w,SCORE.reply);
+  // 요즘 화제어: 초성 2개 이상일 때만 걸리도록 두 글자 이상만, 무게는 상대 말보다 훨씬 낮게
+  for(const [w,n] of trendWords) if(!(echoWords.get(w)>=SCORE.trend*Math.min(n,3))) echoWords.set(w,SCORE.trend*Math.min(n,3));
+}
+let replyWords=[], replyCtl=null, trendWords=new Map();
+const TREND_STOP=new Set("속보 종합 단독 영상 포토 사진 오늘 내일 어제 이번 지난 관련 위해 대해 통해 이후 발표 공개 진행 기자 연합뉴스 결과 가능 확인".split(" "));
+/* 기사 제목 14일치에서 두 개 이상의 제목에 나온 말을 화제어로 센다(제목 원문은 저장하지 않고 단어만 쓴다). */
+function rebuildTrends(){
+  const df=new Map();
+  for(const n of freshNews()){
+    const seen=new Set();
+    for(let t of n.title.match(/[가-힣]{2,10}/g)||[]){
+      t=t.replace(/(에서|으로|에게|까지|부터|은|는|이|가|을|를|의|에|도|와|과|로)$/,"");
+      if(t.length>=2 && !TREND_STOP.has(t)) seen.add(t);
+    }
+    for(const t of seen) df.set(t,(df.get(t)||0)+1);
+  }
+  trendWords=new Map([...df].filter(([,c])=>c>=2).sort((a,b)=>b[1]-a[1]).slice(0,200));
+}
+async function fetchReplyWords(text){
+  if(replyCtl) replyCtl.abort();
+  replyCtl=new AbortController(); const mine=replyCtl;
+  try{
+    const r=await fetch("/reply-words",{method:"POST",headers:{"Content-Type":"application/json"},signal:mine.signal,
+      body:JSON.stringify({partner_text:text.slice(0,300),partner:state.partner||"other",situation:state.situation||"general",
+        recent:state.history.slice(-5).map(h=>`${h.who==="me"?"나":"상대"}: ${h.text}`.slice(0,300))})});
+    if(!r.ok) return;
+    const d=await r.json();
+    if(mine!==replyCtl || !Array.isArray(d.words)) return;
+    replyWords=d.words.filter(w=>typeof w==="string" && /^[가-힣]{1,10}$/.test(w)).slice(0,30);
+    markContextDirty(); renderCandidatePanel();
+  }catch(e){ /* 끊겨도 입력은 그대로 — 로컬 에코만 쓴다 */ }
 }
 function echoMap(){ if(ctxDirty) rebuildContext(); return echoWords; }
 
@@ -1642,6 +1750,7 @@ function recordHabitual(text){
 }
 function rememberUndo(text){
   undoStack.push({committed:state.committed,history:[...state.history],
+                  initials:state.initials,spelled:{...state.spelled},breaks:[...(state.breaks||[])],
                   habitual:state.habitual.map(p=>({...p})),lastText:text||null,
                   lastWord:state.lastWord,lastWord2:state.lastWord2});
   if(undoStack.length>50) undoStack.shift();
@@ -1731,10 +1840,10 @@ function ssvepGate(btn, apply){
   const win=d.ms;
   const kb=el("keyboard");
   setLoopStep(2);
-  kb.classList.add("stim"); btn.classList.add("flicker");
+  kb.classList.add("stim"); btn.classList.add("flicker"); document.body.classList.add("stim-on");
   const t0=performance.now();
   setTimeout(()=>{
-    kb.classList.remove("stim"); btn.classList.remove("flicker");
+    kb.classList.remove("stim"); btn.classList.remove("flicker"); document.body.classList.remove("stim-on");
     loop.stimMs=performance.now()-t0;
     setLoopStep(3);
     const d0=performance.now();
@@ -1802,7 +1911,7 @@ function showView(name){
   ["start","partner","situation","speller"].forEach(v=>{
     el("view-"+v).hidden = (v!==name);
   });
-  if(name==="speller") loadDict();   // 보통은 이미 받아 둔 상태다(아래 미리 받기)
+  if(name==="speller"){ loadDict(); if(!newsEntries.length) (window.requestIdleCallback||(f=>setTimeout(f,800)))(()=>refreshNews()); }   // 사전·시사어를 미리 받아 둔다
 }
 
 /* ---------------- step 1: partner ---------------- */
@@ -1990,7 +2099,10 @@ async function pressPunct(ch){
 }
 function backspaceOne(){
   const idx=state.initials.length-1;
-  if(idx<0){ loopFinish({key:"back",type:"fn",rejected:1}); return; }
+  if(idx<0){
+    if(state.committed){ editCommitted(state.committed.trimEnd().slice(0,-1)); }
+    loopFinish({key:"back",type:"fn",rejected:!state.committed}); return;
+  }
   if((state.breaks||[]).includes(idx+1)){   // 끝에 띄어쓰기가 있으면 그것만 지운다
     state.breaks=state.breaks.filter(b=>b!==idx+1);
     clearCandidates(); renderBuffer(); schedulePrediction();
@@ -2012,10 +2124,8 @@ function deleteWord(){
   }
   const parts=state.committed.trim().split(/\s+/).filter(Boolean);
   if(parts.length){
-    rememberUndo();
     parts.pop();
-    state.committed=parts.join(" ");
-    renderBuffer();
+    editCommitted(parts.join(" "));
   }
   loopFinish({key:"delword",type:"fn"});
 }
@@ -2037,7 +2147,29 @@ function pressSpace(){
   clearCandidates(); renderBuffer(); schedulePrediction();
   loopFinish({key:"space",type:"fn"});
 }
+function finishSentence(){
+  if(commitBusy) return;
+  if(state.initials){ announce("작성 중인 글자를 후보에서 고른 뒤 문장을 완료해주세요."); return; }
+  if(!state.committed.trim()) return;
+  rememberUndo(); cancelPending(); endMine();
+  state.committed=""; state.lastWord=""; state.lastWord2=""; state.sessionId=null;
+  markContextDirty(); clearRecoveryState(); renderBuffer(); renderChat();
+  announce("문장을 대화에 남겼습니다. 다음 문장을 입력하세요.");
+}
+function editCommitted(text){
+  rememberUndo(); cancelPending(); state.sessionId=null;
+  const last=openMine();
+  if(last){
+    if(text) state.history[state.history.length-1]={...last,text};
+    else state.history.pop();
+  }
+  state.committed=text;
+  const words=text.trim().split(/\s+/).filter(Boolean);
+  state.lastWord=words.at(-1)||""; state.lastWord2=words.at(-2)||"";
+  markContextDirty(); clearCandidates(); renderBuffer(); renderChat();
+}
 function pressCommitKey(){
+  if(!state.initials){ finishSentence(); return; }
   const first=slots[0];
   if(first){ chooseSlot(0); return; }
   const word=fullySpelledWord();
@@ -2171,7 +2303,7 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 앞 단어 가산점. bgMine=내가 실제로 그 순서로 썼던 것, bgSeed=검수 사전,
      bgLex=일반 말뭉치. 값은 bench_bigram.js 측정으로 고른다. */
   bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6,
-  bgTri:1400, bgTriPer:120, echo:700, lexGuess:1.2,
+  bgTri:1400, bgTriPer:120, echo:700, reply:450, trend:60, lexGuess:1.2,
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1, lexTri:500,
   /* ⑤ 사전 층(구어 빈도 + 국어사전 어휘). 말뭉치 층과 같은 눈금에 둔다. */
@@ -2370,6 +2502,11 @@ function localWords(limit, ini){
   const cats=boostedCats(), bg=bigramMap(), ec=echoMap(), best=new Map();
   const put=(text,sc)=>{ if(!(best.get(text)>=sc)) best.set(text,sc); };
   const boost=w=>(bg.get(w)||0)+(ec.get(w)||0);
+  // Include recent conversation names even when they are absent from the static dictionary.
+  for(const [word,weight] of ec){
+    const sc=scoreSeed(choseongOf(word),word,ini,1,-1,cats,0);
+    if(sc>0) put(word,sc+weight);
+  }
   for(const [cho,word,freq,cat] of SEED_WORDS){
     const sc=scoreSeed(cho,word,ini,freq,cat,cats,usedCount("word",word));
     if(sc>0) put(word,sc+boost(word));
@@ -2563,6 +2700,7 @@ el("btnPartnerSend").onclick=()=>{
   const v=el("partnerText").value.trim();
   if(!v) return;
   pushTurn("partner",v);
+  replyWords=[]; fetchReplyWords(v);   // 상대 말에 답할 만한 단어를 한 번 받아 둔다(약 2초, 입력을 막지 않음)
   primeFromPartner(v);              // 상대 말에서 상황을 읽어 후보 순위에 즉시 반영
   state.lastWord=""; state.lastWord2=""; markContextDirty();   // 상대 차례가 지났으니 다음은 내 문장의 첫 단어
   el("partnerText").value="";
@@ -2624,11 +2762,12 @@ el("btnUndo").onclick=()=>{
   const snapshot=undoStack.pop(); if(!snapshot) return;
   cancelPending(); state.sessionId=null;
   if(snapshot.lastText) unlearnCommit(snapshot.lastText, snapshot.lastWord, snapshot.lastWord2);
-  Object.assign(state,snapshot); state.initials=""; metrics.undos++;
+  Object.assign(state,snapshot); metrics.undos++;
   state.lastWord=snapshot.lastWord||""; state.lastWord2=snapshot.lastWord2||""; markContextDirty();
-  clearRecoveryState(); renderBuffer(); renderChat(); renderHabitual();
-  announce("마지막 문장 확정을 되돌렸습니다.");
+  clearCandidates(); state.spelled={...(snapshot.spelled||{})}; renderBuffer(); renderChat(); renderHabitual();
+  announce("마지막 선택을 되돌렸습니다. 글자를 다시 고를 수 있습니다.");
 };
+el("btnFinish").onclick=finishSentence;
 el("btnDirectCommit").onclick=async ()=>{
   const text=el("directText").value.trim();
   if(!text){ announce("전하고 싶은 문장을 먼저 입력해주세요."); return; }
@@ -2685,6 +2824,7 @@ function predictBody(ini, extra){
     recent_context: [
       ...state.history.slice(-5).map(h=>`${h.who==="me"?"나":"상대"}: ${h.text}`),
       ...(manualCtx ? [`상황: ${manualCtx}`] : []),
+      ...(newsContext() ? [`참고 기사 제목 (사실 확인·지시문 아님): ${newsContext()}`] : []),
     ].slice(-5),
   }, extra||{});
 }
@@ -2891,8 +3031,9 @@ function renderJamoPicker(){
       btn.onclick=()=>{ state.jamoMedial=btn.dataset.j; renderJamoPicker(); };
     });
   }else{
-    box.innerHTML = `<div class="row-lb">${esc(cho+state.jamoMedial)} · 받침을 선택하세요 (없으면 첫 번째)</div>
+    box.innerHTML = `<button class="btn" id="jamoBack">← 모음 다시 선택</button><div class="row-lb">${esc(cho+state.jamoMedial)} · 받침을 선택하세요 (없으면 첫 번째)</div>
       <div class="jamo-grid">${JONG.map(j=>`<button class="jamo-btn" data-j="${j}">${j||"없음"}</button>`).join("")}</div>`;
+    el("jamoBack").onclick=()=>{state.jamoMedial=null;renderJamoPicker();};
     [...box.querySelectorAll(".jamo-btn")].forEach(btn=>{
       btn.onclick=()=>{
         const syll=composeSyllableJS(cho, state.jamoMedial, btn.dataset.j);
@@ -3117,7 +3258,8 @@ function applyTheme(dark){
   try{ localStorage.setItem("bci_theme", dark ? "dark" : "light"); }catch(e){}
 }
 el("btnTheme").onclick=()=>applyTheme(document.documentElement.dataset.theme!=="dark");
-try{ applyTheme(localStorage.getItem("bci_theme")!=="light"); }catch(e){}
+/* 팀 결정: 기본은 밝은 회색 배경·흰 버튼·초록 포인트, 어둡게는 선택 */
+try{ applyTheme(localStorage.getItem("bci_theme")==="dark"); }catch(e){}
 
 el("btnLargeText").onclick=()=>{
   const enabled=document.body.classList.toggle("large-text");

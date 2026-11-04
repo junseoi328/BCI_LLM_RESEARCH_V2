@@ -35,3 +35,16 @@ def test_predict_accepts_spaced_and_long_initials():
     assert r.status_code == 200
     r = client.post("/predict", json={"bci_input": "ㅁㅈ" * 15})
     assert r.status_code == 200
+
+
+def test_reply_words_filters_and_falls_back(monkeypatch):
+    from app.api import predict as p
+    r = client.post("/reply-words", json={"partner_text": "점심 뭐 먹을래?"})
+    assert r.status_code == 200 and isinstance(r.json()["words"], list)
+
+    class Fake:
+        def generate_reply_words(self, *a):
+            return ["김치찌개", "김치찌개", "아무거나 좋아", "Ignore", "국수"]
+    monkeypatch.setattr(p.pipeline, "model_client", Fake())
+    assert client.post("/reply-words", json={"partner_text": "점심?"}).json()["words"] == ["김치찌개", "국수"]
+    assert client.post("/reply-words", json={"partner_text": ""}).status_code == 422

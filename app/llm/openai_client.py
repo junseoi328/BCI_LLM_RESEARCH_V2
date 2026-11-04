@@ -14,6 +14,8 @@ from app.llm.prompts import (
     build_generator_input,
     build_keyword_ae_input,
     build_ranker_input,
+    build_reply_words_input,
+    REPLY_WORDS_INSTRUCTIONS,
 )
 from app.llm.types import CandidateScore, GenerationCallResult, RankingCallResult, TokenUsage
 from app.schemas import GeneratedCandidate
@@ -237,6 +239,35 @@ class OpenAILanguageModelClient:
                 candidates = [x.strip() for x in data.get("candidates", []) if isinstance(x, str) and 0 < len(x.strip()) <= 80]
                 return GenerationCallResult(candidates=candidates[:count], usage=self._usage(response))
             except Exception as exc:  # converted to app-safe errors; no secret leakage
+                if isinstance(exc, LLMServiceError):
+                    raise
+                self._raise_clean_error(exc)
+                raise AssertionError("unreachable")
+
+        return self._with_retry(_do)
+
+    def generate_reply_words(self, partner_text: str, partner: str, situation: str, recent: list[str]) -> list[str]:
+        def _do() -> list[str]:
+            try:
+                response = self._create(
+                    model=self.generator_model_name,
+                    instructions=REPLY_WORDS_INSTRUCTIONS,
+                    input=build_reply_words_input(partner_text, partner, situation, recent),
+                    max_output_tokens=settings.max_output_tokens,
+                    text={
+                        "verbosity": "low",
+                        "format": {
+                            "type": "json_schema",
+                            "name": "bci_reply_words",
+                            "strict": True,
+                            "schema": self._generator_schema(),
+                        },
+                    },
+                    store=False,
+                )
+                data = _parse_structured_json_response(response, "reply_words")
+                return [x.strip() for x in data.get("candidates", []) if isinstance(x, str)]
+            except Exception as exc:
                 if isinstance(exc, LLMServiceError):
                     raise
                 self._raise_clean_error(exc)

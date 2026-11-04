@@ -8,6 +8,7 @@ from fastapi.responses import FileResponse
 
 
 from app.api.speller_ui import router as speller_ui_router
+from app.api.news import router as news_router
 from app.api.autotoggle import router as autotoggle_router
 from app.api.predict import router as predict_router
 from app.api.session import router as session_router
@@ -34,6 +35,7 @@ app.include_router(predict_router, tags=["prediction"])
 app.include_router(autotoggle_router, tags=["auto-toggle"])
 app.include_router(session_router, tags=["session"])
 app.include_router(speller_ui_router)
+app.include_router(news_router)
 
 @app.get("/")
 def root():
