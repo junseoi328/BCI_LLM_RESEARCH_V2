@@ -5,7 +5,7 @@ from threading import Lock
 import time
 import xml.etree.ElementTree as ET
 
-import requests
+import httpx
 from fastapi import APIRouter
 
 router = APIRouter(tags=["speller-ui"])
@@ -37,11 +37,11 @@ def parse_feed(body: bytes, category: str, now: datetime) -> list[dict]:
 
 
 def fetch_feed(slug: str) -> bytes:
-    with requests.get(f"https://www.yna.co.kr/rss/{slug}.xml", timeout=(3, 5),
-                      stream=True, allow_redirects=False) as response:
+    with httpx.stream("GET", f"https://www.yna.co.kr/rss/{slug}.xml",
+                      timeout=httpx.Timeout(5, connect=3), follow_redirects=False) as response:
         response.raise_for_status()
         chunks, size = [], 0
-        for chunk in response.iter_content(65536):
+        for chunk in response.iter_bytes(65536):
             size += len(chunk)
             if size > 2_000_000:
                 raise ValueError("RSS exceeds size limit")
@@ -64,7 +64,7 @@ def news():
                     for item in parse_feed(fetch_feed(slug), category, now):
                         merged[item["url"]] = item
                     succeeded = True
-                except (requests.RequestException, ValueError, ET.ParseError):
+                except (httpx.HTTPError, ValueError, ET.ParseError):
                     failed.append(category)
             _items = sorted(merged.values(), key=lambda i: i["published_at"], reverse=True)[:300]
             _checked, _failed = time.monotonic(), failed
