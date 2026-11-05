@@ -864,3 +864,27 @@ test('Continuous initials become spaced sentences, patient phrases first', {time
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+test('Enter after a mouse-picked candidate finishes the sentence instead of re-picking', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:768}});
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML()} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    for(const c of 'ㄷㅇㅈㅅㅇ') await page.click(`#keyboard .key[data-v="${c}"]`);
+    await page.evaluate(()=>{state.latest=[{candidate_id:'s',text:'도와주세요'}];renderCandidates({});});
+    const cands=await page.locator('#keyboard .key.cand').allTextContents();
+    const i=cands.findIndex(t=>t.includes('도와주세요'));
+    assert.ok(i>=0, cands.join(' | '));
+    await page.locator('#keyboard .key.cand').nth(i).click();
+    const picked=await page.evaluate(()=>state.committed);
+    assert.equal(await page.evaluate(()=>state.initials),'');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Enter');
+    const s=await page.evaluate(()=>({c:state.committed,h:state.history.map(h=>h.text)}));
+    assert.equal(s.c,'');
+    assert.deepEqual(s.h,[picked]);
+  }finally{await browser.close();}
+});
