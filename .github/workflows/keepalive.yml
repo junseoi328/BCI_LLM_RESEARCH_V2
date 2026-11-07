@@ -1,0 +1,13 @@
+# Render 무료 인스턴스는 15분 동안 요청이 없으면 잠들고, 다음 방문자가 'Application loading' 화면을 1분 가까이 본다.
+# 10분마다 /health 를 불러 깨워 둔다. GitHub 예약 실행은 몇 분 늦을 수 있고, 저장소에 60일 동안 활동이 없으면 꺼진다.
+name: keepalive
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: curl -fsS -m 90 https://esimjeonsim-bci-speller.onrender.com/health || true

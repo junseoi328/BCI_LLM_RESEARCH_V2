@@ -881,7 +881,9 @@ test('Enter after a mouse-picked candidate finishes the sentence instead of re-p
     await page.locator('#keyboard .key.cand').nth(i).click();
     const picked=await page.evaluate(()=>state.committed);
     assert.equal(await page.evaluate(()=>state.initials),'');
+    assert.match(await page.locator('#keyboard .key[data-v="commit"]').getAttribute('aria-label'),/엔터/);
     await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#prevLines').textContent(),picked,'끝낸 문장은 위 줄에 남는다');
     await page.keyboard.press('Enter');
     const s=await page.evaluate(()=>({c:state.committed,h:state.history.map(h=>h.text)}));
     assert.equal(s.c,'');
