@@ -25,3 +25,7 @@
 
 ## C. 배포
 - PC에서는 바로 push. 클라우드 컨테이너는 bundle → PC 임시 worktree에서 커밋·push. 사용자 작업 트리와 커밋 안 된 변경은 절대 건드리지 않는다(시작 전 `git status -sb`). CI 10~18분 뒤 자동 배포. 라이브가 안 바뀌면 `/health`의 release와 라이브 HTML이 어느 커밋과 같은지부터 본다(배포 실패면 이전 버전이 계속 뜬다). 라이브가 응답 없이 멈추면(코드는 로컬 정상) 커밋 push로 새 배포를 띄운다. keepalive 예약은 GitHub가 실제로 3~4시간 간격으로만 돌린다 — 그래서 `sw.js`가 두 번째 방문부터 1.5초 안에 저장본을 연다(Render 로딩 화면은 `id="keyboard"` 검사로 저장 안 함). 첫 방문까지 없애려면 외부 5분 핑(UptimeRobot) 또는 유료 플랜.
+
+## D. 피그마 반영 ("피그마 바꿨어"라고 하면)
+- 순서: `get_metadata 0:1`로 바뀐 프레임 찾기 → 그 프레임만 `get_design_context`(스크린샷 포함) → 값은 "Figma 디자인" CSS 블록, 배치·기능 변화는 해당 DOM/JS 최소 수정 → 데스크톱·모바일 스크린샷 비교 → 배포. 40키·48px·SSVEP 원칙과 부딪히면 먼저 묻는다.
+- 레이어 이름 → 코드: Conversation toolbar=`.topline` · Conversation=`.card.chat`(My/Partner bubble=`.chat-turn.me/.partner .tx`) · Sentence composer=`.card.mine`·`.buffer` · Word candidates=`#candWords`(Candidate=`.cand.word`) · Korean input keyboard=`#keyboard`(Keyboard key=`.kb .key.cho/.jung/.fn/.cand`) · loadin screen=`#splash`.
