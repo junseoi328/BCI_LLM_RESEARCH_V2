@@ -861,7 +861,7 @@ body.stim-on::before{display:none}
 html:not([data-theme="dark"]) body{background:linear-gradient(180deg,#B1DCB0 0%,#DDE0C6 100%) fixed #DDE0C6}
 html:not([data-theme="dark"]) body:has(.kb.stim),html:not([data-theme="dark"]) body.stim-on{background:#202020}
 html:not([data-theme="dark"]) body{font-family:var(--serif)}
-html:not([data-theme="dark"]) .topbar{background:transparent;border-bottom:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+html:not([data-theme="dark"]) .topbar{background:#B1DCB0;border-bottom:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .brand-logo{display:block;height:44px;width:auto}
 html[data-theme="dark"] .brand-logo{filter:brightness(0) invert(.92)}
 .brand .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -892,6 +892,10 @@ html:not([data-theme="dark"]) .kb .key.fn,html:not([data-theme="dark"]) .kb .key
 html:not([data-theme="dark"]) .kb .key.commit{background:#326B56;border-color:#326B56;color:#fff}
 html:not([data-theme="dark"]) .kb .key.cand:not(:disabled){background:#EBF4EF;border-color:#D5E8DE;color:#3C7D5E;font-size:clamp(15px,.5vw + 10px,20px);line-height:1.15}
 html:not([data-theme="dark"]) .kb .key.cand:not(:disabled) .cw{color:#454944;font-size:clamp(13px,.4vw + 9px,17px);line-height:1.2}
+.none-btn{margin-left:auto;align-self:center}.none-btn kbd{font:inherit;opacity:.6;margin-left:4px}
+#recoveryHint:empty{display:none}
+.jamo-picker .jamo-grid{grid-template-columns:repeat(auto-fill,minmax(52px,1fr))}
+.rblock.active{outline:3px solid var(--accent);outline-offset:2px}
 html:not([data-theme="dark"]) .kb .key.cand:disabled{background:#FCFCFB;border:1.4px dashed #EEEFEA;color:#DDDCD8;box-shadow:none}
 /* TV 1920×1044(피그마 Main 프레임): 좌우 26px만 남기고 넓게, 키는 피그마에 가깝게 + 연구용 안내 푸터까지 한 화면 */
 @media(min-width:1800px) and (min-height:1000px){
@@ -946,7 +950,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.5</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.6</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1077,7 +1081,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         </section>
 
         <section class="card cand-card">
-          <p class="sec-title">후보 <span>번호 = 아래 후보키</span></p>
+          <p class="sec-title">후보 <span>번호 = 아래 후보키</span><button type="button" class="btn sm none-btn" id="btnNone" hidden>원하는 말 없음 <kbd>0</kbd></button></p>
           <div class="cand-words" id="candWords" aria-live="polite"></div>
           <div class="cand-sents" id="candSents" aria-live="polite" aria-busy="false"></div>
           <div class="cand-foot">
@@ -1088,9 +1092,10 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
           </div>
           <div class="recovery" id="recoveryPanel" hidden>
             <div class="recovery-head">
-              <span>글자를 직접 완성해서 다시 찾기</span>
+              <span id="recoveryTitle">글자를 직접 완성해서 다시 찾기</span>
               <button class="ghost-btn" id="btnRecoveryClose">닫기</button>
             </div>
+            <p class="unit-hint" id="recoveryHint"></p>
             <div class="recovery-blocks" id="recoveryBlocks"></div>
             <div class="jamo-picker" id="jamoPicker" hidden></div>
             <div class="actions">
@@ -1181,7 +1186,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.5.2</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.6.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1776,7 +1781,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.5.2",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.6.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2104,6 +2109,8 @@ function toggleShift(force){
    그 글자를 그 자리에서 확정해 state.spelled에 넣는다(= 백엔드가 이미 받던
    spelled_syllables 필드라 서버 변경이 필요 없음). 후보키는 slots[]에서 고른다. */
 function handleKey(t,v){
+  // '없음'으로 한 글자를 채우는 중이면 자판의 모음=중성, 자음=받침, ✓=받침 없음(피그마 '자모변환'과 같은 일, 40키 그대로)
+  if(state.jamoTarget!==null && (t==="jung"||t==="cho"||v==="commit")){ if(shiftOn&&t!=="cho") toggleShift(false); return guidedJamo(t,v); }
   if(t==="cand"){ if(shiftOn) toggleShift(false); return chooseSlot(Number(v)); }
   if(t==="punct") return pressPunct(v);
   if(t==="cho"||t==="jung"){ if(shiftOn) toggleShift(false); }   // 자판과 같게 한 글자만 유지
@@ -2290,6 +2297,7 @@ function renderBuffer(){
   el("bufferPh").textContent = prev.length ? "다음 문장을 입력하세요" : "고른 문장이 여기 쌓입니다";
   el("bufferPh").style.display = (state.committed || state.initials) ? "none" : "inline";
   syncCommitKey();
+  el("btnNone").hidden=!state.initials;
   renderWordDisplay();
   renderCandidatePanel();
 }
@@ -3069,6 +3077,7 @@ function renderCandidateUnits(text){
 /* ---------------- KeywordAE recovery panel ---------------- */
 el("btnOpenRecovery").onclick=()=>openRecoveryPanel();
 el("btnRecoveryClose").onclick=()=>closeRecoveryPanel();
+el("btnNone").onclick=()=>pressNone();
 el("btnRecoveryReset").onclick=()=>{ clearRecoveryState(); renderRecoveryBlocks(); el("jamoPicker").hidden=true; hideFillmaskBox(); };
 el("btnRecoveryPredict").onclick=async ()=>{
   if(!Object.keys(state.spelled).length){ return; }
@@ -3081,9 +3090,69 @@ el("btnRecoveryPredict").onclick=async ()=>{
 
 function openRecoveryPanel(){
   el("recoveryPanel").hidden=false;
+  state.guided=false;
+  el("recoveryTitle").textContent="글자를 직접 완성해서 다시 찾기";
+  el("recoveryHint").textContent="";
   renderRecoveryBlocks();
 }
+/* ---------- '원하는 말 없음' → 한 글자 채우기 → 다시 찾기 (반복) ----------
+   어느 글자를 채우게 할지: 지금 문맥 점수로 뽑은 후보들(사전 문장·단어·표현·LLM)이 그 자리 글자에서
+   가장 많이 갈리는(가중 엔트로피 최대) 아직 안 채운 자리. 이미 보여 줬는데 '없음'을 받은 후보는 무게를 낮춘다. */
+function bestSpellTarget(){
+  const ini=state.initials, n=ini.length;
+  const open=[...Array(n).keys()].filter(i=>!state.spelled[i]);
+  if(!open.length) return -1;
+  const shown=new Set(slots.map(x=>x&&x.text)), cands=[];
+  const add=(text,r)=>{ const sy=[...String(text||"").replace(/[^가-힣]/g,"")];
+    if(sy.length===n && choseongOf(sy.join(""))===ini) cands.push([sy,(shown.has(text)?.3:1)/(r+1)]); };
+  try{ decodeSentences(ini,40).forEach(add); }catch(e){}
+  localWords(40,ini).forEach((c,r)=>add(c.text,r));
+  localPhrases(20,ini).forEach((c,r)=>add(c.text,r));
+  (state.latest||[]).forEach((c,r)=>add(c.text,r));
+  let best=open[0], bestH=-1;
+  for(const i of open){
+    const m=new Map(); let tot=0;
+    for(const [sy,w] of cands){ m.set(sy[i],(m.get(sy[i])||0)+w); tot+=w; }
+    let H=0; for(const v of m.values()){ const p=v/tot; H-=p*Math.log(p); }
+    if(H>bestH+1e-9){ bestH=H; best=i; }
+  }
+  return best;
+}
+function pressNone(){
+  if(!state.initials){ announce("먼저 초성을 입력하세요."); return; }
+  const i=bestSpellTarget();
+  if(i<0){ el("btnRecoveryPredict").click(); return; }
+  openRecoveryPanel(); state.guided=true;
+  el("recoveryTitle").textContent=`${i+1}번째 글자 ‘${state.initials[i]}’를 완성해 주세요`;
+  el("recoveryHint").textContent="지금 후보들이 이 글자에서 가장 많이 갈립니다. 자판에서 모음 → 받침(없으면 ✓) 순서로 누르면 다시 찾습니다.";
+  openJamoPicker(i);
+  announce(`${i+1}번째 글자 ${state.initials[i]}의 모음을 눌러주세요.`);
+}
+function guidedJamo(t,v){
+  if(!state.jamoMedial || t==="jung"){
+    if(t!=="jung"){ announce("먼저 모음을 눌러주세요."); loopFinish({key:v,type:t,rejected:1}); return; }
+    state.jamoMedial=v; renderJamoPicker(); announce("받침을 누르세요. 받침이 없으면 ✓를 누르세요.");
+    loopFinish({key:v,type:"jung"}); return;
+  }
+  const jong=t==="cho" ? v : "";
+  if(jong && !JONG.includes(jong)){ announce(`${v}은 받침으로 쓸 수 없어요.`); loopFinish({key:v,type:t,rejected:1}); return; }
+  finishGuided(composeSyllableJS(state.initials[state.jamoTarget], state.jamoMedial, jong));
+  loopFinish({key:v,type:t});
+}
+function finishGuided(syll){
+  if(syll) state.spelled[state.jamoTarget]=syll;
+  state.jamoTarget=null; state.jamoMedial=null;
+  renderRecoveryBlocks(); renderJamoPicker();
+  if(!state.guided || !syll) return;
+  state.guided=false;
+  clearCandidates(); renderBuffer();
+  if([...state.initials].every((_,i)=>state.spelled[i])){ el("recoveryHint").textContent="모든 글자를 채웠습니다. ‘완성한 글자 확정’을 누르세요."; return; }
+  el("recoveryTitle").textContent=`‘${syll}’로 다시 찾았습니다`;
+  el("recoveryHint").textContent="후보에 원하는 말이 있으면 번호로 고르고, 없으면 다시 ‘원하는 말 없음’(0)을 누르세요.";
+  predict({ spelled_syllables: state.spelled });
+}
 function closeRecoveryPanel(){
+  state.guided=false; state.jamoTarget=null; state.jamoMedial=null;
   el("recoveryPanel").hidden=true;
   el("jamoPicker").hidden=true;
   hideFillmaskBox();
@@ -3124,12 +3193,7 @@ function renderJamoPicker(){
       <div class="jamo-grid">${JONG.map(j=>`<button class="jamo-btn" data-j="${j}">${j||"없음"}</button>`).join("")}</div>`;
     el("jamoBack").onclick=()=>{state.jamoMedial=null;renderJamoPicker();};
     [...box.querySelectorAll(".jamo-btn")].forEach(btn=>{
-      btn.onclick=()=>{
-        const syll=composeSyllableJS(cho, state.jamoMedial, btn.dataset.j);
-        if(syll){ state.spelled[state.jamoTarget]=syll; }
-        state.jamoTarget=null; state.jamoMedial=null;
-        renderRecoveryBlocks(); renderJamoPicker();
-      };
+      btn.onclick=()=>finishGuided(composeSyllableJS(cho, state.jamoMedial, btn.dataset.j));
     });
   }
 }
@@ -3295,6 +3359,7 @@ document.addEventListener("keydown",(e)=>{
   if(["TEXTAREA","INPUT","SELECT"].includes(e.target.tagName)) return;
   if(e.target.isContentEditable) return;
   if(e.key==="Escape"){ el("btnCancel").click(); return; }
+  if(e.key==="0" && state.initials){ e.preventDefault(); pressNone(); return; }
   if(["1","2","3","4","5","6","7"].includes(e.key)){
     const idx=parseInt(e.key,10)-1;
     if(slots[idx]){

@@ -904,3 +904,31 @@ test('SSVEP flicker still runs in experiment mode when the OS asks for reduced m
     assert.equal(await page.locator('#keyboard .key.flicker').evaluate(n=>getComputedStyle(n).animationName),'ssvep');
   }finally{await browser.close();}
 });
+
+test('"원하는 말 없음" picks one syllable, keyboard vowel+✓ fills it and searches again', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:900}});
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML()} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    for(const c of 'ㄷㅇㅈㅅㅇ') await page.click(`#keyboard .key[data-v="${c}"]`);
+    assert.equal(await page.locator('#btnNone').isVisible(),true);
+    await page.keyboard.press('0');
+    const idx=await page.evaluate(()=>state.jamoTarget);
+    assert.ok(idx>=0 && idx<5);
+    assert.match(await page.locator('#recoveryTitle').textContent(),/번째 글자/);
+    await page.click('#keyboard .key[data-v="ㅏ"]');
+    await page.click('#keyboard .key[data-v="commit"]');
+    const s=await page.evaluate(i=>({sp:state.spelled[i],ini:state.initials,target:state.jamoTarget,hist:state.history.length,title:el('recoveryTitle').textContent}),idx);
+    assert.equal(s.sp, await page.evaluate(i=>composeSyllableJS(state.initials[i],'ㅏ',''),idx));
+    assert.equal(s.ini,'ㄷㅇㅈㅅㅇ','초성은 그대로');
+    assert.equal(s.target,null);
+    assert.equal(s.hist,0,'✓는 받침 없음 — 문장을 끝내지 않는다');
+    assert.match(s.title,/다시 찾았습니다/);
+    await page.keyboard.press('0');
+    const idx2=await page.evaluate(()=>state.jamoTarget);
+    assert.ok(idx2!==idx,'다음에는 아직 안 채운 다른 글자');
+  }finally{await browser.close();}
+});
