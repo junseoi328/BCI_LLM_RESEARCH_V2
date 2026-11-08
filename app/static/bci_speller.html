@@ -892,6 +892,14 @@ html:not([data-theme="dark"]) .kb .key.commit{background:#326B56;border-color:#3
 html:not([data-theme="dark"]) .kb .key.cand:not(:disabled){background:#EBF4EF;border-color:#D5E8DE;color:#3C7D5E;font-size:clamp(15px,.5vw + 10px,20px);line-height:1.15}
 html:not([data-theme="dark"]) .kb .key.cand:not(:disabled) .cw{color:#454944;font-size:clamp(13px,.4vw + 9px,17px);line-height:1.2}
 html:not([data-theme="dark"]) .kb .key.cand:disabled{background:#FCFCFB;border:1.4px dashed #EEEFEA;color:#DDDCD8;box-shadow:none}
+/* TV 1920×1044(피그마 Main 프레임): 좌우 26px만 남기고 넓게, 키는 피그마에 가깝게 + 연구용 안내 푸터까지 한 화면 */
+@media(min-width:1800px) and (min-height:1000px){
+  .step-wrap.wide{max-width:none;padding-inline:26px}
+  .kb .key{min-height:60px}.kb .key.cand{min-height:68px}
+  .cand.word{min-height:60px}
+  .shell{padding-bottom:4px}
+  .footer-note{padding-block:6px}
+}
 </style>
 </head>
 <body>
@@ -1172,7 +1180,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.5.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.5.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1767,7 +1775,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.5.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.5.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({

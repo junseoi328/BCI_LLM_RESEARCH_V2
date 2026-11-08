@@ -28,4 +28,5 @@
 
 ## D. 피그마 반영 ("피그마 바꿨어"라고 하면)
 - 순서: `get_metadata 0:1`로 바뀐 프레임 찾기 → 그 프레임만 `get_design_context`(스크린샷 포함) → 값은 "Figma 디자인" CSS 블록, 배치·기능 변화는 해당 DOM/JS 최소 수정 → 데스크톱·모바일 스크린샷 비교 → 배포. 40키·48px·SSVEP 원칙과 부딪히면 먼저 묻는다.
+- 기준 화면은 TV 1920×1044(피그마 Main 크기): 스크롤 없이 연구용 안내 푸터까지 한 화면(`@media(min-width:1800px) and (min-height:1000px)` 블록). 바꾼 뒤 `scrollHeight==1044` 확인.
 - 레이어 이름 → 코드: Conversation toolbar=`.topline` · Conversation=`.card.chat`(My/Partner bubble=`.chat-turn.me/.partner .tx`) · Sentence composer=`.card.mine`·`.buffer` · Word candidates=`#candWords`(Candidate=`.cand.word`) · Korean input keyboard=`#keyboard`(Keyboard key=`.kb .key.cho/.jung/.fn/.cand`) · loadin screen=`#splash`.
