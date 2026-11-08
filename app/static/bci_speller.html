@@ -782,7 +782,7 @@ body:not(:has(#expOn:checked)) .topline .hud-more{margin-left:auto}
 .kb.stim .ripple{display:none}
 
 /* --- 스플래시: 종이 위에 도장 하나와 이름 --- */
-#splash{position:fixed;inset:0;z-index:100;display:grid;place-content:center;justify-items:center;gap:14px;background:var(--bg);pointer-events:none;animation:spOut .4s ease .85s forwards}
+#splash{position:fixed;inset:0;z-index:100;display:grid;place-content:center;justify-items:center;gap:14px;background:var(--bg);pointer-events:none}
 .sp-mark{display:grid;place-items:center;width:76px;height:76px;border-radius:22px;background:var(--accent);color:var(--on-solid);font-family:var(--serif);font-size:38px;font-weight:700;animation:spMark .55s var(--ease) both}
 .sp-word{font-family:var(--serif);font-size:1.7rem;font-weight:700;letter-spacing:-.03em;color:var(--ink-900);animation:riseIn .5s var(--ease) .15s both}
 @keyframes spMark{from{opacity:0;transform:scale(.85)}}
@@ -806,7 +806,6 @@ html.no-splash #splash{display:none}
   .kb .key.cand{min-height:46px}
   .spec-ini span{width:38px;height:44px}
 }
-@media(prefers-reduced-motion:reduce){#splash{display:none}}
 @media print{body::before,#splash{display:none}}
 
 /* 입력 영역은 고정된 40개 표적을 유지한다. 집중 모드는 대화만 접는다. */
@@ -914,7 +913,25 @@ html:not([data-theme="dark"]) .kb .key.cand:disabled{background:#FCFCFB;border:1
 </div>
 <script>
 try{ if(sessionStorage.getItem("ss_splash")) document.documentElement.classList.add("no-splash"); sessionStorage.setItem("ss_splash","1"); }catch(e){}
-setTimeout(()=>{ const s=document.getElementById("splash"); if(s) s.remove(); }, 1600);
+/* 피그마 loading 화면(그라데이션 + 세로 로고)을 1.1초 보여 준 뒤, 로고가 왼쪽 위 헤더 로고 자리로 날아가며
+   본 화면이 드러난다. 탭 세션당 한 번. CSS 애니메이션이 아니라 Web Animations라 '동작 줄이기' 기기에서도 보인다. */
+setTimeout(()=>{
+  const s=document.getElementById("splash"); if(!s) return;
+  const logo=s.querySelector(".sp-logo"), dest=document.querySelector(".brand-logo");
+  if(document.documentElement.classList.contains("no-splash") || !logo || !dest || !logo.animate){ s.remove(); return; }
+  const a=logo.getBoundingClientRect(), b=dest.getBoundingClientRect();
+  const k=Math.min(b.height/a.height, b.width/a.width);
+  const dx=(b.left+b.width/2)-(a.left+a.width/2), dy=(b.top+b.height/2)-(a.top+a.height/2);
+  const ease="cubic-bezier(.6,0,.2,1)";
+  // 로고만 배경 밖으로 꺼내야 배경이 사라지는 동안에도 날아가는 로고가 보인다
+  Object.assign(logo.style,{position:"fixed",left:a.left+"px",top:a.top+"px",width:a.width+"px",height:a.height+"px",zIndex:101,margin:0,pointerEvents:"none",transformOrigin:"50% 50%"});
+  document.body.appendChild(logo);
+  const fly=logo.animate([{transform:"none",opacity:1},{transform:`translate(${dx}px,${dy}px) scale(${k})`,opacity:1,offset:.85},{transform:`translate(${dx}px,${dy}px) scale(${k})`,opacity:0}],{duration:900,easing:ease,fill:"forwards"});
+  fly.onfinish=()=>logo.remove();
+  dest.animate([{opacity:0},{opacity:0,offset:.75},{opacity:1}],{duration:900,easing:"ease-out"});
+  const fade=s.animate([{opacity:1},{opacity:0}],{duration:650,easing:"ease"});
+  fade.onfinish=()=>s.remove();
+}, 1100);
 /* 터치 기기에서 키·후보·카드를 누르면 짧은 진동(안드로이드). iOS 사파리는 진동 API가 없어 조용히 넘어간다 */
 document.addEventListener("pointerdown", e=>{
   if(e.pointerType==="touch" && navigator.vibrate && e.target.closest(".kb .key,.cand,.pick-card,.big-cta,.ring-btn")) try{ navigator.vibrate(6); }catch(_){}
@@ -1186,7 +1203,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.6.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.6.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1781,7 +1798,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.6.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.6.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
