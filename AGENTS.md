@@ -24,4 +24,4 @@
 12. **완료 기준**: 테스트 전부 통과 → 버전 문자열(푸터·eyebrow·metrics) 올림 (origin/main 값 기준 — WIP·이전 배포가 이미 올렸을 수 있다) → 배포 후 `curl …/speller | grep -o "· v[0-9.]*<"`로 라이브 확인 → 프로젝트 문서 1개(변경·측정·한계).
 
 ## C. 배포
-- PC에서는 바로 push. 클라우드 컨테이너는 bundle → PC 임시 worktree에서 커밋·push. 사용자 작업 트리와 커밋 안 된 변경은 절대 건드리지 않는다(시작 전 `git status -sb`). CI 10~18분 뒤 자동 배포. 라이브가 안 바뀌면 `/health`의 release와 라이브 HTML이 어느 커밋과 같은지부터 본다(배포 실패면 이전 버전이 계속 뜬다).
+- PC에서는 바로 push. 클라우드 컨테이너는 bundle → PC 임시 worktree에서 커밋·push. 사용자 작업 트리와 커밋 안 된 변경은 절대 건드리지 않는다(시작 전 `git status -sb`). CI 10~18분 뒤 자동 배포. 라이브가 안 바뀌면 `/health`의 release와 라이브 HTML이 어느 커밋과 같은지부터 본다(배포 실패면 이전 버전이 계속 뜬다). 라이브가 응답 없이 멈추면(코드는 로컬 정상) 커밋 push로 새 배포를 띄운다. keepalive 예약은 GitHub가 실제로 3~4시간 간격으로만 돌린다.
