@@ -1135,7 +1135,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.4.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.4.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1730,7 +1730,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.4.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.4.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
