@@ -55,7 +55,7 @@ def health():
         "status": "healthy",
         "mock_mode": settings.mock_mode,
         "pipeline_version": settings.pipeline_version,
-        "release": "3.5.1",
+        "release": "3.5.2",
         "capabilities": ["initials", "keyword_ae", "fill_mask", "direct_entry", "tab_recovery"],
     }
 

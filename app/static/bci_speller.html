@@ -401,7 +401,8 @@ details[open]>summary::before{transform:rotate(45deg)}
 .kb.stim .key{opacity:.3;pointer-events:none}
 .kb.stim .key.flicker{opacity:1;animation:ssvep .1s steps(1,end) infinite;border-color:var(--amber)}
 @keyframes ssvep{0%{background:var(--amber);color:var(--on-solid)}50%{background:var(--surface);color:var(--ink-900)}}
-@media(prefers-reduced-motion:reduce){.kb.stim .key.flicker{animation:none;background:var(--amber-50)}}
+/* 점멸은 장식이 아니라 실험 자극이다 — 사용자가 실험 모드를 직접 켰으므로 "동작 줄이기" 설정에서도 그대로 깜빡인다(켤 때 경고). */
+@media(prefers-reduced-motion:reduce){.kb.stim .key.flicker{animation:ssvep .1s steps(1,end) infinite!important}}
 body:has(.kb.stim) .card:not(.kb-card),body:has(.kb.stim) .topbar,body:has(.kb.stim) .topline,
 body:has(.kb.stim) .footer-note,body:has(.kb.stim) .settings-row{opacity:.15;transition:opacity .1s}
 body:has(.kb.stim){background:var(--bg)}
@@ -1180,7 +1181,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.5.1</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.5.2</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1775,7 +1776,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.5.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.5.2",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -3272,7 +3273,8 @@ el("btnResetTrials").onclick=()=>{
 el("expOn").onchange=()=>{
   el("expPanel").classList.toggle("exp-on", expEnabled());
   el("expFlag").innerHTML = expEnabled() ? '<span class="mis-flag">실험 모드</span>' : "";
-  announce(expEnabled() ? "실험 모드: 키를 누르면 자극 창이 유지되고 설정한 정확도로 오판독이 주입됩니다." : "실험 모드를 껐습니다.");
+  const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  announce(expEnabled() ? "실험 모드: 키를 누르면 자극 창이 유지되고 설정한 정확도로 오판독이 주입됩니다."+(calm?" 이 기기는 '애니메이션 줄이기'가 켜져 있지만 실험 자극은 그대로 깜빡입니다. 빛에 민감하면 사용하지 마세요.":"") : "실험 모드를 껐습니다.");
 };
 
 document.addEventListener("keydown",(e)=>{

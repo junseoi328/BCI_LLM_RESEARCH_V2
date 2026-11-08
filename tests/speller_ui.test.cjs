@@ -890,3 +890,17 @@ test('Enter after a mouse-picked candidate finishes the sentence instead of re-p
     assert.deepEqual(s.h,[picked]);
   }finally{await browser.close();}
 });
+
+test('SSVEP flicker still runs in experiment mode when the OS asks for reduced motion', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await (await browser.newContext({viewport:{width:1366,height:900},reducedMotion:'reduce'})).newPage();
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML()} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();
+      el('expOn').checked=true;el('expOn').onchange();});
+    await page.click('#keyboard .key[data-v="ㅁ"]');
+    assert.equal(await page.locator('#keyboard .key.flicker').evaluate(n=>getComputedStyle(n).animationName),'ssvep');
+  }finally{await browser.close();}
+});
