@@ -42,5 +42,6 @@ jobs:
         with:
           node-version: "22"
       - run: npm install --ignore-scripts
-      - run: npx playwright install --with-deps chromium
+      # 브라우저 내려받기·apt가 가끔 GitHub 쪽에서 실패한다(v3.8.0 배포가 이것 때문에 멈춤) — 3번까지 다시 시도
+      - run: for i in 1 2 3; do npx playwright install --with-deps chromium && exit 0; sleep 20; done; exit 1
       - run: npm test
