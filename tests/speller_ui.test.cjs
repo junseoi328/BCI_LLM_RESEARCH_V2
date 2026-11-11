@@ -5,7 +5,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require('playwright');
 
-const HTML = () => fs.readFileSync(path.join(__dirname, '../app/static/bci_speller.html'), 'utf8');
+// 기존 테스트는 40키 두벌식 자판 기준이다. 기본 자판(환자 실험용, 피그마)은 HTML('fig')로 받는다.
+const HTML = (kb='k40') => fs.readFileSync(path.join(__dirname, '../app/static/bci_speller.html'), 'utf8')
+  .replace('<head>', `<head><script>try{localStorage.setItem("bci_kb","${kb}")}catch(e){}</script>`);
 const launch = () => chromium.launch({
   headless: true,
   ...(process.env.BCI_TEST_BROWSER ? { executablePath: process.env.BCI_TEST_BROWSER } : {}),
@@ -930,5 +932,53 @@ test('"원하는 말 없음" picks one syllable, keyboard vowel+✓ fills it and
     await page.keyboard.press('0');
     const idx2=await page.evaluate(()=>state.jamoTarget);
     assert.ok(idx2!==idx,'다음에는 아직 안 채운 다른 글자');
+  }finally{await browser.close();}
+});
+
+// 환자 실험용 자판(기본, 피그마 88:948·88:757): 자음 6열 + 아래 줄(문장 말하기·띄어쓰기·?·없음·확정) = 29키, 모음판 21+4 = 25키
+test('Figma patient keyboard: 없음 swaps to the vowel board, vowel → 받침 → search again', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1920,height:1044}});
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    assert.equal(await page.locator('#keyboard .key').count(),29);
+    assert.equal(await page.locator('#keyboard .key.cand').count(),5);
+    assert.equal(await page.locator('.cand-card').isVisible(),false,'후보는 자판 첫 줄에만');
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044,'TV 1920×1044 한 화면');
+    for(const c of 'ㄷㅇㅈㅅㅇ') await page.click(`#keyboard .key[data-v="${c}"]`);
+    assert.ok(await page.evaluate(()=>slots.length)<=5);
+    await page.click('#keyboard .key[data-v="none"]');
+    const idx=await page.evaluate(()=>state.jamoTarget);
+    assert.ok(idx>=0 && idx<5);
+    assert.equal(await page.locator('#keyboard .key').count(),25,'모음 21 + 자모변환·글자·띄기·확정');
+    assert.equal(await page.locator('#keyboard .key.jung').count(),21);
+    assert.equal(await page.locator('#iniDisplay .wblock.target').count(),1,'완성할 글자를 빨갛게 표시');
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044);
+    await page.click('#keyboard .key[data-v="ㅗ"]');
+    assert.equal(await page.locator('#keyboard .key').count(),29,'받침은 자음판에서');
+    assert.match(await page.locator('#keyboard .key[data-v="commit"]').getAttribute('aria-label'),/받침 없음/);
+    await page.click('#keyboard .key[data-v="ㄴ"]');
+    const s=await page.evaluate(i=>({sp:state.spelled[i],want:composeSyllableJS(state.initials[i],'ㅗ','ㄴ'),ini:state.initials,tgt:state.jamoTarget,guide:el('kbGuide').textContent}),idx);
+    assert.equal(s.sp,s.want); assert.equal(s.ini,'ㄷㅇㅈㅅㅇ'); assert.equal(s.tgt,null);
+    assert.match(s.guide,/다시 찾았습니다/);
+    // 다시 없음 → 다른 글자, ⌫ 로 취소하면 초성은 그대로
+    await page.click('#keyboard .key[data-v="none"]');
+    assert.notEqual(await page.evaluate(()=>state.jamoTarget),idx);
+    await page.click('#keyboard .key[data-v="back"]');
+    assert.deepEqual(await page.evaluate(()=>[state.jamoTarget,state.initials,kbScreen]),[null,'ㄷㅇㅈㅅㅇ','cons']);
+    // 자모변환(직접): 마지막 글자에 모음 하나 → 자음판으로 복귀
+    await page.click('#btnReset');
+    await page.click('#keyboard .key[data-v="ㅁ"]');
+    await page.click('#keyboard .key[data-v="swap"]');
+    await page.click('#keyboard .key[data-v="ㅜ"]');
+    assert.deepEqual(await page.evaluate(()=>[state.spelled[0],kbScreen]),['무','cons']);
+    // 설정에서 40키로 바꾸면 예전 자판
+    await page.evaluate(()=>setKbLayout('k40'));
+    assert.equal(await page.locator('#keyboard .key').count(),40);
+    assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });

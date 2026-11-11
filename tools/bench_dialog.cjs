@@ -11,6 +11,7 @@ const dialogs=JSON.parse(fs.readFileSync(__dirname+'/ctx_dialogs.json','utf8'));
    if(p==='/speller/dict.txt')return r.fulfill({contentType:'text/plain',body:dict});
    return r.fulfill({status:503,json:{}});});
  await page.goto('http://bci.test/speller');
+ await page.evaluate(k=>{ if(typeof setKbLayout==='function') setKbLayout(k); }, process.env.KB||'k40');  // 기준은 40키(이력과 비교), KB=fig 로 환자 실험용 자판
  await page.evaluate(()=>{showView('speller');return loadDict();});
  if(process.env.DBG) await page.evaluate(()=>window.__DBG=[]);
  const r=await page.evaluate(dialogs=>{

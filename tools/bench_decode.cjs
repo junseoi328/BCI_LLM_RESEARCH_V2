@@ -11,6 +11,7 @@ await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
  if(p==='/speller/dict.txt')return r.fulfill({contentType:'text/plain',body:dict});
  return r.fulfill({status:503,json:{}});});
 await page.goto('http://bci.test/speller');
+ await page.evaluate(k=>{ if(typeof setKbLayout==='function') setKbLayout(k); }, process.env.KB||'k40');  // 기준은 40키(이력과 비교), KB=fig 로 환자 실험용 자판
 await page.evaluate(async()=>{showView('speller');if(typeof loadDict==='function')await loadDict();});
 const run=list=>page.evaluate(({list,spaced})=>{
   try{localStorage.clear()}catch(e){}

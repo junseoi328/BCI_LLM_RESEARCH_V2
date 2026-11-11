@@ -891,6 +891,23 @@ html:not([data-theme="dark"]) .kb .key.fn,html:not([data-theme="dark"]) .kb .key
 html:not([data-theme="dark"]) .kb .key.commit{background:#326B56;border-color:#326B56;color:#fff}
 html:not([data-theme="dark"]) .kb .key.cand:not(:disabled){background:#EBF4EF;border-color:#D5E8DE;color:#3C7D5E;font-size:clamp(15px,.5vw + 10px,20px);line-height:1.15}
 html:not([data-theme="dark"]) .kb .key.cand:not(:disabled) .cw{color:#454944;font-size:clamp(13px,.4vw + 9px,17px);line-height:1.2}
+/* 환자 실험용 자판(피그마 88:948 자음 · 88:757 모음) */
+.kb-guide{margin:8px 2px 0;font-size:var(--fs-sm);font-weight:700;color:#B64636}.kb-guide:empty{display:none}
+.wblock.target{background:#FEE2E2;color:#B64636;outline:2px solid #B64636}
+body.kb-fig .kb{display:flex;flex-direction:column;gap:12px;min-width:0}
+body.kb-fig .kb-row{display:flex;gap:8px}
+body.kb-fig .kb-row .key{flex:1 1 0;min-height:60px}
+body.kb-fig .kb-row .key.cand{min-height:64px}
+body.kb-fig .kb.vowel .kb-row .key.jung{color:#20221F;min-height:72px}
+body.kb-fig .kb-row.pills{gap:clamp(8px,1vw,20px)}
+body.kb-fig .kb-row.pills .key{flex:284 1 0;min-height:64px;border-radius:100px;box-shadow:none}
+html:not([data-theme="dark"]) body.kb-fig .kb .key.pill{background:#EBF4EF;border:0;color:#000;font-size:clamp(13px,.3vw + 10px,16px)}
+html:not([data-theme="dark"]) body.kb-fig .kb .key.pill.none{background:#FEE2E2;border:1.4px solid #FCA5A5;color:#991B1B}
+body.kb-fig .kb-row.pills .key.commit{flex:164 1 0}
+html:not([data-theme="dark"]) body.kb-fig .kb .key.pill.commit{background:#326B56;border:1.4px solid #326B56;color:#fff;font-size:clamp(14px,.4vw + 11px,19px)}
+html[data-theme="dark"] body.kb-fig .kb .key.pill.none{border-color:#FCA5A5;color:#FCA5A5}
+@media(min-width:900px){body.kb-fig .cand-card,body.kb-fig .speech-actions{display:none}}
+@media(max-width:700px){body.kb-fig .kb .key.swap,body.kb-fig .kb .key.pill{font-size:12px;letter-spacing:-.05em;white-space:normal;line-height:1.15}body.kb-fig .kb-row.pills{gap:6px}body.kb-fig .kb-row.pills .key.commit{flex:284 1 0}body.kb-fig .kb-row.pills .key{padding-inline:2px}}
 .none-btn{margin-left:auto;align-self:center}.none-btn kbd{font:inherit;opacity:.6;margin-left:4px}
 #recoveryHint:empty{display:none}
 .jamo-picker .jamo-grid{grid-template-columns:repeat(auto-fill,minmax(52px,1fr))}
@@ -903,6 +920,17 @@ html:not([data-theme="dark"]) .kb .key.cand:disabled{background:#FCFCFB;border:1
   .cand.word{min-height:60px}
   .shell{padding-bottom:4px}
   .footer-note{padding-block:6px}
+  /* 환자 실험용 자판: 피그마 키 높이(후보 75 · 글자 70 · 아래 줄 80 · 모음 94 · 모음판 아래 줄 66) */
+  body.kb-fig .kb{gap:20px}
+  body.kb-fig .kb-row .key{min-height:70px}
+  body.kb-fig .kb-row .key.cand{min-height:75px}
+  body.kb-fig .kb-row.pills .key{min-height:80px}
+  body.kb-fig .kb.vowel{gap:13px}
+  body.kb-fig .kb.vowel .kb-row .key.jung{min-height:94px}
+  body.kb-fig .kb.vowel .kb-row .key.fn{min-height:66px}
+  body.kb-fig .ini-display{min-height:63px}
+  body.kb-fig .wblock{min-width:50px;height:50px;font-size:1.6rem}
+  body.kb-fig .buffer{min-height:78px}
 }
 </style>
 </head>
@@ -967,7 +995,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.6</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.7</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -991,7 +1019,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <div><dd>69.4<i>%</i></dd><dt>초성 없이 맞힌 다음 말</dt></div>
         <div><dd>55.3<i>%</i></dd><dt>줄어든 타수</dt></div>
         <div><dd>903<i>ms</i></dd><dt>평균 자극 시간</dt></div>
-        <div><dd>40<i>키</i></dd><dt>두벌식 그대로의 자판</dt></div>
+        <div><dd>29<i>키</i></dd><dt>자음 자판 · 40키 두벌식도 선택</dt></div>
       </dl>
     </div>
   </section>
@@ -1139,6 +1167,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
               <button class="btn danger sm" id="btnReset">전체 초기화</button>
             </span>
           </div>
+          <p class="kb-guide" id="kbGuide" role="status" aria-live="polite"></p>
           <div class="keyboard kb" id="keyboard" role="group" aria-labelledby="keyboardTitle"></div>
         </section>
       </div>
@@ -1189,6 +1218,8 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <p class="unit-hint">기기 안에서 찾은 단어·문장 후보를 먼저 보여줍니다. ① 내가 전에 쓴 말(이 기기에 저장), ② 검수된 AAC 표현 사전 281개, ③ 일반 한국어 대화 말뭉치에서 만든 단어·다음단어 사전을 사용합니다. 맞는 표현이 없으면 초성을 더 입력하거나 직접 입력할 수 있습니다. 언어 모델 응답 시간은 연결 상태와 모델에 따라 달라집니다.</p>
         <p class="unit-hint"><strong>지금 무슨 얘기 중인지</strong>도 함께 봅니다 — 고른 상황, 여기 적은 상황 메모, 상대가 최근에 한 말(최근일수록 무겁게), 내가 방금 고른 말, 그리고 만들고 있는 문장. 상대가 쓴 단어는 그 단어 자체로도 후보에 밀어 올립니다. 앞 단어는 두 개까지 봅니다 — <b>사랑해 + 많이</b> 다음에 무엇을 골랐는지를 기억하고, 그런 기록이 없으면 앞 한 단어, 그것도 없으면 자주 쓰는 말 순으로 물러납니다.</p>
         <p class="unit-hint">넓은 사전 출처: KLUE 벤치마크의 WoS 과제지향 대화(CC BY-SA 4.0)에서 만든 빈도표입니다. 원문은 포함하지 않습니다.</p>
+        <label for="kbLayoutSel">자판</label>
+        <select id="kbLayoutSel"><option value="fig">환자 실험용 · 자음 자판 + 없음 (피그마)</option><option value="k40">40키 두벌식 · 비교 실험용</option></select>
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
         <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
         <label for="latencyStrategy">문장 추천 방식</label>
@@ -1203,7 +1234,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.6.1</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.7.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1270,6 +1301,43 @@ const KB_ROWS=[
     {t:"punct",v:",",cls:"punct"},{t:"punct",v:".",cls:"punct"},{t:"punct",v:"?",cls:"punct",sv:"!"} ],
 ];
 const KB_COLS=10;
+/* 환자 실험용 자판(피그마 Main 88:948 · 모음 88:757). 자음만 두고, 후보에 없으면 '없음' →
+   시스템이 고른 한 글자를 모음판(자모변환)에서 완성 → 다시 찾기. 40키 두벌식은 설정에서 고를 수 있다(비교 실험용). */
+const KB_FIG_CONS=[
+  [ {t:"cand",v:0},{t:"cand",v:1},{t:"cand",v:2},{t:"cand",v:3},{t:"cand",v:4},
+    {t:"fn",v:"back",l:"⌫ 글자",cls:"back",sv:"delword",sl:"⌦ 단어",scls:"delword"} ],
+  [ {t:"cho",v:"ㅂ",sv:"ㅃ"},{t:"cho",v:"ㅈ",sv:"ㅉ"},{t:"cho",v:"ㄷ",sv:"ㄸ"},{t:"cho",v:"ㄱ",sv:"ㄲ"},{t:"cho",v:"ㅅ",sv:"ㅆ"},
+    {t:"fn",v:"swap",l:"자모변환",cls:"swap"} ],
+  [ {t:"cho",v:"ㅁ"},{t:"cho",v:"ㄴ"},{t:"cho",v:"ㅇ"},{t:"cho",v:"ㄹ"},{t:"cho",v:"ㅎ"},
+    {t:"shift",v:"shift",l:"⇧ 된소리",cls:"shift"} ],
+  [ {t:"cho",v:"ㅋ"},{t:"cho",v:"ㅌ"},{t:"cho",v:"ㅊ"},{t:"cho",v:"ㅍ"},
+    {t:"punct",v:",",cls:"punct"},{t:"punct",v:".",cls:"punct"} ],
+  [ {t:"fn",v:"speak",l:"문장 말하기",cls:"pill speak",plain:1},{t:"fn",v:"space",l:"띄어쓰기",cls:"pill space"},
+    {t:"punct",v:"?",cls:"pill punct",sv:"!"},{t:"fn",v:"none",l:"없음",cls:"pill none"},{t:"fn",v:"commit",l:"✓ 확정",cls:"pill commit"} ],
+];
+const KB_FIG_VOWEL=[
+  ...["ㅏㅣㅡㅗㅓㅜㅐ","ㅔㅕㅢㅛㅘㅑㅠ","ㅝㅚㅟㅖㅙㅞㅒ"].map(r=>[...r].map(v=>({t:"jung",v}))),
+  [ {t:"fn",v:"swap",l:"자모변환",cls:"swap"},{t:"fn",v:"back",l:"⌫ 글자",cls:"back"},
+    {t:"fn",v:"space",l:"␣ 띄기",cls:"space"},{t:"fn",v:"commit",l:"✓ 확정",cls:"commit"} ],
+];
+let kbLayout=(()=>{ try{ return localStorage.getItem("bci_kb")==="k40" ? "k40" : "fig"; }catch(e){ return "fig"; } })();
+let kbScreen="cons";   // fig 자판에서만: "cons"(자음) | "vowel"(모음)
+const isFig=()=>kbLayout==="fig";
+const candSlots=()=>isFig() ? 5 : CAND_SLOTS;
+function setKbLayout(v){
+  kbLayout = v==="k40" ? "k40" : "fig"; kbScreen="cons";
+  state.guided=false; state.jamoTarget=null; state.jamoMedial=null;
+  try{ localStorage.setItem("bci_kb",kbLayout); }catch(e){}
+  applyKbLayout(); renderKeyboard(); renderBuffer();
+}
+function applyKbLayout(){
+  document.body.classList.toggle("kb-fig",isFig());
+  el("kbLayoutSel").value=kbLayout;
+  el("keyboardTitle").querySelector("span").textContent = isFig() ? "자음 자판 · 후보에 없으면 ‘없음’" : "40키 · 두벌식";
+  document.querySelector(".keyboard-legend").textContent = isFig() ? "1–5 후보 선택 · 0 없음 · Enter 확정" : "1–7 후보 선택 · Enter 확정 · ⇧ 된소리";
+}
+function setGuide(t){ el("kbGuide").textContent=t||""; }
+function kbShow(screen){ kbScreen=screen; renderKeyboard(); renderWordDisplay(); renderCandidatePanel(); }
 let shiftOn=false;
 const JUNG=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
 const JONG=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
@@ -1798,7 +1866,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.6.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.7.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -1913,7 +1981,7 @@ function expEnabled(){ const c=el("expOn"); return !!(c && c.checked); }
 function neighbourKey(btn){
   const keys=[...el("keyboard").querySelectorAll(".key")];
   const i=keys.indexOf(btn); if(i<0) return btn;
-  const cols=KB_COLS, cand=[i-1,i+1,i-cols,i+cols].filter(k=>k>=0&&k<keys.length);
+  const cols=isFig() ? (kbScreen==="vowel"?7:6) : KB_COLS, cand=[i-1,i+1,i-cols,i+cols].filter(k=>k>=0&&k<keys.length);
   return keys[cand[Math.floor(Math.random()*cand.length)]] || btn;
 }
 function ssvepGate(btn, apply){
@@ -2085,7 +2153,8 @@ function pressGridKey(sel){
 
 function renderKeyboard(){
   const esc2=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-  const html=KB_ROWS.flat().map(k=>{
+  const fig=isFig(), rows=fig ? (kbScreen==="vowel" ? KB_FIG_VOWEL : KB_FIG_CONS) : KB_ROWS;
+  const keyHtml=k=>{
     const v = (shiftOn && k.sv!==undefined) ? k.sv : k.v;
     const cls = ["key", k.t, (shiftOn&&k.scls)?k.scls:(k.cls||""), (shiftOn&&k.sv!==undefined)?"shifted":""].filter(Boolean).join(" ");
     if(k.t==="cand"){
@@ -2095,10 +2164,14 @@ function renderKeyboard(){
     const pressed = k.t==="shift" ? ` aria-pressed="${shiftOn}"` : "";
     // "✓ 확정" -> 기호와 낱말을 나눠 둔다. 폰 너비에서는 기호만 보인다(aria-label 은 전체).
     const sp=label.indexOf(" ");
-    const body = sp>0 ? `<span class="ic">${esc2(label.slice(0,sp))}</span><span class="lb">${esc2(label.slice(sp))}</span>` : esc2(label);
+    const body = sp>0 && !k.plain ? `<span class="ic">${esc2(label.slice(0,sp))}</span><span class="lb">${esc2(label.slice(sp))}</span>` : esc2(label);
     return `<button type="button" class="${cls}" data-t="${k.t}" data-v="${esc2(v)}" aria-label="${esc2(label)}"${pressed}>${body}</button>`;
-  }).join("");
+  };
+  // fig 자판은 줄마다 키 수가 달라(6·6·6·6·5 / 7·7·7·4) 줄 단위 flex, 40키는 기존 10열 격자 그대로
+  const html = fig ? rows.map(r=>`<div class="kb-row${r.some(k=>/pill/.test(k.cls||""))?" pills":""}">${r.map(keyHtml).join("")}</div>`).join("")
+                   : rows.flat().map(keyHtml).join("");
   el("keyboard").innerHTML = html;
+  el("keyboard").classList.toggle("vowel", fig && kbScreen==="vowel");
   el("keyboard").classList.toggle("shift-on", shiftOn);
   syncCommitKey();
   el("keyboard").onclick=(e)=>{
@@ -2126,6 +2199,19 @@ function toggleShift(force){
    그 글자를 그 자리에서 확정해 state.spelled에 넣는다(= 백엔드가 이미 받던
    spelled_syllables 필드라 서버 변경이 필요 없음). 후보키는 slots[]에서 고른다. */
 function handleKey(t,v){
+  if(isFig()){
+    if(v==="swap"){ pressSwap(); loopFinish({key:"swap",type:"fn"}); return; }
+    if(v==="none"){ pressNone(); loopFinish({key:"none",type:"fn"}); return; }
+    if(v==="speak"){ el("btnSpeak").click(); loopFinish({key:"speak",type:"fn"}); return; }
+    if(state.jamoTarget!==null && (v==="back"||v==="delword")){ cancelGuided("글자 완성을 취소했습니다."); loopFinish({key:v,type:"fn"}); return; }
+  }
+  // 자모변환으로 직접 연 모음판: 모음 하나(또는 다른 키 하나)를 누르면 자음판으로 돌아간다
+  const manualVowel = isFig() && kbScreen==="vowel" && state.jamoTarget===null;
+  const r=handleKeyCore(t,v);
+  if(manualVowel && kbScreen==="vowel") kbShow("cons");
+  return r;
+}
+function handleKeyCore(t,v){
   // '없음'으로 한 글자를 채우는 중이면 자판의 모음=중성, 자음=받침, ✓=받침 없음(피그마 '자모변환'과 같은 일, 40키 그대로)
   if(state.jamoTarget!==null && (t==="jung"||t==="cho"||v==="commit")){ if(shiftOn&&t!=="cho") toggleShift(false); return guidedJamo(t,v); }
   if(t==="cand"){ if(shiftOn) toggleShift(false); return chooseSlot(Number(v)); }
@@ -2323,8 +2409,9 @@ function syncCommitKey(){
   const ck=document.querySelector('#keyboard .key[data-v="commit"]');
   if(ck){ const enter=!state.initials && !!state.committed.trim();
     ck.classList.toggle("enter",enter);
-    ck.innerHTML=enter ? '<span class="ic">↵</span><span class="lb"> 엔터</span>' : '<span class="ic">✓</span><span class="lb"> 확정</span>';
-    ck.setAttribute("aria-label", enter ? "↵ 엔터 — 문장을 대화로 보내고 다음 줄" : "✓ 확정"); }
+    const jong=state.jamoTarget!==null && !!state.jamoMedial;
+    ck.innerHTML=jong ? '<span class="ic">✓</span><span class="lb"> 받침 없음</span>' : enter ? '<span class="ic">↵</span><span class="lb"> 엔터</span>' : '<span class="ic">✓</span><span class="lb"> 확정</span>';
+    ck.setAttribute("aria-label", jong ? "✓ 받침 없음" : enter ? "↵ 엔터 — 문장을 대화로 보내고 다음 줄" : "✓ 확정"); }
 }
 
 function renderWordDisplay(){
@@ -2332,9 +2419,12 @@ function renderWordDisplay(){
   if(!state.initials){ id.innerHTML="키를 눌러 시작하세요"; id.classList.add("empty"); return; }
   id.classList.remove("empty");
   const bs=new Set(state.breaks||[]), n=state.initials.length;
+  // 지금 완성하는 글자(없음 → 시스템이 고른 글자, 또는 자모변환으로 연 마지막 글자)는 빨갛게
+  const tgt = state.jamoTarget!==null ? state.jamoTarget : (isFig() && kbScreen==="vowel" ? n-1 : -1);
   id.innerHTML=[...state.initials].map((c,i)=>{
     const done=state.spelled[i];
-    return (i&&bs.has(i)?'<span class="wgap" aria-hidden="true"></span>':"")+`<span class="wblock${done?" done":""}">${esc(done||c)}</span>`;
+    const part = i===state.jamoTarget && state.jamoMedial ? composeSyllableJS(c,state.jamoMedial,"") : "";
+    return (i&&bs.has(i)?'<span class="wgap" aria-hidden="true"></span>':"")+`<span class="wblock${done?" done":""}${i===tgt?" target":""}">${esc(part||done||c)}</span>`;
   }).join("")+(bs.has(n)?'<span class="wgap" aria-hidden="true"></span>':"");
   id.setAttribute("aria-label","입력한 초성 "+spacedInitials());
 }
@@ -2736,6 +2826,8 @@ function renderCandidatePanel(){
       break;
     }
   }
+  // fig 자판은 후보키가 5개: 단어가 넉넉하면 문장 2칸 + 단어 3칸, 단어가 모자라면 문장이 빈칸을 채운다
+  if(isFig()){ sents=sents.slice(0,Math.max(2,5-words.length)); words=words.slice(0,5-sents.length); }
   slots=[...words,...sents];
   el("ratioTag").textContent = state.initials
     ? `단어 ${words.length} · 문장 ${sents.length}`
@@ -3095,6 +3187,8 @@ function renderCandidateUnits(text){
 el("btnOpenRecovery").onclick=()=>openRecoveryPanel();
 el("btnRecoveryClose").onclick=()=>closeRecoveryPanel();
 el("btnNone").onclick=()=>pressNone();
+el("kbLayoutSel").onchange=e=>setKbLayout(e.target.value);
+applyKbLayout();
 el("btnRecoveryReset").onclick=()=>{ clearRecoveryState(); renderRecoveryBlocks(); el("jamoPicker").hidden=true; hideFillmaskBox(); };
 el("btnRecoveryPredict").onclick=async ()=>{
   if(!Object.keys(state.spelled).length){ return; }
@@ -3139,6 +3233,13 @@ function pressNone(){
   if(!state.initials){ announce("먼저 초성을 입력하세요."); return; }
   const i=bestSpellTarget();
   if(i<0){ el("btnRecoveryPredict").click(); return; }
+  if(isFig()){
+    // 피그마 흐름: '없음' → 자판이 모음판으로 바뀌고, 완성할 글자가 입력칸에서 빨갛게 표시된다
+    state.guided=true; state.jamoTarget=i; state.jamoMedial=null;
+    setGuide(`${i+1}번째 글자 ‘${state.initials[i]}’의 모음을 눌러 주세요 — 후보들이 이 글자에서 가장 많이 갈립니다.`);
+    announce(`${i+1}번째 글자 ${state.initials[i]}의 모음을 눌러주세요.`);
+    kbShow("vowel"); return;
+  }
   openRecoveryPanel(); state.guided=true;
   el("recoveryTitle").textContent=`${i+1}번째 글자 ‘${state.initials[i]}’를 완성해 주세요`;
   el("recoveryHint").textContent="지금 후보들이 이 글자에서 가장 많이 갈립니다. 자판에서 모음 → 받침(없으면 ✓) 순서로 누르면 다시 찾습니다.";
@@ -3149,6 +3250,7 @@ function guidedJamo(t,v){
   if(!state.jamoMedial || t==="jung"){
     if(t!=="jung"){ announce("먼저 모음을 눌러주세요."); loopFinish({key:v,type:t,rejected:1}); return; }
     state.jamoMedial=v; renderJamoPicker(); announce("받침을 누르세요. 받침이 없으면 ✓를 누르세요.");
+    if(isFig()){ setGuide(`‘${composeSyllableJS(state.initials[state.jamoTarget],v,"")}’ — 받침을 누르세요. 받침이 없으면 ✓, 모음을 다시 고르려면 자모변환.`); kbShow("cons"); }
     loopFinish({key:v,type:"jung"}); return;
   }
   const jong=t==="cho" ? v : "";
@@ -3160,13 +3262,25 @@ function finishGuided(syll){
   if(syll) state.spelled[state.jamoTarget]=syll;
   state.jamoTarget=null; state.jamoMedial=null;
   renderRecoveryBlocks(); renderJamoPicker();
-  if(!state.guided || !syll) return;
+  if(!state.guided || !syll){ if(isFig()){ setGuide(""); kbShow("cons"); } return; }
   state.guided=false;
   clearCandidates(); renderBuffer();
-  if([...state.initials].every((_,i)=>state.spelled[i])){ el("recoveryHint").textContent="모든 글자를 채웠습니다. ‘완성한 글자 확정’을 누르세요."; return; }
+  if(isFig()){ kbScreen="cons"; renderKeyboard(); renderBuffer(); }
+  if([...state.initials].every((_,i)=>state.spelled[i])){ el("recoveryHint").textContent="모든 글자를 채웠습니다. ‘완성한 글자 확정’을 누르세요."; setGuide("모든 글자를 채웠습니다. ✓ 확정을 누르세요."); return; }
+  setGuide(`‘${syll}’로 다시 찾았습니다. 후보에 있으면 번호로 고르고, 없으면 다시 ‘없음’.`);
   el("recoveryTitle").textContent=`‘${syll}’로 다시 찾았습니다`;
   el("recoveryHint").textContent="후보에 원하는 말이 있으면 번호로 고르고, 없으면 다시 ‘원하는 말 없음’(0)을 누르세요.";
   predict({ spelled_syllables: state.spelled });
+}
+function cancelGuided(msg){
+  state.guided=false; state.jamoTarget=null; state.jamoMedial=null;
+  setGuide(msg||""); kbShow("cons");
+}
+function pressSwap(){
+  if(kbScreen==="vowel"){ if(state.jamoTarget!==null) cancelGuided("글자 완성을 취소했습니다."); else { setGuide(""); kbShow("cons"); } return; }
+  if(state.jamoTarget!==null){ state.jamoMedial=null; setGuide(`${state.jamoTarget+1}번째 글자 ‘${state.initials[state.jamoTarget]}’의 모음을 다시 눌러 주세요.`); kbShow("vowel"); return; }
+  if(!state.initials){ announce("먼저 초성을 눌러주세요."); return; }
+  setGuide(`마지막 글자 ‘${state.initials.at(-1)}’의 모음을 눌러 주세요.`); kbShow("vowel");
 }
 function closeRecoveryPanel(){
   state.guided=false; state.jamoTarget=null; state.jamoMedial=null;
@@ -3392,7 +3506,7 @@ document.addEventListener("keydown",(e)=>{
   if(jamo){
     e.preventDefault();
     if(shiftOn!==!!e.shiftKey && (QWERTY_JAMO_SHIFT[e.code]||shiftOn)) toggleShift(!!e.shiftKey);
-    pressGridKey('.key[data-v="'+jamo+'"]');
+    if(!pressGridKey('.key[data-v="'+jamo+'"]') && isFig()) handleKey(JUNG.includes(jamo)?"jung":"cho", jamo);   // 지금 판에 없는 자모도 물리 자판으로는 받는다
     return;
   }
   /* 문장부호 — , . / (Shift+/ 는 ?) 자리 그대로 */

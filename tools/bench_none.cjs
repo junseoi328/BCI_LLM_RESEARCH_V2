@@ -11,6 +11,7 @@ const sents=fs.readFileSync(process.env.CHAT_TEST||'data/chat_test.txt','utf8').
    if(p==='/speller/dict.txt')return r.fulfill({contentType:'text/plain',body:dict});
    return r.fulfill({status:503,json:{}});});
  await page.goto('http://bci.test/speller');
+ await page.evaluate(k=>{ if(typeof setKbLayout==='function') setKbLayout(k); }, process.env.KB||'k40');  // 기준은 40키(이력과 비교), KB=fig 로 환자 실험용 자판
  await page.evaluate(()=>{showView('speller');return loadDict();});
  for(const strat of ['entropy','first','last']){
   const r=await page.evaluate(({sents,strat})=>{

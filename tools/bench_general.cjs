@@ -17,6 +17,7 @@ const bank=fs.readFileSync(__dirname+'/../research/phrase_memory/approved_bci_ph
    if(p==='/speller/dict.txt')return r.fulfill({contentType:'text/plain',body:dict});
    return r.fulfill({status:503,json:{}});});
  await page.goto('http://bci.test/speller');
+ await page.evaluate(k=>{ if(typeof setKbLayout==='function') setKbLayout(k); }, process.env.KB||'k40');  // 기준은 40키(이력과 비교), KB=fig 로 환자 실험용 자판
  await page.evaluate(()=>{showView('speller');return typeof loadDict==='function'?loadDict():null;}).catch(()=>{});
  if(process.env.SCORE_JSON) await page.evaluate(o=>Object.assign(SCORE,o), JSON.parse(process.env.SCORE_JSON));  // 매개변수 탐색용
  console.error('dict entries', await page.evaluate(()=>typeof DICT!=='undefined'&&DICT?DICT.size:0));
