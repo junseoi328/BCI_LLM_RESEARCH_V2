@@ -1,12 +1,11 @@
 <!doctype html>
-<html lang="ko" data-theme="dark">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>이심전심 BCI Speller</title>
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#F3F4F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0C0D11" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#B1DCB0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -58,20 +57,6 @@
   --ring:0 0 0 3px var(--accent-100);
   --ease:cubic-bezier(.2,.7,.2,1);
   --topbar-h:60px;
-}
-:root[data-theme="dark"]{
-  --accent:#4C8DFF; --accent-600:#6EA2FF; --accent-700:#A9C6FF; --accent-50:rgba(76,141,255,.12); --accent-100:rgba(76,141,255,.24);
-  --pick:#9B83FF;   --pick-600:#C5B8FF;   --pick-50:rgba(155,131,255,.11); --pick-100:rgba(155,131,255,.19); --pick-200:rgba(155,131,255,.32);
-  --green:#2FBF84;  --green-600:#62D9A8;  --green-50:rgba(47,191,132,.11); --green-100:rgba(47,191,132,.22);
-  --amber:#F2A33A;  --amber-600:#F7C374;  --amber-50:rgba(242,163,58,.12); --amber-100:rgba(242,163,58,.26);
-  --red:#F2555A;    --red-600:#FF8A8D;    --red-50:rgba(242,85,90,.12);    --red-100:rgba(242,85,90,.30);
-  --ink-900:#F2F3F5; --ink-700:#C9CDD4; --ink-500:#8F96A3; --ink-300:#606775; --ink-200:#3B404B;
-  --bg:#0C0D11; --surface:#15171C; --surface-2:#1B1E24; --surface-3:#22252D;
-  --line:#252932; --line-strong:#323743;
-  --glow:rgba(76,141,255,.16);
-  --shadow-1:0 1px 2px rgba(0,0,0,.4);
-  --shadow-2:0 1px 2px rgba(0,0,0,.35),0 10px 28px -10px rgba(0,0,0,.6);
-  --shadow-3:0 28px 72px -18px rgba(0,0,0,.8);
 }
 
 /* --- 바탕 ---------------------------------------------------------------- */
@@ -547,28 +532,12 @@ body:has(.kb.stim) .kb-card{box-shadow:var(--shadow-3)}
   --space-l:clamp(1.5rem,1.2rem + 1.4vw,2.5rem);
   --space-xl:clamp(2rem,1.3rem + 3.2vw,4.5rem);
 }
-:root[data-theme="dark"]{
-  --bg:#141311; --surface:#1C1A17; --surface-2:#211F1B; --surface-3:#2A2723;
-  --line:#2F2C27; --line-strong:#3E3A34;
-  --ink-900:#F3EFE8; --ink-700:#D6D0C6; --ink-500:#A39C91; --ink-300:#7A746A; --ink-200:#4A453E;
-  --accent:#FF8A70; --accent-600:#FFA690; --accent-700:#FFC4B5; --accent-50:rgba(255,138,112,.10); --accent-100:rgba(255,138,112,.26);
-  --primary:#F3EFE8; --primary-hover:#FFFFFF; --on-primary:#141311;
-  --pick:#9AA3FF; --pick-600:#C3C8FF; --pick-50:rgba(154,163,255,.08); --pick-100:rgba(154,163,255,.16); --pick-200:rgba(154,163,255,.30); --pick-on:#141311;
-  --green:#5FC59B; --green-600:#8EDAB9; --green-50:rgba(95,197,155,.10); --green-100:rgba(95,197,155,.22);
-  --amber:#F2A33A; --amber-600:#F7C374; --amber-50:rgba(242,163,58,.12); --amber-100:rgba(242,163,58,.26);
-  --red:#FF6B62; --red-600:#FF9A93; --red-50:rgba(255,107,98,.12); --red-100:rgba(255,107,98,.30);
-  --on-solid:#141311;
-  --shadow-1:0 1px 2px rgba(0,0,0,.35);
-  --shadow-2:0 1px 2px rgba(0,0,0,.3),0 16px 40px -18px rgba(0,0,0,.7);
-  --shadow-3:0 30px 80px -24px rgba(0,0,0,.8);
-}
 
 /* --- 바탕: 종이 한 장, 모서리에 아주 옅은 빛 --- */
 html{background:var(--bg)}
 body{background:var(--bg);font-size:var(--step-0)}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(60% 45% at 92% -8%,rgba(191,64,40,.07),transparent 70%),radial-gradient(55% 40% at -5% 0%,rgba(70,81,217,.05),transparent 70%)}
-:root[data-theme="dark"] body::before{background:radial-gradient(60% 45% at 92% -8%,rgba(255,138,112,.07),transparent 70%),radial-gradient(55% 40% at -5% 0%,rgba(154,163,255,.06),transparent 70%)}
 body:has(.kb.stim)::before{opacity:0}
 ::selection{background:var(--accent-100)}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
@@ -669,7 +638,6 @@ p{text-wrap:pretty}
 .pick-card.sel{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 1px var(--primary),var(--shadow-2)}
 .pick-card.sel .ico{background:var(--primary);color:var(--on-primary)}
 .pick-card.sel::after{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/13px no-repeat,var(--accent)}
-:root[data-theme="dark"] .pick-card.sel::after{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23141311' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/13px no-repeat,var(--accent)}
 .pick-card[data-v="emergency"] .ico{background:var(--red-50);color:var(--red)}
 .pick-card[data-v="emergency"].sel{border-color:var(--red);box-shadow:0 0 0 1px var(--red),var(--shadow-2)}
 .pick-card[data-v="emergency"].sel .ico{background:var(--red);color:var(--on-solid)}
@@ -777,7 +745,6 @@ body:not(:has(#expOn:checked)) .topline .hud-more{margin-left:auto}
 .cand,.pick-card,.big-cta,.ring-btn,.btn{position:relative;overflow:hidden}
 .ripple{position:absolute;border-radius:50%;pointer-events:none;z-index:0;transform:scale(0);
   background:radial-gradient(circle,rgba(28,26,23,.10) 0%,rgba(28,26,23,.04) 45%,transparent 70%);animation:ripple .5s var(--ease) forwards}
-:root[data-theme="dark"] .ripple{background:radial-gradient(circle,rgba(255,255,255,.14) 0%,rgba(255,255,255,.05) 45%,transparent 70%)}
 @keyframes ripple{to{transform:scale(1);opacity:0}}
 .kb.stim .ripple{display:none}
 
@@ -837,7 +804,6 @@ html.no-splash #splash{display:none}
 /* Feedback: stable 40-key layout with targets that do not shrink on phones. */
 :root{--bg:#E9EBEA;--surface:#FFFFFF;--surface-2:#F4F5F4;--surface-3:#E4E7E5;--line:#D5DAD7;--line-strong:#BFC6C2;
   --primary:#176A50;--primary-hover:#12523E;--accent:#176A50;--accent-600:#12523E;--accent-50:#E8F4EF;--accent-100:#C5E3D5;--pick:#245FAD;--pick-600:#245FAD;--pick-50:#EDF3FB;--pick-100:#C7D9EF;--pick-200:#A9C4E5}
-:root[data-theme="dark"]{--bg:#202020;--surface:#292929;--surface-2:#303030;--surface-3:#404040;--line:#505050;--line-strong:#666;--ink-900:#FFF;--ink-700:#DDD;--ink-500:#BBB;--accent:#8EDAB9;--accent-600:#A6E5CA;--accent-50:#263F35;--accent-100:#365B49;--pick:#9FC8FF;--pick-600:#C2DDFF;--pick-50:#29394D;--pick-100:#3C526E;--pick-200:#6383A8}
 body::before{display:none}
 .btn,.btn.sm,.ghost-btn,.jamo-btn,.rblock,.habitual-chip{min-width:48px;min-height:48px}
 .cand .tx .unit{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
@@ -852,7 +818,7 @@ body.stim-on::before{display:none}
 .news-items{display:grid;gap:8px;margin-top:10px}
 .news-items button{text-align:left;white-space:normal;overflow-wrap:anywhere}
 /* ===== Figma 디자인(Untitled · Main 26:17, loading 4:11) — 연초록 그라데이션 · 흰 카드 · 짙은 초록 · 명조 =====
-   글꼴은 피그마의 YES명조 대신 이미 쓰는 Noto Serif KR(웹폰트). 어두운 화면·SSVEP 자극 색은 기존 규칙 그대로. */
+   글꼴은 피그마의 YES명조 대신 이미 쓰는 Noto Serif KR(웹폰트). SSVEP 자극 색은 기존 규칙 그대로(어두운 화면은 없앰). */
 :root{--bg:#DDE0C6;--surface:#FFFFFF;--surface-2:#F4F5F4;--surface-3:#E6E9E6;--line:#D9DEDB;--line-strong:#C8CECA;
   --ink-900:#20221F;--ink-700:#454540;--ink-500:#79766F;--ink-300:#A09C92;
   --primary:#3D6B50;--primary-hover:#326B56;--accent:#3C7D5E;--accent-600:#326B56;--accent-50:#EBF4EF;--accent-100:#D2E6DB;
@@ -862,7 +828,6 @@ html:not([data-theme="dark"]) body:has(.kb.stim),html:not([data-theme="dark"]) b
 html:not([data-theme="dark"]) body{font-family:var(--serif)}
 html:not([data-theme="dark"]) .topbar{background:#B1DCB0;border-bottom:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .brand-logo{display:block;height:44px;width:auto}
-html[data-theme="dark"] .brand-logo{filter:brightness(0) invert(.92)}
 .brand .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #splash{background:linear-gradient(180deg,#B1DCB0 0%,#DDE0C6 100%)}
 .sp-logo{width:min(227px,46vw);height:auto;animation:spMark .55s var(--ease) both}
@@ -905,7 +870,6 @@ html:not([data-theme="dark"]) body.kb-fig .kb .key.pill{background:#EBF4EF;borde
 html:not([data-theme="dark"]) body.kb-fig .kb .key.pill.none{background:#FEE2E2;border:1.4px solid #FCA5A5;color:#991B1B}
 body.kb-fig .kb-row.pills .key.commit{flex:164 1 0}
 html:not([data-theme="dark"]) body.kb-fig .kb .key.pill.commit{background:#326B56;border:1.4px solid #326B56;color:#fff;font-size:clamp(14px,.4vw + 11px,19px)}
-html[data-theme="dark"] body.kb-fig .kb .key.pill.none{border-color:#FCA5A5;color:#FCA5A5}
 @media(min-width:900px){body.kb-fig .cand-card,body.kb-fig .speech-actions{display:none}}
 @media(max-width:700px){body.kb-fig .kb .key.swap,body.kb-fig .kb .key.pill{font-size:12px;letter-spacing:-.05em;white-space:normal;line-height:1.15}body.kb-fig .kb-row.pills{gap:6px}body.kb-fig .kb-row.pills .key.commit{flex:284 1 0}body.kb-fig .kb-row.pills .key{padding-inline:2px}}
 .none-btn{margin-left:auto;align-self:center}.none-btn kbd{font:inherit;opacity:.6;margin-left:4px}
@@ -982,7 +946,6 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
     <span class="vh">이심전심 BCI Speller · 한국어 하이브리드 BCI · AAC</span>
   </div>
   <nav class="top-tools" aria-label="화면 도구">
-    <button class="btn tool-btn" id="btnTheme" aria-pressed="true" title="어두운 화면 / 밝은 화면">◐ 어둡게</button>
     <button class="btn tool-btn" id="btnLargeText" aria-pressed="false">가 큰 글씨</button>
     <button class="btn tool-btn" id="btnGuide" aria-haspopup="dialog">사용 설명서</button>
     <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
@@ -995,7 +958,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.7</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.8</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1234,7 +1197,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.7.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.8.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1243,9 +1206,9 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
     <p class="guide-lead">내가 원하는 말을, 나의 속도로.</p>
     <p>초성으로 문장을 찾고, 뜻에 맞게 고친 다음 상대방에게 보여주거나 소리로 전하세요. 설명서를 닫으면 작성 중이던 화면으로 돌아갑니다.</p>
     <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a><a href="#guide-about">정보·출처</a></nav>
-    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><p><strong>입력 집중:</strong> 상단의 ‘입력 집중’을 누르면 대화 영역을 접고 문장·후보·40키에 집중할 수 있습니다. ‘대화 함께 보기’로 언제든 돌아옵니다. 작성 내용과 대화 문맥은 유지됩니다. 휴대전화에서는 입력부 아래에 대화가 표시됩니다. 초록색 다음 단어 후보는 같은 색의 후보키와 연결되며, 번호로도 구분할 수 있습니다.</p><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> ‘물 줘’는 <strong>ㅁ → ㅈ</strong>처럼 초성만 눌러도 되고, ㅁ 다음에 모음 <strong>ㅜ</strong>를 눌러 ‘무’를 그 자리에서 확정해도 됩니다(받침은 후보가 채워줍니다). 단어 사이에서 <strong>␣ 띄기</strong>를 누르면 ㅇㅅㅇ ㅎㄷㄷ처럼 나뉘어 <strong>인생이 힘들다</strong>를 더 정확히 찾습니다. 한 번에 최대 40글자입니다.</li><li><strong>후보키로 선택:</strong> 키를 누를 때마다 <strong>단어 후보</strong>가 기기 안에서 먼저 갱신되고, <strong>문장 후보</strong>는 로컬 후보와 언어 모델 응답으로 채워집니다. 서버 조회는 연속 입력이 멈춘 뒤 시작하며, 완료 시간은 연결 상태와 모델에 따라 달라집니다. 원하는 후보의 번호가 붙은 <strong>후보키 1~7</strong>(또는 숫자키)을 누르면 바로 확정됩니다. 단어/문장 개수 비율은 로컬에 맞는 단어가 몇 개인지에 따라 자동으로 조절됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
-    <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
-    <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>마지막 문장 취소:</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>글자삭제 / 단어삭제:</strong> 마지막 글자 하나 / 작성 중인 단어(없으면 확정된 마지막 어절)를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>7</kbd>은 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
+    <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><p><strong>입력 집중:</strong> 상단의 ‘입력 집중’을 누르면 대화 영역을 접고 문장·후보·자판에 집중할 수 있습니다. ‘대화 함께 보기’로 언제든 돌아옵니다. 작성 내용과 대화 문맥은 유지됩니다. 휴대전화에서는 입력부 아래에 대화가 표시됩니다. 초록색 다음 단어 후보는 같은 색의 후보키와 연결되며, 번호로도 구분할 수 있습니다.</p><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> ‘물 줘’는 <strong>ㅁ → ㅈ</strong>처럼 초성만 눌러도 되고, ㅁ 다음에 <strong>자모변환</strong>으로 모음 <strong>ㅜ</strong>를 눌러 ‘무’를 그 자리에서 확정해도 됩니다(받침은 후보가 채워줍니다). 단어 사이에서 <strong>␣ 띄기</strong>를 누르면 ㅇㅅㅇ ㅎㄷㄷ처럼 나뉘어 <strong>인생이 힘들다</strong>를 더 정확히 찾습니다. 한 번에 최대 40글자입니다.</li><li><strong>후보키로 선택:</strong> 키를 누를 때마다 <strong>단어 후보</strong>가 기기 안에서 먼저 갱신되고, <strong>문장 후보</strong>는 로컬 후보와 언어 모델 응답으로 채워집니다. 서버 조회는 연속 입력이 멈춘 뒤 시작하며, 완료 시간은 연결 상태와 모델에 따라 달라집니다. 원하는 후보의 번호가 붙은 <strong>후보키 1~5</strong>(40키 자판은 1~7)(또는 숫자키)을 누르면 바로 확정됩니다. 단어/문장 개수 비율은 로컬에 맞는 단어가 몇 개인지에 따라 자동으로 조절됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
+    <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>후보에 원하는 말이 없다면 · 없음</h4><p>자판 아래의 <strong>없음</strong>(숫자키 0)을 누르면, 지금 대화와 후보를 보고 <strong>가장 도움이 되는 글자 하나</strong>를 골라 입력칸에 빨갛게 표시하고 자판이 모음판으로 바뀝니다. 모음을 누른 뒤 받침을 누르거나(받침이 없으면 ✓) 하면 그 글자로 다시 찾습니다. 그래도 없으면 다시 <strong>없음</strong>을 누르세요. 그만두려면 ⌫ 글자입니다. 예전 40키 두벌식 자판은 ‘입력 설정 → 자판’에서 고를 수 있습니다.</p><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
+    <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>되돌리기(40키 자판):</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>글자삭제 / 단어삭제:</strong> 마지막 글자 하나 / 작성 중인 단어(없으면 확정된 마지막 어절)를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>7</kbd>은 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
     <section id="guide-settings"><h3>4. 나에게 맞게 조절하기</h3><ul><li><strong>큰 글씨:</strong> 화면 위쪽 ‘가 큰 글씨’로 입력·후보·주요 버튼을 확대합니다. 같은 버튼으로 기본 크기로 돌아옵니다.</li><li><strong>자동 후보 조회:</strong> ‘입력 설정 · 이 탭의 기록’에서 켭니다. 초성 2개 이상 입력 후 1.2초 동안 입력을 멈추면 조회합니다. 문장은 자동 확정되지 않습니다.</li><li><strong>후보 수:</strong> 3개 또는 5개로 선택합니다.</li><li><strong>대화 문맥:</strong> ‘자주 쓰는 표현 · 대화 문맥’을 열어 상대방의 말이나 상황을 적으면 조회에 참고합니다. 최근 대화도 자동 반영됩니다.</li><li><strong>자주 쓰는 표현:</strong> 확정한 표현이 모입니다. 이 버튼은 누르면 바로 문장에 추가됩니다.</li></ul><h4>내 대화는 어디에 저장되나요?</h4><p>작성 중인 문장과 최근 대화, 자주 쓰는 표현은 현재 브라우저 탭의 세션 저장소에 보관되어 새로고침 뒤 복원됩니다. 후보 조회 시 초성·문맥 등 필요한 입력이 서버와 언어 모델로 전송됩니다. 탭 복원 기능에 따라 기록이 다시 열릴 수 있으므로 공용 기기에서는 ‘이 탭의 기록 삭제’를 사용하세요.</p><p>‘사용 지표 내려받기’는 입력 횟수·조회 지연시간 등의 JSON 파일을 저장합니다. 문장 원문은 포함하지 않습니다. 실제 EEG 정확도나 의사소통 성능을 측정하는 기능은 아닙니다.</p></section>
     <section id="guide-trouble"><h3>5. 잘 안 될 때</h3><details><summary>문장 후보가 늦게 나와요</summary><p>단어 후보는 언어 모델을 거치지 않으므로 항상 즉시 뜹니다 — 서버가 느리거나 끊겨도 단어 후보만으로 계속 입력할 수 있습니다. 문장 후보만 언어 모델을 기다리며, 이 대기 시간은 위쪽 HUD의 ‘LLM 실대기’에 실측으로 표시됩니다.</p></details><details><summary>원하는 표현이 없거나 초성을 잘못 눌렀어요</summary><p>‘지우기’로 잘못 입력한 초성을 수정하세요. 글자 하나의 대안은 FillMask, 일부 글자를 지정하는 것은 KeywordAE, 정확한 문장을 알고 있을 때는 전체 직접 입력을 사용하세요.</p></details><details><summary>눈으로 바라보면 선택되나요?</summary><p>아직 아닙니다. 현재 웹 버전은 클릭·터치·키보드로 조작하는 연구용 인터페이스입니다. 다만 <strong>Pseudo-online 실험 모드</strong>를 켜면 SSVEP 자극 시간(기본 1.5초)과 판독 정확도(기본 90%)를 흉내 내어, 실제 EEG를 붙이기 전에 전체 루프가 얼마나 걸리는지 측정하고 CSV로 저장할 수 있습니다.</p></details><details><summary>새 대화와 기록 삭제는 어떻게 다른가요?</summary><p>‘새 대화 시작’은 상대와 상황을 다시 선택하며 현재 대화를 초기화합니다. 자주 쓰는 표현은 유지됩니다. 개인 기록까지 비우려면 ‘입력 설정 · 이 탭의 기록’의 ‘이 탭의 기록 삭제’를 선택하세요.</p></details></section>
     <section id="guide-about"><h3>6. 정보·출처</h3>
@@ -1866,7 +1829,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.7.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.8.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2204,6 +2167,8 @@ function handleKey(t,v){
     if(v==="none"){ pressNone(); loopFinish({key:"none",type:"fn"}); return; }
     if(v==="speak"){ el("btnSpeak").click(); loopFinish({key:"speak",type:"fn"}); return; }
     if(state.jamoTarget!==null && (v==="back"||v==="delword")){ cancelGuided("글자 완성을 취소했습니다."); loopFinish({key:v,type:"fn"}); return; }
+    if(state.jamoTarget!==null && (v==="space"||t==="punct")){ announce("먼저 빨간 글자를 완성해 주세요. 그만두려면 ⌫ 글자."); loopFinish({key:v,type:t,rejected:1}); return; }
+    if(state.jamoTarget===null && t==="cho") setGuide("");
   }
   // 자모변환으로 직접 연 모음판: 모음 하나(또는 다른 키 하나)를 누르면 자음판으로 돌아간다
   const manualVowel = isFig() && kbScreen==="vowel" && state.jamoTarget===null;
@@ -2787,7 +2752,8 @@ function sentenceSlots(n){
   // 지은 문장은 대개 단어 하나라 단어 줄과 겹치고, 검수 표현의 접두어 적중(절감)을 밀어낸다.
   const decoded= exact.length || state.initials.length<SCORE.decodeMin ? []
     : decodeSentences(state.initials, SCORE.decodeN).map(text=>({kind:"sent",text,local:true,decoded:true}));
-  const llm=(state.latest||[]).filter(c=>spacesOk(c.text)).map(c=>({kind:"sent",text:c.text,candidate_id:c.candidate_id}));
+  // 낱자모(ㄴㅁ매ㄱ…)가 섞인 응답은 말이 아니다 — 후보 칸을 차지하지 못하게 거른다
+  const llm=(state.latest||[]).filter(c=>spacesOk(c.text) && !/[ㄱ-ㅎㅏ-ㅣ]/.test(c.text)).map(c=>({kind:"sent",text:c.text,candidate_id:c.candidate_id}));
   // 로컬 -> LLM 순서로 쌓는다. LLM 응답이 늦게 도착해도 이미 화면에 떠 있던
   // 후보의 번호가 밀리지 않아야 한다 — 번호가 곧 눌러야 할 키이고, 읽는 도중
   // 자리가 바뀌면 엉뚱한 키를 응시하게 된다.
@@ -3007,6 +2973,10 @@ function clearCandidates(){
 function clearRecoveryState(){
   state.spelled={};
   clearCandidates();
+  // 고르거나 지우거나 취소하면 '없음'으로 채우던 글자도 끝난다 — 안 그러면 다음 자음이 받침으로 들어간다
+  const mid = state.jamoTarget!==null || kbScreen==="vowel";
+  state.guided=false; state.jamoTarget=null; state.jamoMedial=null; setGuide("");
+  if(mid && isFig()) kbShow("cons");
 }
 
 /* ---------------- predict (base + recovery variants) ---------------- */
@@ -3417,7 +3387,7 @@ async function commitValue(text,candidateId,meta){
     clearRecoveryState(); state.spelled=kept;
     renderBuffer(); renderChat(); refreshHabitual();
     schedulePrediction();
-    announce("문장을 추가했습니다. 잘못 선택했다면 ‘마지막 문장 취소’를 눌러주세요.");
+    announce("문장을 추가했습니다. 잘못 골랐다면 ⌫ 글자로 지울 수 있어요.");
   }finally{
     commitBusy=false;
     if(meta) loopFinish(Object.assign({committed:text},meta)); else loopReady(true);
@@ -3535,19 +3505,10 @@ el("btnGuide").onclick=()=>{el("guideDialog").showModal();};
 el("btnAbout").onclick=()=>{el("guideDialog").showModal(); el("guide-about").scrollIntoView({block:"start"});};
 el("btnGuideClose").onclick=()=>el("guideDialog").close();
 el("guideDialog").addEventListener("close",()=>el("btnGuide").focus());
-/* 테마 토글. 색이 전부 토큰이라 data-theme 한 글자만 바꾸면 화면 전체가 따라온다. */
-function applyTheme(dark){
-  const root=document.documentElement;
-  root.classList.add("theme-switching");
-  root.dataset.theme = dark ? "dark" : "light";
-  requestAnimationFrame(()=>requestAnimationFrame(()=>root.classList.remove("theme-switching")));
-  el("btnTheme").textContent = dark ? "◐ 어둡게" : "☀ 밝게";
-  el("btnTheme").setAttribute("aria-pressed", String(dark));
-  try{ localStorage.setItem("bci_theme", dark ? "dark" : "light"); }catch(e){}
-}
-el("btnTheme").onclick=()=>applyTheme(document.documentElement.dataset.theme!=="dark");
-/* 팀 결정: 기본은 밝은 회색 배경·흰 버튼·초록 포인트, 어둡게는 선택 */
-try{ applyTheme(localStorage.getItem("bci_theme")==="dark"); }catch(e){}
+/* 어두운 화면은 없앴다(사용자 결정) — 늘 밝은 화면. 예전에 '어둡게'를 골라 둔 기기도 밝게 돌린다.
+   SSVEP 자극 중 화면이 어두워지는 것은 테마가 아니라 실험 자극이라 그대로다. */
+document.documentElement.dataset.theme="light";
+try{ localStorage.removeItem("bci_theme"); }catch(e){}
 
 el("btnLargeText").onclick=()=>{
   const enabled=document.body.classList.toggle("large-text");

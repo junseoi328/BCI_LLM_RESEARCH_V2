@@ -44,7 +44,7 @@ test('Input focus preserves drafts, candidate semantics and responsive 40-key la
     await page.locator('#btnFocusInput').click();
     await page.reload();
     assert.equal(await page.locator('#btnFocusInput').getAttribute('aria-pressed'),'true');
-    await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();renderBuffer();applyTheme(false);});
+    await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();renderBuffer();});
     await page.setViewportSize({width:1366,height:768});
     if(process.env.BCI_SCREENSHOT_DIR){fs.mkdirSync(process.env.BCI_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.BCI_SCREENSHOT_DIR,'speller-focus-desktop.png')});}
   }finally{await browser.close();}
