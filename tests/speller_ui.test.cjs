@@ -144,7 +144,9 @@ test('40-key grid carries the candidates, and candidate keys commit what they di
     await page.locator('#keyboard .key.jung[data-v="ㅜ"]').click();
     assert.equal((await page.locator('#iniDisplay').textContent()).trim(),'무');
     const pinned=await page.locator('#candWords .cand.word .tx').allTextContents();
-    assert.ok(pinned.every(w=>w.startsWith('무')),`pinned syllable filters words: ${JSON.stringify(pinned)}`);
+    // 모음까지만 고른 글자는 받침을 후보가 채운다: 무 → 물·문·무슨 (초성+중성 '무'만 같으면 된다)
+    const base=ch=>Math.floor((ch.charCodeAt(0)-0xAC00)/28);
+    assert.ok(pinned.length && pinned.every(w=>base(w[0])===base('무')),`pinned syllable filters words: ${JSON.stringify(pinned)}`);
 
     // 후보키로 확정하면 그 키에 적혀 있던 단어가 그대로 들어간다
     const picked=pinned[0];
@@ -921,17 +923,18 @@ test('"원하는 말 없음" picks one syllable, keyboard vowel+✓ fills it and
     const idx=await page.evaluate(()=>state.jamoTarget);
     assert.ok(idx>=0 && idx<5);
     assert.match(await page.locator('#recoveryTitle').textContent(),/번째 글자/);
+    // 단계식: 모음 하나로 바로 다시 찾는다(받침은 후보가 채운다)
     await page.click('#keyboard .key[data-v="ㅏ"]');
-    await page.click('#keyboard .key[data-v="commit"]');
-    const s=await page.evaluate(i=>({sp:state.spelled[i],ini:state.initials,target:state.jamoTarget,hist:state.history.length,title:el('recoveryTitle').textContent}),idx);
+    const s=await page.evaluate(i=>({sp:state.spelled[i],vo:!!state.vowelOnly[i],ini:state.initials,target:state.jamoTarget,hist:state.history.length,title:el('recoveryTitle').textContent}),idx);
     assert.equal(s.sp, await page.evaluate(i=>composeSyllableJS(state.initials[i],'ㅏ',''),idx));
+    assert.equal(s.vo,true,'모음까지만 고정');
     assert.equal(s.ini,'ㄷㅇㅈㅅㅇ','초성은 그대로');
     assert.equal(s.target,null);
-    assert.equal(s.hist,0,'✓는 받침 없음 — 문장을 끝내지 않는다');
+    assert.equal(s.hist,0);
     assert.match(s.title,/다시 찾았습니다/);
     await page.keyboard.press('0');
-    const idx2=await page.evaluate(()=>state.jamoTarget);
-    assert.ok(idx2!==idx,'다음에는 아직 안 채운 다른 글자');
+    const [idx2,ask]=await page.evaluate(()=>[state.jamoTarget,spellAsk]);
+    assert.ok(idx2!==idx || ask==='jong','다음에는 다른 글자의 모음, 또는 같은 글자의 받침');
   }finally{await browser.close();}
 });
 
@@ -958,16 +961,20 @@ test('Figma patient keyboard: 없음 swaps to the vowel board, vowel → 받침 
     assert.equal(await page.locator('#keyboard .key.jung').count(),21);
     assert.equal(await page.locator('#iniDisplay .wblock.target').count(),1,'완성할 글자를 빨갛게 표시');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044);
+    // 모음 하나 → 자음판으로 돌아와 바로 다시 찾음(선택 2번: 없음·모음)
     await page.click('#keyboard .key[data-v="ㅗ"]');
-    assert.equal(await page.locator('#keyboard .key').count(),29,'받침은 자음판에서');
+    assert.equal(await page.locator('#keyboard .key').count(),29);
+    const s=await page.evaluate(i=>({sp:state.spelled[i],vo:!!state.vowelOnly[i],want:composeSyllableJS(state.initials[i],'ㅗ',''),ini:state.initials,tgt:state.jamoTarget,guide:el('kbGuide').textContent}),idx);
+    assert.equal(s.sp,s.want); assert.equal(s.vo,true); assert.equal(s.ini,'ㄷㅇㅈㅅㅇ'); assert.equal(s.tgt,null);
+    assert.match(s.guide,/다시 찾았습니다/);
+    // 받침을 물을 때: 자음판에서 받침 하나, ✓ = 받침 없음
+    await page.evaluate(i=>{ state.guided=true; state.jamoTarget=i; spellAsk='jong'; state.jamoMedial='ㅗ'; renderBuffer(); },idx);
     assert.match(await page.locator('#keyboard .key[data-v="commit"]').getAttribute('aria-label'),/받침 없음/);
     await page.click('#keyboard .key[data-v="ㄴ"]');
-    const s=await page.evaluate(i=>({sp:state.spelled[i],want:composeSyllableJS(state.initials[i],'ㅗ','ㄴ'),ini:state.initials,tgt:state.jamoTarget,guide:el('kbGuide').textContent}),idx);
-    assert.equal(s.sp,s.want); assert.equal(s.ini,'ㄷㅇㅈㅅㅇ'); assert.equal(s.tgt,null);
-    assert.match(s.guide,/다시 찾았습니다/);
+    assert.deepEqual(await page.evaluate(i=>[state.spelled[i],!!state.vowelOnly[i]],idx),[await page.evaluate(i=>composeSyllableJS(state.initials[i],'ㅗ','ㄴ'),idx),false]);
     // 다시 없음 → 다른 글자, ⌫ 로 취소하면 초성은 그대로
     await page.click('#keyboard .key[data-v="none"]');
-    assert.notEqual(await page.evaluate(()=>state.jamoTarget),idx);
+    assert.notEqual(await page.evaluate(()=>state.jamoTarget),null);
     await page.click('#keyboard .key[data-v="back"]');
     assert.deepEqual(await page.evaluate(()=>[state.jamoTarget,state.initials,kbScreen]),[null,'ㄷㅇㅈㅅㅇ','cons']);
     // 자모변환(직접): 마지막 글자에 모음 하나 → 자음판으로 복귀
@@ -979,6 +986,45 @@ test('Figma patient keyboard: 없음 swaps to the vowel board, vowel → 받침 
     // 설정에서 40키로 바꾸면 예전 자판
     await page.evaluate(()=>setKbLayout('k40'));
     assert.equal(await page.locator('#keyboard .key').count(),40);
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+test('요즘 이야깃거리: issues from /speller/news drive context only when chosen or asked about', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:900}});
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    const now=new Date().toISOString(), u=n=>`https://www.yna.co.kr/view/AKR${n}`;
+    const news={items:[{title:'한화 한국시리즈 우승',url:u(1),category:'스포츠',published_at:now,source:'연합뉴스'},
+                       {title:'독감 유행 주의보',url:u(2),category:'건강',published_at:now,source:'연합뉴스'}],
+      issues:[{keyword:'한화',words:['우승','한국시리즈'],category:'스포츠',count:3,score:2,titles:[{title:'한화 한국시리즈 우승',url:u(1),published_at:now}]},
+              {keyword:'독감',words:['유행'],category:'건강',count:2,score:1,titles:[{title:'독감 유행 주의보',url:u(2),published_at:now}]}],
+      trends:[['한화',3,2],['독감',2,1]],updated_at:now,unavailable:[]};
+    await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
+      if(p==='/speller') return r.fulfill({contentType:'text/html',body:HTML('fig')});
+      if(p==='/speller/news') return r.fulfill({json:news});
+      return r.fulfill({json:{status:'healthy',words:[]}});});
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    await page.evaluate(()=>refreshNews());
+    assert.equal(await page.locator('#newsItems .issue-btn').count(),2);
+    assert.equal(await page.locator('#newsBadge').textContent(),'이슈 2');
+    assert.equal(await page.evaluate(()=>newsContext()),'','고르지도 묻지도 않으면 뉴스는 문맥에 안 들어간다');
+    // 일상어는 끼어들지 않는다
+    await page.evaluate(()=>{state.history=[{who:'partner',text:'약 드셨어요?'}];});
+    assert.equal(await page.evaluate(()=>newsContext()),'');
+    // 분야를 물으면 그 분야 1위 이슈
+    await page.evaluate(()=>{state.history=[{who:'partner',text:'요즘 야구 봤어?'}];});
+    assert.match(await page.evaluate(()=>newsContext()),/한화/);
+    // 고르면 그 이슈
+    await page.evaluate(()=>{state.history=[];});
+    await page.evaluate(()=>{el('newsPanel').open=true;});
+    await page.locator('#newsItems .issue-btn',{hasText:'독감'}).click();
+    assert.match(await page.evaluate(()=>newsContext()),/독감/);
+    assert.ok(await page.evaluate(()=>echoMap().has('독감')),'고른 이슈의 말이 후보 쪽으로');
+    await page.click('#btnNewsClear');
+    assert.equal(await page.evaluate(()=>newsContext()),'');
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });

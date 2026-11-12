@@ -246,13 +246,13 @@ class OpenAILanguageModelClient:
 
         return self._with_retry(_do)
 
-    def generate_reply_words(self, partner_text: str, partner: str, situation: str, recent: list[str]) -> list[str]:
+    def generate_reply_words(self, partner_text: str, partner: str, situation: str, recent: list[str], news: str = "") -> list[str]:
         def _do() -> list[str]:
             try:
                 response = self._create(
                     model=self.generator_model_name,
                     instructions=REPLY_WORDS_INSTRUCTIONS,
-                    input=build_reply_words_input(partner_text, partner, situation, recent),
+                    input=build_reply_words_input(partner_text, partner, situation, recent, news),
                     max_output_tokens=settings.max_output_tokens,
                     text={
                         "verbosity": "low",

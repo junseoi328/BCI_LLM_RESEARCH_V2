@@ -13,28 +13,32 @@ const sents=fs.readFileSync(process.env.CHAT_TEST||'data/chat_test.txt','utf8').
  await page.goto('http://bci.test/speller');
  await page.evaluate(k=>{ if(typeof setKbLayout==='function') setKbLayout(k); }, process.env.KB||'k40');  // 기준은 40키(이력과 비교), KB=fig 로 환자 실험용 자판
  await page.evaluate(()=>{showView('speller');return loadDict();});
- for(const strat of ['entropy','first','last']){
+ console.error('kb', await page.evaluate(()=>typeof kbLayout!=='undefined'?kbLayout:'-'));
+ for(const strat of (process.env.STRATS||'entropy,first,staged').split(',')){
   const r=await page.evaluate(({sents,strat})=>{
    const norm=t=>String(t).replace(/[^가-힣]/g,'');
-   let n=0,found0=0,fills=0,solved=0,within2=0;
+   let n=0,found0=0,fills=0,solved=0,within2=0,sel=0;
    for(const s of sents){
      const sy=[...norm(s)]; if(sy.length<2||sy.length>20) continue; n++;
      try{localStorage.clear()}catch(e){}
      learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
      state.partner='family';state.situation='general';el('autoPredict').checked=false;
-     state.history=[];state.committed='';state.lastWord='';state.lastWord2='';state.latest=[];state.breaks=[];
-     state.initials=choseongOf(sy.join(''));state.spelled={};markContextDirty();
+     state.vowelOnly={}; state.history=[];state.committed='';state.lastWord='';state.lastWord2='';state.latest=[];state.breaks=[];
+     state.initials=choseongOf(sy.join(''));state.spelled={};state.vowelOnly={};markContextDirty();
      let k=0;
      for(;;){
        renderCandidatePanel();
        if(slots.some(x=>x&&norm(x.text)===sy.join(''))) break;
-       const open=[...sy.keys()].filter(i=>!state.spelled[i]); if(!open.length){k=-1;break;}
-       const i= strat==='entropy'? bestSpellTarget() : strat==='first'? open[0] : open[open.length-1];
-       state.spelled[i]=sy[i]; k++;
+       const open=[...sy.keys()].filter(i=>!state.spelled[i]||state.vowelOnly[i]); if(!open.length){k=-1;break;}
+       const i= strat==='entropy'? bestSpellTarget('full') : strat==='staged'? bestSpellTarget('staged') : strat==='first'? open[0] : open[open.length-1];
+       if(i<0){k=-1;break;}
+       if(strat==='staged' && spellAsk==='vowel'){ const c=sy[i].charCodeAt(0)-0xAC00; state.spelled[i]=String.fromCharCode(0xAC00+Math.floor(c/28)*28); state.vowelOnly[i]=true; }
+       else { state.spelled[i]=sy[i]; delete state.vowelOnly[i]; }
+       k++;
      }
-     if(k===0) found0++; else if(k>0){ fills+=k; solved++; if(k<=2) within2++; }
+     const per= strat==='staged'?2:3; if(k===0) found0++; else if(k>0){ fills+=k; solved++; sel+=k*per; if(k<=2) within2++; }
    }
-   return {n,found0,solved,avgFills:(fills/Math.max(1,solved)).toFixed(2),within2};
+   return {n,found0,solved,avgFills:(fills/Math.max(1,solved)).toFixed(2),avgSelections:(sel/Math.max(1,solved)).toFixed(2),within2};
   },{sents,strat});
   console.log(strat.padEnd(8), JSON.stringify(r));
  }

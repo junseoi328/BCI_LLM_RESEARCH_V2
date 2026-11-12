@@ -815,7 +815,13 @@ body.stim-on::before{display:none}
 .kb.stim .key.flicker{border-color:#FFFFFF}
 .keyboard-scroll{overflow-x:auto;padding:3px}
 .keyboard-scroll .kb{min-width:494px}
-.news-items{display:grid;gap:8px;margin-top:10px}
+.news-items{display:grid;gap:10px;margin-top:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
+.issue{display:grid;gap:4px;min-width:0}
+.issue-btn{justify-content:flex-start;text-align:left;gap:8px;flex-wrap:wrap;border-radius:16px!important;padding:10px 14px}
+.issue-btn[aria-pressed="true"]{background:#EBF4EF!important;border-color:#3C7D5E!important}
+.issue-cat{font-size:var(--fs-xs);font-weight:700;color:#fff;background:#3C7D5E;border-radius:999px;padding:1px 8px}
+.issue-n{margin-left:auto;font-size:var(--fs-xs);color:var(--ink-500)}
+.issue-title{font-size:var(--fs-xs);color:var(--ink-500);padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .news-items button{text-align:left;white-space:normal;overflow-wrap:anywhere}
 /* ===== Figma 디자인(Untitled · Main 26:17, loading 4:11) — 연초록 그라데이션 · 흰 카드 · 짙은 초록 · 명조 =====
    글꼴은 피그마의 YES명조 대신 이미 쓰는 Noto Serif KR(웹폰트). SSVEP 자극 색은 기존 규칙 그대로(어두운 화면은 없앰). */
@@ -858,6 +864,7 @@ html:not([data-theme="dark"]) .kb .key.cand:not(:disabled){background:#EBF4EF;bo
 html:not([data-theme="dark"]) .kb .key.cand:not(:disabled) .cw{color:#454944;font-size:clamp(13px,.4vw + 9px,17px);line-height:1.2}
 /* 환자 실험용 자판(피그마 88:948 자음 · 88:757 모음) */
 .kb-guide{margin:8px 2px 0;font-size:var(--fs-sm);font-weight:700;color:#B64636}.kb-guide:empty{display:none}
+.wblock.vo{box-shadow:inset 0 -3px 0 #8FC7A6}
 .wblock.target{background:#FEE2E2;color:#B64636;outline:2px solid #B64636}
 body.kb-fig .kb{display:flex;flex-direction:column;gap:12px;min-width:0}
 body.kb-fig .kb-row{display:flex;gap:8px}
@@ -958,7 +965,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.8</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.9</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1155,8 +1162,8 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
       </details>
 
       <details id="newsPanel">
-        <summary>최근 뉴스 · 대화 주제 <span id="newsBadge" class="news-badge"></span></summary>
-        <p class="unit-hint">최근 14일의 시사·연예·스포츠 기사 제목을 추천에 참고합니다. 열 때 갱신하며, 이용 중에는 주기적으로 확인합니다.</p>
+        <summary>요즘 이야깃거리 · 뉴스 <span id="newsBadge" class="news-badge"></span></summary>
+        <p class="unit-hint">연합뉴스 시사·사회·경제·건강·문화·연예·스포츠 기사 <strong>제목</strong>을 묶어 요즘 이야깃거리를 보여 줍니다. 하나를 고르면 그 말들이 후보에 먼저 나옵니다. 상대가 “요즘 야구 봤어?”처럼 물으면 고르지 않아도 그 분야 이슈를 참고합니다. 기사 원문은 저장하지 않습니다.</p>
         <button class="btn" id="btnNewsRefresh">뉴스 확인</button>
         <button class="btn" id="btnNewsClear">선택한 주제 해제</button>
         <p id="newsStatus" role="status" class="unit-hint">뉴스를 불러오기 전입니다.</p>
@@ -1197,7 +1204,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.8.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.9.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1207,7 +1214,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
     <p>초성으로 문장을 찾고, 뜻에 맞게 고친 다음 상대방에게 보여주거나 소리로 전하세요. 설명서를 닫으면 작성 중이던 화면으로 돌아갑니다.</p>
     <nav class="guide-nav" aria-label="설명서 목차"><a href="#guide-start">처음 사용하기</a><a href="#guide-edit">글자 수정</a><a href="#guide-speak">확정·말하기</a><a href="#guide-settings">설정·기록</a><a href="#guide-trouble">문제 해결</a><a href="#guide-about">정보·출처</a></nav>
     <section id="guide-start"><h3>1. 세 단계로 시작해요</h3><p><strong>입력 집중:</strong> 상단의 ‘입력 집중’을 누르면 대화 영역을 접고 문장·후보·자판에 집중할 수 있습니다. ‘대화 함께 보기’로 언제든 돌아옵니다. 작성 내용과 대화 문맥은 유지됩니다. 휴대전화에서는 입력부 아래에 대화가 표시됩니다. 초록색 다음 단어 후보는 같은 색의 후보키와 연결되며, 번호로도 구분할 수 있습니다.</p><ol><li><strong>대화 상대와 상황 선택:</strong> 가족, 친구 등 상대와 현재 상황을 선택합니다. 후보를 찾는 데 참고됩니다.</li><li><strong>초성 입력:</strong> ‘물 줘’는 <strong>ㅁ → ㅈ</strong>처럼 초성만 눌러도 되고, ㅁ 다음에 <strong>자모변환</strong>으로 모음 <strong>ㅜ</strong>를 눌러 ‘무’를 그 자리에서 확정해도 됩니다(받침은 후보가 채워줍니다). 단어 사이에서 <strong>␣ 띄기</strong>를 누르면 ㅇㅅㅇ ㅎㄷㄷ처럼 나뉘어 <strong>인생이 힘들다</strong>를 더 정확히 찾습니다. 한 번에 최대 40글자입니다.</li><li><strong>후보키로 선택:</strong> 키를 누를 때마다 <strong>단어 후보</strong>가 기기 안에서 먼저 갱신되고, <strong>문장 후보</strong>는 로컬 후보와 언어 모델 응답으로 채워집니다. 서버 조회는 연속 입력이 멈춘 뒤 시작하며, 완료 시간은 연결 상태와 모델에 따라 달라집니다. 원하는 후보의 번호가 붙은 <strong>후보키 1~5</strong>(40키 자판은 1~7)(또는 숫자키)을 누르면 바로 확정됩니다. 단어/문장 개수 비율은 로컬에 맞는 단어가 몇 개인지에 따라 자동으로 조절됩니다.</li></ol><p class="guide-callout">추천 문장은 예측 결과입니다. 화면에 표시된 내용을 읽고, 내 뜻과 맞는지 확인한 뒤 확정하세요.</p></section>
-    <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>후보에 원하는 말이 없다면 · 없음</h4><p>자판 아래의 <strong>없음</strong>(숫자키 0)을 누르면, 지금 대화와 후보를 보고 <strong>가장 도움이 되는 글자 하나</strong>를 골라 입력칸에 빨갛게 표시하고 자판이 모음판으로 바뀝니다. 모음을 누른 뒤 받침을 누르거나(받침이 없으면 ✓) 하면 그 글자로 다시 찾습니다. 그래도 없으면 다시 <strong>없음</strong>을 누르세요. 그만두려면 ⌫ 글자입니다. 예전 40키 두벌식 자판은 ‘입력 설정 → 자판’에서 고를 수 있습니다.</p><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
+    <section id="guide-edit"><h3>2. 원하는 표현으로 고치기</h3><h4>후보에 원하는 말이 없다면 · 없음</h4><p>자판 아래의 <strong>없음</strong>(숫자키 0)을 누르면, 지금 대화와 후보를 보고 <strong>가장 도움이 되는 글자 하나</strong>를 골라 입력칸에 빨갛게 표시하고 자판이 모음판으로 바뀝니다. 모음 하나만 누르면 바로 다시 찾습니다(받침은 후보가 채웁니다). 받침까지 갈리면 다음 <strong>없음</strong>에서 받침을 물어봅니다(받침이 없으면 ✓). 그래도 없으면 다시 <strong>없음</strong>을 누르세요. 그만두려면 ⌫ 글자입니다. 예전 40키 두벌식 자판은 ‘입력 설정 → 자판’에서 고를 수 있습니다.</p><h4>한 글자만 바꾸고 싶다면 · FillMask</h4><p>추천 문장에서 바꿀 <strong>한글 글자 버튼</strong>을 누르세요. 해당 위치만 바꾼 대안을 조회합니다. 원래 입력한 초성과 맞는 대안이 없으면 결과가 없을 수 있습니다. 대안의 문장을 확인한 후 ‘문장 확정’을 눌러야 추가됩니다. 글자를 누르는 것만으로는 문장이 추가되지 않습니다.</p><h4>일부 글자를 확실히 알고 있다면 · KeywordAE</h4><p>추천 영역의 ‘원하는 표현이 없어요 → 직접 입력하기’를 열고, 수정할 초성 칸을 고릅니다. 모음과 받침을 선택해 글자를 완성한 뒤 ‘이 글자로 다시 찾기’를 누르세요. 일부 글자만 완성하면 나머지를 다시 예측합니다. <strong>모든 글자를 완성한 경우에는 완성된 문자열이 바로 추가됩니다.</strong></p><h4>문장 전체를 직접 쓰고 싶다면</h4><p>입력 영역의 ‘원하는 말이 없나요? 문장을 직접 입력하기’를 열고 원하는 문장을 쓴 뒤 ‘입력한 문장 확정’을 누르세요. 언어 모델 조회 없이 입력한 그대로 추가하므로 서버 연결이 끊겨도 사용할 수 있습니다.</p></section>
     <section id="guide-speak"><h3>3. 확정하고 말하기</h3><ul><li><strong>문장 말하기:</strong> 확정된 문장을 기기의 음성으로 읽습니다. 소리가 재생되지 않으면 기기 음량과 한국어 음성 지원을 확인하세요.</li><li><strong>말하기 중지:</strong> 재생 중인 음성을 멈춥니다.</li><li><strong>되돌리기(40키 자판):</strong> 최근에 추가한 문장을 되돌립니다. 새로고침 뒤에는 이전 실행의 취소 기록이 남지 않습니다.</li><li><strong>글자삭제 / 단어삭제:</strong> 마지막 글자 하나 / 작성 중인 단어(없으면 확정된 마지막 어절)를 지웁니다.</li><li><strong>전체 초기화:</strong> 현재 작성 중인 말과 초성을 비웁니다. 개인 기록 삭제는 별도 설정에서 합니다.</li></ul><p><kbd>1</kbd>~<kbd>7</kbd>은 현재 표시된 후보 확정, <kbd>Esc</kbd>는 진행 중인 조회 취소입니다. 입력 칸을 편집할 때는 후보 단축키가 동작하지 않습니다. 설명서에서는 <kbd>Esc</kbd>로 닫을 수 있습니다.</p></section>
     <section id="guide-settings"><h3>4. 나에게 맞게 조절하기</h3><ul><li><strong>큰 글씨:</strong> 화면 위쪽 ‘가 큰 글씨’로 입력·후보·주요 버튼을 확대합니다. 같은 버튼으로 기본 크기로 돌아옵니다.</li><li><strong>자동 후보 조회:</strong> ‘입력 설정 · 이 탭의 기록’에서 켭니다. 초성 2개 이상 입력 후 1.2초 동안 입력을 멈추면 조회합니다. 문장은 자동 확정되지 않습니다.</li><li><strong>후보 수:</strong> 3개 또는 5개로 선택합니다.</li><li><strong>대화 문맥:</strong> ‘자주 쓰는 표현 · 대화 문맥’을 열어 상대방의 말이나 상황을 적으면 조회에 참고합니다. 최근 대화도 자동 반영됩니다.</li><li><strong>자주 쓰는 표현:</strong> 확정한 표현이 모입니다. 이 버튼은 누르면 바로 문장에 추가됩니다.</li></ul><h4>내 대화는 어디에 저장되나요?</h4><p>작성 중인 문장과 최근 대화, 자주 쓰는 표현은 현재 브라우저 탭의 세션 저장소에 보관되어 새로고침 뒤 복원됩니다. 후보 조회 시 초성·문맥 등 필요한 입력이 서버와 언어 모델로 전송됩니다. 탭 복원 기능에 따라 기록이 다시 열릴 수 있으므로 공용 기기에서는 ‘이 탭의 기록 삭제’를 사용하세요.</p><p>‘사용 지표 내려받기’는 입력 횟수·조회 지연시간 등의 JSON 파일을 저장합니다. 문장 원문은 포함하지 않습니다. 실제 EEG 정확도나 의사소통 성능을 측정하는 기능은 아닙니다.</p></section>
     <section id="guide-trouble"><h3>5. 잘 안 될 때</h3><details><summary>문장 후보가 늦게 나와요</summary><p>단어 후보는 언어 모델을 거치지 않으므로 항상 즉시 뜹니다 — 서버가 느리거나 끊겨도 단어 후보만으로 계속 입력할 수 있습니다. 문장 후보만 언어 모델을 기다리며, 이 대기 시간은 위쪽 HUD의 ‘LLM 실대기’에 실측으로 표시됩니다.</p></details><details><summary>원하는 표현이 없거나 초성을 잘못 눌렀어요</summary><p>‘지우기’로 잘못 입력한 초성을 수정하세요. 글자 하나의 대안은 FillMask, 일부 글자를 지정하는 것은 KeywordAE, 정확한 문장을 알고 있을 때는 전체 직접 입력을 사용하세요.</p></details><details><summary>눈으로 바라보면 선택되나요?</summary><p>아직 아닙니다. 현재 웹 버전은 클릭·터치·키보드로 조작하는 연구용 인터페이스입니다. 다만 <strong>Pseudo-online 실험 모드</strong>를 켜면 SSVEP 자극 시간(기본 1.5초)과 판독 정확도(기본 90%)를 흉내 내어, 실제 EEG를 붙이기 전에 전체 루프가 얼마나 걸리는지 측정하고 CSV로 저장할 수 있습니다.</p></details><details><summary>새 대화와 기록 삭제는 어떻게 다른가요?</summary><p>‘새 대화 시작’은 상대와 상황을 다시 선택하며 현재 대화를 초기화합니다. 자주 쓰는 표현은 유지됩니다. 개인 기록까지 비우려면 ‘입력 설정 · 이 탭의 기록’의 ‘이 탭의 기록 삭제’를 선택하세요.</p></details></section>
@@ -1408,6 +1415,7 @@ let state={
   initials:"", committed:"", latest:[], history:[],
   habitual:[],
   spelled:{},          // KeywordAE: {unitIndex: composedSyllable}
+  vowelOnly:{},        // {unitIndex:true} = 모음까지만 고른 자리(받침은 후보가 채운다)
   jamoTarget:null,     // index currently being spelled in the jamo picker
   jamoMedial:null,     // medial chosen so far for jamoTarget (before jong/commit)
   fillMaskFor:null,    // {referenceText, targetIndex} while showing FillMask alternatives
@@ -1547,20 +1555,35 @@ function learnFromCommit(text){
      0.90  상대의 마지막 말   0.55  그 앞   0.35  그 앞앞
    ========================================================================== */
 const CTX_W={situation:1, memo:1, buffer:.8, mine:.7, partner:[.9,.55,.35]};
-let newsEntries=[], selectedNews=null, newsBusy=false;
+let newsEntries=[], newsIssues=[], selectedNews=null, newsBusy=false;
+/* 상대가 "요즘 야구 봤어?"처럼 화제를 물으면 그 분야의 지금 이슈를 대화 문맥으로 쓴다.
+   '물어보는 말'이 같이 있어야만 — "약 드셨어요?"의 '약' 같은 일상어로 건강 뉴스가 끼어들지 않게. */
+const NEWS_CUE=/뉴스|소식|기사|요즘|봤어|봤니|봤어요|보셨|들었어|들으셨|얘기|화제|난리|어떻게 됐/;
+const NEWS_HINT={스포츠:/야구|축구|농구|배구|골프|경기|선수|올림픽|월드컵|감독|이겼|졌/,연예:/드라마|가수|배우|노래|방송|예능|영화|아이돌|콘서트|연예인/,
+  시사:/선거|대통령|국회|정치|정부|장관/,경제:/주식|물가|경제|금리|집값|환율|코스피|월급/,건강:/독감|감기|백신|코로나|유행|병원비/,
+  문화:/공연|전시|책|축제|여행|박물관/,사회:/사건|사고|날씨|태풍|지진|화재|파업/};
 function freshNews(){
   const cutoff=Date.now()-14*86400000;
   return newsEntries.filter(n=>Date.parse(n.published_at)>=cutoff);
 }
 function relevantNews(){
   const current=freshNews();
-  if(selectedNews) return current.filter(n=>n.url===selectedNews).slice(0,1);
+  if(selectedNews){ const is=newsIssues.find(x=>x.keyword===selectedNews);
+    return is ? is.titles.map(t=>({...t,source:"연합뉴스",issue:is})) : current.filter(n=>n.url===selectedNews).slice(0,1); }
   const latest=[...(state.history||[])].reverse().find(h=>h.who!=="me");
-  const terms=(latest?.text||"").match(/[가-힣A-Za-z0-9]{2,}/g)||[];
-  return current.filter(n=>terms.some(t=>n.title.includes(t.replace(/(에서|은|는|이|가|을|를|도)$/,"")))).slice(0,2);
+  const text=latest?.text||"";
+  const terms=text.match(/[가-힣A-Za-z0-9]{2,}/g)||[];
+  const direct=current.filter(n=>terms.some(t=>n.title.includes(t.replace(/(에서|은|는|이|가|을|를|도)$/,"")))).slice(0,2);
+  if(direct.length || !NEWS_CUE.test(text)) return direct;
+  // 이름 없이 분야만 물었다면("요즘 야구 봤어?") 그 분야 1위 이슈
+  const cat=Object.keys(NEWS_HINT).find(c=>NEWS_HINT[c].test(text));
+  const is=cat && newsIssues.find(x=>x.category===cat);
+  return is ? is.titles.slice(0,2).map(t=>({...t,source:"연합뉴스",issue:is})) : [];
 }
 function newsContext(){
-  return relevantNews().map(n=>`${n.published_at.slice(0,10)} ${n.source}: ${n.title}`).join(" / ").slice(0,270);
+  const rel=relevantNews(), is=rel[0]&&rel[0].issue;
+  const head=is ? `요즘 화제(${is.category}): ${[is.keyword,...is.words].join(", ")} — ` : "";
+  return (head+rel.map(n=>`${n.published_at.slice(0,10)} ${n.source}: ${n.title}`).join(" / ")).slice(0,270);
 }
 async function refreshNews(){
   if(newsBusy) return;
@@ -1572,19 +1595,24 @@ async function refreshNews(){
     const d=await r.json();
     if(!Array.isArray(d.items)) throw new Error();
     newsEntries=d.items.filter(n=>typeof n.title==="string" && typeof n.url==="string" && n.url.startsWith("https://www.yna.co.kr/"));
-    rebuildTrends();
-    if(!freshNews().some(n=>n.url===selectedNews)) selectedNews=null;
+    newsIssues=(Array.isArray(d.issues)?d.issues:[]).filter(x=>x && typeof x.keyword==="string" && Array.isArray(x.titles)
+      && x.titles.every(t=>typeof t.url==="string" && t.url.startsWith("https://www.yna.co.kr/")));
+    // 화제어는 서버가 최근일수록 무겁게 센 것을 쓴다(없으면 예전처럼 제목에서 직접)
+    if(Array.isArray(d.trends) && d.trends.length) trendWords=new Map(d.trends.filter(t=>/^[가-힣A-Z]{2,10}$/.test(t[0])).map(t=>[t[0],Number(t[1])||1]));
+    else rebuildTrends();
+    if(selectedNews && !newsIssues.some(x=>x.keyword===selectedNews) && !freshNews().some(n=>n.url===selectedNews)) selectedNews=null;
     const items=freshNews();
-    el("newsBadge").textContent=items.length ? `화제어 ${trendWords.size}` : "";
+    el("newsBadge").textContent=newsIssues.length ? `이슈 ${newsIssues.length}` : items.length ? `기사 ${items.length}` : "";
     el("newsStatus").textContent=`최근 기사 ${items.length}개 · ${d.updated_at ? new Date(d.updated_at).toLocaleString("ko-KR") : "갱신 기록 없음"}${d.unavailable?.length ? " · 일부 분야 연결 실패" : ""}`;
-    // Reserve space for each category instead of allowing one fast-moving feed to dominate.
-    const visible=["시사","연예","스포츠"].flatMap(c=>items.filter(n=>n.category===c).slice(0,4));
-    el("newsItems").innerHTML=visible.map(n=>`<div><button class="btn" data-news="${esc(n.url)}" aria-pressed="${selectedNews===n.url}">[${esc(n.category)}] ${esc(n.title)}</button> <a href="${esc(n.url)}" target="_blank" rel="noopener noreferrer">원문</a></div>`).join("");
+    // 요즘 이야깃거리: 서버가 제목을 묶은 이슈(핵심어 + 같이 나오는 말 + 최신 기사 1건). 이슈가 없으면 분야별 최신 제목
+    el("newsItems").innerHTML = newsIssues.length
+      ? newsIssues.map(x=>`<div class="issue"><button class="btn issue-btn" data-news="${esc(x.keyword)}" aria-pressed="${selectedNews===x.keyword}"><span class="issue-cat">${esc(x.category)}</span><b>${esc(x.keyword)}</b>${x.words.length?` · ${esc(x.words.join(" · "))}`:""}<span class="issue-n">기사 ${x.count}</span></button><a class="issue-title" href="${esc(x.titles[0].url)}" target="_blank" rel="noopener noreferrer">${esc(x.titles[0].title)}</a></div>`).join("")
+      : ["시사","사회","건강","연예","스포츠"].flatMap(c=>items.filter(n=>n.category===c).slice(0,2)).map(n=>`<div class="issue"><button class="btn issue-btn" data-news="${esc(n.url)}" aria-pressed="${selectedNews===n.url}"><span class="issue-cat">${esc(n.category)}</span>${esc(n.title)}</button></div>`).join("");
     el("newsItems").querySelectorAll("button").forEach(b=>b.onclick=()=>{
       selectedNews=b.dataset.news;
       el("newsItems").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
       clearCandidates(); markContextDirty(); renderCandidatePanel(); schedulePrediction();
-      el("newsStatus").textContent="선택한 기사 주제를 단어와 문장 추천에 반영합니다.";
+      el("newsStatus").textContent="이 이야깃거리의 말을 단어·문장 추천에 반영합니다. 그만두려면 ‘선택한 주제 해제’.";
     });
     markContextDirty(); renderCandidatePanel();
   }catch(e){el("newsStatus").textContent="뉴스 연결에 실패했습니다. 기존 대화로 계속 입력할 수 있습니다.";}
@@ -1699,7 +1727,7 @@ async function fetchReplyWords(text){
   try{
     const r=await fetch("/reply-words",{method:"POST",headers:{"Content-Type":"application/json"},signal:mine.signal,
       body:JSON.stringify({partner_text:text.slice(0,300),partner:state.partner||"other",situation:state.situation||"general",
-        recent:state.history.slice(-5).map(h=>`${h.who==="me"?"나":"상대"}: ${h.text}`.slice(0,300))})});
+        recent:state.history.slice(-5).map(h=>`${h.who==="me"?"나":"상대"}: ${h.text}`.slice(0,300)),news:newsContext().slice(0,300)})});
     if(!r.ok) return;
     const d=await r.json();
     if(mine!==replyCtl || !Array.isArray(d.words)) return;
@@ -1829,7 +1857,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.8.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.9.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -1862,7 +1890,7 @@ function schedulePrediction(){
   if(!el("autoPredict").checked || !state.initials) return;
   // 문장 후보만 디바운스한다. 단어·로컬 문장 후보는 매 키마다 이미 즉시 떠 있으므로
   // 여기서 기다리는 건 "더 나은 것"이지 "첫 후보"가 아니다.
-  autoTimer=setTimeout(()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {}),450);
+  autoTimer=setTimeout(()=>predict(Object.keys(fullSpelled()).length ? {spelled_syllables:fullSpelled()} : {}),450);
 }
 function recordHabitual(text){
   const found=state.habitual.find(p=>p.text===text);
@@ -1872,7 +1900,7 @@ function recordHabitual(text){
 }
 function rememberUndo(text){
   undoStack.push({committed:state.committed,history:[...state.history],
-                  initials:state.initials,spelled:{...state.spelled},breaks:[...(state.breaks||[])],
+                  initials:state.initials,spelled:{...state.spelled},vowelOnly:{...(state.vowelOnly||{})},breaks:[...(state.breaks||[])],
                   habitual:state.habitual.map(p=>({...p})),lastText:text||null,
                   lastWord:state.lastWord,lastWord2:state.lastWord2});
   if(undoStack.length>50) undoStack.shift();
@@ -2074,7 +2102,7 @@ function resetToStart(){
   // lastWord/lastWord2 도 반드시 새로 깔아 준다 — 빼먹으면 undefined 가 되어
   // 새 대화 첫 단어의 문맥 키가 조용히 어긋난다.
   state={partner:null,situation:null,sessionId:null,initials:"",committed:"",latest:[],history:[],
-    habitual:personal,spelled:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null,
+    habitual:personal,spelled:{},vowelOnly:{},jamoTarget:null,jamoMedial:null,fillMaskFor:null,
     lastWord:"",lastWord2:""};
   undoStack=[];
   el("context").value=""; markContextDirty();
@@ -2192,7 +2220,7 @@ function handleKeyCore(t,v){
     const idx=state.initials.length-1;
     if(idx<0){ announce("먼저 초성을 눌러주세요."); loopFinish({key:v,type:"jung",rejected:1}); return; }
     const syll=composeSyllableJS(state.initials[idx], v, "");
-    if(syll) state.spelled[idx]=syll;
+    if(syll){ state.spelled[idx]=syll; state.vowelOnly[idx]=true; }   // 받침은 후보가 채운다: 무 → 물·문·묻…
     clearCandidates(); renderBuffer(); schedulePrediction();
     loopFinish({key:v,type:"jung"});
     return;
@@ -2255,7 +2283,7 @@ function backspaceOne(){
     return;
   }
   state.initials=state.initials.slice(0,-1);
-  delete state.spelled[idx];
+  delete state.spelled[idx]; delete state.vowelOnly[idx];
   clearCandidates(); renderBuffer(); schedulePrediction();
   loopFinish({key:"back",type:"fn"});
 }
@@ -2389,7 +2417,8 @@ function renderWordDisplay(){
   id.innerHTML=[...state.initials].map((c,i)=>{
     const done=state.spelled[i];
     const part = i===state.jamoTarget && state.jamoMedial ? composeSyllableJS(c,state.jamoMedial,"") : "";
-    return (i&&bs.has(i)?'<span class="wgap" aria-hidden="true"></span>':"")+`<span class="wblock${done?" done":""}${i===tgt?" target":""}">${esc(part||done||c)}</span>`;
+    const vo = done && state.vowelOnly && state.vowelOnly[i] && !part;
+    return (i&&bs.has(i)?'<span class="wgap" aria-hidden="true"></span>':"")+`<span class="wblock${done?" done":""}${vo?" vo":""}${i===tgt?" target":""}"${vo?' title="받침은 후보가 채웁니다"':""}>${esc(part||done||c)}</span>`;
   }).join("")+(bs.has(n)?'<span class="wgap" aria-hidden="true"></span>':"");
   id.setAttribute("aria-label","입력한 초성 "+spacedInitials());
 }
@@ -2447,9 +2476,22 @@ const firstWord=t=>String(t||"").trim().split(/\s+/)[0]||"";
 
 /* 이미 모음까지 눌러 확정해 둔 글자가 있으면 그 자리와 맞는 후보만 남긴다.
    (ㅁ 다음 ㅜ 를 눌러 "무"로 굳혔다면 "물…"은 후보에서 빠진다) */
+/* 고정한 글자(state.spelled)와 맞는가. 띄어쓰기·부호를 빼고 글자 순서로 본다 — 예전엔 원문 위치로 봐서
+   "물 좀 주세요"의 3번째 글자가 '좀'(공백 포함 위치)으로 읽혀 {2:'주'}에서 빠졌다.
+   모음만 고른 자리(state.vowelOnly)는 초성+중성만 같으면 된다(받침 자유). 후보보다 뒤 자리는 그 후보와 무관. */
+/* 서버(파이썬 필터)는 글자를 정확히 맞춘다 — 받침까지 다 고른 글자만 보낸다 */
+function fullSpelled(){ const o={}; for(const [i,v] of Object.entries(state.spelled)) if(!state.vowelOnly[i]) o[i]=v; return o; }
+function sylOk(c,want,i){
+  if(c===want) return true;
+  if(!state.vowelOnly || !state.vowelOnly[i] || !c) return false;
+  const a=c.charCodeAt(0)-0xAC00, b=want.charCodeAt(0)-0xAC00;
+  return a>=0 && a<11172 && Math.floor(a/28)===Math.floor(b/28);
+}
 function pinnedOk(text){
+  const t=String(text).replace(/[^가-힣ㄱ-ㅎ]/g,"");
   for(const [i,ch] of Object.entries(state.spelled)){
-    if(text[Number(i)]!==ch) return false;
+    const k=Number(i);
+    if(k<t.length && !sylOk(t[k],ch,k)) return false;
   }
   return true;
 }
@@ -2613,7 +2655,7 @@ function decodeSentences(ini, k){
   for(let i=0;i<=n;i++) at.push([]);
   at[0].push({p1:state.lastWord2||"", p2:state.lastWord||"", lp:0, words:[]});
   const sitWords=DICT.sit.get(state.situation);
-  const pinOk=(w,pos)=>{ for(let j=0;j<w.length;j++){ const sp=state.spelled[pos+j]; if(sp && sp!==w[j]) return false; } return true; };
+  const pinOk=(w,pos)=>{ for(let j=0;j<w.length;j++){ const sp=state.spelled[pos+j]; if(sp && !sylOk(w[j],sp,pos+j)) return false; } return true; };
   const bs=ini===state.initials ? syncBreaks() : [];   // 사용자가 띄어 친 자리를 단어가 넘지 않게
   const room=pos=>{ const b=bs.find(x=>x>pos); return b ? b-pos : n-pos; };
   for(let pos=0; pos<n; pos++){
@@ -2815,7 +2857,7 @@ function renderCandidatePanel(){
         : llmError && state.initials
         ? `<div class="cand ph err"><span class="kb-badge">!</span><span class="tx">문장 후보를 불러오지 못했어요 · ${llmError}</span><button type="button" class="btn" id="btnRetryLLM">다시 시도</button></div>`
         : `<div class="cand ph"><span class="kb-badge">–</span><span class="tx">${state.initials?"맞는 문장 후보가 없어요 · 단어를 고르거나 초성을 더 입력하세요":"문장 후보는 초성을 입력하면 생성됩니다"}</span></div>`);
-  if(el("btnRetryLLM")) el("btnRetryLLM").onclick=()=>predict(Object.keys(state.spelled).length ? {spelled_syllables:state.spelled} : {});
+  if(el("btnRetryLLM")) el("btnRetryLLM").onclick=()=>predict(Object.keys(fullSpelled()).length ? {spelled_syllables:fullSpelled()} : {});
 
   for(const node of [...el("candWords").children, ...el("candSents").children]){
     if(!node.dataset || node.dataset.k===undefined) continue;
@@ -2935,7 +2977,7 @@ el("btnUndo").onclick=()=>{
   if(snapshot.lastText) unlearnCommit(snapshot.lastText, snapshot.lastWord, snapshot.lastWord2);
   Object.assign(state,snapshot); metrics.undos++;
   state.lastWord=snapshot.lastWord||""; state.lastWord2=snapshot.lastWord2||""; markContextDirty();
-  clearCandidates(); state.spelled={...(snapshot.spelled||{})}; renderBuffer(); renderChat(); renderHabitual();
+  clearCandidates(); state.spelled={...(snapshot.spelled||{})}; state.vowelOnly={...(snapshot.vowelOnly||{})}; renderBuffer(); renderChat(); renderHabitual();
   announce("마지막 선택을 되돌렸습니다. 글자를 다시 고를 수 있습니다.");
 };
 el("btnFinish").onclick=finishSentence;
@@ -2971,7 +3013,7 @@ function clearCandidates(){
   renderCandidatesEmpty();
 }
 function clearRecoveryState(){
-  state.spelled={};
+  state.spelled={}; state.vowelOnly={};
   clearCandidates();
   // 고르거나 지우거나 취소하면 '없음'으로 채우던 글자도 끝난다 — 안 그러면 다음 자음이 받침으로 들어간다
   const mid = state.jamoTarget!==null || kbScreen==="vowel";
@@ -3166,7 +3208,7 @@ el("btnRecoveryPredict").onclick=async ()=>{
     await commitText([...state.initials].map((_,i)=>state.spelled[i]).join(""));
     return;
   }
-  await predict({ spelled_syllables: state.spelled });
+  await predict({ spelled_syllables: fullSpelled() });
 };
 
 function openRecoveryPanel(){
@@ -3179,30 +3221,48 @@ function openRecoveryPanel(){
 /* ---------- '원하는 말 없음' → 한 글자 채우기 → 다시 찾기 (반복) ----------
    어느 글자를 채우게 할지: 지금 문맥 점수로 뽑은 후보들(사전 문장·단어·표현·LLM)이 그 자리 글자에서
    가장 많이 갈리는(가중 엔트로피 최대) 아직 안 채운 자리. 이미 보여 줬는데 '없음'을 받은 후보는 무게를 낮춘다. */
-function bestSpellTarget(){
-  const ini=state.initials, n=ini.length;
-  const open=[...Array(n).keys()].filter(i=>!state.spelled[i]);
-  if(!open.length) return -1;
+let spellAsk="full";   // bestSpellTarget이 고른 질문: "vowel"(모음만) | "jong"(받침만) | "full"(모음+받침)
+function bestSpellTarget(mode){
+  const ini=state.initials, n=ini.length, staged=mode!=="full", vo=state.vowelOnly||{};
+  // 물어볼 수 있는 것: 빈 자리의 모음(단계식) 또는 모음만 고른 자리의 받침
+  const asks=[];
+  for(let i=0;i<n;i++){
+    if(!state.spelled[i]) asks.push([i, staged ? "vowel" : "full"]);
+    else if(staged && vo[i]) asks.push([i,"jong"]);
+  }
+  if(!asks.length) return -1;
   const shown=new Set(slots.map(x=>x&&x.text)), cands=[];
   const add=(text,r)=>{ const sy=[...String(text||"").replace(/[^가-힣]/g,"")];
-    if(sy.length===n && choseongOf(sy.join(""))===ini) cands.push([sy,(shown.has(text)?.3:1)/(r+1)]); };
+    if(sy.length===n && choseongOf(sy.join(""))===ini && pinnedOk(sy.join(""))) cands.push([sy,(shown.has(text)?.3:1)/(r+1)]); };
   try{ decodeSentences(ini,40).forEach(add); }catch(e){}
   localWords(40,ini).forEach((c,r)=>add(c.text,r));
   localPhrases(20,ini).forEach((c,r)=>add(c.text,r));
   (state.latest||[]).forEach((c,r)=>add(c.text,r));
-  let best=open[0], bestH=-1;
-  for(const i of open){
-    const m=new Map(); let tot=0;
-    for(const [sy,w] of cands){ m.set(sy[i],(m.get(sy[i])||0)+w); tot+=w; }
+  const key=(ch,kind)=> kind==="vowel" ? Math.floor((ch.charCodeAt(0)-0xAC00)/28) : ch;
+  let best=asks[0], bestH=-1;
+  for(const a of asks){
+    const [i,kind]=a, m=new Map(); let tot=0;
+    for(const [sy,w] of cands){ const k=key(sy[i],kind); m.set(k,(m.get(k)||0)+w); tot+=w; }
     let H=0; for(const v of m.values()){ const p=v/tot; H-=p*Math.log(p); }
-    if(H>bestH+1e-9){ bestH=H; best=i; }
+    if(H>bestH+1e-9){ bestH=H; best=a; }
   }
-  return best;
+  spellAsk=best[1];
+  return best[0];
 }
 function pressNone(){
   if(!state.initials){ announce("먼저 초성을 입력하세요."); return; }
-  const i=bestSpellTarget();
+  const i=bestSpellTarget("staged");
   if(i<0){ el("btnRecoveryPredict").click(); return; }
+  if(spellAsk==="jong"){
+    // 모음은 이미 골랐고, 남은 갈림은 받침뿐 — 자음판에서 받침 하나(없으면 ✓)
+    state.guided=true; state.jamoTarget=i;
+    const a=state.spelled[i].charCodeAt(0)-0xAC00; state.jamoMedial=JUNG[Math.floor(a/28)%21];
+    const msg=`${i+1}번째 글자 ‘${state.spelled[i]}’의 받침을 눌러 주세요. 받침이 없으면 ✓ — 후보들이 이 받침에서 갈립니다.`;
+    announce(msg);
+    if(isFig()){ setGuide(msg); kbShow("cons"); }
+    else { openRecoveryPanel(); state.guided=true; el("recoveryTitle").textContent=msg; openJamoPicker(i); state.jamoMedial=JUNG[Math.floor(a/28)%21]; renderJamoPicker(); }
+    return;
+  }
   if(isFig()){
     // 피그마 흐름: '없음' → 자판이 모음판으로 바뀌고, 완성할 글자가 입력칸에서 빨갛게 표시된다
     state.guided=true; state.jamoTarget=i; state.jamoMedial=null;
@@ -3220,6 +3280,8 @@ function guidedJamo(t,v){
   if(!state.jamoMedial || t==="jung"){
     if(t!=="jung"){ announce("먼저 모음을 눌러주세요."); loopFinish({key:v,type:t,rejected:1}); return; }
     state.jamoMedial=v; renderJamoPicker(); announce("받침을 누르세요. 받침이 없으면 ✓를 누르세요.");
+    // 단계식: '없음'이 모음을 물었으면 모음만 고정하고 바로 다시 찾는다(받침은 후보가, 그래도 갈리면 다음 '없음'에서)
+    if(state.guided && spellAsk==="vowel"){ finishGuided(composeSyllableJS(state.initials[state.jamoTarget],v,""), true); loopFinish({key:v,type:"jung"}); return; }
     if(isFig()){ setGuide(`‘${composeSyllableJS(state.initials[state.jamoTarget],v,"")}’ — 받침을 누르세요. 받침이 없으면 ✓, 모음을 다시 고르려면 자모변환.`); kbShow("cons"); }
     loopFinish({key:v,type:"jung"}); return;
   }
@@ -3228,8 +3290,8 @@ function guidedJamo(t,v){
   finishGuided(composeSyllableJS(state.initials[state.jamoTarget], state.jamoMedial, jong));
   loopFinish({key:v,type:t});
 }
-function finishGuided(syll){
-  if(syll) state.spelled[state.jamoTarget]=syll;
+function finishGuided(syll, vowelOnly){
+  if(syll){ state.spelled[state.jamoTarget]=syll; if(vowelOnly) state.vowelOnly[state.jamoTarget]=true; else delete state.vowelOnly[state.jamoTarget]; }
   state.jamoTarget=null; state.jamoMedial=null;
   renderRecoveryBlocks(); renderJamoPicker();
   if(!state.guided || !syll){ if(isFig()){ setGuide(""); kbShow("cons"); } return; }
@@ -3240,7 +3302,7 @@ function finishGuided(syll){
   setGuide(`‘${syll}’로 다시 찾았습니다. 후보에 있으면 번호로 고르고, 없으면 다시 ‘없음’.`);
   el("recoveryTitle").textContent=`‘${syll}’로 다시 찾았습니다`;
   el("recoveryHint").textContent="후보에 원하는 말이 있으면 번호로 고르고, 없으면 다시 ‘원하는 말 없음’(0)을 누르세요.";
-  predict({ spelled_syllables: state.spelled });
+  predict(Object.keys(fullSpelled()).length ? { spelled_syllables: fullSpelled() } : {});
 }
 function cancelGuided(msg){
   state.guided=false; state.jamoTarget=null; state.jamoMedial=null;
@@ -3287,7 +3349,7 @@ function renderJamoPicker(){
     box.innerHTML = `<div class="row-lb">${esc(cho)} · 중성(모음)을 선택하세요</div>
       <div class="jamo-grid">${JUNG.map(j=>`<button class="jamo-btn" data-j="${j}">${j}</button>`).join("")}</div>`;
     [...box.querySelectorAll(".jamo-btn")].forEach(btn=>{
-      btn.onclick=()=>{ state.jamoMedial=btn.dataset.j; renderJamoPicker(); };
+      btn.onclick=()=>{ if(state.guided && spellAsk==="vowel") return finishGuided(composeSyllableJS(cho,btn.dataset.j,""),true); state.jamoMedial=btn.dataset.j; renderJamoPicker(); };
     });
   }else{
     box.innerHTML = `<button class="btn" id="jamoBack">← 모음 다시 선택</button><div class="row-lb">${esc(cho+state.jamoMedial)} · 받침을 선택하세요 (없으면 첫 번째)</div>
@@ -3381,10 +3443,10 @@ async function commitValue(text,candidateId,meta){
     learnFromCommit(text);            // 단어·바이그램·문장 + 상대/상황별 기록 (기기에 남는다)
     const keep=(meta&&meta.keepIni)||"";
     const drop=state.initials.length-keep.length;
-    const kept={}; if(keep) for(const [i,v] of Object.entries(state.spelled)) if(+i>=drop) kept[+i-drop]=v;
+    const kept={}, keptV={}; if(keep) for(const [i,v] of Object.entries(state.spelled)) if(+i>=drop){ kept[+i-drop]=v; if(state.vowelOnly[i]) keptV[+i-drop]=true; }
     state.breaks=(state.breaks||[]).filter(b=>b>drop).map(b=>b-drop);
     state.initials=keep; state.latest=[];
-    clearRecoveryState(); state.spelled=kept;
+    clearRecoveryState(); state.spelled=kept; state.vowelOnly=keptV;
     renderBuffer(); renderChat(); refreshHabitual();
     schedulePrediction();
     announce("문장을 추가했습니다. 잘못 골랐다면 ⌫ 글자로 지울 수 있어요.");

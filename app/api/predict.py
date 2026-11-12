@@ -36,6 +36,7 @@ class ReplyWordsRequest(BaseModel):
     partner: str = Field(default="other", max_length=30)
     situation: str = Field(default="general", max_length=30)
     recent: list[str] = Field(default_factory=list, max_length=5)
+    news: str = Field(default="", max_length=300)
 
 
 _REPLY_WORD = re.compile(r"^[가-힣]{1,10}$")
@@ -51,7 +52,7 @@ def reply_words(request: ReplyWordsRequest) -> dict:
     if fn is None:
         return {"words": []}
     try:
-        raw = fn(request.partner_text, request.partner, request.situation, [r[:200] for r in request.recent])
+        raw = fn(request.partner_text, request.partner, request.situation, [r[:200] for r in request.recent], request.news)
     except LLMServiceError:
         return {"words": []}
     words = list(dict.fromkeys(w for w in raw if _REPLY_WORD.match(w)))
