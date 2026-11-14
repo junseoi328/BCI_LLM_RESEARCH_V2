@@ -1204,7 +1204,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.9.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.9.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1857,7 +1857,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.9.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.9.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2510,7 +2510,7 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 앞 단어 가산점. bgMine=내가 실제로 그 순서로 썼던 것, bgSeed=검수 사전,
      bgLex=일반 말뭉치. 값은 bench_bigram.js 측정으로 고른다. */
   bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6,
-  bgTri:1400, bgTriPer:120, echo:900, echoMine:.5, echoRepeat:.25, echoStem:.6, reply:450, trend:8, lexGuess:1.2,
+  bgTri:1400, bgTriPer:120, echo:900, echoMine:.5, echoRepeat:.25, echoStem:.6, reply:450, trend:8, figSents:1, lexGuess:1.2,
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1, lexTri:500,
   /* ⑤ 사전 층(구어 빈도 + 국어사전 어휘). 말뭉치 층과 같은 눈금에 둔다. */
@@ -2835,7 +2835,7 @@ function renderCandidatePanel(){
     }
   }
   // fig 자판은 후보키가 5개: 단어가 넉넉하면 문장 2칸 + 단어 3칸, 단어가 모자라면 문장이 빈칸을 채운다
-  if(isFig()){ sents=sents.slice(0,Math.max(2,5-words.length)); words=words.slice(0,5-sents.length); }
+  if(isFig()){ const ns=SCORE.figSents; sents=sents.slice(0,Math.max(ns,5-words.length)); words=words.slice(0,5-sents.length); }
   slots=[...words,...sents];
   el("ratioTag").textContent = state.initials
     ? `단어 ${words.length} · 문장 ${sents.length}`
