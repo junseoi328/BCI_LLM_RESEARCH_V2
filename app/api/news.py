@@ -62,7 +62,7 @@ def analyze(items: list[dict], now: datetime, top: int = 8) -> tuple[list[dict],
         for x in k:
             cats_of.setdefault(x, set()).add(it["category"])
     ranked = sorted((x for x in score if df[x] >= 2 and len(cats_of[x]) < _GENERIC_CATS),
-                    key=lambda x: score[x], reverse=True)
+                    key=lambda x: (-score[x], -len(x), x))  # 동점은 긴(구체적) 말 먼저 — set 순서에 기대지 않음
     trends = [[x, df[x], round(score[x], 2)] for x in ranked[:200]]
     issues, used = [], set()
     for head in ranked:
@@ -76,7 +76,7 @@ def analyze(items: list[dict], now: datetime, top: int = 8) -> tuple[list[dict],
         for _, k, w in group:
             for x in k - {head}:
                 co[x] = co.get(x, 0.0) + w
-        words = [x for x in sorted(co, key=co.get, reverse=True) if df.get(x, 0) >= 2 and x in score
+        words = [x for x in sorted(co, key=lambda x: (-co[x], -len(x), x)) if df.get(x, 0) >= 2 and x in score
                  and len(cats_of[x]) < _GENERIC_CATS][:3]
         cats = {}
         for it, _, w in group:
