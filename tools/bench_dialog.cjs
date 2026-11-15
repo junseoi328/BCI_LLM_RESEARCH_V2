@@ -1,8 +1,12 @@
 /* 대화 문맥 벤치: 앞선 대화(상대·나)를 history에 넣고 마지막 내 말을 단어마다 몇 타로 고르는지.
-   usage: node tools/bench_dialog.cjs <html> [label]. 손으로 쓴 32대화(tools/ctx_dialogs.json) — 작고 저자 편향이 있다. */
+   usage: node tools/bench_dialog.cjs <html> [label]. 손으로 쓴 32대화(tools/ctx_dialogs.json) — 작고 저자 편향이 있다.
+   실제 대화: DIALOGS=기록1.json,기록2.json [ONLY_REAL=1] (앱 실험 패널 '대화 기록 JSON'). */
 const {chromium}=require('playwright');const fs=require('fs');
 const [,,file,label='']=process.argv;
-const dialogs=JSON.parse(fs.readFileSync(__dirname+'/ctx_dialogs.json','utf8'));
+// DIALOGS=a.json,b.json → 앱 '대화 기록 JSON'으로 내려받은 실제 대화를 더한다(ONLY_REAL=1이면 그것만)
+const load=f=>{ const d=JSON.parse(fs.readFileSync(f,'utf8')); return Array.isArray(d)?d:(d.dialogs||[]); };
+const real=(process.env.DIALOGS||'').split(',').filter(Boolean).flatMap(load).filter(d=>d.some(t=>t[0]==='me'));
+const dialogs=(process.env.ONLY_REAL?[]:load(__dirname+'/ctx_dialogs.json')).concat(real);
 (async()=>{
  const b=await chromium.launch();const page=await b.newPage();
  const html=fs.readFileSync(file,'utf8'), dict=fs.readFileSync(__dirname+'/../app/static/dict.txt','utf8');

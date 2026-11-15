@@ -781,7 +781,7 @@ html.no-splash #splash{display:none}
 .keyboard-legend{font-size:var(--fs-xs);color:var(--ink-500)}
 .focus-input .work{grid-template-columns:minmax(0,1fr)}
 .focus-input .conversation-column{display:none}
-#btnFocusInput{min-height:44px}
+#btnFocusInput{min-height:48px}
 #btnFocusInput[aria-pressed="true"]{background:var(--accent-50);color:var(--accent-700)}
 .chat-empty,.sec-title span{color:var(--ink-500)}
 @media(max-width:1100px){
@@ -806,8 +806,14 @@ html.no-splash #splash{display:none}
   --primary:#176A50;--primary-hover:#12523E;--accent:#176A50;--accent-600:#12523E;--accent-50:#E8F4EF;--accent-100:#C5E3D5;--pick:#245FAD;--pick-600:#245FAD;--pick-50:#EDF3FB;--pick-100:#C7D9EF;--pick-200:#A9C4E5}
 body::before{display:none}
 .btn,.btn.sm,.ghost-btn,.jamo-btn,.rblock,.habitual-chip{min-width:48px;min-height:48px}
-.cand .tx .unit{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
-.kb .key{min-height:56px}.kb .key.cand{min-height:60px}
+.cand .tx .unit{display:inline-flex;align-items:center;justify-content:center;min-width:48px;min-height:48px}
+.kb .key{min-height:56px}
+/* 누를 자리 48px — 줄 높이는 그대로 두고 누르는 영역만 넓힌다(배지·기록). 바닥글 링크는 넓히면 TV 한 화면(1044)을 넘어 뺌 */
+.topline .badge,.hud-more>summary{position:relative}
+.topline .badge::after,.hud-more>summary::after{content:"";position:absolute;inset:-10px -4px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--primary)}
+.settings-row>details>summary{min-height:48px}
+.settings-row input:not([type=checkbox]),.settings-row select{min-height:48px}.kb .key.cand{min-height:60px}
 /* SSVEP 자극: Cao et al.(EMBC) 권장값 — 배경 #202020, 밝은 상태 #FFFFFF, 어두운 상태 #404040, 안내 글씨 #DDDDDD */
 body:has(.kb.stim),body.stim-on{background:#202020}
 body.stim-on::before{display:none}
@@ -821,7 +827,7 @@ body.stim-on::before{display:none}
 .issue-btn[aria-pressed="true"]{background:#EBF4EF!important;border-color:#3C7D5E!important}
 .issue-cat{font-size:var(--fs-xs);font-weight:700;color:#fff;background:#3C7D5E;border-radius:999px;padding:1px 8px}
 .issue-n{margin-left:auto;font-size:var(--fs-xs);color:var(--ink-500)}
-.issue-title{font-size:var(--fs-xs);color:var(--ink-500);padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.issue-title{display:block;font-size:var(--fs-xs);color:var(--ink-500);padding:14px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .news-items button{text-align:left;white-space:normal;overflow-wrap:anywhere}
 /* ===== Figma 디자인(Untitled · Main 26:17, loading 4:11) — 연초록 그라데이션 · 흰 카드 · 짙은 초록 · 명조 =====
    글꼴은 피그마의 YES명조 대신 이미 쓰는 Noto Serif KR(웹폰트). SSVEP 자극 색은 기존 규칙 그대로(어두운 화면은 없앰). */
@@ -903,6 +909,11 @@ html:not([data-theme="dark"]) .kb .key.cand:disabled{background:#FCFCFB;border:1
   body.kb-fig .wblock{min-width:50px;height:50px;font-size:1.6rem}
   body.kb-fig .buffer{min-height:78px}
 }
+.health{color:var(--ink-700)}   /* 연초록 배경 위 #79766F는 2.96:1 → AA 미달 */
+/* 큰 글씨 = 키도 크게(오선택이 잦을 때 권함). TV 1920×1044는 이미 70~94px이고 한 화면 고정이라 제외 */
+@media (max-width:1799px),(max-height:999px){
+  body.kb-fig.large-text .kb .key{min-height:76px;font-size:1.5rem}
+}
 </style>
 </head>
 <body>
@@ -965,7 +976,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.9</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.10</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1058,6 +1069,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
           <div><span>이번 선택</span><b id="mSel">–</b></div>
           <div><span>선택 수</span><b id="mCount">0</b></div>
           <div><span>LLM 실대기</span><b id="mWait">–</b></div>
+          <div class="wide"><span>오선택(바로 지운 선택) · 후보 / 글자키</span><b id="mMiss">–</b></div>
           <div class="wide"><span>논문 비교</span><b>ChatBCI 24.56s · MindChat 5.5–6.5s</b></div>
           <div class="wide"><span>응답</span><b><span id="mGen">-</span> · <span id="mRank">-</span> · <span id="mLat">-</span> · <span id="mMode">-</span></b></div>
         </div>
@@ -1086,6 +1098,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <section class="card mine">
           <p class="sec-title">내가 할 말</p>
           <div id="notice" role="status" aria-live="polite" class="unit-hint"></div>
+          <div id="misselTip" class="unit-hint" hidden></div>
           <div class="buffer"><span id="prevLines"></span><span id="committed"></span><span id="pending" class="pending"></span><span id="bufferPh" class="ph">고른 문장이 여기 쌓입니다</span></div>
           <div class="speech-actions">
             <button class="btn accent" id="btnSpeak">문장 말하기</button>
@@ -1153,10 +1166,11 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
           <label>판독 정확도 <input type="number" id="expAcc" value="90" min="10" max="100" step="1"> %</label>
           <label>참가자 <input type="text" id="expSubject" value="S01" maxlength="20"></label>
         </div>
-        <p class="unit-hint" style="margin-top:12px">실험 모드를 켜면 키를 누른 뒤 자극(점멸) 창이 유지되고 설정한 정확도로 오판독이 주입됩니다(MindChat SSVEP 90% 기준). <strong>동적 정지</strong>를 켜면 요즘 SSVEP 스펠러처럼 판독 확신도가 문턱을 넘는 순간 자극을 끊습니다 — 쉬운 시행은 짧게, 어려운 시행만 길게 봅니다(Stawicki 외, PLOS ONE 2019). 짧게 끊은 만큼 판독 정확도는 낮아지도록 모형화했습니다. 모든 시행의 구간별 시간·자극 길이·오판독 여부가 CSV에 기록됩니다.</p>
+        <p class="unit-hint" style="margin-top:12px">실험 모드를 켜면 키를 누른 뒤 자극(점멸) 창이 유지되고 설정한 정확도로 오판독이 주입됩니다(MindChat SSVEP 90% 기준). <strong>동적 정지</strong>를 켜면 요즘 SSVEP 스펠러처럼 판독 확신도가 문턱을 넘는 순간 자극을 끊습니다 — 쉬운 시행은 짧게, 어려운 시행만 길게 봅니다(Stawicki 외, PLOS ONE 2019). 짧게 끊은 만큼 판독 정확도는 낮아지도록 모형화했습니다. 모든 시행의 구간별 시간·자극 길이·오판독 여부·바로 지운 선택(오선택)이 CSV에 기록됩니다. <strong>대화 기록 JSON</strong>은 지금 대화를 후보 품질 측정용(<code>tools/bench_dialog.cjs</code>, <code>DIALOGS=</code>)으로 내려받습니다 — 이름·연락처 같은 개인정보가 들어 있을 수 있으니 동의받은 기록만 모으세요. 서버로는 보내지 않습니다.</p>
         <div class="actions" style="margin-top:12px">
           <button class="btn" id="btnExportTrials">시행 기록 CSV 내려받기</button>
           <button class="btn" id="btnExportMetrics">사용 지표 JSON</button>
+          <button class="btn" id="btnExportDialog">대화 기록 JSON(벤치용)</button>
           <button class="btn danger sm" id="btnResetTrials">기록 비우기</button>
         </div>
       </details>
@@ -1204,7 +1218,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.9.1</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.10.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1857,7 +1871,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.9.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.10.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -1942,7 +1956,9 @@ function loopFinish(extra){
   loop.refreshMs = loop.refreshAt!=null ? performance.now()-loop.refreshAt : 0;
   const total = loop.decisionMs + loop.stimMs + loop.decodeMs + loop.refreshMs;
   selTotals.push(total); if(selTotals.length>500) selTotals.shift();
+  if(extra && (extra.key==="back"||extra.key==="delword")) markUndone();
   trials.push(Object.assign({
+    _ts: performance.now(),
     t: new Date().toISOString(),
     subject: (el("expSubject").value||"").trim(),
     exp_mode: expEnabled() ? 1 : 0,
@@ -1952,8 +1968,10 @@ function loopFinish(extra){
     refresh_ms: Math.round(loop.refreshMs),
     total_ms: Math.round(total),
     misdecode: loop.misdecode||0,
+    undone: 0,
   }, extra||{}));
   if(trials.length>2000) trials.shift();
+  checkMissel();
   el("mSel").textContent=(total/1000).toFixed(2)+"s";
   el("mCount").textContent=String(trials.length);
   const avg=selTotals.reduce((a,b)=>a+b,0)/selTotals.length;
@@ -1961,6 +1979,30 @@ function loopFinish(extra){
   el("mWait").textContent = llmWaits.length ? Math.round(llmWaits.reduce((a,b)=>a+b,0)/llmWaits.length)+"ms" : "–";
   loopStageText();
   loopReady(true);
+}
+/* 오선택 기록: 고른 직후(5초 안) ⌫·되돌리기가 오면 그 선택을 "잘못 고름"으로 본다.
+   영역(후보/글자키)별 비율이 높으면 키를 크게 하자고 한 번 권한다 — 작은 키는 오선택 원인(AGENTS 9). */
+function markUndone(){
+  const last=trials[trials.length-1];
+  if(last && !last.undone && last.key!=="back" && last.key!=="delword" && !last.rejected && performance.now()-(last._ts||0)<5000) last.undone=1;
+}
+function misselStats(n=40){
+  const g={cand:{n:0,err:0},key:{n:0,err:0}};
+  for(const r of trials.slice(-n)){ const a=r.type==="cand"?g.cand:(r.type==="cho"||r.type==="jung")?g.key:null; if(!a||r.rejected) continue; a.n++; a.err+=r.undone?1:0; }
+  for(const k in g) g[k].rate=g[k].n?+(g[k].err/g[k].n).toFixed(3):0;
+  return g;
+}
+let misselHinted=false;
+function checkMissel(){
+  const m=misselStats(40), pc=x=>x.n?Math.round(x.rate*100)+"%":"–";
+  const o=el("mMiss"); if(o) o.textContent=`${pc(m.cand)} / ${pc(m.key)}`;
+  const bad=[m.cand,m.key].some(x=>x.n>=20 && x.rate>=.15);
+  if(bad && !misselHinted && !document.body.classList.contains("large-text") && !matchMedia("(min-width:1800px) and (min-height:1000px)").matches){
+    misselHinted=true;
+    const n=el("misselTip"); n.hidden=false;
+    n.innerHTML='방금 고른 것을 바로 지우는 일이 잦습니다(15% 이상). 키를 크게 하면 잘못 고르는 일이 줄어듭니다. <button class="btn sm" type="button" id="btnMisselBig">키 크게</button>';
+    el("btnMisselBig").onclick=()=>{ if(!document.body.classList.contains("large-text")) el("btnLargeText").click(); n.hidden=true; announce("키를 크게 했습니다. 위의 ‘가 큰 글씨’로 되돌릴 수 있어요."); };
+  }
 }
 function expEnabled(){ const c=el("expOn"); return !!(c && c.checked); }
 
@@ -2851,7 +2893,7 @@ function renderCandidatePanel(){
 
   const off=words.length;
   el("candSents").innerHTML = sents.length
-    ? sents.map((sl,k)=>`<button type="button" class="cand sent" data-k="${off+k}"><span class="kb-badge">${off+k+1}</span><span class="tx">${renderCandidateUnits(sl.text)}</span>${mark(sl)}</button>`).join("")
+    ? sents.map((sl,k)=>`<div class="cand sent" data-k="${off+k}" style="cursor:pointer"><span class="kb-badge">${off+k+1}</span><span class="tx">${renderCandidateUnits(sl.text)}</span>${mark(sl)}</div>`).join("")
     : (loop.waiting
         ? `<div class="cand ph loading"><span class="kb-badge">…</span><span class="tx">문장 후보 생성 중…</span></div>`
         : llmError && state.initials
@@ -2975,7 +3017,7 @@ el("btnUndo").onclick=()=>{
   const snapshot=undoStack.pop(); if(!snapshot) return;
   cancelPending(); state.sessionId=null;
   if(snapshot.lastText) unlearnCommit(snapshot.lastText, snapshot.lastWord, snapshot.lastWord2);
-  Object.assign(state,snapshot); metrics.undos++;
+  Object.assign(state,snapshot); metrics.undos++; markUndone();
   state.lastWord=snapshot.lastWord||""; state.lastWord2=snapshot.lastWord2||""; markContextDirty();
   clearCandidates(); state.spelled={...(snapshot.spelled||{})}; state.vowelOnly={...(snapshot.vowelOnly||{})}; renderBuffer(); renderChat(); renderHabitual();
   announce("마지막 선택을 되돌렸습니다. 글자를 다시 고를 수 있습니다.");
@@ -2999,7 +3041,7 @@ el("btnForget").onclick=()=>{
   resetToStart();
 };
 el("btnExportMetrics").onclick=()=>{
-  downloadBlob(new Blob([JSON.stringify({...metrics,note:"UI action counts and request latency only; no EEG ITR or clinical validation."},null,2)],{type:"application/json"}),
+  downloadBlob(new Blob([JSON.stringify({...metrics,missel:misselStats(1e9),note:"UI action counts and request latency only; no EEG ITR or clinical validation."},null,2)],{type:"application/json"}),
     "bci-interaction-metrics.json");
 };
 document.addEventListener("click",e=>{
@@ -3472,7 +3514,7 @@ function downloadBlob(blob, filename){
 function exportTrialsCSV(){
   if(!trials.length){ announce("아직 기록된 시행이 없습니다."); return; }
   const cols=["t","subject","exp_mode","key","type","picked","text","committed","rejected",
-              "decision_ms","stimulus_ms","decode_ms","refresh_ms","total_ms","misdecode"];
+              "decision_ms","stimulus_ms","decode_ms","refresh_ms","total_ms","misdecode","undone"];
   const q=(v)=>{ const x=v===undefined||v===null?"":String(v); return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x; };
   const head=["participant_sentence_so_far"].concat(cols).join(",");
   const rows=trials.map(r=>[state.committed].concat(cols.map(c=>r[c])).map(q).join(","));
@@ -3484,6 +3526,8 @@ function exportTrialsCSV(){
     `# total_input_time_s,${(total/1000).toFixed(2)}`,
     `# mean_s_per_selection,${(total/trials.length/1000).toFixed(2)}`,
     `# misdecode_injected,${trials.filter(r=>r.misdecode).length}`,
+    `# missel_rate_cand,${misselStats(1e9).cand.rate}`,
+    `# missel_rate_key,${misselStats(1e9).key.rate}`,
     `# reference,ChatBCI 24.56 s/selection; MindChat 5.5-6.5 s/selection`,
   ].join("\n");
   const who=(el("expSubject").value||"S").trim().replace(/[^\w.-]/g,"_");
@@ -3492,6 +3536,12 @@ function exportTrialsCSV(){
   announce(`${trials.length}개 시행을 CSV로 저장했습니다.`);
 }
 el("btnExportTrials").onclick=exportTrialsCSV;
+el("btnExportDialog").onclick=()=>{
+  const d=state.history.map(h=>[h.who==="me"?"me":"them",h.text]);
+  if(!d.some(t=>t[0]==="me")){ announce("내가 말한 문장이 있어야 측정에 쓸 수 있습니다."); return; }
+  downloadBlob(new Blob([JSON.stringify([d],null,1)],{type:"application/json"}),`bci-dialog-${new Date().toISOString().slice(0,19).replace(/[:T]/g,"")}.json`);
+  announce(`대화 ${d.length}마디를 JSON으로 저장했습니다.`);
+};
 el("btnResetTrials").onclick=()=>{
   trials=[]; selTotals=[]; llmWaits=[];
   el("mSel").textContent="–"; el("mAvg").textContent="–"; el("mCount").textContent="0"; el("mWait").textContent="–";

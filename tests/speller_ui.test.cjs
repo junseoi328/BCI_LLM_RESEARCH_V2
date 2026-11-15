@@ -1028,3 +1028,31 @@ test('요즘 이야깃거리: issues from /speller/news drive context only when 
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+// 오선택(고른 직후 ⌫)이 잦으면 키를 크게 하자고 권하고, 누르면 환자 자판 키가 실제로 커진다.
+// 대화 기록은 벤치(bench_dialog DIALOGS=)가 그대로 읽는 [[["them",..],["me",..]]] 꼴로 내려받는다.
+test('Mis-selections suggest bigger keys and the dialog exports in bench format', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:768},acceptDownloads:true});
+    const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
+      if(p==='/speller') return r.fulfill({contentType:'text/html',body:HTML('fig')});
+      return r.fulfill({json:{status:'healthy',words:[]}});});
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    const h0=await page.evaluate(()=>document.querySelector('#keyboard .key.cho').getBoundingClientRect().height);
+    await page.evaluate(()=>{ for(let i=0;i<19;i++){ document.querySelector('#keyboard .key[data-v="ㄱ"]').click(); document.querySelector('#keyboard .key[data-v="back"]').click(); } });
+    assert.ok(await page.locator('#misselTip').isHidden(),'20번 전에는 권하지 않는다');
+    await page.evaluate(()=>{ document.querySelector('#keyboard .key[data-v="ㄱ"]').click(); document.querySelector('#keyboard .key[data-v="back"]').click(); });
+    assert.equal(await page.evaluate(()=>trials.filter(t=>t.undone).length),20);
+    await page.click('#btnMisselBig');
+    const h1=await page.evaluate(()=>document.querySelector('#keyboard .key.cho').getBoundingClientRect().height);
+    assert.ok(h1>=h0+12,`키가 커진다 ${h0}→${h1}`);
+    await page.evaluate(()=>{ pushTurn('partner','물 줄까?'); pushTurn('me','물 조금만 줘'); el('expPanel').open=true; });
+    const [d]=await Promise.all([page.waitForEvent('download'),page.click('#btnExportDialog')]);
+    const body=JSON.parse(fs.readFileSync(await d.path(),'utf8'));
+    assert.deepEqual(body,[[['them','물 줄까?'],['me','물 조금만 줘']]]);
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
