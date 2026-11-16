@@ -1056,3 +1056,55 @@ test('Mis-selections suggest bigger keys and the dialog exports in bench format'
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+// 실제 SSVEP: 보이는 키가 모두 서로 다른 주파수(8+0.2i Hz)로 동시에 깜빡이고, 자극 시작·끝이 이벤트로 남는다.
+// OpenBCI Cyton 33바이트 패킷은 표본번호 순환(255→0)을 넘어 이어 세고 µV로 바꾼다. Esc는 보정을 바로 멈춘다.
+test('Real SSVEP flickers every key at its own frequency and records Cyton EEG with events', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:900},acceptDownloads:true});
+    const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
+      if(p==='/speller') return r.fulfill({contentType:'text/html',body:HTML('fig')});
+      return r.fulfill({json:{status:'healthy',words:[]}});});
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();el('expPanel').open=true;});
+    await page.check('#expReal');
+    assert.ok(await page.isChecked('#expOn'),'실제 자극을 켜면 실험 모드도 켜진다');
+    await page.fill('#expStim','600');
+    await page.click('#keyboard .key[data-v="ㄱ"]');
+    await page.waitForTimeout(250);
+    const mid=await page.evaluate(()=>({n:stimKeys().length, lit:stimKeys().filter(k=>k.style.background).length, dark:getComputedStyle(document.body).backgroundColor}));
+    assert.equal(mid.lit,mid.n,'모든 키가 자극된다');
+    assert.equal(mid.dark,'rgb(32, 32, 32)','자극 중 배경 #202020');
+    await page.waitForTimeout(700);
+    const ev=await page.evaluate(()=>eeg.events.filter(e=>e.type.startsWith('stim')).map(e=>[e.type,e.key,e.f]));
+    assert.deepEqual(ev,[['stim_on','ㄱ',9.8],['stim_off','ㄱ',9.8]]);
+    assert.equal(await page.evaluate(()=>state.initials),'ㄱ','자극이 끝나면 누른 키가 입력된다');
+    assert.equal(await page.evaluate(()=>new Set(stimTable().map(k=>k.f)).size), mid.n, '키마다 다른 주파수');
+    // 보정은 Esc로 멈춘다
+    await page.evaluate(()=>{ runCalibration(1,1); });
+    await page.waitForTimeout(400);
+    await page.keyboard.press('Escape'); await page.waitForTimeout(900);
+    assert.equal(await page.evaluate(()=>[calib.running, el('keyboard').classList.contains('ssvep-session')].join()),'false,false');
+    // Cyton: 잡음 5바이트 + 표본번호 250..261(255에서 순환), ch1 = 1000(→22.352µV), 255번은 음수
+    const rec=await page.evaluate(async()=>{
+      const pk=(n,v)=>{ const a=new Uint8Array(33); a[0]=0xA0; a[1]=n&255; for(let c=0;c<8;c++){ const x=v&0xFFFFFF; a[2+3*c]=x>>16&255; a[3+3*c]=x>>8&255; a[4+3*c]=x&255; } a[32]=0xC0; return a; };
+      const all=new Uint8Array(5+12*33); all.set([1,2,3,4,5]); for(let i=0;i<12;i++) all.set(pk(250+i,250+i===255?-1000:1000),5+i*33);
+      let pos=0; const writes=[];
+      const port={open:async()=>{}, close:async()=>{}, writable:{getWriter:()=>({write:async d=>writes.push(new TextDecoder().decode(d)),releaseLock(){}})},
+        readable:{getReader:()=>({read:async()=>{ if(pos>=all.length) return new Promise(()=>{}); const v=all.slice(pos,pos+50); pos+=50; return {value:v,done:false}; },cancel:async()=>{}})}};
+      eeg.rows=[]; await eegConnect(port); await new Promise(r=>setTimeout(r,200));
+      return {writes, idx:eeg.rows.map(r=>r[2]), ch1:eeg.rows.map(r=>r[3]), dt:eeg.rows[1][0]-eeg.rows[0][0]};
+    });
+    assert.deepEqual(rec.writes,['s','b']);
+    assert.deepEqual(rec.idx,[0,1,2,3,4,5,6,7,8,9,10,11],'255→0 순환을 이어 센다');
+    assert.equal(rec.ch1[0],22.352); assert.equal(rec.ch1[5],-22.352); assert.equal(rec.dt,4);
+    const [d]=await Promise.all([page.waitForEvent('download'),page.click('#btnEegExport')]);
+    const csv=fs.readFileSync(await d.path(),'utf8').split('\n');
+    assert.match(csv[0],/^#M .*"srate":250/);
+    assert.ok(csv.some(l=>l.startsWith('#E ')&&l.includes('"stim_on"')));
+    assert.ok(csv.includes('t_ms,arrival_ms,sample,ch1,ch2,ch3,ch4,ch5,ch6,ch7,ch8'));
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});

@@ -6,3 +6,4 @@ python-dotenv>=1.0,<2
 requests>=2.32,<3
 pytest>=8,<10
 httpx>=0.27,<1
+numpy>=1.26,<3   # tools/ssvep_offline.py(오프라인 판독)·그 테스트만 — 서버는 import하지 않음

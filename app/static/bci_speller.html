@@ -914,7 +914,18 @@ html:not([data-theme="dark"]) .kb .key.cand:disabled{background:#FCFCFB;border:1
   body.kb-fig .wblock{min-width:50px;height:50px;font-size:1.6rem}
   body.kb-fig .buffer{min-height:78px}
 }
-.health{color:var(--ink-700)}   /* 연초록 배경 위 #79766F는 2.96:1 → AA 미달 */
+.health{color:var(--ink-700)}
+/* 실제 SSVEP: 세션 동안 모든 키를 같은 회색 판으로 두고 자극 프레임이 밝기를 덮어쓴다(전환·그림자·애니메이션 없음) */
+.kb.ssvep-session .key{opacity:1!important;pointer-events:none;animation:none!important;transition:none!important;background:#404040;background-image:none;color:#DDDDDD;border-color:#202020;box-shadow:none}
+.kb.ssvep-session .key.cue{background:#C0392B!important;color:#fff!important}
+.kb.ssvep-session .key{border-color:#202020!important}
+.kb.ssvep-session .key *{color:inherit!important}
+html:has(body.stim-on),body.stim-on{background:#202020!important;background-image:none!important}
+body.stim-on .kb-card{background:#202020!important;border-color:#202020!important;box-shadow:none!important}
+body.stim-on .kb-card :is(.sec-title,.keyboard-legend,.ini-display,.buffer,button:not(#keyboard *),.badge,.pill,[class*=flag]){opacity:.08}
+body.stim-on :is(.card:not(.kb-card),.topbar,.topline,.settings-row,.footer-note){opacity:.06!important}
+.exp-sub{margin:18px 0 8px;font-size:var(--fs-sm)}
+.exp-warn{flex:1 1 100%}   /* 연초록 배경 위 #79766F는 2.96:1 → AA 미달 */
 /* 큰 글씨 = 키도 크게(오선택이 잦을 때 권함). TV 1920×1044는 이미 70~94px이고 한 화면 고정이라 제외 */
 @media (max-width:1799px),(max-height:999px){
   body.kb-fig.large-text .kb .key{min-height:76px;font-size:1.5rem}
@@ -981,7 +992,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.10</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.11</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1178,6 +1189,19 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
           <button class="btn" id="btnExportDialog">대화 기록 JSON(벤치용)</button>
           <button class="btn danger sm" id="btnResetTrials">기록 비우기</button>
         </div>
+        <h3 class="exp-sub">실제 실험 · OpenBCI</h3>
+        <div class="exp-strip">
+          <label class="exp-warn"><input type="checkbox" id="expReal"> 실제 SSVEP 자극 — 보이는 키가 모두 서로 다른 빠르기(8~15.8Hz)로 동시에 깜빡입니다. <strong>광과민성 뇌전증 병력이 있으면 쓰지 마세요.</strong> 확인했습니다</label>
+          <label>보정 블록 <input type="number" id="calBlocks" value="2" min="1" max="10" step="1"></label>
+          <label>보정 자극 <input type="number" id="calSec" value="3" min="1" max="6" step="0.5"> 초</label>
+        </div>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn" id="btnEegConnect">OpenBCI 연결</button>
+          <button class="btn" id="btnCalib">보정 시작</button>
+          <button class="btn" id="btnEegExport">뇌파+이벤트 CSV</button>
+        </div>
+        <p id="eegStatus" class="unit-hint" role="status">뇌파 장치 연결 안 됨 · OpenBCI GUI는 닫고 Cyton USB 동글을 꽂은 뒤 PC의 Chrome·Edge에서 연결하세요.</p>
+        <p class="unit-hint">자극 중 <kbd>Esc</kbd>로 즉시 멈춥니다. <strong>보정</strong>은 빨간 키를 1초 보여 준 뒤 모든 키를 깜빡여 정답이 붙은 뇌파를 모읍니다. 실험 모드에서 키를 누르면 누른 키가 정답으로 기록됩니다. 판독(어느 키를 봤는지 맞히기)은 아직 오프라인입니다: <code>python tools/ssvep_offline.py 기록.csv</code> (CCA). 기록은 이 기기에만 저장되고 서버로 보내지 않습니다.</p>
       </details>
 
       <details id="newsPanel">
@@ -1223,7 +1247,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.10.2</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.11.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1876,7 +1900,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.10.2",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.11.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2035,6 +2059,18 @@ function ssvepGate(btn, apply){
   const dyn=!!(el("expStop") && el("expStop").checked);
   const d=dyn ? dynamicWindow(maxWin, acc) : {ms:maxWin, confident:true};
   const win=d.ms;
+  if(realStim()){
+    // 실제 자극: 모든 키가 깜빡이고, 누른 키가 정답 표시(판독은 아직 오프라인 — 오판독 주입·동적 정지 없음)
+    setLoopStep(2);
+    const idx=stimKeys().indexOf(btn);
+    runStimulus(maxWin,{mode:"online", target:idx, key:btn.dataset.v||"", ...(idx>=0?JFPM[idx%40]:{})}).then(r=>{
+      loop.stimMs=r.onset!=null&&r.offset!=null ? r.offset-r.onset : 0; loop.decodeMs=0; loop.misdecode=0;
+      setLoopStep(3);
+      el("expFlag").innerHTML=`<span class="mis-flag">자극 ${Math.round(loop.stimMs)}ms · ${r.refresh_hz}Hz 화면${r.dropped?` · 프레임 ${r.dropped}개 늦음`:""}</span>`;
+      if(!r.aborted) apply(btn,false); else loopReady(true);
+    });
+    return;
+  }
   const kb=el("keyboard");
   setLoopStep(2);
   kb.classList.add("stim"); btn.classList.add("flicker"); document.body.classList.add("stim-on");
@@ -2079,6 +2115,157 @@ function dynamicWindow(maxWin, acc){
   const t=maxWin-(maxWin-minWin)*Math.pow(ease,0.7);
   return {ms:Math.max(minWin, Math.round(t/60)*60), confident:true};
 }
+
+/* ==========================================================================
+   실제 SSVEP 실험 (OpenBCI Cyton · Web Serial).
+   자극: 보이는 자판 키 전부가 동시에 깜빡인다. 화면 순서 i번 키 = 8+0.2i Hz,
+   위상 0.35πi (JFPM — Chen 외 PNAS 2015, Wang 외 2017 벤치마크의 40표적 배치).
+   밝기는 CSS 애니메이션이 아니라 requestAnimationFrame 시각 t로 매 프레임
+   s=½(1+sin(2πft+φ))를 계산한다 → 60/120/144Hz 어느 모니터든 주파수가 맞는다.
+   표시 시각은 rAF 타임스탬프(다음 화면 갱신 직전). 화면까지의 지연은 모니터마다
+   다르므로 정밀 실험은 광센서로 한 번 재서 분석 때 빼 준다.
+   ========================================================================== */
+const JFPM=Array.from({length:40},(_,i)=>({f:+(8+0.2*i).toFixed(1), ph:+((0.35*Math.PI*i)%(2*Math.PI)).toFixed(4)}));
+const realStim=()=>!!(el("expReal") && el("expReal").checked);
+function stimKeys(){ return [...el("keyboard").querySelectorAll(".key")].filter(k=>k.offsetParent); }
+function stimTable(){ return stimKeys().map((k,i)=>({i, key:k.dataset.v||"", label:(k.textContent||"").trim().slice(0,12), ...JFPM[i%40]})); }
+let stimRun=null;
+function runStimulus(ms, meta={}){
+  return new Promise(res=>{
+    const keys=stimKeys(), kb=el("keyboard"), own=!kb.classList.contains("ssvep-session");
+    if(own) startSsvepSession();
+    kb.classList.add("stim");
+    let t0=null, last=null, raf=0; const iv=[];
+    const paint=t=>keys.forEach((k,i)=>{ const {f,ph}=JFPM[i%40], s=.5*(1+Math.sin(2*Math.PI*f*t+ph)), g=Math.round(64+191*s);
+      k.style.background=`rgb(${g},${g},${g})`; k.style.color=s>.5?"#202020":"#DDDDDD"; });
+    const finish=aborted=>{
+      cancelAnimationFrame(raf); stimRun=null;
+      keys.forEach(k=>{ k.style.background=""; k.style.color=""; });
+      kb.classList.remove("stim"); if(own) endSsvepSession();
+      const med=[...iv].sort((a,b)=>a-b)[iv.length>>1]||0;
+      const r={onset:t0, offset:last, frames:iv.length+(t0===null?0:1), dropped:iv.filter(d=>med&&d>1.5*med).length,
+               refresh_hz:med?+(1000/med).toFixed(1):0, aborted:!!aborted};
+      eegMark("stim_off",{...meta,...r,t:last??performance.now()}); res(r);
+    };
+    stimRun={stop:()=>finish(true)};
+    raf=requestAnimationFrame(function frame(ts){
+      if(t0===null){ t0=ts; eegMark("stim_on",{...meta,t:ts,n_keys:keys.length}); }
+      else iv.push(ts-last);
+      last=ts;
+      if(ts-t0>=ms){ finish(false); return; }
+      paint((ts-t0)/1000); raf=requestAnimationFrame(frame);
+    });
+  });
+}
+function startSsvepSession(){ el("keyboard").classList.add("ssvep-session"); document.body.classList.add("stim-on"); }
+function endSsvepSession(){ el("keyboard").classList.remove("ssvep-session"); document.body.classList.remove("stim-on"); }
+
+/* ---- 뇌파 기록 (OpenBCI Cyton 8채널, 250Hz) ----
+   패킷 33바이트: A0 | 표본번호 | 8채널×24비트(빅엔디언, 부호) | 보조 6 | C0~CF.
+   µV = 값 × 4.5V/게인24/(2^23−1) × 1e6. 시각은 표본번호(0~255 순환)로 4ms 간격을
+   다시 세운다 — USB가 묶어 보내는 지연(수~16ms)에 흔들리지 않게. 도착 시각도 같이 남긴다. */
+const CYTON_UV=4.5/24/(2**23-1)*1e6, CYTON_HZ=250;
+function parseCyton(bytes, onSample){
+  let i=0;
+  while(bytes.length-i>=33){
+    if(bytes[i]!==0xA0 || (bytes[i+32]&0xF0)!==0xC0){ i++; continue; }
+    const ch=[];
+    for(let c=0;c<8;c++){ const o=i+2+3*c; let v=(bytes[o]<<16)|(bytes[o+1]<<8)|bytes[o+2]; if(v&0x800000) v-=0x1000000; ch.push(Math.round(v*CYTON_UV*1000)/1000); }
+    onSample(bytes[i+1], ch); i+=33;
+  }
+  return bytes.slice(i);
+}
+const eeg={port:null, reader:null, rows:[], events:[], buf:new Uint8Array(0), t0:null, idx0:null, idx:-1, connected:false};
+function eegPush(n, ch){
+  const now=performance.now();
+  let idx = eeg.idx<0 ? n : (Math.floor(eeg.idx/256)*256 + n);
+  if(eeg.idx>=0 && idx<=eeg.idx) idx+=256;                          // 255→0 넘어감
+  if(eeg.t0===null){ eeg.t0=now; eeg.idx0=idx; }
+  eeg.idx=idx;
+  eeg.rows.push([+(eeg.t0+(idx-eeg.idx0)*1000/CYTON_HZ).toFixed(2), +now.toFixed(2), idx-eeg.idx0, ...ch]);
+}
+function eegMark(type, data={}){ eeg.events.push({type, ...data, t:+(data.t??performance.now()).toFixed(2)}); }
+function eegFeed(value){
+  const b=new Uint8Array(eeg.buf.length+value.length); b.set(eeg.buf); b.set(value,eeg.buf.length);
+  eeg.buf=parseCyton(b, eegPush);
+}
+async function eegConnect(port){
+  if(!port){
+    if(!("serial" in navigator)){ eegStatus("이 브라우저는 USB 장치 연결(Web Serial)을 지원하지 않습니다 — PC의 Chrome·Edge에서 여세요."); return; }
+    port=await navigator.serial.requestPort();
+  }
+  await port.open({baudRate:115200});
+  const w=port.writable.getWriter(), enc=new TextEncoder();
+  await w.write(enc.encode("s")); await new Promise(r=>setTimeout(r,200)); await w.write(enc.encode("b")); w.releaseLock();
+  Object.assign(eeg,{port, connected:true, buf:new Uint8Array(0), t0:null, idx0:null, idx:-1});
+  eegMark("eeg_start",{device:"OpenBCI Cyton", srate:CYTON_HZ});
+  eeg.reader=port.readable.getReader();
+  el("btnEegConnect").textContent="연결 끊기";
+  (async()=>{
+    try{ for(;;){ const {value,done}=await eeg.reader.read(); if(done) break; if(value) eegFeed(value); } }
+    catch(e){ eegStatus("뇌파 수신이 끊겼습니다: "+e.message); }
+    finally{ eeg.connected=false; el("btnEegConnect").textContent="OpenBCI 연결"; }
+  })();
+}
+async function eegDisconnect(){
+  try{ const w=eeg.port.writable.getWriter(); await w.write(new TextEncoder().encode("s")); w.releaseLock(); }catch(e){}
+  try{ await eeg.reader.cancel(); }catch(e){}
+  try{ await eeg.port.close(); }catch(e){}
+  eeg.connected=false; eegMark("eeg_stop");
+}
+function eegStatus(msg){ el("eegStatus").textContent=msg; }
+setInterval(()=>{
+  if(!el("eegStatus") || !eeg.connected) return;
+  const r=eeg.rows, n=r.length, last=r[n-1];
+  const recent=r.filter(x=>x[1]>performance.now()-2000).length/2;
+  eegStatus(`OpenBCI 수신 중 · ${n.toLocaleString()} 표본 · 최근 ${Math.round(recent)}Hz${last?` · ch1 ${last[3]}µV`:""}`);
+},1000);
+function exportEegCSV(){
+  if(!eeg.rows.length && !eeg.events.length){ announce("아직 기록이 없습니다."); return; }
+  const who=(el("expSubject").value||"S").trim().replace(/[^\w.-]/g,"_");
+  const meta={subject:who, device:"OpenBCI Cyton", srate:CYTON_HZ, unit:"uV", layout:kbLayout, screen:kbScreen,
+    stim:"JFPM 8+0.2i Hz, phase 0.35*pi*i, sinusoidal luminance 64-255", table:stimTable(), ua:navigator.userAgent,
+    t:"performance.now() ms; t_ms = sample-counter clock anchored at first sample, arrival_ms = USB arrival"};
+  const lines=["#M "+JSON.stringify(meta), ...eeg.events.map(e=>"#E "+JSON.stringify(e)),
+    "t_ms,arrival_ms,sample,ch1,ch2,ch3,ch4,ch5,ch6,ch7,ch8", ...eeg.rows.map(r=>r.join(","))];
+  downloadBlob(new Blob([lines.join("\n")],{type:"text/csv;charset=utf-8"}),
+    `ssvep-${who}-${new Date().toISOString().slice(0,19).replace(/[:T]/g,"")}.csv`);
+  announce(`뇌파 ${eeg.rows.length}표본 · 이벤트 ${eeg.events.length}개를 저장했습니다.`);
+}
+
+/* ---- 보정(캘리브레이션): 블록마다 모든 키를 무작위 순서로 한 번씩.
+   빨간 표시 1초(이 키를 보세요) → 모든 키 자극 N초 → 쉼 0.5초. 이벤트에 정답 키가 남는다. */
+const calib={running:false};
+async function runCalibration(blocks, sec){
+  if(!realStim()){ announce("먼저 ‘실제 SSVEP 자극’을 켜 주세요(안전 안내 확인)."); return; }
+  if(!eeg.connected) announce("뇌파 장치 없이 진행합니다 — 자극 시각만 기록됩니다.");
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  calib.running=true; startSsvepSession(); el("btnCalib").textContent="보정 멈추기 (Esc)";
+  eegMark("calib_start",{blocks, sec, table:stimTable()});
+  try{
+    for(let b=1;b<=blocks && calib.running;b++){
+      const order=stimKeys().map((_,i)=>i).sort(()=>Math.random()-.5);
+      for(const idx of order){
+        if(!calib.running) break;
+        const k=stimKeys()[idx], meta={mode:"calib", block:b, target:idx, key:k.dataset.v||"", ...JFPM[idx%40]};
+        k.classList.add("cue"); eegMark("cue",meta); await sleep(1000); k.classList.remove("cue");
+        if(!calib.running) break;
+        await runStimulus(sec*1000, meta);
+        await sleep(500);
+      }
+    }
+  }finally{
+    eegMark("calib_end",{completed:calib.running}); calib.running=false;
+    endSsvepSession(); el("btnCalib").textContent="보정 시작";
+    announce("보정이 끝났습니다. ‘뇌파+이벤트 CSV’로 저장하세요.");
+  }
+}
+window.addEventListener("keydown",e=>{
+  if(e.key!=="Escape" || !(stimRun||calib.running)) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  calib.running=false; if(stimRun) stimRun.stop();
+  announce("자극을 멈췄습니다.");
+},true);
 
 function isHangulSyllable(ch){ const c=ch.codePointAt(0); return c>=0xAC00 && c<=0xD7A3; }
 function unitsOf(text){
@@ -3541,6 +3728,10 @@ function exportTrialsCSV(){
   announce(`${trials.length}개 시행을 CSV로 저장했습니다.`);
 }
 el("btnExportTrials").onclick=exportTrialsCSV;
+el("expReal").onchange=()=>{ if(el("expReal").checked && !el("expOn").checked){ el("expOn").checked=true; el("expOn").dispatchEvent(new Event("change")); } };
+el("btnEegConnect").onclick=async()=>{ try{ eeg.connected ? await eegDisconnect() : await eegConnect(); }catch(e){ if(e.name!=="NotFoundError") eegStatus("연결 실패: "+e.message); } };
+el("btnCalib").onclick=()=>{ if(calib.running){ calib.running=false; if(stimRun) stimRun.stop(); return; } runCalibration(Math.max(1,Math.min(10,+el("calBlocks").value||1)), Math.max(1,Math.min(6,+el("calSec").value||3))); };
+el("btnEegExport").onclick=exportEegCSV;
 el("btnExportDialog").onclick=()=>{
   const d=state.history.map(h=>[h.who==="me"?"me":"them",h.text]);
   if(!d.some(t=>t[0]==="me")){ announce("내가 말한 문장이 있어야 측정에 쓸 수 있습니다."); return; }
