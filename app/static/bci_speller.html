@@ -1218,7 +1218,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.10.0</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.10.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1871,7 +1871,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.10.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.10.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -3642,10 +3642,17 @@ async function health(){
   const h=el("health"), t=el("healthText");
   try{
     const r=await fetch("/health",{signal:AbortSignal.timeout(8000)});
-    if(r.ok){ h.className="health ok"; t.textContent="Backend 연결됨"; }
-    else{ h.className="health bad"; t.textContent="Backend 오류"; }
-  }catch(e){ h.className="health bad"; t.textContent="Backend 연결 안 됨"; }
+    if(r.ok){ h.className="health ok"; t.textContent="Backend 연결됨"; healthFails=0; return; }
+    h.className="health bad"; t.textContent="Backend 오류";
+  }catch(e){
+    // Render 무료 서버는 잠들면 깨는 데 30~60초 — 처음 2분은 '깨우는 중'으로 보이고 5초마다 다시 본다(입력은 서버 없이도 계속 됨)
+    healthFails++;
+    h.className="health bad"; t.textContent = healthFails<=24 ? "서버 깨우는 중…" : "Backend 연결 안 됨";
+  }
+  clearTimeout(healthRetry); healthRetry=setTimeout(()=>{ if(!document.hidden) health(); },5000);
 }
+let healthFails=0, healthRetry=null;
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) health(); });
 
 function restoreDraft(){
   try{
