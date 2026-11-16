@@ -822,12 +822,17 @@ body.stim-on::before{display:none}
 .keyboard-scroll{overflow-x:auto;padding:3px}
 .keyboard-scroll .kb{min-width:494px}
 .news-items{display:grid;gap:10px;margin-top:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
-.issue{display:grid;gap:4px;min-width:0}
-.issue-btn{justify-content:flex-start;text-align:left;gap:8px;flex-wrap:wrap;border-radius:16px!important;padding:10px 14px}
-.issue-btn[aria-pressed="true"]{background:#EBF4EF!important;border-color:#3C7D5E!important}
-.issue-cat{font-size:var(--fs-xs);font-weight:700;color:#fff;background:#3C7D5E;border-radius:999px;padding:1px 8px}
-.issue-n{margin-left:auto;font-size:var(--fs-xs);color:var(--ink-500)}
-.issue-title{display:block;font-size:var(--fs-xs);color:var(--ink-500);padding:14px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.issue{display:grid;min-width:0;background:#fff;border:1px solid #D9DEDB;border-radius:18px;overflow:hidden}
+.issue:has([aria-pressed="true"]){border-color:#3C7D5E;background:#F2F8F4;box-shadow:inset 0 0 0 1px #3C7D5E}
+.issue-btn{display:grid;gap:4px;width:100%;min-height:48px;padding:12px 14px 4px;background:none;border:0;font:inherit;color:var(--ink-900);cursor:pointer}
+.issue-btn:hover{background:#F6F8F7}
+.issue-head{display:flex;align-items:center;gap:8px;min-width:0}
+.issue-head b{font-size:var(--fs-base);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.issue-words{font-size:var(--fs-xs);color:var(--ink-500)}
+.issue-cat{flex:0 0 auto;font-size:var(--fs-2xs);font-weight:700;color:#fff;background:#3C7D5E;border-radius:999px;padding:2px 8px}
+.issue-n{margin-left:auto;flex:0 0 auto;font-size:var(--fs-xs);color:var(--ink-500)}
+.issue-title{display:block;font-size:var(--fs-xs);line-height:22px;color:var(--ink-500);padding:4px 14px 14px;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.issue-title:hover{color:#3C7D5E;text-decoration:underline}
 .news-items button{text-align:left;white-space:normal;overflow-wrap:anywhere}
 /* ===== Figma 디자인(Untitled · Main 26:17, loading 4:11) — 연초록 그라데이션 · 흰 카드 · 짙은 초록 · 명조 =====
    글꼴은 피그마의 YES명조 대신 이미 쓰는 Noto Serif KR(웹폰트). SSVEP 자극 색은 기존 규칙 그대로(어두운 화면은 없앰). */
@@ -1218,7 +1223,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.10.1</p>
+  <p>연구용 프로토타입 · 실제 뇌파 측정은 연결되어 있지 않습니다 · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.10.2</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1620,8 +1625,8 @@ async function refreshNews(){
     el("newsStatus").textContent=`최근 기사 ${items.length}개 · ${d.updated_at ? new Date(d.updated_at).toLocaleString("ko-KR") : "갱신 기록 없음"}${d.unavailable?.length ? " · 일부 분야 연결 실패" : ""}`;
     // 요즘 이야깃거리: 서버가 제목을 묶은 이슈(핵심어 + 같이 나오는 말 + 최신 기사 1건). 이슈가 없으면 분야별 최신 제목
     el("newsItems").innerHTML = newsIssues.length
-      ? newsIssues.map(x=>`<div class="issue"><button class="btn issue-btn" data-news="${esc(x.keyword)}" aria-pressed="${selectedNews===x.keyword}"><span class="issue-cat">${esc(x.category)}</span><b>${esc(x.keyword)}</b>${x.words.length?` · ${esc(x.words.join(" · "))}`:""}<span class="issue-n">기사 ${x.count}</span></button><a class="issue-title" href="${esc(x.titles[0].url)}" target="_blank" rel="noopener noreferrer">${esc(x.titles[0].title)}</a></div>`).join("")
-      : ["시사","사회","건강","연예","스포츠"].flatMap(c=>items.filter(n=>n.category===c).slice(0,2)).map(n=>`<div class="issue"><button class="btn issue-btn" data-news="${esc(n.url)}" aria-pressed="${selectedNews===n.url}"><span class="issue-cat">${esc(n.category)}</span>${esc(n.title)}</button></div>`).join("");
+      ? newsIssues.map(x=>`<div class="issue"><button class="issue-btn" data-news="${esc(x.keyword)}" aria-pressed="${selectedNews===x.keyword}"><span class="issue-head"><span class="issue-cat">${esc(x.category)}</span><b>${esc(x.keyword)}</b><span class="issue-n">기사 ${x.count}</span></span>${x.words.length?`<span class="issue-words">${esc(x.words.join(" · "))}</span>`:""}</button><a class="issue-title" href="${esc(x.titles[0].url)}" target="_blank" rel="noopener noreferrer" title="원문 기사 새 창">${esc(x.titles[0].title)} ↗</a></div>`).join("")
+      : ["시사","사회","건강","연예","스포츠"].flatMap(c=>items.filter(n=>n.category===c).slice(0,2)).map(n=>`<div class="issue"><button class="issue-btn" data-news="${esc(n.url)}" aria-pressed="${selectedNews===n.url}"><span class="issue-head"><span class="issue-cat">${esc(n.category)}</span></span><span>${esc(n.title)}</span></button></div>`).join("");
     el("newsItems").querySelectorAll("button").forEach(b=>b.onclick=()=>{
       selectedNews=b.dataset.news;
       el("newsItems").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
@@ -1871,7 +1876,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.10.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.10.2",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
