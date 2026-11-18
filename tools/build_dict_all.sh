@@ -21,6 +21,7 @@ for i in $(seq ${KRW:-2}); do cat "$D/krdict_corpus.txt"; done > "$KR"
 KRWORDS=""; [ "${KR_WORDS:-0}" = 1 ] && KRWORDS="$D/krdict_words.txt"
 KRDICT=""; [ "${KR_COUNTS:-1}" = 1 ] && KRDICT="--min2 $D/krdict_corpus.txt"
 python3 tools/build_dict.py "$D/ko_full.txt" "$D"/mecab-ko-dic-2.1.1-* "$D/wos.txt" "$D/chat_train.txt" "$TMP" $KRDICT $KRWORDS > "$OUT"
+python3 tools/tidy_dict.py "$OUT" "$D"/mecab-ko-dic-2.1.1-* "$D/krdict_words.txt" "$D/chat_train.txt" "$D/wos.txt" "$P" "$D/krdict_corpus.txt"   # 낯선 자막 인명은 뒤로, 하다 활용꼴 더하기
 python3 tools/build_ngrams.py --bi-top ${BI_TOP:-20} --tri-top ${TRI_TOP:-6} --tri-min ${TRI_MIN:-4} "$D/os_ko.txt.gz" "$D/chat_train.txt" "$D/wos.txt" "$TMP" "$KR" >> "$OUT"
 { echo "#sit"; cat "$D/krdict_sit.txt"; } >> "$OUT"
 rm -f "$KR"

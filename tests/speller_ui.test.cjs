@@ -887,7 +887,9 @@ test('Enter after a mouse-picked candidate finishes the sentence instead of re-p
     assert.equal(await page.evaluate(()=>state.initials),'');
     assert.match(await page.locator('#keyboard .key[data-v="commit"]').getAttribute('aria-label'),/엔터/);
     await page.keyboard.press('Enter');
-    assert.equal(await page.locator('#prevLines').textContent(),picked,'끝낸 문장은 위 줄에 남는다');
+    assert.equal(await page.locator('#prevLines').textContent(),'','끝낸 문장은 입력 칸에서 빠진다');
+    assert.equal(await page.locator('#committed').textContent(),'');
+    assert.match(await page.locator('#chatLog .chat-turn.me').last().textContent(),new RegExp(picked.trim()),'대화 창으로 넘어간다');
     await page.keyboard.press('Enter');
     const s=await page.evaluate(()=>({c:state.committed,h:state.history.map(h=>h.text)}));
     assert.equal(s.c,'');
@@ -947,7 +949,7 @@ test('Figma patient keyboard: 없음 swaps to the vowel board, vowel → 받침 
     await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
       ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
     await page.goto('http://bci.test/speller');
-    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    await page.evaluate(()=>{localStorage.setItem('bci_none','auto');state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});   // v3.9 자동(단계식) 방식
     assert.equal(await page.locator('#keyboard .key').count(),29);
     assert.equal(await page.locator('#keyboard .key.cand').count(),5);
     assert.equal(await page.locator('.cand-card').isVisible(),false,'후보는 자판 첫 줄에만');
@@ -1105,6 +1107,80 @@ test('Real SSVEP flickers every key at its own frequency and records Cyton EEG w
     assert.match(csv[0],/^#M .*"srate":250/);
     assert.ok(csv.some(l=>l.startsWith('#E ')&&l.includes('"stim_on"')));
     assert.ok(csv.includes('t_ms,arrival_ms,sample,ch1,ch2,ch3,ch4,ch5,ch6,ch7,ch8'));
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+// v3.12 기본: '없음' → 후보키 1~5가 완성할 글자 자리로 바뀌고(1번 = 가장 잘 가르는 자리), 고른 글자를 모음·받침으로 완성한다.
+test('없음 lets the patient pick which syllable to complete, then vowel + 받침 complete it', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1920,height:1044}});
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    for(const c of 'ㄷㅇㅈㅅㅇ') await page.click(`#keyboard .key[data-v="${c}"]`);
+    await page.click('#keyboard .key[data-v="none"]');
+    const P=await page.evaluate(()=>state.pickPos);
+    assert.ok(P && P.length>=2 && P.length<=5, JSON.stringify(P));
+    assert.match(await page.locator('#candKeyW0').textContent(),new RegExp(`${P[0]+1}번째`));
+    assert.equal(await page.locator('#iniDisplay .wblock[data-pick]').count(),P.length,'입력칸 글자에 번호');
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044);
+    // ⌫ 는 취소
+    await page.click('#keyboard .key[data-v="back"]');
+    assert.deepEqual(await page.evaluate(()=>[state.pickPos,state.initials]),[null,'ㄷㅇㅈㅅㅇ']);
+    // 다시 없음 → 2번 자리 고르기 → 모음판 → ㅗ → 받침 ㄴ → 그 글자가 완성되고 다시 찾는다
+    await page.click('#keyboard .key[data-v="none"]');
+    await page.click('#candKey1');
+    const pos=P[1];
+    assert.equal(await page.evaluate(()=>state.jamoTarget),pos);
+    assert.equal(await page.locator('#keyboard .key.jung').count(),21,'모음판');
+    await page.click('#keyboard .key[data-v="ㅗ"]');
+    assert.equal(await page.locator('#keyboard .key').count(),29,'받침은 자음판에서');
+    assert.match(await page.locator('#kbGuide').textContent(),/받침/);
+    await page.click('#keyboard .key[data-v="ㄴ"]');
+    const r=await page.evaluate(i=>({sp:state.spelled[i],vo:!!state.vowelOnly[i],want:composeSyllableJS(state.initials[i],'ㅗ','ㄴ'),pick:state.pickPos,tgt:state.jamoTarget,lab:el('candKeyW0').textContent}),pos);
+    assert.equal(r.sp,r.want); assert.equal(r.vo,false); assert.equal(r.pick,null); assert.equal(r.tgt,null);
+    assert.doesNotMatch(r.lab,/번째/,'후보키는 다시 후보');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+// 이름 기억: 상대가 말한 드문 말(민수)·부르는 꼴(지수씨)은 이름으로 남고, 두 번 나오면 잊지 않는다.
+// "누구 만났어?"엔 첫 단어로 이름, "걔"는 가장 최근 이름. ㅋㅇㅎ은 자막 인명(키요하루)이 아니라 쾌유해.
+test('Names are remembered, answer 누구 questions and resolve 걔; odd subtitle names stay behind', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    const dict=fs.readFileSync(path.join(__dirname,'../app/static/dict.txt'),'utf8');
+    await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
+      if(p==='/speller') return r.fulfill({contentType:'text/html',body:HTML('fig')});
+      if(p==='/speller/dict.txt') return r.fulfill({contentType:'text/plain',body:dict});
+      return r.fulfill({status:503,json:{}});});
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(async()=>{await loadDict(); try{localStorage.clear()}catch(e){} learn={word:{},next:{},next2:{},phrase:{},ctx:{},names:{},day:today()};
+      state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');});
+    const r=await page.evaluate(()=>{
+      const W=ini=>{ state.initials=ini; return localWords(5,ini).map(x=>x.text); };
+      const out={kyh:W('ㅋㅇㅎ')};
+      pushTurn('partner','어제 민수 만났어? 지수씨도 왔대');
+      out.names=Object.keys(learn.names).sort();
+      state.initials=''; state.lastWord=''; state.lastWord2='';
+      pushTurn('partner','누구 만났어?'); markContextDirty(); out.who=localWords(5,'').map(x=>x.text);
+      pushTurn('partner','걔 요즘 어때?'); markContextDirty(); out.pron=echoMap().has(lastName());
+      state.history=[]; markContextDirty(); out.ms=W('ㅁㅅ');
+      pushTurn('partner','민수 또 왔어'); saveLearn(); loadLearn(); out.n=learn.names['민수'].n;
+      return out; });
+    assert.equal(r.kyh[0],'쾌유해',r.kyh.join(','));
+    assert.ok(!r.kyh.includes('키요하루'));
+    assert.deepEqual(r.names,['민수','지수']);
+    assert.ok(['민수','지수'].includes(r.who[0]), r.who.join(','));
+    assert.equal(r.pron,true);
+    assert.equal(r.ms[0],'민수','초성을 끝까지 치면 이름이 맨 앞');
+    assert.equal(r.n,2,'두 번 나온 이름은 저장되어 남는다');
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });

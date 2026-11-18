@@ -925,6 +925,10 @@ body.stim-on .kb-card{background:#202020!important;border-color:#202020!importan
 body.stim-on .kb-card :is(.sec-title,.keyboard-legend,.ini-display,.buffer,button:not(#keyboard *),.badge,.pill,[class*=flag]){opacity:.08}
 body.stim-on :is(.card:not(.kb-card),.topbar,.topline,.settings-row,.footer-note){opacity:.06!important}
 .exp-sub{margin:18px 0 8px;font-size:var(--fs-sm)}
+/* 없음 → 완성할 글자 고르기: 입력칸 글자 위에 번호, 후보 카드는 흐리게(후보키가 글자 자리를 고른다) */
+.wblock[data-pick]{position:relative;outline:2px dashed #C0392B;outline-offset:2px}
+.wblock[data-pick]::after{content:attr(data-pick);position:absolute;top:-10px;right:-10px;min-width:20px;height:20px;border-radius:999px;background:#C0392B;color:#fff;font:700 12px/20px var(--font,inherit);text-align:center}
+body.picking #candWords,body.picking #candSents{opacity:.35}
 .exp-warn{flex:1 1 100%}   /* 연초록 배경 위 #79766F는 2.96:1 → AA 미달 */
 /* 큰 글씨 = 키도 크게(오선택이 잦을 때 권함). TV 1920×1044는 이미 70~94px이고 한 화면 고정이라 제외 */
 @media (max-width:1799px),(max-height:999px){
@@ -992,7 +996,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.11</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.12</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1225,7 +1229,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <div class="habitual-row" id="habitualRow"></div>
         <label for="context">상황 메모 (적는 즉시 후보 순위에 반영됩니다)</label>
         <textarea id="context" rows="2" maxlength="300" placeholder="예: 식사 중이고 보호자가 옆에 있어요"></textarea>
-        <label><input type="checkbox" id="autoPredict" checked> 초성을 입력할 때마다 문장 후보 자동 갱신</label>
+        <label><input type="checkbox" id="autoPredict"> AI(GPT) 문장 추천 — 끄면(기본) 단어·검수 표현만으로 처음부터 한 단어씩 채워 갑니다. 같은 초성엔 늘 같은 후보가 나옵니다.</label>
         <p class="unit-hint"><strong>화면 배열 = 컴퓨터 자판 배열입니다.</strong> 두벌식 자판을 그대로 옮겨 놨으니 손이 아는 자리를 눈이 그대로 따라가면 됩니다 — 2행 <b>ㅂㅈㄷㄱㅅ ㅛㅕㅑㅐㅔ</b>, 3행 <b>ㅁㄴㅇㄹㅎ ㅗㅓㅏㅣ</b>, 4행 <b>ㅋㅌㅊㅍ ㅠㅜㅡ , . ?</b>. <b>⇧</b>를 누르면 자판과 똑같이 쌍자음(ㅃㅉㄸㄲㅆ)·겹모음(ㅒㅖ)·단어삭제·느낌표로 바뀌고, 한 글자를 누르면 저절로 풀립니다.</p>
         <p class="unit-hint"><strong>물리 키보드도 같은 자리입니다</strong> — q·w·e는 ㅂ·ㅈ·ㄷ, o·p는 ㅐ·ㅔ, 쉼표·마침표·물음표는 <b>, . /</b> 자리 그대로(물음표는 Shift+/). 후보는 숫자 <b>1~7</b>, 띄어쓰기 <b>Space</b>, 문장 확정 <b>Enter</b>, 글자 삭제 <b>Backspace</b>, 단어 삭제 <b>Shift+Backspace</b> 또는 <b>Delete</b>. 한/영 상태와 무관하게 동작합니다.</p>
         <p class="unit-hint">기기 안에서 찾은 단어·문장 후보를 먼저 보여줍니다. ① 내가 전에 쓴 말(이 기기에 저장), ② 검수된 AAC 표현 사전 281개, ③ 일반 한국어 대화 말뭉치에서 만든 단어·다음단어 사전을 사용합니다. 맞는 표현이 없으면 초성을 더 입력하거나 직접 입력할 수 있습니다. 언어 모델 응답 시간은 연결 상태와 모델에 따라 달라집니다.</p>
@@ -1233,6 +1237,8 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <p class="unit-hint">넓은 사전 출처: KLUE 벤치마크의 WoS 과제지향 대화(CC BY-SA 4.0)에서 만든 빈도표입니다. 원문은 포함하지 않습니다.</p>
         <label for="kbLayoutSel">자판</label>
         <select id="kbLayoutSel"><option value="fig">환자 실험용 · 자음 자판 + 없음 (피그마)</option><option value="k40">40키 두벌식 · 비교 실험용</option></select>
+        <label for="noneModeSel">‘없음’을 누르면</label>
+        <select id="noneModeSel"><option value="pick">완성할 글자를 내가 고른다 → 모음·받침으로 완성</option><option value="auto">가장 잘 가르는 글자의 모음만 묻는다 (선택 수 약 ⅓ 적음)</option></select>
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
         <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
         <label for="latencyStrategy">문장 추천 방식</label>
@@ -1247,7 +1253,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.11.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.12.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1485,7 +1491,7 @@ let state={
 const LEARN_KEY="bci_learn_v2";
 const CTX_SEP="\u0001";   // "앞앞단어\u0001앞단어" -> 다음 단어
 const HALF_LIFE_DAYS=30;   // 한 달 쓰지 않은 기록은 절반의 무게만 갖는다
-let learn={word:{}, next:{}, next2:{}, phrase:{}, ctx:{}, day:today()};
+let learn={word:{}, next:{}, next2:{}, phrase:{}, ctx:{}, names:{}, day:today()};
 
 function today(){ return Math.floor(Date.now()/86400000); }
 function ctxKey(){ return (state.partner||"other")+"|"+(state.situation||"general"); }
@@ -1502,7 +1508,9 @@ function loadLearn(){
   try{
     const raw=JSON.parse(localStorage.getItem(LEARN_KEY)||"null");
     if(!raw || typeof raw!=="object") return;
-    learn={word:raw.word||{}, next:raw.next||{}, next2:raw.next2||{}, phrase:raw.phrase||{}, ctx:raw.ctx||{}, day:raw.day||today()};
+    learn={word:raw.word||{}, next:raw.next||{}, next2:raw.next2||{}, phrase:raw.phrase||{}, ctx:raw.ctx||{}, names:raw.names||{}, day:raw.day||today()};
+    // 이름: 두 번 이상 나온 것은 잊지 않는다. 한 번 나온 것도 90일은 둔다.
+    for(const [w,o] of Object.entries(learn.names)) if(!(o.n>=2) && today()-(o.d||0)>90) delete learn.names[w];
     const gap=today()-learn.day;
     if(gap>0){
       decayAll(learn.word,gap); decayAll(learn.phrase,gap);
@@ -1517,6 +1525,7 @@ function saveLearn(){
   try{
     // 무한정 자라지 않게 상위만 남긴다
     learn.word=topN(learn.word,600); learn.phrase=topN(learn.phrase,300);
+    const nm=Object.entries(learn.names||{}); if(nm.length>300) learn.names=Object.fromEntries(nm.sort((a,b)=>(b[1].n>=2)-(a[1].n>=2)||b[1].d-a[1].d).slice(0,300));
     for(const k of Object.keys(learn.next)) learn.next[k]=topN(learn.next[k],8);
     if(Object.keys(learn.next).length>400) learn.next=Object.fromEntries(Object.entries(learn.next).slice(-400));
     for(const k of Object.keys(learn.next2)) learn.next2[k]=topN(learn.next2[k],6);
@@ -1538,6 +1547,7 @@ function unlearnCommit(text, prevBefore, prevBefore2){
   const c=learn.ctx[ctxKey()];
   const dec=(store,k)=>{ if(!store) return; store[k]=(store[k]||0)-1; if(store[k]<=0) delete store[k]; };
   dec(learn.phrase,text); if(c) dec(c.phrase,text);
+  for(const [w] of nameCandidates(text)){ const o=(learn.names||{})[w]; if(o && --o.n<=0) delete learn.names[w]; }
   // 되돌릴 때도 앞 단어를 똑같이 이어 줘야 learnFromCommit 이 올린 짝이 정확히 내려간다
   let p1=prevBefore2||"", p2=prevBefore||"";
   for(const w of words){
@@ -1575,6 +1585,7 @@ function learnFromCommit(text){
   state.lastWord  = p2;
   bgKey=null;                 // learn.next 가 바뀌었으니 앞 단어 표를 다시 만든다
   primeFromMine(text);        // 내가 고른 말도 카테고리를 민다
+  learnNames(text);
   learn.day=today();
   saveLearn();
 }
@@ -1597,6 +1608,55 @@ function learnFromCommit(text){
      0.70  내가 방금 확정한 말
      0.90  상대의 마지막 말   0.55  그 앞   0.35  그 앞앞
    ========================================================================== */
+/* ==========================================================================
+   이름·고유명사 기억 — "한 번 쓴 이름은 다시 나와야 한다"(사용자 피드백).
+   사전에서 드문 말(순위 15,000 밖이거나 없음 — 사람 이름·동네·가게 대부분)이나
+   민수야·지수씨·영희네처럼 부르는 꼴이 붙은 말을 이름으로 본다. 내 확정·상대 말
+   모두에서 세고, 두 번 이상 나온 이름은 잊지 않는다(일반 기록은 30일 반감).
+   후보: 초성을 끝까지 치면 맨 앞, 앞부분만 맞아도 앞쪽. 상대가 걔·그분이라고
+   하면 가장 최근 이름을, "누구 만났어?"처럼 물으면 첫 단어에 이름을 낸다.
+   ========================================================================== */
+const NAME_RARE=15000;
+const NAME_CUE=/^([가-힣]{2,4}?)(씨|님|이랑|이한테|이네|이가|이는|이를|이도|이야|야|아)$/;
+const NAME_JOSA=/(이랑|이한테|한테|에게|이가|이는|이를|이도|이네|씨|님|가|는|은|을|를|랑|도|와|과|의)$/;
+const NAME_VERBISH=/(다|요|어|아|해|지|죠|네|고|서|니|까|래|대|냐|나|군|자|게|함|음|던|는|은|을|며|면|데|야|든|잖)$|았|었|였|했|겠|왔|갔|봤|줬|됐|셨|켰|웠/;   // 끝이 어미이거나 안에 과거·추측 표지가 있으면 동사꼴
+const PRONOUN=/(^|\s)(걔|쟤|얘|그분|그\s?사람|그\s?친구|그\s?애|그녀|그\s?양반)/;
+const WHO_Q=/누구|누가|누굴|누군|누구랑|누구한테|이름이/;
+function dictRank(w){
+  if(!DICT) return -1;
+  const c=choseongOf(w), b=c.length>=2 ? DICT.buckets.get(c.slice(0,2)) : DICT.first.get(c);
+  if(b) for(const i of b) if(DICT.w[i]===w) return i;
+  return Infinity;
+}
+const isRare=w=>{ const r=dictRank(w); return r<0 ? false : r>NAME_RARE; };
+function nameCandidates(text){
+  const out=new Map();
+  for(const tok of String(text||"").split(/[^가-힣]+/)){
+    if(tok.length<2 || tok.length>6 || !isRare(tok)) continue;      // 흔한 말(괜찮아·엄마가)은 이름이 아니다
+    // 지수씨도 → 지수씨 → 지수: 조사를 두 번까지 떼며 부르는 꼴을 찾는다
+    let st=tok, m=null;
+    for(let k=0;k<3 && !(m=NAME_CUE.exec(st));k++) st=st.replace(NAME_JOSA,"");
+    if(m && !NAME_VERBISH.test(m[1])){ out.set(m[1],true); continue; }
+    if(st.length>=2 && st.length<=5 && !NAME_VERBISH.test(st) && isRare(st) && !out.has(st)) out.set(st,false);
+  }
+  return [...out];
+}
+function learnNames(text){
+  if(!DICT) return;
+  learn.names=learn.names||{};
+  for(const [w,cue] of nameCandidates(text)){
+    const o=learn.names[w]||(learn.names[w]={n:0,d:0,cue:false});
+    o.n++; o.d=today(); o.cue=o.cue||cue;
+  }
+}
+/* 가장 최근에 나온 이름(대명사가 가리킬 것) — 부르는 꼴이 붙었던 이름을 먼저 */
+function lastName(){
+  const names=learn.names||{};
+  for(const h of [...(state.history||[])].reverse())
+    for(const [w] of nameCandidates(h.text).sort((a,b)=>((names[b[0]]||{}).cue?1:0)-((names[a[0]]||{}).cue?1:0)))
+      if(names[w]) return w;
+  return "";
+}
 const CTX_W={situation:1, memo:1, buffer:.8, mine:.7, partner:[.9,.55,.35]};
 let newsEntries=[], newsIssues=[], selectedNews=null, newsBusy=false;
 /* 상대가 "요즘 야구 봤어?"처럼 화제를 물으면 그 분야의 지금 이슈를 대화 문맥으로 쓴다.
@@ -1743,6 +1803,9 @@ function rebuildEcho(){
     }
   });
   for(const [piece,hs] of seenIn) if(hs.size>1) echoWords.set(piece,echoWords.get(piece)+SCORE.echo*SCORE.echoRepeat);
+  // 상대가 걔·그분·그 사람이라고 하면 가장 최근 이름을 가리킨다
+  const lastTheirs=hist.filter(h=>h.who!=="me").slice(-1)[0];
+  if(lastTheirs && PRONOUN.test(lastTheirs.text)){ const nm=lastName(); if(nm && !(echoWords.get(nm)>=SCORE.echo)) echoWords.set(nm,SCORE.echo); }
   for(const token of newsContext().match(/[가-힣]{2,12}/g)||[]){
     if(!ECHO_STOP.has(token)) echoWords.set(token,Math.max(echoWords.get(token)||0,SCORE.echo*.8));
   }
@@ -1855,7 +1918,13 @@ function nextWordGuesses(limit){
      "내가 자주 쓰는 말" 같은 흔한 후보와 같은 저울에 올리면 통째로 밀린다
      (실측 53.2% -> 47.7%). backoff 는 점수가 아니라 순서로 구현한다. */
   const ranked=[...contextScores().entries()].sort((a,b)=>b[1]-a[1]).map(([w])=>w);
-  const out=ranked.slice(0,n), seen=new Set(out);
+  // "누구 만났어?" — 내 첫 단어 자리에 이름을 먼저(이 대화에 나온 이름 → 자주·최근 이름)
+  const lastH=(state.history||[]).slice(-1)[0];
+  if(!state.lastWord && lastH && lastH.who!=="me" && WHO_Q.test(lastH.text)){
+    const nm=Object.entries(learn.names||{}).sort((a,b)=>(b[1].n>=2)-(a[1].n>=2)||b[1].d-a[1].d||b[1].n-a[1].n).map(([w])=>w);
+    const cur=lastName(); ranked.unshift(...[cur,...nm].filter((w,i,a)=>w && a.indexOf(w)===i).slice(0,3));
+  }
+  const out=[...new Set(ranked)].slice(0,n), seen=new Set(out);
   if(out.length<n && SCORE.backoff){
     const p2=state.lastWord||"";
     const push=w=>{ if(w&&w!==p2&&!seen.has(w)&&out.length<n){ seen.add(w); out.push(w); } };
@@ -1900,7 +1969,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.11.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.12.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2428,7 +2497,8 @@ function handleKey(t,v){
     if(v==="swap"){ pressSwap(); loopFinish({key:"swap",type:"fn"}); return; }
     if(v==="none"){ pressNone(); loopFinish({key:"none",type:"fn"}); return; }
     if(v==="speak"){ el("btnSpeak").click(); loopFinish({key:"speak",type:"fn"}); return; }
-    if(state.jamoTarget!==null && (v==="back"||v==="delword")){ cancelGuided("글자 완성을 취소했습니다."); loopFinish({key:v,type:"fn"}); return; }
+    if((state.jamoTarget!==null || state.pickPos) && (v==="back"||v==="delword")){ state.pickPos=null; cancelGuided("글자 완성을 취소했습니다."); loopFinish({key:v,type:"fn"}); return; }
+    if(state.pickPos && t!=="cand"){ announce("완성할 글자를 1~5번으로 골라 주세요. 그만두려면 ⌫."); loopFinish({key:v,type:t,rejected:1}); return; }
     if(state.jamoTarget!==null && (v==="space"||t==="punct")){ announce("먼저 빨간 글자를 완성해 주세요. 그만두려면 ⌫ 글자."); loopFinish({key:v,type:t,rejected:1}); return; }
     if(state.jamoTarget===null && t==="cho") setGuide("");
   }
@@ -2561,7 +2631,7 @@ function finishSentence(){
   rememberUndo(); cancelPending(); endMine();
   state.committed=""; state.lastWord=""; state.lastWord2=""; state.sessionId=null;
   markContextDirty(); clearRecoveryState(); renderBuffer(); renderChat();
-  announce("문장을 대화에 남겼습니다. 다음 문장을 입력하세요.");
+  announce("문장을 대화 창으로 옮겼습니다. 다음 문장을 입력하세요.");
 }
 function editCommitted(text){
   rememberUndo(); cancelPending(); state.sessionId=null;
@@ -2585,6 +2655,7 @@ function pressCommitKey(){
   loopFinish({key:"commit",type:"fn",rejected:1});
 }
 function chooseSlot(k){
+  if(state.pickPos) return pickSpellPos(k);
   const sl=slots[k];
   if(!sl){ announce("그 번호의 후보가 비어 있어요."); loopFinish({key:"cand"+(k+1),type:"cand",rejected:1}); return; }
   const meta={key:"cand"+(k+1), type:"cand", picked:sl.kind, text:sl.text,
@@ -2620,11 +2691,10 @@ function renderBuffer(){
   el("btnSpeak").disabled=!state.committed;
   el("committed").textContent=state.committed;
   el("pending").textContent = state.initials ? " ["+spacedInitials()+"]" : "";
-  // Enter로 끝낸 문장은 위 줄에 남기고 아래 새 줄에 이어 쓴다(상대가 말하기 전까지의 내 문장 최근 2개).
-  const h=state.history||[], lastThem=h.map(x=>x.who).lastIndexOf("partner");
-  const prev=h.slice(lastThem+1).filter(x=>x.who==="me" && x.done && x.text!==state.committed).slice(-2);
-  el("prevLines").innerHTML=prev.map(x=>`<span class="prev-line">${esc(x.text)}</span>`).join("");
-  el("bufferPh").textContent = prev.length ? "다음 문장을 입력하세요" : "고른 문장이 여기 쌓입니다";
+  // Enter로 끝낸 문장은 대화 창으로 넘어가고 여기는 비운다(사용자 피드백 v3.12 — 예전엔 위 줄에 2개 남겼다)
+  const h=state.history||[], done=h.length && h[h.length-1].who==="me" && h[h.length-1].done && !state.committed;
+  el("prevLines").innerHTML="";
+  el("bufferPh").textContent = done ? "대화에 남겼어요 · 다음 문장을 입력하세요" : "고른 문장이 여기 쌓입니다";
   el("bufferPh").style.display = (state.committed || state.initials) ? "none" : "inline";
   syncCommitKey();
   el("btnNone").hidden=!state.initials;
@@ -2652,7 +2722,7 @@ function renderWordDisplay(){
     const done=state.spelled[i];
     const part = i===state.jamoTarget && state.jamoMedial ? composeSyllableJS(c,state.jamoMedial,"") : "";
     const vo = done && state.vowelOnly && state.vowelOnly[i] && !part;
-    return (i&&bs.has(i)?'<span class="wgap" aria-hidden="true"></span>':"")+`<span class="wblock${done?" done":""}${vo?" vo":""}${i===tgt?" target":""}"${vo?' title="받침은 후보가 채웁니다"':""}>${esc(part||done||c)}</span>`;
+    return (i&&bs.has(i)?'<span class="wgap" aria-hidden="true"></span>':"")+`<span class="wblock${done?" done":""}${vo?" vo":""}${i===tgt?" target":""}"${vo?' title="받침은 후보가 채웁니다"':""}${state.pickPos&&state.pickPos.includes(i)?` data-pick="${state.pickPos.indexOf(i)+1}"`:""}>${esc(part||done||c)}</span>`;
   }).join("")+(bs.has(n)?'<span class="wgap" aria-hidden="true"></span>':"");
   id.setAttribute("aria-label","입력한 초성 "+spacedInitials());
 }
@@ -2744,7 +2814,7 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 앞 단어 가산점. bgMine=내가 실제로 그 순서로 썼던 것, bgSeed=검수 사전,
      bgLex=일반 말뭉치. 값은 bench_bigram.js 측정으로 고른다. */
   bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6,
-  bgTri:1400, bgTriPer:120, echo:900, echoMine:.5, echoRepeat:.25, echoStem:.6, reply:450, trend:8, figSents:1, lexGuess:1.2,
+  bgTri:1400, bgTriPer:120, echo:900, name:600, echoMine:.5, echoRepeat:.25, echoStem:.6, reply:450, trend:8, figSents:1, lexGuess:1.2,
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1, lexTri:500,
   /* ⑤ 사전 층(구어 빈도 + 국어사전 어휘). 말뭉치 층과 같은 눈금에 둔다. */
@@ -2944,7 +3014,9 @@ function localWords(limit, ini){
   const put=(text,sc)=>{ if(!(best.get(text)>=sc)) best.set(text,sc); };
   // 요즘 화제어(뉴스 제목 2건 이상)는 가장 넓은 층 — 후보로 따로 넣지 않고 사전 단어끼리 동점일 때만 앞세운다.
   // 에코처럼 넣었더니 ㅅㅅ=삼성>식사, ㄱㅎ=국힘>간호사로 환자 단어를 밀어냈다.
-  const boost=w=>(bg.get(w)||0)+((ec.get(w)||0)||stemBoost(w))+SCORE.trend*Math.min(trendWords.get(w)||0,3);
+  // 화제어는 뉴스 문맥이 있을 때만(고른 이슈·상대가 요즘 ○○ 물음) — 문맥이 없으면 같은 초성엔 늘 같은 순서(사용자 피드백)
+  const tw=newsContext() ? trendWords : new Map();
+  const boost=w=>(bg.get(w)||0)+((ec.get(w)||0)||stemBoost(w))+SCORE.trend*Math.min(tw.get(w)||0,3);
   // Include recent conversation names even when they are absent from the static dictionary.
   for(const [word,weight] of ec){
     const sc=scoreSeed(choseongOf(word),word,ini,1,-1,cats,0);
@@ -2968,6 +3040,12 @@ function localWords(limit, ini){
     const extra=cho.length-ini.length;
     const sc=((extra===0?60:18/(1+extra))*SCORE.lex+f*4*SCORE.lex)+boost(word);
     if(sc>0) put(word, Math.max(best.get(word)||0, sc));
+  }
+  // 기억한 이름: 초성을 끝까지 치면 맨 앞, 두 글자 이상 맞으면 앞쪽, 한 글자만 맞으면 약하게
+  for(const [w,o] of Object.entries(learn.names||{})){
+    const c=choseongOf(w); if(!c.startsWith(ini) || !pinnedOk(w)) continue;
+    const exact=c.length===ini.length;
+    put(w,(exact?SCORE.exact:SCORE.prefix)+SCORE.name*(o.n>=2?1:.7)*(exact||ini.length>=2?1:.3));
   }
   if(DICT && SCORE.dict>0) dictWords(ini, best, boost);
   return [...best.entries()].sort((a,b)=>b[1]-a[1]).slice(0,limit||5)
@@ -3116,6 +3194,7 @@ function renderCandidatePanel(){
     key.title=sl ? sl.text : "아직 후보가 없습니다";
     el("candKeyW"+k).textContent = sl ? (sl.text.length>16 ? sl.text.slice(0,16)+"…" : sl.text) : "";   // 두 줄까지 보이므로 16자. 넘치는 줄은 CSS가 자른다
   }
+  applyPickKeys();
   el("unitHint").hidden = !sents.length;
 }
 
@@ -3139,6 +3218,7 @@ function renderChat(){
 function pushTurn(who,text){
   text=String(text||"").trim(); if(!text) return;
   state.history.push({who,text});
+  if(who!=="me"){ learnNames(text); saveLearn(); }   // 상대가 말한 이름도 기억한다(내 말은 확정할 때 센다)
   state.history=state.history.slice(-100);
   renderChat(); saveDraft();
 }
@@ -3252,6 +3332,7 @@ function clearRecoveryState(){
   // 고르거나 지우거나 취소하면 '없음'으로 채우던 글자도 끝난다 — 안 그러면 다음 자음이 받침으로 들어간다
   const mid = state.jamoTarget!==null || kbScreen==="vowel";
   state.guided=false; state.jamoTarget=null; state.jamoMedial=null; setGuide("");
+  if(state.pickPos){ state.pickPos=null; applyPickKeys(); }
   if(mid && isFig()) kbShow("cons");
 }
 
@@ -3434,6 +3515,8 @@ el("btnOpenRecovery").onclick=()=>openRecoveryPanel();
 el("btnRecoveryClose").onclick=()=>closeRecoveryPanel();
 el("btnNone").onclick=()=>pressNone();
 el("kbLayoutSel").onchange=e=>setKbLayout(e.target.value);
+el("noneModeSel").value=noneMode();
+el("noneModeSel").onchange=e=>{ try{ localStorage.setItem("bci_none",e.target.value); }catch(err){} clearRecoveryState(); renderBuffer(); };
 applyKbLayout();
 el("btnRecoveryReset").onclick=()=>{ clearRecoveryState(); renderRecoveryBlocks(); el("jamoPicker").hidden=true; hideFillmaskBox(); };
 el("btnRecoveryPredict").onclick=async ()=>{
@@ -3483,8 +3566,65 @@ function bestSpellTarget(mode){
   spellAsk=best[1];
   return best[0];
 }
+/* 아직 다 정해지지 않은 글자 자리(빈 자리·모음만 고른 자리)를 후보를 가르는 힘(엔트로피) 순으로 */
+function noneMode(){ try{ return localStorage.getItem("bci_none")==="auto" ? "auto" : "pick"; }catch(e){ return "pick"; } }
+function spellRanking(){
+  const ini=state.initials, n=ini.length, vo=state.vowelOnly||{};
+  const open=[...Array(n).keys()].filter(i=>!state.spelled[i] || vo[i]);
+  if(open.length<2) return open;
+  const shown=new Set(slots.map(x=>x&&x.text)), cands=[];
+  const add=(text,r)=>{ const sy=[...String(text||"").replace(/[^가-힣]/g,"")];
+    if(sy.length===n && choseongOf(sy.join(""))===ini && pinnedOk(sy.join(""))) cands.push([sy,(shown.has(text)?.3:1)/(r+1)]); };
+  try{ decodeSentences(ini,40).forEach(add); }catch(e){}
+  localWords(40,ini).forEach((c,r)=>add(c.text,r));
+  localPhrases(20,ini).forEach((c,r)=>add(c.text,r));
+  const H=i=>{ const m=new Map(); let tot=0; for(const [sy,w] of cands){ m.set(sy[i],(m.get(sy[i])||0)+w); tot+=w; }
+    let h=0; for(const v of m.values()){ const p=v/tot; h-=p*Math.log(p); } return h; };
+  return open.map(i=>[i,H(i)]).sort((a,b)=>b[1]-a[1]||a[0]-b[0]).map(([i])=>i);   // 갈림이 같으면 앞 글자부터
+}
+function pickSpellPos(k, order){
+  const pos=(order||state.pickPos||[])[k];
+  if(pos===undefined){ announce("그 번호에는 글자가 없어요."); loopFinish({key:"cand"+(k+1),type:"cand",rejected:1}); return; }
+  state.pickPos=null; state.guided=true; state.jamoTarget=pos;
+  if(state.spelled[pos] && (state.vowelOnly||{})[pos]){
+    // 모음은 이미 골랐다 — 받침만 남았다
+    const a=state.spelled[pos].charCodeAt(0)-0xAC00; state.jamoMedial=JUNG[Math.floor(a/28)%21]; spellAsk="jong";
+    setGuide(`${pos+1}번째 글자 ‘${state.spelled[pos]}’의 받침을 누르세요. 받침이 없으면 ✓.`); kbShow("cons");
+  } else {
+    state.jamoMedial=null; spellAsk="full";
+    setGuide(`${pos+1}번째 글자 ‘${state.initials[pos]}’를 완성합니다 — 모음을 누르세요(다음은 받침, 없으면 ✓).`); kbShow("vowel");
+  }
+  announce(`${pos+1}번째 글자를 완성합니다.`);
+  renderWordDisplay(); applyPickKeys();
+  if(!order) loopFinish({key:"cand"+(k+1),type:"cand",picked:"pos"});
+}
+/* 고르는 중이면 후보키 1~5에 글자 자리를 싣는다(아니면 renderCandidates가 쓴 후보 그대로) */
+function applyPickKeys(){
+  const P=state.pickPos;
+  document.body.classList.toggle("picking",!!P);
+  if(!P) return;
+  for(let k=0;k<5;k++){
+    const key=el("candKey"+k); if(!key) continue;
+    const pos=P[k], ch=pos===undefined ? "" : (state.spelled[pos]||state.initials[pos]);
+    key.disabled=pos===undefined; key.classList.remove("guess");
+    el("candKeyW"+k).textContent = pos===undefined ? "" : `${pos+1}번째 ‘${ch}’`;
+    key.setAttribute("aria-label", pos===undefined ? `후보 ${k+1}, 없음` : `${k+1}번: ${pos+1}번째 글자 ${ch} 완성하기`);
+    key.title = pos===undefined ? "" : `${pos+1}번째 글자 ‘${ch}’ 완성하기`;
+  }
+}
 function pressNone(){
   if(!state.initials){ announce("먼저 초성을 입력하세요."); return; }
+  if(isFig() && noneMode()==="pick"){
+    // v3.12: '없음' → 완성할 글자를 후보키 1~5로 고른다(1번 = 후보를 가장 잘 가르는 자리) → 모음 → 받침(없으면 ✓)
+    const order=spellRanking();
+    if(order.length>1){
+      state.pickPos=order.slice(0,5);
+      const msg="완성할 글자를 1~5번으로 고르세요 — 1번이 후보를 가장 잘 가릅니다. 그만두려면 ⌫.";
+      setGuide(msg); announce(msg); renderWordDisplay(); applyPickKeys(); return;
+    }
+    if(order.length===1) return pickSpellPos(0, order);
+    el("btnRecoveryPredict").click(); return;            // 다 정해졌다 — 확정
+  }
   const i=bestSpellTarget("staged");
   if(i<0){ el("btnRecoveryPredict").click(); return; }
   if(spellAsk==="jong"){
@@ -3498,7 +3638,6 @@ function pressNone(){
     return;
   }
   if(isFig()){
-    // 피그마 흐름: '없음' → 자판이 모음판으로 바뀌고, 완성할 글자가 입력칸에서 빨갛게 표시된다
     state.guided=true; state.jamoTarget=i; state.jamoMedial=null;
     setGuide(`${i+1}번째 글자 ‘${state.initials[i]}’의 모음을 눌러 주세요 — 후보들이 이 글자에서 가장 많이 갈립니다.`);
     announce(`${i+1}번째 글자 ${state.initials[i]}의 모음을 눌러주세요.`);
@@ -3536,7 +3675,7 @@ function finishGuided(syll, vowelOnly){
   setGuide(`‘${syll}’로 다시 찾았습니다. 후보에 있으면 번호로 고르고, 없으면 다시 ‘없음’.`);
   el("recoveryTitle").textContent=`‘${syll}’로 다시 찾았습니다`;
   el("recoveryHint").textContent="후보에 원하는 말이 있으면 번호로 고르고, 없으면 다시 ‘원하는 말 없음’(0)을 누르세요.";
-  predict(Object.keys(fullSpelled()).length ? { spelled_syllables: fullSpelled() } : {});
+  if(el("autoPredict").checked) predict(Object.keys(fullSpelled()).length ? { spelled_syllables: fullSpelled() } : {});   // AI 추천을 켠 경우만 — 기본은 로컬 후보가 바로 다시 뜬다
 }
 function cancelGuided(msg){
   state.guided=false; state.jamoTarget=null; state.jamoMedial=null;
@@ -3866,7 +4005,7 @@ function restoreDraft(){
       : [];
     state.habitual=Array.isArray(draft.habitual) ? draft.habitual.filter(p=>typeof p.text==="string" && p.text.length<=300 && Number.isFinite(p.count) && p.count>0).slice(0,100) : [];
     el("context").value=String(draft.context||"").slice(0,300); markContextDirty();
-    el("autoPredict").checked=draft.autoPredict!==false;
+    el("autoPredict").checked=draft.autoPredict===true;
     if(draft.expStim) el("expStim").value=draft.expStim;
     if(draft.expAcc) el("expAcc").value=draft.expAcc;
     if(draft.expSubject) el("expSubject").value=draft.expSubject;

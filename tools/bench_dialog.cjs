@@ -22,10 +22,11 @@ const dialogs=(process.env.ONLY_REAL?[]:load(__dirname+'/ctx_dialogs.json')).con
    let keys=0,base=0,first=0,n=0,top1=0;
    for(const d of dialogs){
      try{localStorage.clear()}catch(e){}
-     learn={word:{},next:{},next2:{},phrase:{},ctx:{},day:today()};
+     learn={word:{},next:{},next2:{},phrase:{},ctx:{},names:{},day:today()};
      state.partner='family';state.situation='general';el('autoPredict').checked=false;el('context').value='';
      const target=d[d.length-1][1];
      state.history=d.slice(0,-1).map(([w,t])=>({who:w==='me'?'me':'partner',text:t,done:true}));
+     if(typeof learnNames==='function') for(const h of state.history) learnNames(h.text);   // 앱처럼 대화에 나온 이름을 기억한다(v3.12)
      state.committed='';state.lastWord='';state.lastWord2='';markContextDirty();
      for(const w of target.split(/\s+/)){
        const ini=choseongOf(w); n++; base+=ini.length+1;
