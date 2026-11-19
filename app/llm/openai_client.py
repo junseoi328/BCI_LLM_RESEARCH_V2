@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 
 from app.config import settings
@@ -19,6 +20,15 @@ from app.llm.prompts import (
 )
 from app.llm.types import CandidateScore, GenerationCallResult, RankingCallResult, TokenUsage
 from app.schemas import GeneratedCandidate
+
+
+def spacing_matches(text: str, initials: str) -> bool:
+    """'ㅁ ㅈ ㅈㅅㅇ'처럼 띄어 친 초성이면 후보의 어절마다 음절 수가 묶음과 같은가(띄지 않았으면 늘 참)."""
+    groups = initials.split()
+    if len(groups) < 2:
+        return True
+    words = re.sub(r"[^가-힣\s]", "", text).split()
+    return [len(w) for w in words] == [len(g) for g in groups]
 
 
 def _parse_structured_json_response(response, stage: str) -> dict:
@@ -171,7 +181,13 @@ class OpenAILanguageModelClient:
             "properties": {
                 "candidates": {
                     "type": "array",
-                    "items": {"type": "string"},
+                    # align('ㅁ:물 ㅈ:좀 …')을 먼저 쓰게 해 초성-음절을 하나씩 맞춰 보게 한다 — reasoning 없이도 정확도가 오른다
+                    "items": {
+                        "type": "object",
+                        "properties": {"align": {"type": "string"}, "text": {"type": "string"}},
+                        "required": ["align", "text"],
+                        "additionalProperties": False,
+                    },
                 }
             },
             "required": ["candidates"],
@@ -212,7 +228,10 @@ class OpenAILanguageModelClient:
         def _do() -> GenerationCallResult:
             try:
                 instructions = GENERATOR_INSTRUCTIONS
-                prompt = build_generator_input(initials, count)
+                # 띄어 친 초성(ㅁ ㅈ ㅈㅅㅇ)이 있으면 그 모양 그대로 해독시킨다 — 정규화된 initials는 공백이 없다
+                m = re.search(r"사용자가 띄어 친 초성: ([ㄱ-ㅎ ]+?) \(", context or "")
+                shown = m.group(1).strip() if m else initials
+                prompt = build_generator_input(shown, count)
                 if context:
                     instructions = instructions.replace(
                         "이 단계에서는 특정 대화 문맥을 사용하지 않는다. 문맥 기반 순위 결정은 별도의 ranker가 담당한다.",
@@ -236,7 +255,9 @@ class OpenAILanguageModelClient:
                     store=False,
                 )
                 data = _parse_structured_json_response(response, "generator")
-                candidates = [x.strip() for x in data.get("candidates", []) if isinstance(x, str) and 0 < len(x.strip()) <= 80]
+                raw = [x.get("text", "") if isinstance(x, dict) else x for x in data.get("candidates", [])]
+                candidates = [x.strip() for x in raw if isinstance(x, str) and 0 < len(x.strip()) <= 80]
+                candidates.sort(key=lambda c: not spacing_matches(c, shown))   # 띄어 친 경계와 어절이 맞는 후보 먼저(안정 정렬)
                 return GenerationCallResult(candidates=candidates[:count], usage=self._usage(response))
             except Exception as exc:  # converted to app-safe errors; no secret leakage
                 if isinstance(exc, LLMServiceError):

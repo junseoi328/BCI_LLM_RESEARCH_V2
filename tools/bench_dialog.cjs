@@ -17,6 +17,7 @@ const dialogs=(process.env.ONLY_REAL?[]:load(__dirname+'/ctx_dialogs.json')).con
  await page.goto('http://bci.test/speller');
  await page.evaluate(k=>{ if(typeof setKbLayout==='function') setKbLayout(k); }, process.env.KB||'k40');  // 기준은 40키(이력과 비교), KB=fig 로 환자 실험용 자판
  await page.evaluate(()=>{showView('speller');return loadDict();});
+ if(process.env.SCORE_JSON) await page.evaluate(o=>Object.assign(SCORE,o), JSON.parse(process.env.SCORE_JSON));  // 매개변수 탐색용
  if(process.env.DBG) await page.evaluate(()=>window.__DBG=[]);
  const r=await page.evaluate(dialogs=>{
    let keys=0,base=0,first=0,n=0,top1=0;
