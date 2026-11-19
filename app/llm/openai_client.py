@@ -16,6 +16,8 @@ from app.llm.prompts import (
     build_keyword_ae_input,
     build_ranker_input,
     build_reply_words_input,
+    build_chooser_input,
+    CHOOSER_INSTRUCTIONS,
     REPLY_WORDS_INSTRUCTIONS,
 )
 from app.llm.types import CandidateScore, GenerationCallResult, RankingCallResult, TokenUsage
@@ -195,6 +197,16 @@ class OpenAILanguageModelClient:
         }
 
     @staticmethod
+    def _string_list_schema() -> dict:
+        """답장 단어·복구 후보는 문자열 목록 그대로(v3.13에서 생성기 스키마를 객체로 바꾸며 함께 깨졌던 것)."""
+        return {
+            "type": "object",
+            "properties": {"candidates": {"type": "array", "items": {"type": "string"}}},
+            "required": ["candidates"],
+            "additionalProperties": False,
+        }
+
+    @staticmethod
     def _ranker_schema() -> dict:
         item = {
             "type": "object",
@@ -267,6 +279,45 @@ class OpenAILanguageModelClient:
 
         return self._with_retry(_do)
 
+    def choose_sentences(self, slots: list[list[str]], context: str = "") -> list[list[int]]:
+        """어절마다 초성이 맞는 단어 목록(로컬이 만든 격자)에서 하나씩 골라 문장 3개 — 생성이 아니라 선택이라
+        작은 모델·reasoning 없이도 초성이 어긋날 수 없다. 번호 범위 검증은 호출하는 쪽(/choose)에서 한다."""
+        def _do() -> list[list[int]]:
+            try:
+                response = self._create(
+                    model=self.generator_model_name,
+                    instructions=CHOOSER_INSTRUCTIONS,
+                    input=build_chooser_input(slots, context),
+                    max_output_tokens=settings.max_output_tokens,
+                    text={
+                        "verbosity": "low",
+                        "format": {
+                            "type": "json_schema",
+                            "name": "bci_lattice_choice",
+                            "strict": True,
+                            "schema": {
+                                "type": "object",
+                                "properties": {"sentences": {"type": "array", "items": {
+                                    "type": "object",
+                                    "properties": {"picks": {"type": "array", "items": {"type": "integer"}}},
+                                    "required": ["picks"], "additionalProperties": False}}},
+                                "required": ["sentences"],
+                                "additionalProperties": False,
+                            },
+                        },
+                    },
+                    store=False,
+                )
+                data = _parse_structured_json_response(response, "chooser")
+                return [x.get("picks", []) for x in data.get("sentences", []) if isinstance(x, dict)]
+            except Exception as exc:
+                if isinstance(exc, LLMServiceError):
+                    raise
+                self._raise_clean_error(exc)
+                raise AssertionError("unreachable")
+
+        return self._with_retry(_do)
+
     def generate_reply_words(self, partner_text: str, partner: str, situation: str, recent: list[str], news: str = "") -> list[str]:
         def _do() -> list[str]:
             try:
@@ -281,7 +332,7 @@ class OpenAILanguageModelClient:
                             "type": "json_schema",
                             "name": "bci_reply_words",
                             "strict": True,
-                            "schema": self._generator_schema(),
+                            "schema": self._string_list_schema(),
                         },
                     },
                     store=False,
@@ -339,7 +390,7 @@ class OpenAILanguageModelClient:
                             "type": "json_schema",
                             "name": "bci_recovery_generation",
                             "strict": True,
-                            "schema": self._generator_schema(),
+                            "schema": self._string_list_schema(),
                         },
                     },
                     store=False,

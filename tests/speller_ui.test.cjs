@@ -1184,3 +1184,27 @@ test('Names are remembered, answer 누구 questions and resolve 걔; odd subtitl
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+// AI 문장 추천 + 띄어 친 초성 → /choose: 어절마다 초성이 정확히 맞는 로컬 단어 목록을 보내고, 고른 문장이 문장 칸에 뜬다.
+test('Spaced initials send a word lattice to /choose and show the chosen sentence', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    let sent=null;
+    await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
+      if(p==='/speller') return r.fulfill({contentType:'text/html',body:HTML('fig')});
+      if(p==='/choose'){ sent=JSON.parse(r.request().postData()); return r.fulfill({json:{candidates:[{candidate_id:'ch1',text:'물 좀 주세요',rank:1}],source:'lattice'}}); }
+      if(p==='/predict') return r.fulfill({status:500,json:{detail:'should not be called'}});
+      return r.fulfill({json:{status:'healthy',words:[]}});});
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=true;showView('speller');renderKeyboard();renderBuffer();});
+    await page.evaluate(()=>{ state.initials='ㅁㅈㅈㅅㅇ'; state.breaks=[1,2]; renderBuffer(); });
+    await page.evaluate(()=>predict({}));
+    assert.ok(sent && sent.slots.length===3, JSON.stringify(sent));
+    assert.ok(sent.slots[0].includes('물') && sent.slots[1].includes('좀') && sent.slots[2].length>0, JSON.stringify(sent.slots));   // 사전 없이 도는 테스트라 목록이 짧다
+    assert.ok(sent.slots.every((ws,i)=>ws.every(w=>w.length===[1,1,3][i])),'어절 길이까지 맞는 단어만');
+    assert.ok((await page.evaluate(()=>slots.map(s=>s.text))).includes('물 좀 주세요'));
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
