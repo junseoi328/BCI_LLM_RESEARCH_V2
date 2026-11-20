@@ -925,6 +925,10 @@ body.stim-on .kb-card{background:#202020!important;border-color:#202020!importan
 body.stim-on .kb-card :is(.sec-title,.keyboard-legend,.ini-display,.buffer,button:not(#keyboard *),.badge,.pill,[class*=flag]){opacity:.08}
 body.stim-on :is(.card:not(.kb-card),.topbar,.topline,.settings-row,.footer-note){opacity:.06!important}
 .exp-sub{margin:18px 0 8px;font-size:var(--fs-sm)}
+/* v3.17: 고른 말은 대화 창 말풍선에 바로 — '내가 할 말' 칸은 치는 중인 초성만(입력 집중이면 예전처럼 다 보임) */
+body:not(.focus-input) .buffer #committed{display:none}
+.chat-turn.live .tx{box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.chat-turn .typing{opacity:.75;letter-spacing:.08em;font-weight:500}
 /* 없음 → 완성할 글자 고르기: 입력칸 글자 위에 번호, 후보 카드는 흐리게(후보키가 글자 자리를 고른다) */
 .wblock[data-pick]{position:relative;outline:2px dashed #C0392B;outline-offset:2px}
 .wblock[data-pick]::after{content:attr(data-pick);position:absolute;top:-10px;right:-10px;min-width:20px;height:20px;border-radius:999px;background:#C0392B;color:#fff;font:700 12px/20px var(--font,inherit);text-align:center}
@@ -996,7 +1000,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.16</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.17</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1254,7 +1258,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.16.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.17.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -2045,7 +2049,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.16.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.17.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2793,7 +2797,11 @@ function renderBuffer(){
   const h=state.history||[], done=h.length && h[h.length-1].who==="me" && h[h.length-1].done && !state.committed;
   el("prevLines").innerHTML="";
   el("bufferPh").textContent = done ? "대화에 남겼어요 · 다음 문장을 입력하세요" : "고른 문장이 여기 쌓입니다";
-  el("bufferPh").style.display = (state.committed || state.initials) ? "none" : "inline";
+  // 고른 말은 대화 창에 바로 보이므로 여기서는 치는 중인 초성만 남긴다(입력 집중으로 대화 창을 숨기면 여기 그대로 보임)
+  const toLeft = state.committed && !state.initials && !document.body.classList.contains("focus-input");
+  if(toLeft) el("bufferPh").textContent = "← 대화 창에 이어 쓰는 중 · 다음 초성을 입력하세요";
+  el("bufferPh").style.display = (state.initials || (state.committed && !toLeft)) ? "none" : "inline";
+  renderChat();
   syncCommitKey();
   el("btnNone").hidden=!state.initials;
   renderWordDisplay();
@@ -3311,13 +3319,16 @@ function renderCandidatePanel(){
    ========================================================================== */
 function renderChat(){
   const log=el("chatLog");
-  if(!state.history.length){
+  if(!state.history.length && !state.initials){
     log.innerHTML='<div class="chat-empty">아직 대화가 없습니다 · 상대방의 말을 넣거나 문장을 확정해보세요</div>';
     return;
   }
-  log.innerHTML = state.history.slice(-30).map(h=>
-    `<div class="chat-turn ${h.who==="me"?"me":"partner"}"><span class="who">${h.who==="me"?"나":"상대"}</span><span class="tx">${esc(h.text)}</span></div>`
-  ).join("");
+  // 고른 말은 바로 대화 창 말풍선으로 — 치고 있는 초성도 그 말풍선 끝에 [ㅎㅅㅇ]로 함께 보인다(사용자 요청 v3.17)
+  const typing = state.initials ? `<span class="typing"> [${esc(spacedInitials())}]</span>` : "";
+  const hist = state.history.slice(-30), open = typing && !openMine();
+  log.innerHTML = hist.map((h,i)=>
+    `<div class="chat-turn ${h.who==="me"?"me":"partner"}${h.who==="me"&&!h.done?" live":""}"><span class="who">${h.who==="me"?"나":"상대"}</span><span class="tx">${esc(h.text)}${typing && i===hist.length-1 && h.who==="me" && !h.done ? typing : ""}</span></div>`
+  ).join("") + (open ? `<div class="chat-turn me live"><span class="who">나</span><span class="tx">${typing.replace('<span class="typing"> ','<span class="typing">')}</span></div>` : "");
   log.scrollTop=log.scrollHeight;
 }
 function pushTurn(who,text){
