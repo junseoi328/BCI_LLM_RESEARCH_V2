@@ -996,7 +996,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.14</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.15</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1253,7 +1253,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.14.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.15.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -2044,7 +2044,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.14.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.15.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -3439,7 +3439,11 @@ function predictBody(ini, extra){
 
 /* 띄어 친 초성 → 어절마다 초성 길이까지 똑같은 로컬 단어 최대 20개(고정 글자 반영). 어절이 둘 미만이면 null */
 function choiceLattice(){
-  const ini=state.initials, bs=syncBreaks().filter(b=>b>0 && b<ini.length);
+  const ini=state.initials;
+  let bs=syncBreaks().filter(b=>b>0 && b<ini.length);
+  // 띄지 않고 쳤으면 로컬 문장 복원 1위의 어절 경계를 쓴다(환자 표현 보류 40/40 맞음, 일상 14/40)
+  if(!bs.length && ini.length>=3){ try{ const t=decodeSentences(ini,1)[0]; const ws=String(t&&(t.text||t)||"").split(" ").filter(Boolean);
+    let k=0; bs=ws.slice(0,-1).map(w=>(k+=w.length)); }catch(e){ bs=[]; } }
   if(!bs.length) return null;
   const cuts=[0,...bs,ini.length], save={lw:state.lastWord, lw2:state.lastWord2, sp:state.spelled, vo:state.vowelOnly};
   const out=[];

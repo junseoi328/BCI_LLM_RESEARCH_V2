@@ -50,18 +50,19 @@ def test_reply_words_filters_and_falls_back(monkeypatch):
     assert client.post("/reply-words", json={"partner_text": ""}).status_code == 422
 
 
-def test_choose_picks_only_from_the_lattice(monkeypatch):
-    """/choose: LLM은 어절별 목록에서 번호만 고른다. 범위 밖 번호·길이가 다른 답은 버린다."""
+def test_choose_keeps_only_sentences_matching_every_word_initials(monkeypatch):
+    """/choose: 모델이 낸 문장 중 어절 수·어절별 초성이 정확히 맞는 것만 남긴다(목록 밖 단어도 초성만 맞으면 허용)."""
     from app.api import predict as p
-    slots = [["물", "말"], ["좀", "잘"], ["주세요", "좋아요"]]
+    slots = [["물", "말"], ["좀", "잘"], ["주세요", "자세요"]]
     r = client.post("/choose", json={"slots": slots})
-    assert r.status_code == 200 and isinstance(r.json()["candidates"], list)
+    assert r.status_code == 200 and r.json()["candidates"][0]["text"] == "물 좀 주세요"   # 모의: 각 어절 1번
 
     class Fake:
-        def choose_sentences(self, s, ctx):
-            assert s == slots
-            return [[0, 0, 0], [9, 0, 0], [0, 1], [1, 1, 1], [0, 0, 0]]
+        def choose_sentences(self, s, ctx, ini):
+            assert s == slots and ini == ["ㅁ", "ㅈ", "ㅈㅅㅇ"]
+            return ["물 좀 주세요.", "뭐 좀 주세요", "물 좀 줘", "물좀 주세요", "물 좀 주세요"], "m"
     monkeypatch.setattr(p.pipeline, "model_client", Fake())
-    got = [c["text"] for c in client.post("/choose", json={"slots": slots}).json()["candidates"]]
-    assert got == ["물 좀 주세요", "말 잘 좋아요"]
+    d = client.post("/choose", json={"slots": slots}).json()
+    assert [c["text"] for c in d["candidates"]] == ["물 좀 주세요", "뭐 좀 주세요"] and d["model"] == "m"
     assert client.post("/choose", json={"slots": [["물"]]}).status_code == 422
+    assert client.post("/choose", json={"slots": [["물", "좀"], ["좀"]]}).json()["candidates"] == []   # 한 어절 안 초성이 다르면 거절

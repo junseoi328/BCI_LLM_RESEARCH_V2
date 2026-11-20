@@ -34,6 +34,9 @@ class Settings:
     generator_model: str = os.getenv("OPENAI_GENERATOR_MODEL", os.getenv("GENERATOR_MODEL", os.getenv("OPENAI_MODEL", "gpt-5.6-luna")))
     ranker_model: str = os.getenv("OPENAI_RANKER_MODEL", os.getenv("RANKER_MODEL", os.getenv("OPENAI_MODEL", "gpt-5.6-luna")))
     reasoning_effort: str = os.getenv("OPENAI_REASONING_EFFORT", "low")
+    # 초성 해독(/choose)만 쓰는 더 큰 모델 — 앞에서부터 계정에서 되는 것을 쓴다. 기본 모델(작음)로는 일상 0~5%였다.
+    decoder_models: str = os.getenv("OPENAI_DECODER_MODELS", "gpt-5.6,gpt-5.5,gpt-5.1,gpt-5")
+    decoder_effort: str = os.getenv("OPENAI_DECODER_EFFORT", "low")
     openai_timeout_sec: float = _float("OPENAI_TIMEOUT_SEC", 45.0)
     openai_max_retries: int = _int("OPENAI_MAX_RETRIES", 0)
     max_output_tokens: int = _int("OPENAI_MAX_OUTPUT_TOKENS", 3200)

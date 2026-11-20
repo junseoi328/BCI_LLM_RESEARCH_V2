@@ -279,44 +279,50 @@ class OpenAILanguageModelClient:
 
         return self._with_retry(_do)
 
-    def choose_sentences(self, slots: list[list[str]], context: str = "") -> list[list[int]]:
-        """어절마다 초성이 맞는 단어 목록(로컬이 만든 격자)에서 하나씩 골라 문장 3개 — 생성이 아니라 선택이라
-        작은 모델·reasoning 없이도 초성이 어긋날 수 없다. 번호 범위 검증은 호출하는 쪽(/choose)에서 한다."""
-        def _do() -> list[list[int]]:
-            try:
-                response = self._create(
-                    model=self.generator_model_name,
-                    instructions=CHOOSER_INSTRUCTIONS,
-                    input=build_chooser_input(slots, context),
-                    max_output_tokens=settings.max_output_tokens,
-                    text={
-                        "verbosity": "low",
-                        "format": {
-                            "type": "json_schema",
-                            "name": "bci_lattice_choice",
-                            "strict": True,
-                            "schema": {
-                                "type": "object",
-                                "properties": {"sentences": {"type": "array", "items": {
-                                    "type": "object",
-                                    "properties": {"picks": {"type": "array", "items": {"type": "integer"}}},
-                                    "required": ["picks"], "additionalProperties": False}}},
-                                "required": ["sentences"],
-                                "additionalProperties": False,
-                            },
-                        },
-                    },
-                    store=False,
-                )
-                data = _parse_structured_json_response(response, "chooser")
-                return [x.get("picks", []) for x in data.get("sentences", []) if isinstance(x, dict)]
-            except Exception as exc:
-                if isinstance(exc, LLMServiceError):
-                    raise
-                self._raise_clean_error(exc)
-                raise AssertionError("unreachable")
+    def choose_sentences(self, slots: list[list[str]], context: str = "", initials: list[str] | None = None) -> tuple[list[str], str]:
+        """어절별 초성 + 로컬 후보(힌트)로 문장 3개를 해독한다 → (문장들, 쓴 모델).
 
-        return self._with_retry(_do)
+        라이브 실측(같은 80문장): 서버 기본 모델(작고 추론 없음)은 직접 짓기 일상 0%·환자 5%,
+        목록에서 고르기도 5%·15%였다 — 채팅 GPT·Claude와의 차이는 모델 크기·추론이다.
+        그래서 이 호출만 더 큰 모델(OPENAI_DECODER_MODELS, 앞에서부터 되는 것)을 가벼운 추론으로 쓴다.
+        계정에 없는 모델이면 다음 것으로, 끝까지 안 되면 기본 생성 모델로 물러난다(첫 성공을 기억)."""
+        models = [m for m in (getattr(self, "_decoder_ok", None),) if m] or \
+            [m.strip() for m in settings.decoder_models.split(",") if m.strip()] + [self.generator_model_name]
+        schema = {
+            "type": "object",
+            "properties": {"sentences": {"type": "array", "items": {
+                "type": "object", "properties": {"text": {"type": "string"}},
+                "required": ["text"], "additionalProperties": False}}},
+            "required": ["sentences"], "additionalProperties": False,
+        }
+        kwargs = dict(
+            instructions=CHOOSER_INSTRUCTIONS,
+            input=build_chooser_input(slots, context, initials),
+            max_output_tokens=settings.max_output_tokens,
+            text={"verbosity": "low", "format": {"type": "json_schema", "name": "bci_decode", "strict": True, "schema": schema}},
+            store=False,
+        )
+        last_exc: Exception | None = None
+        for model in dict.fromkeys(models):
+            effort = settings.decoder_effort if model != self.generator_model_name else self.reasoning_effort
+            for eff in (effort, None):
+                try:
+                    extra = {"reasoning": {"effort": eff}} if eff else {}
+                    response = self.client.responses.create(model=model, **extra, **kwargs)
+                    data = _parse_structured_json_response(response, "decoder")
+                    self._decoder_ok = model
+                    return [x.get("text", "") for x in data.get("sentences", []) if isinstance(x, dict)], model
+                except LLMServiceError:
+                    raise
+                except Exception as exc:          # 모델 없음·권한 없음 → 다음 모델, 추론 값 거부 → 추론 없이 한 번 더
+                    last_exc = exc
+                    msg = str(exc).lower()
+                    if eff and ("reasoning" in msg or "effort" in msg):
+                        continue
+                    break
+        if last_exc is not None:
+            self._raise_clean_error(last_exc)
+        return [], ""
 
     def generate_reply_words(self, partner_text: str, partner: str, situation: str, recent: list[str], news: str = "") -> list[str]:
         def _do() -> list[str]:
