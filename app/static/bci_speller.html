@@ -996,7 +996,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.15</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.16</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1201,10 +1201,11 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         </div>
         <div class="actions" style="margin-top:12px">
           <button class="btn" id="btnEegConnect">OpenBCI 연결</button>
+          <button class="btn" id="btnLslConnect">LSL 연결 (Ganglion·OpenBCI GUI)</button>
           <button class="btn" id="btnCalib">보정 시작</button>
           <button class="btn" id="btnEegExport">뇌파+이벤트 CSV</button>
         </div>
-        <p id="eegStatus" class="unit-hint" role="status">뇌파 장치 연결 안 됨 · OpenBCI GUI는 닫고 Cyton USB 동글을 꽂은 뒤 PC의 Chrome·Edge에서 연결하세요.</p>
+        <p id="eegStatus" class="unit-hint" role="status">뇌파 장치 연결 안 됨 · <b>Cyton</b>: OpenBCI GUI는 닫고 USB 동글을 꽂은 뒤 ‘OpenBCI 연결’. <b>Ganglion 등 LSL 장비</b>: OpenBCI GUI에서 Networking → LSL(EEG) 시작 → PC에서 <code>python tools/lsl_bridge.py</code> → ‘LSL 연결’.</p>
         <p class="unit-hint">자극 중 <kbd>Esc</kbd>로 즉시 멈춥니다. <strong>보정</strong>은 빨간 키를 1초 보여 준 뒤 모든 키를 깜빡여 정답이 붙은 뇌파를 모읍니다. 실험 모드에서 키를 누르면 누른 키가 정답으로 기록됩니다. 판독(어느 키를 봤는지 맞히기)은 아직 오프라인입니다: <code>python tools/ssvep_offline.py 기록.csv</code> (CCA). 기록은 이 기기에만 저장되고 서버로 보내지 않습니다.</p>
       </details>
 
@@ -1229,7 +1230,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <div class="habitual-row" id="habitualRow"></div>
         <label for="context">상황 메모 (적는 즉시 후보 순위에 반영됩니다)</label>
         <textarea id="context" rows="2" maxlength="300" placeholder="예: 식사 중이고 보호자가 옆에 있어요"></textarea>
-        <label><input type="checkbox" id="autoPredict"> AI(GPT) 문장 추천 — 끄면(기본) 단어·검수 표현만으로 처음부터 한 단어씩 채워 갑니다. 같은 초성엔 늘 같은 후보가 나옵니다.</label>
+        <label><input type="checkbox" id="autoPredict" checked> AI 문장 해독(기본 켬) — 초성을 2어절 이상 치면 큰 언어 모델이 문장을 맞혀 봅니다. 단어 후보는 그대로이고, 로컬이 지은 문장이 어설플 때만 문장 칸을 AI 문장이 차지합니다(같은 80문장: 일상 8→30%, 환자 93% 유지). 끄면 로컬만으로 채웁니다.</label>
         <p class="unit-hint"><strong>화면 배열 = 컴퓨터 자판 배열입니다.</strong> 두벌식 자판을 그대로 옮겨 놨으니 손이 아는 자리를 눈이 그대로 따라가면 됩니다 — 2행 <b>ㅂㅈㄷㄱㅅ ㅛㅕㅑㅐㅔ</b>, 3행 <b>ㅁㄴㅇㄹㅎ ㅗㅓㅏㅣ</b>, 4행 <b>ㅋㅌㅊㅍ ㅠㅜㅡ , . ?</b>. <b>⇧</b>를 누르면 자판과 똑같이 쌍자음(ㅃㅉㄸㄲㅆ)·겹모음(ㅒㅖ)·단어삭제·느낌표로 바뀌고, 한 글자를 누르면 저절로 풀립니다.</p>
         <p class="unit-hint"><strong>물리 키보드도 같은 자리입니다</strong> — q·w·e는 ㅂ·ㅈ·ㄷ, o·p는 ㅐ·ㅔ, 쉼표·마침표·물음표는 <b>, . /</b> 자리 그대로(물음표는 Shift+/). 후보는 숫자 <b>1~7</b>, 띄어쓰기 <b>Space</b>, 문장 확정 <b>Enter</b>, 글자 삭제 <b>Backspace</b>, 단어 삭제 <b>Shift+Backspace</b> 또는 <b>Delete</b>. 한/영 상태와 무관하게 동작합니다.</p>
         <p class="unit-hint">기기 안에서 찾은 단어·문장 후보를 먼저 보여줍니다. ① 내가 전에 쓴 말(이 기기에 저장), ② 검수된 AAC 표현 사전 281개, ③ 일반 한국어 대화 말뭉치에서 만든 단어·다음단어 사전을 사용합니다. 맞는 표현이 없으면 초성을 더 입력하거나 직접 입력할 수 있습니다. 언어 모델 응답 시간은 연결 상태와 모델에 따라 달라집니다.</p>
@@ -1253,7 +1254,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.15.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.16.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -2044,7 +2045,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.15.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.16.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2342,7 +2343,7 @@ async function eegConnect(port){
   const w=port.writable.getWriter(), enc=new TextEncoder();
   await w.write(enc.encode("s")); await new Promise(r=>setTimeout(r,200)); await w.write(enc.encode("b")); w.releaseLock();
   Object.assign(eeg,{port, connected:true, buf:new Uint8Array(0), t0:null, idx0:null, idx:-1});
-  eegMark("eeg_start",{device:"OpenBCI Cyton", srate:CYTON_HZ});
+  eeg.device="OpenBCI Cyton"; eeg.srate=CYTON_HZ; eegMark("eeg_start",{device:"OpenBCI Cyton", srate:CYTON_HZ});
   eeg.reader=port.readable.getReader();
   el("btnEegConnect").textContent="연결 끊기";
   (async()=>{
@@ -2357,21 +2358,43 @@ async function eegDisconnect(){
   try{ await eeg.port.close(); }catch(e){}
   eeg.connected=false; eegMark("eeg_stop");
 }
+/* LSL 다리(tools/lsl_bridge.py): OpenBCI GUI(Ganglion 4채널 200Hz 등)가 내보내는 LSL 뇌파를
+   ws://127.0.0.1:8765 로 받는다. 표본 시각 = 받은 순간 − (다리의 지금 LSL 시계 − 표본의 LSL 시각).
+   같은 PC 안이라 전달 지연은 1ms 안팎이다. 자극·보정·이벤트·CSV·오프라인 판독은 Cyton과 똑같이 쓴다. */
+function lslConnect(url="ws://127.0.0.1:8765"){
+  return new Promise((resolve,reject)=>{
+    let ws; try{ ws=new WebSocket(url); }catch(e){ reject(e); return; }
+    let idx=0, opened=false;
+    ws.onopen=()=>{ opened=true; Object.assign(eeg,{port:null, reader:null, ws, connected:true, t0:null, idx0:0, idx:-1});
+      el("btnLslConnect").textContent="LSL 끊기"; resolve(); };
+    ws.onerror=()=>{ if(!opened) reject(new Error("다리(tools/lsl_bridge.py)가 켜져 있지 않습니다")); };
+    ws.onclose=()=>{ eeg.connected=false; eeg.ws=null; el("btnLslConnect").textContent="LSL 연결 (Ganglion·OpenBCI GUI)"; if(opened) eegMark("eeg_stop"); };
+    ws.onmessage=ev=>{
+      let d; try{ d=JSON.parse(ev.data); }catch(e){ return; }
+      if(d.meta){ eeg.device=`LSL ${d.meta.name||""}`.trim(); eeg.srate=d.meta.srate||0; eegMark("eeg_start",{device:eeg.device, srate:eeg.srate, channels:d.meta.n}); return; }
+      if(!Array.isArray(d.x)) return;
+      const now=performance.now();
+      d.x.forEach((v,i)=>{ const t=now-(d.now-d.ts[i])*1000;
+        eeg.rows.push([+t.toFixed(2), +now.toFixed(2), idx++, ...v.map(x=>Math.round(x*1000)/1000)]); });
+    };
+  });
+}
 function eegStatus(msg){ el("eegStatus").textContent=msg; }
 setInterval(()=>{
   if(!el("eegStatus") || !eeg.connected) return;
   const r=eeg.rows, n=r.length, last=r[n-1];
   const recent=r.filter(x=>x[1]>performance.now()-2000).length/2;
-  eegStatus(`OpenBCI 수신 중 · ${n.toLocaleString()} 표본 · 최근 ${Math.round(recent)}Hz${last?` · ch1 ${last[3]}µV`:""}`);
+  eegStatus(`${eeg.device||"OpenBCI"} 수신 중 · ${n.toLocaleString()} 표본 · 최근 ${Math.round(recent)}Hz${last?` · ch1 ${last[3]}µV`:""}`);
 },1000);
 function exportEegCSV(){
   if(!eeg.rows.length && !eeg.events.length){ announce("아직 기록이 없습니다."); return; }
   const who=(el("expSubject").value||"S").trim().replace(/[^\w.-]/g,"_");
-  const meta={subject:who, device:"OpenBCI Cyton", srate:CYTON_HZ, unit:"uV", layout:kbLayout, screen:kbScreen,
+  const nch=Math.max(1,(eeg.rows[0]||[]).length-3);
+  const meta={subject:who, device:eeg.device||"OpenBCI Cyton", srate:eeg.srate||CYTON_HZ, unit:"uV", channels:nch, layout:kbLayout, screen:kbScreen,
     stim:"JFPM 8+0.2i Hz, phase 0.35*pi*i, sinusoidal luminance 64-255", table:stimTable(), ua:navigator.userAgent,
     t:"performance.now() ms; t_ms = sample-counter clock anchored at first sample, arrival_ms = USB arrival"};
   const lines=["#M "+JSON.stringify(meta), ...eeg.events.map(e=>"#E "+JSON.stringify(e)),
-    "t_ms,arrival_ms,sample,ch1,ch2,ch3,ch4,ch5,ch6,ch7,ch8", ...eeg.rows.map(r=>r.join(","))];
+    ["t_ms","arrival_ms","sample",...Array.from({length:nch},(_,i)=>"ch"+(i+1))].join(","), ...eeg.rows.map(r=>r.join(","))];
   downloadBlob(new Blob([lines.join("\n")],{type:"text/csv;charset=utf-8"}),
     `ssvep-${who}-${new Date().toISOString().slice(0,19).replace(/[:T]/g,"")}.csv`);
   announce(`뇌파 ${eeg.rows.length}표본 · 이벤트 ${eeg.events.length}개를 저장했습니다.`);
@@ -2889,7 +2912,7 @@ const SCORE={exact:1000, prefix:300, learnBase:200, learnPer:30, learnCap:12, ca
   /* 앞 단어 가산점. bgMine=내가 실제로 그 순서로 썼던 것, bgSeed=검수 사전,
      bgLex=일반 말뭉치. 값은 bench_bigram.js 측정으로 고른다. */
   bgMine:600, bgMinePer:60, bgSeed:120, bgLex:20, bgPhrase:0.6,
-  bgTri:1400, bgTriPer:120, echo:900, name:600, answer:600, answerStem:300, echoMine:.5, echoRepeat:.25, echoStem:.6, reply:450, trend:8, figSents:1, lexGuess:1.2,
+  bgTri:1400, bgTriPer:120, echo:900, name:600, answer:600, answerStem:300, aiTrust:-3, echoMine:.5, echoRepeat:.25, echoStem:.6, reply:450, trend:8, figSents:1, lexGuess:1.2,
   /* 초성 0개 구간의 backoff 층. tri > bi > uni 순서가 뒤집히면 안 된다. */
   triBase:3000, triPer:200, biBase:400, biPer:60, backoff:1, lexTri:500,
   /* ⑤ 사전 층(구어 빈도 + 국어사전 어휘). 말뭉치 층과 같은 눈금에 둔다. */
@@ -3056,13 +3079,14 @@ function decodeSentences(ini, k){
   }
   // 말끝 확률을 곱한다 — "켜줘"로 끝나는 문장이 "좀"으로 끝나는 문장보다 그럴듯하다
   for(const st of at[n]) st.lp+=Math.log10(endProb(st.p2))*SCORE.decodeEnd;
-  const out=[], seen=new Set();
+  const out=[], seen=new Set(); lastDecodeLp=[];
   for(const st of at[n].sort((a,b)=>b.lp-a.lp)){
     const t=st.words.join(" "); if(seen.has(t)) continue;
-    seen.add(t); out.push(t); if(out.length>=k) break;
+    seen.add(t); out.push(t); lastDecodeLp.push(st.lp/Math.max(1,st.words.length)); if(out.length>=k) break;
   }
   return out;
 }
+let lastDecodeLp=[];   // 마지막 decodeSentences 결과의 어절당 log10 확률 — 로컬 문장을 얼마나 믿을지(AI 문장과 자리 정하기)
 
 function scoreSeed(cand, text, ini, freq, cat, cats, learned){
   if(!cand.startsWith(ini) || !pinnedOk(text)) return -1;
@@ -3189,7 +3213,13 @@ function sentenceSlots(n){
   const out=[], at=new Map();
   // 자리 나누기: 길이까지 맞는 표현 > 접두어가 맞는 표현 1개 > 초성 전체로 지은 문장 1개 > 나머지.
   // 앞부분만 친 상태에서는 접두어 표현이 먼저 맞히고(절감), 끝까지 친 새 문장은 지은 문장이 맞힌다.
-  const order=[...exact,...rest.slice(0,1),...decoded.slice(0,1),...rest.slice(1),...decoded.slice(1),...llm];
+  // 로컬이 지은 문장이 어설프면(어절당 log10 확률 < aiTrust) AI 해독 문장을 그 자리에 먼저 둔다.
+  // 같은 80문장: 문장 1칸 기준 로컬만 환자 93%·일상 8% / AI만 70%·28% / 이 규칙 93%·30%.
+  const trustLocal = !decoded.length || (lastDecodeLp[0] ?? 0) >= SCORE.aiTrust;
+  // 앞자리를 내주는 건 /choose(큰 모델 해독, id ch…) 결과만 — /predict 생성(작은 모델)은 0~5%라 로컬 뒤에 둔다
+  const order = trustLocal || !llm.some(c=>/^ch/.test(c.candidate_id||""))
+    ? [...exact,...rest.slice(0,1),...decoded.slice(0,1),...rest.slice(1),...decoded.slice(1),...llm]
+    : [...exact,...llm.slice(0,1),...rest.slice(0,1),...decoded.slice(0,1),...llm.slice(1),...rest.slice(1),...decoded.slice(1)];
   for(const c of order){
     const t=(c.text||"").trim();
     if(!t) continue;
@@ -3463,6 +3493,7 @@ function choiceLattice(){
 }
 async function predict(extra){
   if(!state.initials){ return; }
+  const lattice = (extra && Object.keys(extra).length) ? null : choiceLattice();
   // ④ 후보 갱신 구간 시작 — 여기서 재는 것이 "사용자가 실제로 기다린 LLM 시간"
   setLoopStep(4);
   loop.refreshAt=performance.now();
@@ -3481,7 +3512,7 @@ async function predict(extra){
   // 띄어 친 초성이면 '고르기' 경로: 로컬이 어절마다 초성이 정확히 맞는 단어 20개를 만들고 LLM은 하나씩 고르기만 한다.
   // 같은 80문장에서 GPT가 문장을 직접 지으면 일상 0%·환자 5%였다(초성·띄어쓰기를 못 맞춤). 격자 안에 정답 문장이
   // 통째로 있는 비율은 일상 53%·환자 98%(어절당 20개) — 고르기는 초성이 어긋날 수 없다.
-  const lattice = (extra && Object.keys(extra).length) ? null : choiceLattice();
+
   const body=lattice ? {slots:lattice, recent_context:predictBody(state.initials,{}).recent_context, current_sentence:state.committed.slice(-300)} : predictBody(state.initials, extra);
   const ck=cacheKey(body);
   const cached=cacheGet(ck);
@@ -3974,6 +4005,7 @@ el("expReal").onchange=()=>{ if(el("expReal").checked && !el("expOn").checked){ 
 el("btnEegConnect").onclick=async()=>{ try{ eeg.connected ? await eegDisconnect() : await eegConnect(); }catch(e){ if(e.name!=="NotFoundError") eegStatus("연결 실패: "+e.message); } };
 el("btnCalib").onclick=()=>{ if(calib.running){ calib.running=false; if(stimRun) stimRun.stop(); return; } runCalibration(Math.max(1,Math.min(10,+el("calBlocks").value||1)), Math.max(1,Math.min(6,+el("calSec").value||3))); };
 el("btnEegExport").onclick=exportEegCSV;
+el("btnLslConnect").onclick=async()=>{ try{ if(eeg.ws){ eeg.ws.close(); return; } eeg.rows=eeg.rows||[]; await lslConnect(); }catch(e){ eegStatus("LSL 연결 실패: "+e.message+" · OpenBCI GUI의 LSL 출력과 python tools/lsl_bridge.py 를 먼저 켜세요."); } };
 el("btnExportDialog").onclick=()=>{
   const d=state.history.map(h=>[h.who==="me"?"me":"them",h.text]);
   if(!d.some(t=>t[0]==="me")){ announce("내가 말한 문장이 있어야 측정에 쓸 수 있습니다."); return; }
@@ -4108,7 +4140,7 @@ function restoreDraft(){
       : [];
     state.habitual=Array.isArray(draft.habitual) ? draft.habitual.filter(p=>typeof p.text==="string" && p.text.length<=300 && Number.isFinite(p.count) && p.count>0).slice(0,100) : [];
     el("context").value=String(draft.context||"").slice(0,300); markContextDirty();
-    el("autoPredict").checked=draft.autoPredict===true;
+    el("autoPredict").checked=draft.autoPredict!==false;
     if(draft.expStim) el("expStim").value=draft.expStim;
     if(draft.expAcc) el("expAcc").value=draft.expAcc;
     if(draft.expSubject) el("expSubject").value=draft.expSubject;

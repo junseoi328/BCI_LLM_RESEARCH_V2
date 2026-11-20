@@ -60,9 +60,9 @@ def itr(n, p, sec):
 
 def analyze(path, win=2.0, lat=0.14, harm=3, ch=None, gap=1.5):
     meta, events, data = load(path)
-    srate = meta.get("srate", 250)
+    srate = meta.get("srate", 250) or 250
     freqs = sorted({k["f"] for k in meta.get("table", [])}) or [round(8 + 0.2 * i, 1) for i in range(40)]
-    cols = [2 + c for c in (ch or range(1, 9))]          # t_ms, arrival_ms, sample, ch1..ch8
+    cols = [2 + c for c in (ch or range(1, data.shape[1] - 2))]   # t_ms, arrival_ms, sample, ch1..chN (Cyton 8, Ganglion 4)
     res = []
     for on, off in trials(events):
         w = min(win, (off["t"] - on["t"]) / 1000 - lat)

@@ -1208,3 +1208,53 @@ test('Spaced initials send a word lattice to /choose and show the chosen sentenc
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
+
+// LSL 다리(Ganglion 4채널 200Hz): ws 메시지의 LSL 시각을 브라우저 시계로 옮겨 기록하고, CSV는 채널 수만큼 열을 낸다.
+test('LSL bridge records Ganglion samples with aligned times and exports 4 channels', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({acceptDownloads:true});
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.addInitScript(()=>{ window.WebSocket=class{ constructor(u){ this.url=u; window.__ws=this; setTimeout(()=>{ this.onopen&&this.onopen();
+        this.onmessage({data:JSON.stringify({meta:{name:'obci_eeg1',srate:200,n:4}})});
+        this.onmessage({data:JSON.stringify({now:100.0,ts:[99.990,99.995],x:[[1,2,3,4],[5,6,7,8]]})}); },10); }
+      close(){ this.onclose&&this.onclose(); } }; });
+    await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
+      if(p==='/speller') return r.fulfill({contentType:'text/html',body:HTML('fig')});
+      return r.fulfill({json:{status:'healthy',words:[]}});});
+    await page.goto('http://bci.test/speller');
+    await page.evaluate(()=>{state.partner='family';state.situation='general';showView('speller');renderKeyboard();el('expPanel').open=true;});
+    await page.click('#btnLslConnect'); await page.waitForTimeout(100);
+    const r=await page.evaluate(()=>({url:window.__ws.url, n:eeg.rows.length, dev:eeg.device, sr:eeg.srate, dt:eeg.rows[1][0]-eeg.rows[0][0], lag:eeg.rows[1][1]-eeg.rows[1][0], ch:eeg.rows[1].slice(3)}));
+    assert.equal(r.url,'ws://127.0.0.1:8765'); assert.equal(r.n,2); assert.equal(r.dev,'LSL obci_eeg1'); assert.equal(r.sr,200);
+    assert.ok(Math.abs(r.dt-5)<0.01,'표본 간격 5ms(LSL 시각 차이)'); assert.ok(Math.abs(r.lag-5)<0.01,'마지막 표본은 받기 5ms 전');
+    assert.deepEqual(r.ch,[5,6,7,8]);
+    const [d]=await Promise.all([page.waitForEvent('download'),page.click('#btnEegExport')]);
+    const csv=fs.readFileSync(await d.path(),'utf8').split('\n');
+    assert.match(csv[0],/"srate":200/); assert.ok(csv.includes('t_ms,arrival_ms,sample,ch1,ch2,ch3,ch4'));
+    await page.click('#btnLslConnect');
+    assert.equal(await page.evaluate(()=>eeg.connected),false);
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+// 로컬 문장 복원이 어설프면(어절당 log10 확률 < -3) AI 해독 문장이 문장 칸을 먼저 차지하고, 확실하면 로컬이 남는다.
+test('AI decode takes the sentence slot only when the local decode is unsure', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage();
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',r=>{const p=new URL(r.request().url()).pathname;
+      if(p==='/speller') return r.fulfill({contentType:'text/html',body:HTML('fig')});
+      return r.fulfill({json:{status:'healthy',words:[]}});});
+    await page.goto('http://bci.test/speller');
+    const r=await page.evaluate(()=>{ state.partner='family';state.situation='general';showView('speller');
+      const real=decodeSentences;
+      const run=lp=>{ window.decodeSentences=()=>{ lastDecodeLp=[lp]; return ['로컬 문장']; };
+        state.initials='ㄹㅋㅁㅈㅁ'; state.breaks=[]; state.latest=[{candidate_id:'ch1',text:'에이아이 문장'}];
+        const out=sentenceSlots(1).map(x=>x.text); window.decodeSentences=real; return out[0]; };
+      return {sure:run(-1.2), unsure:run(-5.0)}; });
+    assert.equal(r.sure,'로컬 문장'); assert.equal(r.unsure,'에이아이 문장');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
