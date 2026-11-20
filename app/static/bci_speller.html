@@ -933,7 +933,8 @@ body:not(.focus-input) .buffer #committed{display:none}
 .wblock[data-pick]{position:relative;outline:2px dashed #C0392B;outline-offset:2px}
 .wblock[data-pick]::after{content:attr(data-pick);position:absolute;top:-10px;right:-10px;min-width:20px;height:20px;border-radius:999px;background:#C0392B;color:#fff;font:700 12px/20px var(--font,inherit);text-align:center}
 body.picking #candWords,body.picking #candSents{opacity:.35}
-.exp-warn{flex:1 1 100%}   /* 연초록 배경 위 #79766F는 2.96:1 → AA 미달 */
+.exp-strip label.exp-warn{flex:1 1 100%;display:block;line-height:1.6}
+.exp-strip label.exp-warn input{vertical-align:middle;margin-right:6px}   /* 연초록 배경 위 #79766F는 2.96:1 → AA 미달 */
 /* 큰 글씨 = 키도 크게(오선택이 잦을 때 권함). TV 1920×1044는 이미 70~94px이고 한 화면 고정이라 제외 */
 @media (max-width:1799px),(max-height:999px){
   body.kb-fig.large-text .kb .key{min-height:76px;font-size:1.5rem}
