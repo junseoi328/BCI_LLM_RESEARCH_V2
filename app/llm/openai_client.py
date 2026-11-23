@@ -284,7 +284,7 @@ class OpenAILanguageModelClient:
 
         라이브 실측(같은 80문장): 서버 기본 모델(작고 추론 없음)은 직접 짓기 일상 0%·환자 5%,
         목록에서 고르기도 5%·15%였다 — 채팅 GPT·Claude와의 차이는 모델 크기·추론이다.
-        그래서 이 호출만 더 큰 모델(OPENAI_DECODER_MODELS, 앞에서부터 되는 것)을 가벼운 추론으로 쓴다.
+        그래서 이 호출만 더 큰 모델(OPENAI_DECODER_MODELS, 앞에서부터 되는 것 — 2026-09 공개 gpt-6-astra가 맨 앞, 추론 none 미지원이라 low)을 가벼운 추론으로 쓴다.
         계정에 없는 모델이면 다음 것으로, 끝까지 안 되면 기본 생성 모델로 물러난다(첫 성공을 기억)."""
         models = [m for m in (getattr(self, "_decoder_ok", None),) if m] or \
             [m.strip() for m in settings.decoder_models.split(",") if m.strip()] + [self.generator_model_name]
