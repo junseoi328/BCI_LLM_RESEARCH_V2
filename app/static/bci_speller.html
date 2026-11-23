@@ -1001,7 +1001,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start">
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.17</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.18</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1244,7 +1244,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
         <label for="kbLayoutSel">자판</label>
         <select id="kbLayoutSel"><option value="fig">환자 실험용 · 자음 자판 + 없음 (피그마)</option><option value="k40">40키 두벌식 · 비교 실험용</option></select>
         <label for="noneModeSel">‘없음’을 누르면</label>
-        <select id="noneModeSel"><option value="pick">완성할 글자를 내가 고른다 → 모음·받침으로 완성</option><option value="auto">가장 잘 가르는 글자의 모음만 묻는다 (선택 수 약 ⅓ 적음)</option></select>
+        <select id="noneModeSel"><option value="pick">앞 글자부터 차례로 모음·받침으로 완성</option><option value="auto">가장 잘 가르는 글자의 모음만 묻는다 (선택 수 약 ⅓ 적음)</option></select>
         <label for="candidateCount">언어 모델 문장 후보 최대 수</label>
         <select id="candidateCount"><option value="3">3개 · 간결하게</option><option value="5">5개 · 더 다양하게</option></select>
         <label for="latencyStrategy">문장 추천 방식</label>
@@ -1259,7 +1259,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.17.2</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.18.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -2050,7 +2050,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.17.2",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.18.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -3761,14 +3761,9 @@ function applyPickKeys(){
 function pressNone(){
   if(!state.initials){ announce("먼저 초성을 입력하세요."); return; }
   if(isFig() && noneMode()==="pick"){
-    // v3.12: '없음' → 완성할 글자를 후보키 1~5로 고른다(보일 자리는 후보를 잘 가르는 순 5개, 번호는 앞 글자부터) → 모음 → 받침(없으면 ✓)
-    const order=spellRanking();
-    if(order.length>1){
-      state.pickPos=order.slice(0,5).sort((x,y)=>x-y);   // 어느 자리를 보일지는 가르는 힘 순, 번호는 앞 글자부터 1·2·3…
-      const msg="완성할 글자를 1~5번으로 고르세요 — 번호는 앞 글자부터 순서대로입니다. 그만두려면 ⌫.";
-      setGuide(msg); announce(msg); renderWordDisplay(); applyPickKeys(); return;
-    }
-    if(order.length===1) return pickSpellPos(0, order);
+    // v3.18: '없음' → 번호 고르기 없이 아직 다 정해지지 않은 맨 앞 글자부터 차례로 → 모음 → 받침(없으면 ✓). 다시 '없음'이면 그다음 글자
+    const vo=state.vowelOnly||{}, first=[...state.initials].findIndex((c,i)=>!state.spelled[i] || vo[i]);
+    if(first>=0) return pickSpellPos(0,[first]);
     el("btnRecoveryPredict").click(); return;            // 다 정해졌다 — 확정
   }
   const i=bestSpellTarget("staged");

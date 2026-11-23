@@ -1111,8 +1111,8 @@ test('Real SSVEP flickers every key at its own frequency and records Cyton EEG w
   }finally{await browser.close();}
 });
 
-// v3.12 기본: '없음' → 후보키 1~5가 완성할 글자 자리로 바뀌고(번호는 앞 글자부터 순서대로), 고른 글자를 모음·받침으로 완성한다.
-test('없음 lets the patient pick which syllable to complete, then vowel + 받침 complete it', {timeout:60000}, async()=>{
+// v3.18 기본: '없음' → 번호 고르기 없이 맨 앞 글자부터 모음·받침으로 완성, 다시 '없음'이면 그다음 글자.
+test('없음 completes syllables from the first one in order, vowel + 받침', {timeout:60000}, async()=>{
   const browser=await launch();
   try{
     const page=await browser.newPage({viewport:{width:1920,height:1044}});
@@ -1123,19 +1123,15 @@ test('없음 lets the patient pick which syllable to complete, then vowel + 받�
     await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
     for(const c of 'ㄷㅇㅈㅅㅇ') await page.click(`#keyboard .key[data-v="${c}"]`);
     await page.click('#keyboard .key[data-v="none"]');
-    const P=await page.evaluate(()=>state.pickPos);
-    assert.ok(P && P.length>=2 && P.length<=5, JSON.stringify(P));
-    assert.match(await page.locator('#candKeyW0').textContent(),new RegExp(`${P[0]+1}번째`));
-    assert.deepEqual(P,[...P].sort((x,y)=>x-y),'번호는 앞 글자부터 순서대로');
-    assert.equal(await page.locator('#iniDisplay .wblock[data-pick]').count(),P.length,'입력칸 글자에 번호');
+    // 번호 고르기 없이 맨 앞 글자부터 바로 모음판
+    assert.deepEqual(await page.evaluate(()=>[state.pickPos,state.jamoTarget]),[null,0]);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044);
     // ⌫ 는 취소
     await page.click('#keyboard .key[data-v="back"]');
-    assert.deepEqual(await page.evaluate(()=>[state.pickPos,state.initials]),[null,'ㄷㅇㅈㅅㅇ']);
-    // 다시 없음 → 2번 자리 고르기 → 모음판 → ㅗ → 받침 ㄴ → 그 글자가 완성되고 다시 찾는다
+    assert.deepEqual(await page.evaluate(()=>[state.jamoTarget,state.initials]),[null,'ㄷㅇㅈㅅㅇ']);
+    // 다시 없음 → 첫 글자 → ㅗ → 받침 ㄴ → 그 글자가 완성되고 다시 찾는다
     await page.click('#keyboard .key[data-v="none"]');
-    await page.click('#candKey1');
-    const pos=P[1];
+    const pos=0;
     assert.equal(await page.evaluate(()=>state.jamoTarget),pos);
     assert.equal(await page.locator('#keyboard .key.jung').count(),21,'모음판');
     await page.click('#keyboard .key[data-v="ㅗ"]');
