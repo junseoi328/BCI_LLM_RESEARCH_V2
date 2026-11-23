@@ -1259,7 +1259,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.17.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.17.1</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -2050,7 +2050,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.17.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.17.1",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -3761,11 +3761,11 @@ function applyPickKeys(){
 function pressNone(){
   if(!state.initials){ announce("먼저 초성을 입력하세요."); return; }
   if(isFig() && noneMode()==="pick"){
-    // v3.12: '없음' → 완성할 글자를 후보키 1~5로 고른다(1번 = 후보를 가장 잘 가르는 자리) → 모음 → 받침(없으면 ✓)
+    // v3.12: '없음' → 완성할 글자를 후보키 1~5로 고른다(보일 자리는 후보를 잘 가르는 순 5개, 번호는 앞 글자부터) → 모음 → 받침(없으면 ✓)
     const order=spellRanking();
     if(order.length>1){
-      state.pickPos=order.slice(0,5);
-      const msg="완성할 글자를 1~5번으로 고르세요 — 1번이 후보를 가장 잘 가릅니다. 그만두려면 ⌫.";
+      state.pickPos=order.slice(0,5).sort((x,y)=>x-y);   // 어느 자리를 보일지는 가르는 힘 순, 번호는 앞 글자부터 1·2·3…
+      const msg="완성할 글자를 1~5번으로 고르세요 — 번호는 앞 글자부터 순서대로입니다. 그만두려면 ⌫.";
       setGuide(msg); announce(msg); renderWordDisplay(); applyPickKeys(); return;
     }
     if(order.length===1) return pickSpellPos(0, order);

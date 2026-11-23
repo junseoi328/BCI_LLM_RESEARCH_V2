@@ -1111,7 +1111,7 @@ test('Real SSVEP flickers every key at its own frequency and records Cyton EEG w
   }finally{await browser.close();}
 });
 
-// v3.12 기본: '없음' → 후보키 1~5가 완성할 글자 자리로 바뀌고(1번 = 가장 잘 가르는 자리), 고른 글자를 모음·받침으로 완성한다.
+// v3.12 기본: '없음' → 후보키 1~5가 완성할 글자 자리로 바뀌고(번호는 앞 글자부터 순서대로), 고른 글자를 모음·받침으로 완성한다.
 test('없음 lets the patient pick which syllable to complete, then vowel + 받침 complete it', {timeout:60000}, async()=>{
   const browser=await launch();
   try{
@@ -1126,6 +1126,7 @@ test('없음 lets the patient pick which syllable to complete, then vowel + 받�
     const P=await page.evaluate(()=>state.pickPos);
     assert.ok(P && P.length>=2 && P.length<=5, JSON.stringify(P));
     assert.match(await page.locator('#candKeyW0').textContent(),new RegExp(`${P[0]+1}번째`));
+    assert.deepEqual(P,[...P].sort((x,y)=>x-y),'번호는 앞 글자부터 순서대로');
     assert.equal(await page.locator('#iniDisplay .wblock[data-pick]').count(),P.length,'입력칸 글자에 번호');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044);
     // ⌫ 는 취소
