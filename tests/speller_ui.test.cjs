@@ -59,6 +59,7 @@ test('Guide isolates keyboard shortcuts, restores focus and supports large text 
     await page.route('**/*',route=>route.fulfill(new URL(route.request().url()).pathname==='/speller'?{contentType:'text/html',body:html}:{json:{status:'healthy'}}));
     await page.goto('http://bci.test/speller');
     await page.evaluate(()=>{state.partner='family';state.situation='general';state.initials='ㅁㅈ';state.latest=[{candidate_id:'a',text:'물 줘'}];showView('speller');renderKeyboard();renderBuffer();renderCandidates({});});
+    await page.evaluate(()=>{ el('btnGuide').hidden=false; el('btnLargeText').hidden=false; });   // v3.23: 머리 줄에서 숨김(기능은 그대로)
     await page.locator('#btnGuide').click();
     assert.equal(await page.locator('#guideDialog').evaluate(d=>d.open),true);
     await page.keyboard.press('1');
@@ -944,7 +945,7 @@ test('"원하는 말 없음" picks one syllable, keyboard vowel+✓ fills it and
   }finally{await browser.close();}
 });
 
-// 환자 실험용 자판(기본, 피그마 88:948·88:757): 자음 6열 + 아래 줄(문장 말하기·띄어쓰기·?·없음·확정) = 29키, 모음판 21+4 = 25키
+// 환자 실험용 자판(기본, 피그마 88:948 초성열): 후보 5 + 자음 3줄(5열) + 아래 줄(⌫·띄어쓰기·?·없음·확정) = 25키, 모음판 21키(145:766)
 test('Figma patient keyboard: 없음 swaps to the vowel board, vowel → 받침 → search again', {timeout:60000}, async()=>{
   const browser=await launch();
   try{
@@ -954,22 +955,22 @@ test('Figma patient keyboard: 없음 swaps to the vowel board, vowel → 받침 
       ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
     await page.goto('http://bci.test/speller');
     await page.evaluate(()=>{localStorage.setItem('bci_none','auto');state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});   // v3.9 자동(단계식) 방식
-    assert.equal(await page.locator('#keyboard .key').count(),29);
+    assert.equal(await page.locator('#keyboard .key').count(),25);
     assert.equal(await page.locator('#keyboard .key.cand').count(),5);
+    assert.equal(await page.locator('#keyboard .key[data-v="swap"], #keyboard .key[data-v="speak"], #btnCancel:visible, #btnClear:visible').count(),0,'자모변환·문장 말하기·조회 취소·지우기 없음');
     assert.equal(await page.locator('.cand-card').isVisible(),false,'후보는 자판 첫 줄에만');
-    assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044,'TV 1920×1044 한 화면');
+    assert.equal(await page.evaluate(()=>document.body.classList.contains('fig-canvas') && +document.body.style.zoom>0.9),true,'피그마 1920 캔버스를 화면에 맞춤');
     for(const c of 'ㄷㅇㅈㅅㅇ') await page.click(`#keyboard .key[data-v="${c}"]`);
     assert.ok(await page.evaluate(()=>slots.length)<=5);
     await page.click('#keyboard .key[data-v="none"]');
     const idx=await page.evaluate(()=>state.jamoTarget);
     assert.ok(idx>=0 && idx<5);
-    assert.equal(await page.locator('#keyboard .key').count(),25,'모음 21 + 자모변환·글자·띄기·확정');
+    assert.equal(await page.locator('#keyboard .key').count(),22,'모음 21(피그마 모음판) + ⌫ 취소');
     assert.equal(await page.locator('#keyboard .key.jung').count(),21);
     assert.equal(await page.locator('#iniDisplay .wblock.target').count(),1,'완성할 글자를 빨갛게 표시');
-    assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044);
     // 모음 하나 → 자음판으로 돌아와 바로 다시 찾음(선택 2번: 없음·모음)
     await page.click('#keyboard .key[data-v="ㅗ"]');
-    assert.equal(await page.locator('#keyboard .key').count(),29);
+    assert.equal(await page.locator('#keyboard .key').count(),25);
     const s=await page.evaluate(i=>({sp:state.spelled[i],vo:!!state.vowelOnly[i],want:composeSyllableJS(state.initials[i],'ㅗ',''),ini:state.initials,tgt:state.jamoTarget,guide:el('kbGuide').textContent}),idx);
     assert.equal(s.sp,s.want); assert.equal(s.vo,true); assert.equal(s.ini,'ㄷㅇㅈㅅㅇ'); assert.equal(s.tgt,null);
     assert.match(s.guide,/다시 찾았습니다/);
@@ -983,15 +984,48 @@ test('Figma patient keyboard: 없음 swaps to the vowel board, vowel → 받침 
     assert.notEqual(await page.evaluate(()=>state.jamoTarget),null);
     await page.click('#keyboard .key[data-v="back"]');
     assert.deepEqual(await page.evaluate(()=>[state.jamoTarget,state.initials,kbScreen]),[null,'ㄷㅇㅈㅅㅇ','cons']);
-    // 자모변환(직접): 마지막 글자에 모음 하나 → 자음판으로 복귀
-    await page.click('#btnReset');
-    await page.click('#keyboard .key[data-v="ㅁ"]');
-    await page.click('#keyboard .key[data-v="swap"]');
-    await page.click('#keyboard .key[data-v="ㅜ"]');
-    assert.deepEqual(await page.evaluate(()=>[state.spelled[0],kbScreen]),['무','cons']);
     // 설정에서 40키로 바꾸면 예전 자판
     await page.evaluate(()=>setKbLayout('k40'));
     assert.equal(await page.locator('#keyboard .key').count(),40);
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+test('Speller Type: 초성열 / Auto-toggle — auto-toggle builds whole syllables consonant → vowel → 받침', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1920,height:1080}});
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    assert.equal(await page.locator('#view-type').isVisible(),true,'첫 화면은 스펠러 방식 고르기');
+    await page.click('#typeAuto');
+    assert.equal(await page.locator('#view-patients').isVisible(),true);
+    await page.evaluate(()=>{state.partner='family';state.situation='general';el('autoPredict').checked=false;showView('speller');renderKeyboard();renderBuffer();});
+    const keys=()=>page.locator('#keyboard .key').allTextContents();
+    assert.deepEqual((await keys()).slice(-4).map(t=>t.replace(/\s+/g,' ').trim()),['띄어쓰기','?','⌫ 글자','✓ 확정'],'Auto-toggle 아래 줄(피그마 145:631)');
+    await page.click('#keyboard .key[data-v="ㅁ"]');
+    assert.equal(await page.locator('#keyboard .key.jung').count(),21,'자음 → 모음판이 저절로');
+    await page.click('#keyboard .key[data-v="ㅜ"]');
+    assert.equal(await page.evaluate(()=>kbScreen),'jong','모음 → 받침판');
+    assert.equal(await page.locator('#keyboard .key[data-v="jong2"]').count(),1);
+    await page.click('#keyboard .key[data-v="jong2"]');
+    assert.equal(await page.locator('#keyboard .key.jong').count(),13,'쌍·겹받침 13개');
+    await page.click('#keyboard .key[data-v="back"]');
+    await page.click('#keyboard .key[data-v="ㄹ"]');
+    assert.deepEqual(await page.evaluate(()=>[state.initials,state.spelled[0],kbScreen]),['ㅁ','물','cons']);
+    await page.click('#keyboard .key[data-v="ㅈ"]'); await page.click('#keyboard .key[data-v="ㅗ"]'); await page.click('#keyboard .key[data-v="commit"]');
+    assert.deepEqual(await page.evaluate(()=>[state.initials,state.spelled[1],kbScreen]),['ㅁㅈ','조','cons'],'✓ = 받침 없음');
+    // 잘못 친 글자: 모음판까지 갔다가 받침판의 ⌫ 이면 그 글자를 통째로 지운다
+    await page.click('#keyboard .key[data-v="ㄱ"]'); await page.click('#keyboard .key[data-v="ㅏ"]'); await page.click('#keyboard .key[data-v="back"]');
+    assert.deepEqual(await page.evaluate(()=>[state.initials,kbScreen]),['ㅁㅈ','cons']);
+    await page.click('#keyboard .key[data-v="commit"]');
+    await page.waitForFunction(()=>state.history.at(-1)?.text?.includes('물조'));
+    // 로고 = 처음(방식 고르기), 초성열을 고르면 초성열 자판(없음 키)
+    await page.click('#brandHome'); await page.click('#typeCho');
+    await page.evaluate(()=>{showView('speller');renderKeyboard();});
+    assert.equal(await page.locator('#keyboard .key[data-v="none"]').count(),1);
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
@@ -1085,7 +1119,7 @@ test('Real SSVEP flickers every key at its own frequency and records Cyton EEG w
     assert.equal(mid.dark,'rgb(32, 32, 32)','자극 중 배경 #202020');
     await page.waitForTimeout(700);
     const ev=await page.evaluate(()=>eeg.events.filter(e=>e.type.startsWith('stim')).map(e=>[e.type,e.key,e.f]));
-    assert.deepEqual(ev,[['stim_on','ㄱ',9.8],['stim_off','ㄱ',9.8]]);
+    assert.deepEqual(ev,[['stim_on','ㄱ',9.6],['stim_off','ㄱ',9.6]]);   // v3.23 자판: ㄱ = 9번째 키(8+0.2·8)
     assert.equal(await page.evaluate(()=>state.initials),'ㄱ','자극이 끝나면 누른 키가 입력된다');
     assert.equal(await page.evaluate(()=>new Set(stimTable().map(k=>k.f)).size), mid.n, '키마다 다른 주파수');
     // 보정은 Esc로 멈춘다
@@ -1129,7 +1163,6 @@ test('없음 completes syllables from the first one in order, vowel + 받침', {
     await page.click('#keyboard .key[data-v="none"]');
     // 번호 고르기 없이 맨 앞 글자부터 바로 모음판
     assert.deepEqual(await page.evaluate(()=>[state.pickPos,state.jamoTarget]),[null,0]);
-    assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight),1044);
     // ⌫ 는 취소
     await page.click('#keyboard .key[data-v="back"]');
     assert.deepEqual(await page.evaluate(()=>[state.jamoTarget,state.initials]),[null,'ㄷㅇㅈㅅㅇ']);
@@ -1139,7 +1172,7 @@ test('없음 completes syllables from the first one in order, vowel + 받침', {
     assert.equal(await page.evaluate(()=>state.jamoTarget),pos);
     assert.equal(await page.locator('#keyboard .key.jung').count(),21,'모음판');
     await page.click('#keyboard .key[data-v="ㅗ"]');
-    assert.equal(await page.locator('#keyboard .key').count(),29,'받침은 자음판에서');
+    assert.equal(await page.locator('#keyboard .key').count(),22,'받침판: 후보 5 + 자음 15 + ⌫·받침 없음');
     assert.match(await page.locator('#kbGuide').textContent(),/받침/);
     await page.click('#keyboard .key[data-v="ㄴ"]');
     const r=await page.evaluate(i=>({sp:state.spelled[i],vo:!!state.vowelOnly[i],want:composeSyllableJS(state.initials[i],'ㅗ','ㄴ'),pick:state.pickPos,tgt:state.jamoTarget,lab:el('candKeyW0').textContent}),pos);
@@ -1269,7 +1302,9 @@ test('Login gate: sign up, talk, switch, log in again and the person resumes wit
     await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
       ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
     await page.goto('http://bci.test/speller');
-    assert.equal(await page.locator('#view-patients').isVisible(),true,'첫 화면은 이름 로그인');
+    assert.equal(await page.locator('#view-type').isVisible(),true,'첫 화면은 스펠러 방식 고르기');
+    await page.click('#typeCho');
+    assert.equal(await page.locator('#view-patients').isVisible(),true,'다음은 이름 로그인');
     assert.equal(await page.locator('#btnGuest, #btnIntro, #dbMode').count(),0,'로그인 카드 아래 글씨는 없다');
     // 없는 이름으로 로그인하면 회원가입을 안내한다
     await page.fill('#loginName','홍길동'); await page.locator('#loginForm button[type=submit]').click();
@@ -1299,6 +1334,7 @@ test('Login gate: sign up, talk, switch, log in again and the person resumes wit
     // 새로 열고 이름으로 로그인하면 대화와 상대·상황·학습이 이어진다
     await page.evaluate(()=>sessionStorage.clear());
     await page.reload();
+    await page.click('#typeCho');
     assert.equal(await page.locator('#view-patients').isVisible(),true);
     assert.equal(await page.locator('#loginNames option').count(),2);
     await page.fill('#loginName','홍길동'); await page.locator('#loginForm button[type=submit]').click();
@@ -1307,7 +1343,7 @@ test('Login gate: sign up, talk, switch, log in again and the person resumes wit
     assert.deepEqual(r,{h:['물 줄까?','물 좀 주세요'], p:'family', s:'general', learned:true});
     assert.match(await page.locator('#patientBadge').textContent(),/홍길동/);
     await page.locator('#brandHome').click();
-    assert.equal(await page.locator('#view-patients').isVisible(),true,'로고를 누르면 처음 화면');
+    assert.equal(await page.locator('#view-type').isVisible(),true,'로고를 누르면 처음 화면(방식 고르기)');
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });

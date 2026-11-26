@@ -1002,6 +1002,76 @@ body.picking #candWords,body.picking #candSents{opacity:.35}
 #toStep3{min-height:60px;padding:0 31px;border-radius:32px;background:linear-gradient(#c0dab7,#dce1c7);color:#2d4d35;font:700 19px var(--serif);box-shadow:none}
 #toStep3:disabled{background:#e8ebe5;color:#a0a293}
 @media (max-width:640px){ #situationGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px} }
+
+/* ===== v3.23 피그마 배율 그대로(1920×1080 캔버스): 넓은 화면(≥1100px)의 환자 자판은 캔버스를 화면에 맞춰 통째로 줌한다 =====
+   값은 피그마 Main 88:948 · Auto-toggle 145:631 · 모음 145:766 · 받침 145:139 · 쌍·겹받침 145:277 · Speller Type 145:878 그대로(px) */
+#btnCancel{display:none!important}
+.top-tools [hidden]{display:none!important}
+body.kb-fig :is(.loop-bar,.pace,.hud-more,#btnFocusInput,.keyboard-legend,#btnClear),body.kb-fig #keyboardTitle span{display:none!important}
+html body.fig-canvas{min-height:1080px}
+html body.fig-canvas .topbar{position:relative;top:auto;width:1920px;max-width:none;height:106px;margin:0 auto;padding:0 32px 0 0;background:transparent!important;border:0;box-shadow:none}
+html body.fig-canvas .brand-logo{height:103px;width:308px;margin-top:4px}
+html body.fig-canvas .shell{width:1920px;max-width:none;margin:0 auto;padding:0}
+html body.fig-canvas .gate{min-height:calc(1080px - 106px - 60px)}
+html body.fig-canvas .step-wrap.wide{max-width:none;width:1920px;padding:0 32px 0 26px;gap:33px}
+html body.fig-canvas .topline{height:73px;min-height:0;padding:12.5px 24px;border:1.5px solid #D9DEDB;border-radius:40px;gap:20px}
+html body.fig-canvas .topline .badge{height:32px;padding:0 9px;gap:7px;border-radius:22px;background:#E6E9E6;border:0;font-size:14px;font-weight:700;color:#4D4C46}
+html body.fig-canvas .topline .badge .num{width:19px;height:19px;font-size:12px;background:#3C7D5E;color:#fff}
+html body.fig-canvas #btnNewSession{margin-left:auto;height:48px;padding:0 9px;font-size:14px;color:#79766F}
+html body.fig-canvas .work{grid-template-columns:410px 1410px;gap:42px;align-items:start}
+html body.fig-canvas .col{gap:22px}
+html body.fig-canvas .card{padding:24px;border:1.5px solid #D9DEDB;border-radius:26px;box-shadow:0 2px 3px rgba(38,56,44,.03)}
+html body.fig-canvas .card .sec-title{margin:0;font-size:24px;font-weight:700;color:#000;line-height:30px}
+html body.fig-canvas .card.chat{height:805px;gap:20px}
+html body.fig-canvas .card.chat .sec-title{font-size:22px;line-height:28px}
+html body.fig-canvas .chat-log{gap:10px}
+html body.fig-canvas .chat-turn .who{font-size:14px;color:#999}
+html body.fig-canvas .chat-turn .tx{font-size:22px;padding:10px 16px}
+html body.fig-canvas .chat-input-row{height:72px;gap:20px}
+html body.fig-canvas .chat-input-row input{height:72px;min-height:72px;padding:0 24px;border-radius:30px;font-size:20px;background:#F4F5F4;border:1.5px solid #4A7C5E}
+html body.fig-canvas #btnPartnerSend{width:82px;height:72px;border-radius:100px;font-size:20px;border:1.3px solid #C8CECA;color:#454540}
+html body.fig-canvas .card.mine{height:154px;display:flex;flex-direction:column;gap:20px;overflow:hidden}
+html body.fig-canvas .card.mine #notice{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+html body.fig-canvas .card.mine .buffer{flex:none;height:56px;min-height:0;padding:0 24px;display:flex;align-items:center;border-radius:20px;background:#F4F5F4;border:1.4px solid #D9DEDB;font-size:24px}
+html body.fig-canvas .card.mine .buffer .ph{font-size:24px;color:#A09C92;font-weight:400}
+html body.fig-canvas .kb-card{height:629px;display:flex;flex-direction:column;gap:20px}
+html body.fig-canvas .card.mine:has(#misselTip:not([hidden])){height:auto}
+html body.fig-canvas.large-text .kb-card{height:auto}
+html body.fig-canvas.large-text .kb .kb-row .key{height:96px}
+html body.fig-canvas .keyboard-heading{height:30px}
+html body.fig-canvas .ini-row{height:72px;gap:20px;flex-wrap:nowrap}
+html body.fig-canvas .ini-display{height:72px;min-height:0;padding:0 24px;border-radius:20px;background:#F4F5F4;border:1.3px solid #D9DEDB}
+html body.fig-canvas .ini-display.empty{font-size:18px;font-weight:700;color:#A09C92}
+html body.fig-canvas #btnReset{width:168px;height:72px;border-radius:100px;background:#FFE0E0;border:1.3px solid #F0C7C2;color:#B64636;font-size:24px}
+html body.fig-canvas .kb-guide{margin:-12px 0 -8px}
+html body.fig-canvas .kb{gap:20px}
+html body.fig-canvas .kb .kb-row{gap:20px}
+html body.fig-canvas .kb .kb-row .key{flex:1 1 0;height:71.8px;min-height:0;border-radius:15px;border:1.4px solid #D9DEDB;box-shadow:0 1px 0 rgba(160,173,165,.49);padding:0}
+html body.fig-canvas .kb .key.cand{flex-direction:column;gap:2px;background:#EBF4EF;border-color:#D5E8DE;color:#3C7D5E;font-size:24px;line-height:1.25}
+html body.fig-canvas .kb .key.cand .cw{font-size:24px;color:#454944;line-height:1.25}
+html body.fig-canvas .kb .key.cho{font-size:36px;color:#20221F;background:#fff}
+html body.fig-canvas .kb .key:is(.shift,.back,.delword,.jong2){background:#E6E9E6;color:#494943;font-size:28px}
+html body.fig-canvas .kb .kb-row.pills .key.pill{border-radius:100px;font-size:28px;box-shadow:none}
+html body.fig-canvas .kb .key.pill:is(.space,.punct){background:#EBF4EF;border:0;color:#000}
+html body.fig-canvas .kb .key.pill.none{background:#FFE0E0;border:1.4px solid #FCA5A5;color:#991B1B}
+html body.fig-canvas .kb .key.pill.commit,html body.fig-canvas .kb .key.commit{background:#326B56;border:1.4px solid #326B56;color:#fff;border-radius:100px;font-size:28px}
+html:not([data-theme="dark"]) body.fig-canvas .kb .key.pill.back{background:#E6E9E6;color:#494943;border:1.4px solid #D9DEDB;border-radius:15px;box-shadow:0 1px 0 rgba(160,173,165,.49)}
+html body.fig-canvas .kb .kb-row.pills .key.commit{flex:1 1 0}
+html body.fig-canvas .kb.vowel .kb-row .key{height:100px}
+html body.fig-canvas .kb.vowel .kb-row.pills{justify-content:center}
+html body.fig-canvas .kb.vowel .kb-row.pills .key{flex:0 0 256.4px;height:71.8px}
+html body.fig-canvas .kb.vowel .kb-row .key.jung{font-size:36px;color:#20221F;background:#fff}
+html body.fig-canvas .kb.jong2 .kb-row{justify-content:center}
+html body.fig-canvas .kb.jong2 .kb-row .key{flex:0 0 256.4px;height:100px}
+html body.fig-canvas .kb.jong2 .kb-row.pills .key{height:71.8px}
+html body.fig-canvas .kb .key.cho.jong{font-size:36px}
+html body.fig-canvas .settings-row{margin-top:-11px}
+/* Speller Type(145:878): 680 카드 · 44px 제목 · 버튼 둘(76px, 간격 40) */
+.type-card{max-width:680px;gap:40px;box-shadow:0 4px 4px rgba(0,0,0,.25)}
+.type-card .gate-title{font-size:44px}
+.type-actions{gap:40px}
+.type-actions .gate-primary{flex:1 1 0}
+@media (max-width:640px){.type-card .gate-title{font-size:32px}.type-actions{flex-direction:column;gap:12px}}
 </style>
 </head>
 <body>
@@ -1052,8 +1122,8 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
     <span class="vh">이심전심 BCI Speller · 한국어 하이브리드 BCI · AAC</span>
   </a>
   <nav class="top-tools" aria-label="화면 도구">
-    <button class="btn tool-btn" id="btnLargeText" aria-pressed="false">가 큰 글씨</button>
-    <button class="btn tool-btn" id="btnGuide" aria-haspopup="dialog">사용 설명서</button>
+    <button class="btn tool-btn" id="btnLargeText" aria-pressed="false" hidden>가 큰 글씨</button>
+    <button class="btn tool-btn" id="btnGuide" aria-haspopup="dialog" hidden>사용 설명서</button>
     <div class="health" id="health"><span class="dot"></span><span id="healthText">연결 확인 중</span></div>
   </nav>
 </div>
@@ -1061,8 +1131,21 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 <div class="shell">
 
   <!-- STEP 0: hero / start -->
+  <!-- STEP 00: 스펠러 방식 고르기 (피그마 Auto-toggle 145:878 'Speller Type') -->
+  <section class="step-wrap" id="view-type" aria-labelledby="typeTitle">
+    <div class="gate">
+      <div class="gate-card type-card">
+        <h1 class="gate-title" id="typeTitle">Speller Type</h1>
+        <div class="gate-actions type-actions">
+          <button type="button" class="gate-primary" id="typeCho">초성열</button>
+          <button type="button" class="gate-primary" id="typeAuto">Auto-toggle</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- STEP 0: 로그인 · 회원가입 (피그마 121:2 · 125:51) -->
-  <section class="step-wrap" id="view-patients" aria-labelledby="gateTitle">
+  <section class="step-wrap" id="view-patients" hidden aria-labelledby="gateTitle">
     <div class="gate">
       <form class="gate-card" id="loginForm" novalidate>
         <div class="gate-head">
@@ -1128,7 +1211,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
   <section class="step-wrap" id="view-start" hidden>
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.22</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.23</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1291,7 +1374,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
               <span id="expFlag"></span>
               <button class="btn sm" id="btnCancel" hidden>조회 취소</button>
               <button class="btn sm" id="btnClear">지우기</button>
-              <button class="btn danger sm" id="btnReset">전체 초기화</button>
+              <button class="btn danger sm" id="btnReset">전체 삭제</button>
             </span>
           </div>
           <p class="kb-guide" id="kbGuide" role="status" aria-live="polite"></p>
@@ -1379,7 +1462,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.22.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.23.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1448,25 +1531,40 @@ const KB_ROWS=[
 const KB_COLS=10;
 /* 환자 실험용 자판(피그마 Main 88:948 · 모음 88:757). 자음만 두고, 후보에 없으면 '없음' →
    시스템이 고른 한 글자를 모음판(자모변환)에서 완성 → 다시 찾기. 40키 두벌식은 설정에서 고를 수 있다(비교 실험용). */
-const KB_FIG_CONS=[
-  [ {t:"cand",v:0},{t:"cand",v:1},{t:"cand",v:2},{t:"cand",v:3},{t:"cand",v:4},
-    {t:"fn",v:"back",l:"⌫ 글자",cls:"back",sv:"delword",sl:"⌦ 단어",scls:"delword"} ],
-  [ {t:"cho",v:"ㅂ",sv:"ㅃ"},{t:"cho",v:"ㅈ",sv:"ㅉ"},{t:"cho",v:"ㄷ",sv:"ㄸ"},{t:"cho",v:"ㄱ",sv:"ㄲ"},{t:"cho",v:"ㅅ",sv:"ㅆ"},
-    {t:"fn",v:"swap",l:"자모변환",cls:"swap"} ],
-  [ {t:"cho",v:"ㅁ"},{t:"cho",v:"ㄴ"},{t:"cho",v:"ㅇ"},{t:"cho",v:"ㄹ"},{t:"cho",v:"ㅎ"},
-    {t:"shift",v:"shift",l:"⇧ 된소리",cls:"shift"} ],
-  [ {t:"cho",v:"ㅋ"},{t:"cho",v:"ㅌ"},{t:"cho",v:"ㅊ"},{t:"cho",v:"ㅍ"},
-    {t:"punct",v:",",cls:"punct"},{t:"punct",v:".",cls:"punct"} ],
-  [ {t:"fn",v:"speak",l:"문장 말하기",cls:"pill speak",plain:1},{t:"fn",v:"space",l:"띄어쓰기",cls:"pill space"},
-    {t:"punct",v:"?",cls:"pill punct",sv:"!"},{t:"fn",v:"none",l:"없음",cls:"pill none"},{t:"fn",v:"commit",l:"✓ 확정",cls:"pill commit"} ],
+/* v3.23 피그마 Main 88:948(초성열) · Auto-toggle 145:631 · 모음 145:766 · 받침 145:139 · 쌍·겹받침 145:277 — 5열(256.4px)·간격 20 */
+const FIG_CAND_ROW=[0,1,2,3,4].map(v=>({t:"cand",v}));
+const FIG_CONS_ROWS=[
+  [ {t:"cho",v:"ㅂ",sv:"ㅃ"},{t:"cho",v:"ㅈ",sv:"ㅉ"},{t:"cho",v:"ㄷ",sv:"ㄸ"},{t:"cho",v:"ㄱ",sv:"ㄲ"},{t:"cho",v:"ㅅ",sv:"ㅆ"} ],
+  [ {t:"cho",v:"ㅁ"},{t:"cho",v:"ㄴ"},{t:"cho",v:"ㅇ"},{t:"cho",v:"ㄹ"},{t:"cho",v:"ㅎ"} ],
+  [ {t:"cho",v:"ㅋ"},{t:"cho",v:"ㅌ"},{t:"cho",v:"ㅊ"},{t:"cho",v:"ㅍ"},{t:"shift",v:"shift",l:"⇧ 된소리",cls:"shift"} ],
 ];
-const KB_FIG_VOWEL=[
-  ...["ㅏㅣㅡㅗㅓㅜㅐ","ㅔㅕㅢㅛㅘㅑㅠ","ㅝㅚㅟㅖㅙㅞㅒ"].map(r=>[...r].map(v=>({t:"jung",v}))),
-  [ {t:"fn",v:"swap",l:"자모변환",cls:"swap"},{t:"fn",v:"back",l:"⌫ 글자",cls:"back"},
-    {t:"fn",v:"space",l:"␣ 띄기",cls:"space"},{t:"fn",v:"commit",l:"✓ 확정",cls:"commit"} ],
-];
+const K_BACK={t:"fn",v:"back",l:"⌫ 글자",cls:"pill back",sv:"delword",sl:"⌦ 단어",scls:"pill delword"},
+      K_SPACE={t:"fn",v:"space",l:"띄어쓰기",cls:"pill space"}, K_Q={t:"punct",v:"?",cls:"pill punct",sv:"!"},
+      K_COMMIT={t:"fn",v:"commit",l:"✓ 확정",cls:"pill commit"};
+// 초성열: 초성만 치고 후보에서 고른다. 후보에 없으면 '없음' → 모음 → 받침
+const KB_FIG_CONS=[ FIG_CAND_ROW, ...FIG_CONS_ROWS, [ K_BACK, K_SPACE, K_Q, {t:"fn",v:"none",l:"없음",cls:"pill none"}, K_COMMIT ] ];
+// Auto-toggle: 자음을 누르면 모음판, 모음을 누르면 받침판이 저절로 뜬다(글자를 다 짓는다)
+const KB_AUTO_CONS=[ FIG_CAND_ROW, ...FIG_CONS_ROWS, [ K_SPACE, K_Q, K_BACK, K_COMMIT ] ];
+// 모음판 21키(피그마) + ⌫ 하나(피그마엔 없음 — '없음'·자음을 잘못 눌렀을 때 되돌아갈 길)
+const KB_FIG_VOWEL=[ ...["ㅏㅣㅡㅗㅓㅜㅐ","ㅔㅕㅢㅛㅘㅑㅠ","ㅝㅚㅟㅖㅙㅞㅒ"].map(r=>[...r].map(v=>({t:"jung",v}))),
+  [ {t:"fn",v:"back",l:"⌫ 취소",cls:"pill back"} ] ];
+// 받침판: 후보 + 자음(받침) + 쌍·겹받침. 아래 줄(⌫ · 받침 없음)은 피그마에 없지만 받침 없는 글자와 되돌리기에 꼭 필요해 둔다
+const KB_FIG_JONG=()=>[ FIG_CAND_ROW,
+  ...FIG_CONS_ROWS.map(r=>r.map(k=>k.t==="shift" ? {t:"fn",v:"jong2",l:"쌍·겹받침",cls:"jong2"} : {t:"cho",v:k.v})),
+  [ {t:"fn",v:"back",l:isAuto()?"⌫ 글자":"⌫ 모음",cls:"pill back"}, {t:"fn",v:"commit",l:"✓ 받침 없음",cls:"pill commit"} ] ];
+const KB_FIG_JONG2=[ [..."ㄲㄳㄵㄶㄺ"].map(v=>({t:"cho",v,cls:"jong"})), [..."ㄻㄼㄽㄾ"].map(v=>({t:"cho",v,cls:"jong"})),
+  [..."ㄿㅀㅄㅆ"].map(v=>({t:"cho",v,cls:"jong"})), [ {t:"fn",v:"back",l:"⌫ 받침판",cls:"pill back"} ] ];
+let spellerType=(()=>{ try{ return localStorage.getItem("bci_speller_type")==="auto" ? "auto" : "cho"; }catch(e){ return "cho"; } })();
+const isAuto=()=>isFig() && spellerType==="auto";
+function setSpellerType(v){
+  spellerType = v==="auto" ? "auto" : "cho";
+  try{ localStorage.setItem("bci_speller_type", spellerType); }catch(e){}
+  if(!isFig()) setKbLayout("fig");
+  state.guided=false; state.jamoTarget=null; state.jamoMedial=null; kbScreen="cons";
+  applyKbLayout(); renderKeyboard();
+}
 let kbLayout=(()=>{ try{ return localStorage.getItem("bci_kb")==="k40" ? "k40" : "fig"; }catch(e){ return "fig"; } })();
-let kbScreen="cons";   // fig 자판에서만: "cons"(자음) | "vowel"(모음)
+let kbScreen="cons";   // fig 자판에서만: "cons"(자음) | "vowel"(모음) | "jong"(받침) | "jong2"(쌍·겹받침)
 const isFig=()=>kbLayout==="fig";
 const candSlots=()=>isFig() ? 5 : CAND_SLOTS;
 function setKbLayout(v){
@@ -1478,9 +1576,18 @@ function setKbLayout(v){
 function applyKbLayout(){
   document.body.classList.toggle("kb-fig",isFig());
   el("kbLayoutSel").value=kbLayout;
-  el("keyboardTitle").querySelector("span").textContent = isFig() ? "자음 자판 · 후보에 없으면 ‘없음’" : "40키 · 두벌식";
+  el("keyboardTitle").querySelector("span").textContent = isFig() ? (spellerType==="auto" ? "Auto-toggle" : "초성열") : "40키 · 두벌식";
+  document.body.classList.toggle("kb-auto", isFig() && spellerType==="auto");
+  fitFigma();
   document.querySelector(".keyboard-legend").textContent = isFig() ? "1–5 후보 선택 · 0 없음 · Enter 확정" : "1–7 후보 선택 · Enter 확정 · ⇧ 된소리";
 }
+/* v3.23 넓은 화면에서는 피그마 1920×1080 캔버스를 그대로 화면에 맞춘다(배율 = 화면 폭/1920와 높이/1080 중 작은 것) */
+function fitFigma(){
+  const on=isFig() && innerWidth>=1100;
+  document.body.classList.toggle("fig-canvas", on);
+  document.body.style.zoom = on ? String(Math.min(innerWidth/1920, innerHeight/1080)) : "";
+}
+addEventListener("resize", ()=>fitFigma());
 function setGuide(t){ el("kbGuide").textContent=t||""; }
 function kbShow(screen){ kbScreen=screen; renderKeyboard(); renderWordDisplay(); renderCandidatePanel(); }
 let shiftOn=false;
@@ -2192,7 +2299,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.22.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.23.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2336,7 +2443,7 @@ function expEnabled(){ const c=el("expOn"); return !!(c && c.checked); }
 function neighbourKey(btn){
   const keys=[...el("keyboard").querySelectorAll(".key")];
   const i=keys.indexOf(btn); if(i<0) return btn;
-  const cols=isFig() ? (kbScreen==="vowel"?7:6) : KB_COLS, cand=[i-1,i+1,i-cols,i+cols].filter(k=>k>=0&&k<keys.length);
+  const cols=isFig() ? (kbScreen==="vowel"?7:5) : KB_COLS, cand=[i-1,i+1,i-cols,i+cols].filter(k=>k>=0&&k<keys.length);
   return keys[cand[Math.floor(Math.random()*cand.length)]] || btn;
 }
 function ssvepGate(btn, apply){
@@ -2766,11 +2873,14 @@ el("signupForm").onsubmit=async e=>{
   }catch(err){ gateMsg("signupMsg","저장하지 못했습니다 — 인터넷 연결을 확인하세요."); }
 };
 // 왼쪽 위 로고 = 처음(로그인) 화면 — 지금 사람의 기록은 저장하고 나간다
-el("brandHome").onclick=e=>{ e.preventDefault(); cancelPending(); leavePatient(); showView("patients"); renderPatients(); };
+el("brandHome").onclick=e=>{ e.preventDefault(); cancelPending(); leavePatient(); showView("type"); };
+// v3.23 처음 화면: 스펠러 방식(초성열 · Auto-toggle)을 고르면 그 방식의 자판으로 들어간다
+el("typeCho").onclick=()=>{ setSpellerType("cho"); showView("patients"); renderPatients(); };
+el("typeAuto").onclick=()=>{ setSpellerType("auto"); showView("patients"); renderPatients(); };
 el("patientBadge").onclick=()=>{ leavePatient(); showView("patients"); renderPatients(); };
 
 function showView(name){
-  ["patients","signup","start","partner","situation","speller"].forEach(v=>{
+  ["type","patients","signup","start","partner","situation","speller"].forEach(v=>{
     el("view-"+v).hidden = (v!==name);
   });
   if(name==="speller"){ loadDict(); if(!newsEntries.length) (window.requestIdleCallback||(f=>setTimeout(f,800)))(()=>refreshNews()); }   // 사전·시사어를 미리 받아 둔다
@@ -2856,7 +2966,8 @@ function pressGridKey(sel){
 
 function renderKeyboard(){
   const esc2=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-  const fig=isFig(), rows=fig ? (kbScreen==="vowel" ? KB_FIG_VOWEL : KB_FIG_CONS) : KB_ROWS;
+  const fig=isFig(), rows=!fig ? KB_ROWS : kbScreen==="vowel" ? KB_FIG_VOWEL : kbScreen==="jong" ? KB_FIG_JONG() : kbScreen==="jong2" ? KB_FIG_JONG2
+    : (spellerType==="auto" ? KB_AUTO_CONS : KB_FIG_CONS);
   const keyHtml=k=>{
     const v = (shiftOn && k.sv!==undefined) ? k.sv : k.v;
     const cls = ["key", k.t, (shiftOn&&k.scls)?k.scls:(k.cls||""), (shiftOn&&k.sv!==undefined)?"shifted":""].filter(Boolean).join(" ");
@@ -2875,6 +2986,8 @@ function renderKeyboard(){
                    : rows.flat().map(keyHtml).join("");
   el("keyboard").innerHTML = html;
   el("keyboard").classList.toggle("vowel", fig && kbScreen==="vowel");
+  el("keyboard").classList.toggle("jong", fig && kbScreen==="jong");
+  el("keyboard").classList.toggle("jong2", fig && kbScreen==="jong2");
   el("keyboard").classList.toggle("shift-on", shiftOn);
   syncCommitKey();
   el("keyboard").onclick=(e)=>{
@@ -2906,10 +3019,29 @@ function handleKey(t,v){
     if(v==="swap"){ pressSwap(); loopFinish({key:"swap",type:"fn"}); return; }
     if(v==="none"){ pressNone(); loopFinish({key:"none",type:"fn"}); return; }
     if(v==="speak"){ el("btnSpeak").click(); loopFinish({key:"speak",type:"fn"}); return; }
+    if(v==="jong2"){ kbShow("jong2"); loopFinish({key:v,type:"fn"}); return; }
+    if(state.jamoTarget!==null && (v==="back"||v==="delword") && kbScreen==="jong2"){ kbShow("jong"); loopFinish({key:v,type:"fn"}); return; }
+    if(state.jamoTarget!==null && (v==="back"||v==="delword") && isAuto()){
+      // Auto-toggle: 짓던 글자를 통째로 지우고(초성까지) 자음판으로
+      const i=state.jamoTarget; state.jamoTarget=null; state.jamoMedial=null;
+      state.initials=state.initials.slice(0,i); delete state.spelled[i]; delete state.vowelOnly[i];
+      setGuide(""); kbScreen="cons"; renderKeyboard(); clearCandidates(); renderBuffer(); schedulePrediction();
+      loopFinish({key:v,type:"fn"}); return;
+    }
+    if(state.jamoTarget!==null && (v==="back"||v==="delword") && kbScreen==="jong"){
+      state.jamoMedial=null; setGuide(`${state.jamoTarget+1}번째 글자 ‘${state.initials[state.jamoTarget]}’의 모음을 다시 눌러 주세요.`); kbShow("vowel");
+      loopFinish({key:v,type:"fn"}); return;
+    }
     if((state.jamoTarget!==null || state.pickPos) && (v==="back"||v==="delword")){ state.pickPos=null; cancelGuided("글자 완성을 취소했습니다."); loopFinish({key:v,type:"fn"}); return; }
     if(state.pickPos && t!=="cand"){ announce("완성할 글자를 1~5번으로 골라 주세요. 그만두려면 ⌫."); loopFinish({key:v,type:t,rejected:1}); return; }
     if(state.jamoTarget!==null && (v==="space"||t==="punct")){ announce("먼저 빨간 글자를 완성해 주세요. 그만두려면 ⌫ 글자."); loopFinish({key:v,type:t,rejected:1}); return; }
     if(state.jamoTarget===null && t==="cho") setGuide("");
+  }
+  // v3.23 Auto-toggle: 자음 → 모음판이 저절로(그 자음이 새 글자의 초성)
+  if(isAuto() && t==="cho" && state.jamoTarget===null && kbScreen==="cons"){
+    const n=state.initials.length, r=handleKeyCore(t,v);
+    if(state.initials.length>n){ state.jamoTarget=state.initials.length-1; state.jamoMedial=null; state.guided=false; setGuide(""); kbShow("vowel"); }
+    return r;
   }
   // 자모변환으로 직접 연 모음판: 모음 하나(또는 다른 키 하나)를 누르면 자음판으로 돌아간다
   const manualVowel = isFig() && kbScreen==="vowel" && state.jamoTarget===null;
@@ -3056,6 +3188,8 @@ function editCommitted(text){
 }
 function pressCommitKey(){
   if(!state.initials){ finishSentence(); return; }
+  // Auto-toggle: 글자를 다 지었으면 ✓ 는 지은 그대로(후보 1번이 아니라)
+  if(isAuto()){ const w=fullySpelledWord(); if(w){ commitText(w,{key:"commit",type:"fn",picked:"spelled"}); return; } }
   const first=slots[0];
   if(first){ chooseSlot(0); return; }
   const word=fullySpelledWord();
@@ -3088,7 +3222,8 @@ function spacedInitials(ini){
   const auto=ini===undefined && !syncBreaks().length;
   if(ini===undefined) ini=state.initials;
   const bs=new Set(auto ? autoBreaks : syncBreaks());
-  return [...ini].map((c,i)=>(i&&bs.has(i)?" ":"")+c).join("");
+  const sp=ini===state.initials ? state.spelled||{} : {};
+  return [...ini].map((c,i)=>(i&&bs.has(i)?" ":"")+(sp[i]||c)).join("");
 }
 /* 문장의 어절 경계가 사용자가 친 띄어쓰기를 모두 품는가 ("인생이 힘들다" ⊇ ㅇㅅㅇ|ㅎㄷㄷ) */
 function spacesOk(text){
@@ -3786,7 +3921,7 @@ function clearRecoveryState(){
   state.spelled={}; state.vowelOnly={};
   clearCandidates();
   // 고르거나 지우거나 취소하면 '없음'으로 채우던 글자도 끝난다 — 안 그러면 다음 자음이 받침으로 들어간다
-  const mid = state.jamoTarget!==null || kbScreen==="vowel";
+  const mid = state.jamoTarget!==null || kbScreen!=="cons";
   state.guided=false; state.jamoTarget=null; state.jamoMedial=null; setGuide("");
   if(state.pickPos){ state.pickPos=null; applyPickKeys(); }
   if(mid && isFig()) kbShow("cons");
@@ -4074,7 +4209,7 @@ function pickSpellPos(k, order){
   if(state.spelled[pos] && (state.vowelOnly||{})[pos]){
     // 모음은 이미 골랐다 — 받침만 남았다
     const a=state.spelled[pos].charCodeAt(0)-0xAC00; state.jamoMedial=JUNG[Math.floor(a/28)%21]; spellAsk="jong";
-    setGuide(`${pos+1}번째 글자 ‘${state.spelled[pos]}’의 받침을 누르세요. 받침이 없으면 ✓.`); kbShow("cons");
+    setGuide(`${pos+1}번째 글자 ‘${state.spelled[pos]}’의 받침을 누르세요. 받침이 없으면 ✓ 받침 없음.`); kbShow("jong");
   } else {
     state.jamoMedial=null; spellAsk="full";
     setGuide(`${pos+1}번째 글자 ‘${state.initials[pos]}’를 완성합니다 — 모음을 누르세요(다음은 받침, 없으면 ✓).`); kbShow("vowel");
@@ -4113,7 +4248,7 @@ function pressNone(){
     const a=state.spelled[i].charCodeAt(0)-0xAC00; state.jamoMedial=JUNG[Math.floor(a/28)%21];
     const msg=`${i+1}번째 글자 ‘${state.spelled[i]}’의 받침을 눌러 주세요. 받침이 없으면 ✓ — 후보들이 이 받침에서 갈립니다.`;
     announce(msg);
-    if(isFig()){ setGuide(msg); kbShow("cons"); }
+    if(isFig()){ setGuide(msg); kbShow("jong"); }
     else { openRecoveryPanel(); state.guided=true; el("recoveryTitle").textContent=msg; openJamoPicker(i); state.jamoMedial=JUNG[Math.floor(a/28)%21]; renderJamoPicker(); }
     return;
   }
@@ -4135,7 +4270,14 @@ function guidedJamo(t,v){
     state.jamoMedial=v; renderJamoPicker(); announce("받침을 누르세요. 받침이 없으면 ✓를 누르세요.");
     // 단계식: '없음'이 모음을 물었으면 모음만 고정하고 바로 다시 찾는다(받침은 후보가, 그래도 갈리면 다음 '없음'에서)
     if(state.guided && spellAsk==="vowel"){ finishGuided(composeSyllableJS(state.initials[state.jamoTarget],v,""), true); loopFinish({key:v,type:"jung"}); return; }
-    if(isFig()){ setGuide(`‘${composeSyllableJS(state.initials[state.jamoTarget],v,"")}’ — 받침을 누르세요. 받침이 없으면 ✓, 모음을 다시 고르려면 자모변환.`); kbShow("cons"); }
+    if(isAuto()){
+      // 모음까지 지은 글자로 바로 후보를 다시 찾는다(받침은 아직 자유: 무 → 물·문)
+      const i=state.jamoTarget, sy=composeSyllableJS(state.initials[i],v,"");
+      if(sy){ state.spelled[i]=sy; state.vowelOnly[i]=true; }
+      setGuide(""); kbScreen="jong"; renderKeyboard();
+      clearCandidates(); state.jamoTarget=i; state.jamoMedial=v;   // clearCandidates가 짓던 글자를 지우지 않게 되살린다
+      renderBuffer(); schedulePrediction();
+    } else if(isFig()){ setGuide(`‘${composeSyllableJS(state.initials[state.jamoTarget],v,"")}’ — 받침을 누르세요. 받침이 없으면 ✓ 받침 없음, 모음을 다시 고르려면 ⌫.`); kbShow("jong"); }
     loopFinish({key:v,type:"jung"}); return;
   }
   const jong=t==="cho" ? v : "";
@@ -4147,7 +4289,9 @@ function finishGuided(syll, vowelOnly){
   if(syll){ state.spelled[state.jamoTarget]=syll; if(vowelOnly) state.vowelOnly[state.jamoTarget]=true; else delete state.vowelOnly[state.jamoTarget]; }
   state.jamoTarget=null; state.jamoMedial=null;
   renderRecoveryBlocks(); renderJamoPicker();
-  if(!state.guided || !syll){ if(isFig()){ setGuide(""); kbShow("cons"); } return; }
+  if(!state.guided || !syll){
+    if(isAuto()){ setGuide(""); kbScreen="cons"; renderKeyboard(); clearCandidates(); renderBuffer(); schedulePrediction(); return; }
+    if(isFig()){ setGuide(""); kbShow("cons"); } return; }
   state.guided=false;
   clearCandidates(); renderBuffer();
   if(isFig()){ kbScreen="cons"; renderKeyboard(); renderBuffer(); }
