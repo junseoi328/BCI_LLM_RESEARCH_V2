@@ -1260,7 +1260,7 @@ test('AI decode takes the sentence slot only when the local decode is unsure', {
 });
 
 // v3.19: 첫 화면은 환자 목록(STROKE 로그인 양식). 환자를 고르면 그 환자의 대화·학습이 이어지고, 환자끼리 섞이지 않는다(데모 모드 = 브라우저 저장).
-test('Patient gate: add, talk, switch, reopen and the chosen patient resumes with their history and learning', {timeout:60000}, async()=>{
+test('Login gate: sign up, talk, switch, log in again and the person resumes with their history and learning', {timeout:60000}, async()=>{
   const browser=await launch();
   try{
     const page=await browser.newPage({viewport:{width:1366,height:900}});
@@ -1268,31 +1268,39 @@ test('Patient gate: add, talk, switch, reopen and the chosen patient resumes wit
     await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
       ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
     await page.goto('http://bci.test/speller');
-    assert.equal(await page.locator('#view-patients').isVisible(),true,'첫 화면은 환자 목록');
+    assert.equal(await page.locator('#view-patients').isVisible(),true,'첫 화면은 이름 로그인');
     assert.match(await page.locator('#dbMode').textContent(),/데모 모드/);
-    await page.locator('#patientAdd summary').click();
-    await page.fill('#pName','홍길동'); await page.fill('#pNote','시연 환자');
-    await page.locator('#patientForm button[type=submit]').click();
-    await page.locator('#partnerGrid [data-v="family"]').click();
-    await page.locator('#toStep2').click();
+    // 없는 이름으로 로그인하면 회원가입을 안내한다
+    await page.fill('#loginName','홍길동'); await page.locator('#loginForm button[type=submit]').click();
+    assert.match(await page.locator('#loginMsg').textContent(),/회원가입/);
+    await page.locator('#btnSignup').click();
+    assert.equal(await page.inputValue('#suName'),'홍길동','로그인 칸의 이름을 이어 받는다');
+    assert.equal(await page.locator('#suFamily').isVisible(),true,'가족이면 상세 관계를 묻는다');
+    await page.locator('#suFamily label.radio',{hasText:'직접 입력'}).click();
+    await page.fill('#suCustom','할머니');
+    await page.locator('#signupForm button[type=submit]').click();
+    // 관계를 골랐으니 상대 단계는 건너뛰고 상황으로
+    await page.waitForFunction(()=>!el('view-situation').hidden);
+    assert.equal(await page.evaluate(()=>state.partner),'family');
     await page.locator('#situationGrid [data-v="general"]').click();
     await page.locator('#toStep3').click();
     assert.match(await page.locator('#patientBadge').textContent(),/홍길동/);
     await page.evaluate(()=>{ state.history.push({who:'partner',text:'물 줄까?'},{who:'me',text:'물 좀 주세요'}); learnFromCommit('물 좀 주세요'); saveLearn(); return flushPatient(); });
-    // 다른 환자로 바꾸면 앞 환자의 대화·학습이 섞이지 않는다
+    // 다른 사람으로 바꾸면 앞 사람의 대화·학습이 섞이지 않는다
     await page.locator('#patientBadge').click();
     assert.equal(await page.locator('#view-patients').isVisible(),true);
-    await page.locator('#patientAdd summary').click();
-    await page.fill('#pName','김영희'); await page.locator('#patientForm button[type=submit]').click();
-    assert.deepEqual(await page.evaluate(()=>[state.history.length, JSON.stringify(learn.word).includes('주세요')]),[0,false]);
-    // 새로 열고 목록에서 홍길동을 고르면 대화와 상대·상황·학습이 이어진다
+    await page.locator('#btnSignup').click();
+    await page.fill('#suName','김영희'); await page.locator('#suRel label.radio',{hasText:'의료진'}).click();
+    assert.equal(await page.locator('#suFamily').isVisible(),false);
+    await page.locator('#signupForm button[type=submit]').click();
+    await page.waitForFunction(()=>!el('view-situation').hidden);
+    assert.deepEqual(await page.evaluate(()=>[state.partner, state.history.length, JSON.stringify(learn.word).includes('주세요')]),['medical_staff',0,false]);
+    // 새로 열고 이름으로 로그인하면 대화와 상대·상황·학습이 이어진다
     await page.evaluate(()=>sessionStorage.clear());
     await page.reload();
     assert.equal(await page.locator('#view-patients').isVisible(),true);
-    assert.equal(await page.locator('#patientList .patient-item').count(),2);
-    await page.fill('#patientFilter','길동');
-    assert.equal(await page.locator('#patientList .patient-item:visible').count(),1);
-    await page.locator('#patientList .patient-item[data-name="홍길동"]').click();
+    assert.equal(await page.locator('#loginNames option').count(),2);
+    await page.fill('#loginName','홍길동'); await page.locator('#loginForm button[type=submit]').click();
     await page.waitForFunction(()=>!el('view-speller').hidden);
     const r=await page.evaluate(()=>({h:state.history.map(x=>x.text), p:state.partner, s:state.situation, learned:JSON.stringify(learn).includes('주세요')}));
     assert.deepEqual(r,{h:['물 줄까?','물 좀 주세요'], p:'family', s:'general', learned:true});

@@ -940,27 +940,69 @@ body.picking #candWords,body.picking #candSents{opacity:.35}
   body.kb-fig.large-text .kb .key{min-height:76px;font-size:1.5rem}
 }
 /* v3.19 환자 선택(STROKE 로그인 양식): 이름 목록 → 고르면 그 환자의 대화·학습·실험 기록으로 들어간다 */
-.gate{min-height:calc(100dvh - 120px);display:flex;align-items:center;justify-content:center;padding:24px 16px}
-.gate-card{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
-  padding:32px 24px;border-radius:26px;background:linear-gradient(160deg,#1f4a37 0%,#3C7D5E 100%);color:#fff}
-.gate-eyebrow{margin:0;font-size:13px;letter-spacing:.08em;color:rgba(255,255,255,.8)}
-.gate-title{margin:0;font-family:"Noto Serif KR",serif;font-size:34px;letter-spacing:.3em;padding-left:.3em}
-.gate-lead{margin:0 0 6px;color:rgba(255,255,255,.85);font-size:15px}
-.gate input{width:100%;min-height:48px;padding:12px 16px;border-radius:12px;border:none;font-size:16px;text-align:center;color:#17251d;background:#fff}
-.patient-list{width:100%;max-height:44vh;overflow:auto;display:flex;flex-direction:column;gap:8px}
-.patient-item{width:100%;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;
-  border-radius:12px;border:none;background:rgba(255,255,255,.96);color:#17251d;font-size:17px;font-weight:600;cursor:pointer;text-align:left}
-.patient-item:hover,.patient-item:focus-visible{background:#DDE0C6}
-.patient-item small{display:block;font-weight:400;font-size:13px;color:#4a5a50}
-.patient-item .pbadge{flex:none;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:#E8F0EA;color:#3D6B50}
-.gate-add{width:100%}
-.gate-add summary::-webkit-details-marker{display:none}
-.gate-add summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;list-style:none}
-.gate-add form{display:flex;flex-direction:column;gap:8px}
-.gate-add button,.gate .gate-go{min-height:48px;border-radius:12px;border:none;background:#DDE0C6;color:#1f4a37;font-weight:700;font-size:16px;cursor:pointer}
-.gate .linkish{min-height:44px;border:none;background:none;color:rgba(255,255,255,.88);font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.gate-note{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.78)}
-.gate-empty{margin:4px 0;color:rgba(255,255,255,.85);font-size:14px}
+/* v3.21 피그마 로그인(121:2)·회원가입(125:51)·상황 선택(123:2) — 흰 카드 30 · 명조 · 연초록 버튼 */
+.gate{min-height:calc(100dvh - 120px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px 16px}
+.gate-card{width:100%;max-width:680px;display:flex;flex-direction:column;gap:30px;padding:clamp(28px,5vw,73px) clamp(20px,4vw,48px) clamp(28px,4vw,48px);
+  background:#fff;border-radius:30px;box-shadow:0 18px 40px -28px rgba(32,39,29,.35);font-family:var(--serif)}
+.gate-card.wide{max-width:800px;gap:20px;padding:clamp(20px,4vw,40px)}
+.gate-head{display:flex;flex-direction:column;gap:6px}
+.gate-eyebrow{margin:0;font-size:17px;font-weight:700;color:#477b60;line-height:1.5}
+.gate-card.wide .gate-eyebrow{font-size:16px}
+.gate-title{margin:0;font-size:clamp(30px,2.2rem + 1vw,44px);font-weight:700;color:#20271d;line-height:1.4;letter-spacing:0}
+.gate-card.wide .gate-title{font-size:clamp(28px,2rem + 1vw,40px)}
+.gate-lead{margin:0;font-size:19px;color:#68715f;line-height:1.5}
+.gate-field{display:flex;flex-direction:column;gap:12px;border:0;margin:0;padding:0;min-width:0}
+.gate-card.wide .gate-field{gap:8px}
+.gate-field>label,.gate-field>legend{padding:0;font-size:21px;font-weight:700;color:#2c3828;line-height:1.5}
+.gate-card.wide .gate-field>label,.gate-card.wide .gate-field>legend{font-size:20px}
+.gate-field>label.small{font-size:16px;color:#56634d}
+.gate-card input:not([type=radio]){width:100%;height:80px;padding:0 22px;border:1.5px solid #b7c7ac;border-radius:14px;background:#f7f9f4;
+  font:400 24px/1.5 var(--serif);color:#263421}
+.gate-card.wide input:not([type=radio]){height:64px;padding:0 19px;border:1px solid #c5cfbe;border-radius:12px;background:#fff;font-size:23px}
+.gate-card #suCustom{border:2px solid #b8d8c7}
+.gate-card input::placeholder{color:#737d6b}
+.gate-card input:focus-visible{outline:3px solid #477b60;outline-offset:2px}
+.gate-actions{display:flex;gap:24px;align-items:center}
+.gate-primary{flex:1;min-height:76px;border:none;border-radius:16px;background:linear-gradient(#c0dab7,#dce1c7);color:#2d4d35;
+  font:700 25px/1.5 var(--serif);cursor:pointer;white-space:pre}
+.gate-primary:hover{filter:brightness(.97)}
+.gate-primary.full{width:100%;flex:none}
+.gate-link{min-width:120px;min-height:76px;border:none;background:none;color:#2d4d35;font:700 18px/1.5 var(--serif);text-decoration:underline;cursor:pointer}
+#backToLogin{min-height:48px;align-self:flex-start;min-width:0;padding:0 4px;font-size:16px;color:#777d6d;text-decoration:none}
+.gate-msg{margin:0;font-size:17px;color:#B64636;line-height:1.5}
+.radio-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.radio{position:relative;display:flex;align-items:center;gap:10px;min-height:60px;padding:0 15px;border:1px solid #ced6c8;border-radius:12px;background:#fff;
+  font-size:19px;color:#55624c;cursor:pointer}
+.radio input{appearance:none;-webkit-appearance:none;flex:none;width:18px;height:18px;margin:0;border:1px solid #a5b19b;border-radius:50%;background:#fff;cursor:pointer}
+.radio input:checked{border-color:#477b60;background:radial-gradient(circle,#fff 0 3px,#477b60 3.5px)}
+.radio:has(input:checked){border:2px solid #b8d8c7;padding:0 14px;background:linear-gradient(#c0dab7,#dce1c7);color:#31543d;font-weight:700}
+.radio:has(input:focus-visible){outline:3px solid #477b60;outline-offset:2px}
+.rel-detail{display:flex;flex-direction:column;gap:12px;margin:0;padding:24px;border:0;border-radius:18px;background:#f3f6ef;min-width:0}
+.rel-detail>legend{float:left;width:100%;padding:0;font-size:19px;font-weight:700;color:#34492c;line-height:1.5}
+.rel-detail[hidden],.radio-row[hidden],.gate-field[hidden]{display:none}
+.gate-hint{margin:0;font-size:16px;color:#65715b}
+#view-patients,#view-signup{max-width:none}
+.radio span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gate-sub{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 14px;max-width:680px;text-align:center}
+.gate .linkish{min-height:44px;border:none;background:none;color:#2d4d35;font-size:15px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gate-note{flex-basis:100%;margin:0;font-size:13px;line-height:1.5;color:#55624c}
+@media (max-width:640px){ .radio-row{grid-template-columns:repeat(2,minmax(0,1fr))} .radio{font-size:17px;gap:8px;padding:0 12px} .radio:has(input:checked){padding:0 11px} .gate-actions{flex-direction:column;gap:8px} .gate-primary{width:100%} }
+/* 상황 선택(123:2): 808px 열 · 58px 제목 · 257×158 카드 · 아이콘 원 50 */
+#view-situation{max-width:808px;margin-inline:auto}
+.sit-head h1{margin:clamp(12px,6vh,88px) 0 clamp(16px,3vh,32px);font-size:clamp(32px,1.6rem + 2.4vw,58px);font-weight:700;color:#20271d;letter-spacing:0}
+#situationGrid{gap:18px}
+#situationGrid .pick-card{min-height:158px;gap:18px;padding:26px 20px 24px 26px;border:1px solid #e0e3dd;border-radius:23px;box-shadow:none}
+#situationGrid .pick-card .ico{width:50px;height:50px;margin:0;border-radius:25px;background:#e8eae7}
+#situationGrid .pick-card .ico::before{display:none}
+#situationGrid .pick-card[data-v="emergency"] .ico{background:#f8ecea}
+#situationGrid .pick-card .lb{font-size:clamp(20px,1rem + .6vw,25px);font-weight:700;color:#20251e}
+#situationGrid .pick-card.sel{border:2px solid #b8d8c7;padding:25px 19px 23px 25px;background:linear-gradient(#c0dab7,#dce1c7);box-shadow:none}
+#situationGrid .pick-card.sel::after{background-color:#477b60}
+#view-situation .step-actions{margin-top:36px}
+#backTo1{min-height:48px;font-size:16px;font-weight:700;color:#777d6d}
+#toStep3{min-height:60px;padding:0 31px;border-radius:32px;background:linear-gradient(#c0dab7,#dce1c7);color:#2d4d35;font:700 19px var(--serif);box-shadow:none}
+#toStep3:disabled{background:#e8ebe5;color:#a0a293}
+@media (max-width:640px){ #situationGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px} }
 </style>
 </head>
 <body>
@@ -1020,34 +1062,79 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 <div class="shell">
 
   <!-- STEP 0: hero / start -->
+  <!-- STEP 0: 로그인 · 회원가입 (피그마 121:2 · 125:51) -->
   <section class="step-wrap" id="view-patients" aria-labelledby="gateTitle">
     <div class="gate">
-      <div class="gate-card">
-        <p class="gate-eyebrow">以心傳心 · 한국어 BCI 스펠러</p>
-        <h1 class="gate-title" id="gateTitle">이심전심</h1>
-        <p class="gate-lead">대화할 환자를 고르세요</p>
-        <input id="patientFilter" type="search" placeholder="이름 검색" aria-label="환자 이름 검색" autocomplete="off">
-        <div class="patient-list" id="patientList" aria-live="polite"></div>
-        <p class="gate-empty" id="patientEmpty" hidden></p>
-        <details class="gate-add" id="patientAdd">
-          <summary>+ 새 환자 추가</summary>
-          <form id="patientForm">
-            <input id="pName" required maxlength="30" placeholder="이름" aria-label="환자 이름" autocomplete="off">
-            <input id="pNote" maxlength="120" placeholder="메모 — 질환·특이사항 (선택)" aria-label="메모" autocomplete="off">
-            <button type="submit">추가하고 시작</button>
-          </form>
-        </details>
+      <form class="gate-card" id="loginForm" novalidate>
+        <div class="gate-head">
+          <p class="gate-eyebrow">이심전심에 오신 것을 환영해요</p>
+          <h1 class="gate-title" id="gateTitle">이름을 알려주세요</h1>
+        </div>
+        <div class="gate-field">
+          <label for="loginName">이름</label>
+          <input id="loginName" maxlength="30" placeholder="이름을 입력해 주세요" autocomplete="off" list="loginNames">
+          <datalist id="loginNames"></datalist>
+          <p class="gate-msg" id="loginMsg" role="alert" hidden></p>
+        </div>
+        <div class="gate-actions">
+          <button type="submit" class="gate-primary">로그인</button>
+          <button type="button" class="gate-link" id="btnSignup">회원가입</button>
+        </div>
+      </form>
+      <div class="gate-sub">
         <button type="button" class="linkish" id="btnGuest">기록 없이 둘러보기</button>
         <button type="button" class="linkish" id="btnIntro">이심전심이 궁금하다면</button>
-        <p class="gate-note" id="dbMode">시연용 · 비밀번호 없이 누구나 목록을 볼 수 있습니다. 실제 환자 정보는 넣지 마세요.</p>
+        <p class="gate-note" id="dbMode">시연용 · 비밀번호 없이 이름만으로 들어갑니다. 실제 환자 정보는 넣지 마세요.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="step-wrap" id="view-signup" hidden aria-labelledby="signupTitle">
+    <div class="gate">
+      <form class="gate-card wide" id="signupForm" novalidate>
+        <div class="gate-head">
+          <p class="gate-eyebrow">회원가입</p>
+          <h1 class="gate-title" id="signupTitle">함께할 분을 알려주세요</h1>
+          <p class="gate-lead">이름과 환자와의 관계를 등록해 주세요.</p>
+        </div>
+        <div class="gate-field">
+          <label for="suName">본인 이름</label>
+          <input id="suName" maxlength="30" placeholder="이름" autocomplete="off">
+        </div>
+        <fieldset class="gate-field">
+          <legend>환자와의 관계</legend>
+          <div class="radio-row" id="suRel">
+            <label class="radio"><input type="radio" name="suRel" value="medical_staff"><span>의료진</span></label>
+            <label class="radio"><input type="radio" name="suRel" value="family" checked><span>가족</span></label>
+            <label class="radio"><input type="radio" name="suRel" value="friend"><span>친구</span></label>
+            <label class="radio"><input type="radio" name="suRel" value="other"><span>직접 입력</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="rel-detail" id="suFamily">
+          <legend>환자에게 어떤 가족인가요?</legend>
+          <div class="radio-row">
+            <label class="radio"><input type="radio" name="suFam" value="엄마"><span>엄마</span></label>
+            <label class="radio"><input type="radio" name="suFam" value="아빠"><span>아빠</span></label>
+            <label class="radio"><input type="radio" name="suFam" value="형제"><span>형제</span></label>
+            <label class="radio"><input type="radio" name="suFam" value=""><span>직접 입력</span></label>
+          </div>
+          <div class="gate-field" id="suCustomBox" hidden>
+            <label for="suCustom" class="small">가족 관계 직접 입력</label>
+            <input id="suCustom" maxlength="20" placeholder="예: 할머니" autocomplete="off">
+          </div>
+          <p class="gate-hint">보기에 없는 관계는 직접 입력해 저장할 수 있어요.</p>
+        </fieldset>
+        <p class="gate-msg" id="signupMsg" role="alert" hidden></p>
+        <button type="submit" class="gate-primary full">저 장</button>
+        <button type="button" class="gate-link" id="backToLogin">‹ 로그인으로</button>
+      </form>
     </div>
   </section>
 
   <section class="step-wrap" id="view-start" hidden>
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.20</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.21</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1099,17 +1186,8 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 
   <!-- STEP 2: situation -->
   <section class="step-wrap" id="view-situation" hidden>
-    <div class="badge-row">
-      <div class="badge done"><span class="num">✓</span>대화 상대</div>
-      <span class="arrow">›</span>
-      <div class="badge"><span class="num">2</span>상황</div>
-      <span class="arrow">›</span>
-      <div class="badge todo"><span class="num">3</span>대화 시작</div>
-    </div>
-    <div class="headline">
-      <p class="sh-eyebrow">2 / 3 · 상황</p>
+    <div class="headline sit-head">
       <h1>지금 어떤 상황인가요?</h1>
-      <p>상황 정보는 후보 문장을 더 정확하게 좁히는 데 사용됩니다.</p>
     </div>
     <div class="pick-grid" id="situationGrid"></div>
     <div class="step-actions">
@@ -1306,7 +1384,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.20.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.21.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1510,6 +1588,19 @@ const SITUATIONS=[
   {v:"hospital",icon:"🩺",label:"병원"},
   {v:"emergency",icon:"🚨",label:"긴급 도움"},
 ];
+
+/* 상황 아이콘 — 피그마 123:2 선 아이콘(26px) 그대로 */
+const SIT_ICONS={
+  general:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.33333 4.33333H21.6667V16.25H9.75L4.33333 21.6667V4.33333Z" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  home:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.25 10.8333L13 3.25L22.75 10.8333M5.41667 9.75V22.75H20.5833V9.75M10.8333 22.75V15.1667H15.1667V22.75" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  positioning:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.25 7.58333V13M3.25 13V18.4167M3.25 13H13M3.25 18.4167V22.75M3.25 18.4167H22.75M22.75 22.75V18.4167M22.75 18.4167V13M22.75 13H13M22.75 13V9.75C22.75 8.88805 22.4076 8.0614 21.7981 7.4519C21.1886 6.84241 20.362 6.5 19.5 6.5H13V13" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/><path d="M9.75 9.75C9.75 10.9466 8.77995 11.9167 7.58333 11.9167C6.38672 11.9167 5.41667 10.9466 5.41667 9.75C5.41667 8.55338 6.38672 7.58333 7.58333 7.58333C8.77995 7.58333 9.75 8.55338 9.75 9.75Z" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  meal:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.41667 3.25V10.8333M8.66667 3.25V10.8333M5.41667 7.58333H8.66667M7.04167 10.8333V22.75M19.5 22.75V3.25C16.25 6.5 15.1667 10.8333 16.25 14.0833H19.5" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  pain:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.25 13H7.58333L10.8333 5.41667L15.1667 20.5833L17.3333 13H22.75" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  schedule:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.95833 5.41667H20.0417C21.2383 5.41667 22.2083 6.38672 22.2083 7.58333V20.5833C22.2083 21.78 21.2383 22.75 20.0417 22.75H5.95833C4.76172 22.75 3.79167 21.78 3.79167 20.5833V7.58333C3.79167 6.38672 4.76172 5.41667 5.95833 5.41667Z" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/><path d="M7.58333 3.25V8.66667M18.4167 3.25V8.66667M4.33333 11.9167H21.6667" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  entertainment:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.75 19.5V5.41667L21.6667 3.25V17.3333M9.75 8.66667L21.6667 6.5" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/><path d="M9.75 19.5C9.75 21.2949 8.29493 22.75 6.5 22.75C4.70507 22.75 3.25 21.2949 3.25 19.5C3.25 17.7051 4.70507 16.25 6.5 16.25C8.29493 16.25 9.75 17.7051 9.75 19.5Z" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/><path d="M21.6667 17.3333C21.6667 19.1283 20.2116 20.5833 18.4167 20.5833C16.6217 20.5833 15.1667 19.1283 15.1667 17.3333C15.1667 15.5384 16.6217 14.0833 18.4167 14.0833C20.2116 14.0833 21.6667 15.5384 21.6667 17.3333Z" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  hospital:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.04167 3.79167H18.9583C20.7533 3.79167 22.2083 5.24674 22.2083 7.04167V18.9583C22.2083 20.7533 20.7533 22.2083 18.9583 22.2083H7.04167C5.24674 22.2083 3.79167 20.7533 3.79167 18.9583V7.04167C3.79167 5.24674 5.24674 3.79167 7.04167 3.79167Z" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/><path d="M13 7.58333V18.4167M7.58333 13H18.4167" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#444840"/></svg>',
+  emergency:'<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 9.75V15.1667M13 18.4167H13.0108M13 3.25L2.16667 22.75H23.8333L13 3.25Z" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" stroke="#CE342A"/></svg>'
+};
 
 let state={
   partner:null, situation:null,
@@ -2106,7 +2197,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.20.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.21.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2553,7 +2644,7 @@ const PDB=(()=>{
       return q.docs.map(d=>({id:d.id,...d.data()}));
     },
     async create(profile){
-      const p={name:profile.name, note:profile.note||"", turns:0, createdAt:Date.now(), updatedAt:Date.now()};
+      const p={name:profile.name, note:profile.note||"", partner:profile.partner||null, turns:0, createdAt:Date.now(), updatedAt:Date.now()};
       if(!live){ const d=readLocal(), id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); d[id]={profile:p}; writeLocal(d); return id; }
       return (await col(await db()).add(p)).id;
     },
@@ -2595,7 +2686,7 @@ function flushPatient(){
 document.addEventListener("visibilitychange",()=>{ if(document.hidden) flushPatient(); });
 function renderPatientBadge(){
   const b=el("patientBadge"); b.hidden=!currentPatient;
-  b.textContent = currentPatient ? `환자 · ${currentPatient.name}` : "";
+  b.textContent = currentPatient ? `${currentPatient.name} 님` : "";
 }
 function leavePatient(){
   flushPatient();
@@ -2605,25 +2696,15 @@ function leavePatient(){
   renderPatientBadge();
 }
 let patientsCache=[];
+/* v3.21 첫 화면은 이름 로그인(피그마 121:2) — 목록 대신 이름을 치면 그 사람의 대화·학습으로 들어간다(입력 칸 자동 완성에 등록된 이름) */
 async function renderPatients(){
-  const box=el("patientList"), empty=el("patientEmpty");
   el("dbMode").textContent = PDB.live
-    ? "시연용 · 비밀번호 없이 이 사이트를 연 누구나 목록과 기록을 볼 수 있습니다. 실제 환자 정보는 넣지 마세요."
+    ? "시연용 · 비밀번호 없이 이름만으로 들어갑니다(이 사이트를 연 누구나 기록을 볼 수 있음). 실제 환자 정보는 넣지 마세요."
     : "데모 모드 · 기록은 이 브라우저에만 저장됩니다. 실제 환자 정보는 넣지 마세요.";
-  empty.hidden=false; empty.textContent="불러오는 중…";
-  try{ patientsCache=await PDB.list(); }
-  catch(e){ box.innerHTML=""; empty.textContent="환자 목록을 불러오지 못했습니다 — 인터넷 연결을 확인하세요."; return; }
-  box.innerHTML=patientsCache.map(p=>`<button type="button" class="patient-item" data-id="${esc(p.id)}" data-name="${esc(p.name||"")}">
-      <span>${esc(p.name||"이름 없음")}${p.note?`<small>${esc(p.note)}</small>`:""}</span>
-      <span class="pbadge">${p.turns?`대화 ${p.turns}마디`:"새 환자"}</span></button>`).join("");
-  empty.hidden=patientsCache.length>0;
-  if(!patientsCache.length) empty.textContent="아직 등록한 환자가 없습니다. 아래에서 추가하세요.";
-  filterPatients(el("patientFilter").value);
+  try{ patientsCache=await PDB.list(); }catch(e){ patientsCache=[]; }
+  el("loginNames").innerHTML=patientsCache.map(p=>`<option value="${esc(p.name||"")}">`).join("");
 }
-function filterPatients(q){
-  q=String(q||"").trim();
-  el("patientList").querySelectorAll(".patient-item").forEach(b=>{ b.hidden = !!q && !b.dataset.name.includes(q); });
-}
+function gateMsg(id,t){ const m=el(id); m.hidden=!t; m.textContent=t||""; }
 async function selectPatient(id){
   if(currentPatient && currentPatient.id!==id) await flushPatient();
   announce("환자 기록을 불러오는 중…");
@@ -2652,25 +2733,52 @@ async function selectPatient(id){
     await startSession(); markContextDirty(); renderChat(); saveDraft(); showView("speller");
     announce(`${currentPatient.name} 님의 대화를 이어 갑니다 (대화 ${state.history.length}마디).`);
   } else {
-    el("toStep2").disabled=!state.partner; el("toStep3").disabled=true; showView("partner");
-    announce(`${currentPatient.name} 님 — 대화 상대를 고르세요.`);
+    el("toStep2").disabled=!state.partner; el("toStep3").disabled=true;
+    // 회원가입에서 관계를 골랐으면 상대 단계는 건너뛰고 상황으로(피그마 흐름: 로그인 → 상황 → 대화)
+    showView(state.partner ? "situation" : "partner");
+    announce(`${currentPatient.name} 님 — ${state.partner ? "지금 상황을 고르세요" : "대화 상대를 고르세요"}.`);
   }
 }
-el("patientList").onclick=e=>{ const b=e.target.closest(".patient-item"); if(b) selectPatient(b.dataset.id); };
-el("patientFilter").oninput=e=>filterPatients(e.target.value);
-el("patientForm").onsubmit=async e=>{
+el("loginForm").onsubmit=async e=>{
   e.preventDefault();
-  const name=el("pName").value.trim().slice(0,30), note=el("pNote").value.trim().slice(0,120);
-  if(!name){ el("pName").focus(); return; }
-  try{ const id=await PDB.create({name, note}); el("pName").value=""; el("pNote").value=""; el("patientAdd").open=false; await selectPatient(id); }
-  catch(err){ el("patientEmpty").hidden=false; el("patientEmpty").textContent="환자를 추가하지 못했습니다 — 인터넷 연결을 확인하세요."; }
+  const name=el("loginName").value.trim();
+  if(!name){ gateMsg("loginMsg","이름을 입력해 주세요."); el("loginName").focus(); return; }
+  try{ patientsCache=await PDB.list(); }catch(err){ gateMsg("loginMsg","기록을 불러오지 못했습니다 — 인터넷 연결을 확인하세요."); return; }
+  const p=patientsCache.find(x=>x.name===name);   // 같은 이름이면 가장 최근에 쓴 기록(목록은 최근 순)
+  if(!p){ gateMsg("loginMsg","등록된 이름이 없어요. 회원가입을 눌러 주세요."); return; }
+  gateMsg("loginMsg",""); await selectPatient(p.id);
+};
+el("btnSignup").onclick=()=>{ el("suName").value=el("loginName").value.trim(); gateMsg("signupMsg",""); syncSignup(); showView("signup"); el("suName").focus(); };
+el("backToLogin").onclick=()=>{ showView("patients"); renderPatients(); };
+const REL_LABEL={medical_staff:"의료진", family:"가족", friend:"친구", other:"직접 입력"};
+function syncSignup(){
+  const rel=(document.querySelector('input[name=suRel]:checked')||{}).value, fam=document.querySelector('input[name=suFam]:checked');
+  el("suFamily").hidden = rel!=="family" && rel!=="other";
+  el("suFamily").querySelector(".radio-row").hidden = rel==="other";
+  el("suFamily").querySelector("legend").textContent = rel==="other" ? "환자와 어떤 관계인가요?" : "환자에게 어떤 가족인가요?";
+  el("suCustomBox").hidden = !(rel==="other" || (fam && fam.value===""));
+}
+el("signupForm").onchange=syncSignup;
+el("signupForm").onsubmit=async e=>{
+  e.preventDefault();
+  const name=el("suName").value.trim().slice(0,30);
+  if(!name){ gateMsg("signupMsg","본인 이름을 입력해 주세요."); el("suName").focus(); return; }
+  const rel=(document.querySelector('input[name=suRel]:checked')||{}).value||"other";
+  const fam=document.querySelector('input[name=suFam]:checked'), custom=el("suCustom").value.trim().slice(0,20);
+  const detail = rel==="other" ? custom : rel==="family" ? (fam ? (fam.value||custom) : "") : "";
+  const note=[REL_LABEL[rel], detail].filter(Boolean).join(" · ");
+  try{
+    if((await PDB.list()).some(x=>x.name===name)){ gateMsg("signupMsg","이미 등록된 이름이에요. 로그인으로 들어가 주세요."); return; }
+    const id=await PDB.create({name, note, partner:rel});
+    el("signupForm").reset(); syncSignup(); await selectPatient(id);
+  }catch(err){ gateMsg("signupMsg","저장하지 못했습니다 — 인터넷 연결을 확인하세요."); }
 };
 el("btnGuest").onclick=()=>{ leavePatient(); resetToStart(); showView("partner"); };
 el("btnIntro").onclick=()=>showView("start");
 el("patientBadge").onclick=()=>{ leavePatient(); showView("patients"); renderPatients(); };
 
 function showView(name){
-  ["patients","start","partner","situation","speller"].forEach(v=>{
+  ["patients","signup","start","partner","situation","speller"].forEach(v=>{
     el("view-"+v).hidden = (v!==name);
   });
   if(name==="speller"){ loadDict(); if(!newsEntries.length) (window.requestIdleCallback||(f=>setTimeout(f,800)))(()=>refreshNews()); }   // 사전·시사어를 미리 받아 둔다
@@ -2691,7 +2799,7 @@ function renderPartnerGrid(){
 function renderSituationGrid(){
   el("situationGrid").innerHTML = SITUATIONS.map(s=>`
     <button type="button" class="pick-card${state.situation===s.v?" sel":""}" data-v="${s.v}" aria-pressed="${state.situation===s.v}">
-      <div class="ico">${s.icon}</div>
+      <div class="ico" aria-hidden="true">${SIT_ICONS[s.v]||s.icon}</div>
       <div class="lb">${s.label}</div>
     </button>`).join("");
   [...el("situationGrid").children].forEach(node=>{
@@ -2982,9 +3090,12 @@ function syncBreaks(){
   state.breaks=[...new Set(state.breaks||[])].filter(b=>b>0&&b<=n).sort((a,b)=>a-b);
   return state.breaks;
 }
+/* v3.21 띄어 치지 않았으면 가장 좋은 문장 후보의 어절 경계로 초성을 띄워 보인다(표시만 — 실제 띄기는 사용자가 친 것만) */
+let autoBreaks=[];
 function spacedInitials(ini){
+  const auto=ini===undefined && !syncBreaks().length;
   if(ini===undefined) ini=state.initials;
-  const bs=new Set(syncBreaks());
+  const bs=new Set(auto ? autoBreaks : syncBreaks());
   return [...ini].map((c,i)=>(i&&bs.has(i)?" ":"")+c).join("");
 }
 /* 문장의 어절 경계가 사용자가 친 띄어쓰기를 모두 품는가 ("인생이 힘들다" ⊇ ㅇㅅㅇ|ㅎㄷㄷ) */
@@ -3494,6 +3605,9 @@ function renderCandidatePanel(){
     }
   }
   slots=[...words,...sents];
+  const ab=[], top=state.initials && sents.find(x=>!x.partial && choseongOf(String(x.text).replace(/\s+/g,""))===state.initials);
+  if(top){ let k=0; for(const w of String(top.text).trim().split(/\s+/)){ k+=choseongOf(w).length; if(k<state.initials.length) ab.push(k); } }
+  if(ab.join()!==autoBreaks.join()){ autoBreaks=ab; el("pending").textContent=state.initials ? " ["+spacedInitials()+"]" : ""; renderChat(); }
   el("ratioTag").textContent = state.initials
     ? `단어 ${words.length} · 문장 ${sents.length}`
     : (words.length ? "다음에 하실 말 · 초성 없이 바로 선택" : "초성을 누르면 후보가 바로 나옵니다");
