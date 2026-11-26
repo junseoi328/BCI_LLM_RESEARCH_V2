@@ -234,12 +234,13 @@ test('Public UI works offline, restores a draft, undoes commits and fits mobile'
       return route.fulfill({status:503,json:{detail:'offline'}});
     });
     await page.goto('http://bci.test/speller');
-    await page.locator('#btnGuest').click();
+    await page.evaluate(()=>showView('partner'));
     await page.locator('#partnerGrid [data-v="family"]').click();
     await page.locator('#toStep2').click();
     await page.locator('#situationGrid [data-v="general"]').click();
     await page.locator('#toStep3').click();
     assert.equal(await page.evaluate(()=>state.sessionId),null);
+    await page.evaluate(()=>{ el('directPanel').hidden=false; el('context').closest('details').hidden=false; });   // v3.22: 화면에선 숨김
     await page.locator('#directPanel summary').click();
     await page.locator('#directText').fill('잠깐 쉬고 싶어요.');
     await page.locator('#btnDirectCommit').click();
@@ -1024,7 +1025,7 @@ test('요즘 이야깃거리: issues from /speller/news drive context only when 
     assert.match(await page.evaluate(()=>newsContext()),/한화/);
     // 고르면 그 이슈
     await page.evaluate(()=>{state.history=[];});
-    await page.evaluate(()=>{el('newsPanel').open=true;});
+    await page.evaluate(()=>{el('newsPanel').hidden=false; el('newsPanel').open=true;});
     await page.locator('#newsItems .issue-btn',{hasText:'독감'}).click();
     assert.match(await page.evaluate(()=>newsContext()),/독감/);
     assert.ok(await page.evaluate(()=>echoMap().has('독감')),'고른 이슈의 말이 후보 쪽으로');
@@ -1269,7 +1270,7 @@ test('Login gate: sign up, talk, switch, log in again and the person resumes wit
       ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
     await page.goto('http://bci.test/speller');
     assert.equal(await page.locator('#view-patients').isVisible(),true,'첫 화면은 이름 로그인');
-    assert.match(await page.locator('#dbMode').textContent(),/데모 모드/);
+    assert.equal(await page.locator('#btnGuest, #btnIntro, #dbMode').count(),0,'로그인 카드 아래 글씨는 없다');
     // 없는 이름으로 로그인하면 회원가입을 안내한다
     await page.fill('#loginName','홍길동'); await page.locator('#loginForm button[type=submit]').click();
     assert.match(await page.locator('#loginMsg').textContent(),/회원가입/);
@@ -1305,6 +1306,8 @@ test('Login gate: sign up, talk, switch, log in again and the person resumes wit
     const r=await page.evaluate(()=>({h:state.history.map(x=>x.text), p:state.partner, s:state.situation, learned:JSON.stringify(learn).includes('주세요')}));
     assert.deepEqual(r,{h:['물 줄까?','물 좀 주세요'], p:'family', s:'general', learned:true});
     assert.match(await page.locator('#patientBadge').textContent(),/홍길동/);
+    await page.locator('#brandHome').click();
+    assert.equal(await page.locator('#view-patients').isVisible(),true,'로고를 누르면 처음 화면');
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });
