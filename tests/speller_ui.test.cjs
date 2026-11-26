@@ -234,7 +234,7 @@ test('Public UI works offline, restores a draft, undoes commits and fits mobile'
       return route.fulfill({status:503,json:{detail:'offline'}});
     });
     await page.goto('http://bci.test/speller');
-    await page.locator('#btnStart').click();
+    await page.locator('#btnGuest').click();
     await page.locator('#partnerGrid [data-v="family"]').click();
     await page.locator('#toStep2').click();
     await page.locator('#situationGrid [data-v="general"]').click();
@@ -1252,6 +1252,48 @@ test('AI decode takes the sentence slot only when the local decode is unsure', {
         const out=sentenceSlots(1).map(x=>x.text); window.decodeSentences=real; return out[0]; };
       return {sure:run(-1.2), unsure:run(-5.0)}; });
     assert.equal(r.sure,'로컬 문장'); assert.equal(r.unsure,'에이아이 문장');
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();}
+});
+
+// v3.19: 첫 화면은 환자 목록(STROKE 로그인 양식). 환자를 고르면 그 환자의 대화·학습이 이어지고, 환자끼리 섞이지 않는다(데모 모드 = 브라우저 저장).
+test('Patient gate: add, talk, switch, reopen and the chosen patient resumes with their history and learning', {timeout:60000}, async()=>{
+  const browser=await launch();
+  try{
+    const page=await browser.newPage({viewport:{width:1366,height:900}});
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/*',r=>r.fulfill(new URL(r.request().url()).pathname==='/speller'
+      ? {contentType:'text/html',body:HTML('fig')} : {json:{status:'healthy'}}));
+    await page.goto('http://bci.test/speller');
+    assert.equal(await page.locator('#view-patients').isVisible(),true,'첫 화면은 환자 목록');
+    assert.match(await page.locator('#dbMode').textContent(),/데모 모드/);
+    await page.locator('#patientAdd summary').click();
+    await page.fill('#pName','홍길동'); await page.fill('#pNote','시연 환자');
+    await page.locator('#patientForm button[type=submit]').click();
+    await page.locator('#partnerGrid [data-v="family"]').click();
+    await page.locator('#toStep2').click();
+    await page.locator('#situationGrid [data-v="general"]').click();
+    await page.locator('#toStep3').click();
+    assert.match(await page.locator('#patientBadge').textContent(),/홍길동/);
+    await page.evaluate(()=>{ state.history.push({who:'partner',text:'물 줄까?'},{who:'me',text:'물 좀 주세요'}); learnFromCommit('물 좀 주세요'); saveLearn(); return flushPatient(); });
+    // 다른 환자로 바꾸면 앞 환자의 대화·학습이 섞이지 않는다
+    await page.locator('#patientBadge').click();
+    assert.equal(await page.locator('#view-patients').isVisible(),true);
+    await page.locator('#patientAdd summary').click();
+    await page.fill('#pName','김영희'); await page.locator('#patientForm button[type=submit]').click();
+    assert.deepEqual(await page.evaluate(()=>[state.history.length, JSON.stringify(learn.word).includes('주세요')]),[0,false]);
+    // 새로 열고 목록에서 홍길동을 고르면 대화와 상대·상황·학습이 이어진다
+    await page.evaluate(()=>sessionStorage.clear());
+    await page.reload();
+    assert.equal(await page.locator('#view-patients').isVisible(),true);
+    assert.equal(await page.locator('#patientList .patient-item').count(),2);
+    await page.fill('#patientFilter','길동');
+    assert.equal(await page.locator('#patientList .patient-item:visible').count(),1);
+    await page.locator('#patientList .patient-item[data-name="홍길동"]').click();
+    await page.waitForFunction(()=>!el('view-speller').hidden);
+    const r=await page.evaluate(()=>({h:state.history.map(x=>x.text), p:state.partner, s:state.situation, learned:JSON.stringify(learn).includes('주세요')}));
+    assert.deepEqual(r,{h:['물 줄까?','물 좀 주세요'], p:'family', s:'general', learned:true});
+    assert.match(await page.locator('#patientBadge').textContent(),/홍길동/);
     assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 });

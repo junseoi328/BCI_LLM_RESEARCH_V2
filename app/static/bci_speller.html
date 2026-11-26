@@ -939,6 +939,28 @@ body.picking #candWords,body.picking #candSents{opacity:.35}
 @media (max-width:1799px),(max-height:999px){
   body.kb-fig.large-text .kb .key{min-height:76px;font-size:1.5rem}
 }
+/* v3.19 환자 선택(STROKE 로그인 양식): 이름 목록 → 고르면 그 환자의 대화·학습·실험 기록으로 들어간다 */
+.gate{min-height:calc(100dvh - 120px);display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.gate-card{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+  padding:32px 24px;border-radius:26px;background:linear-gradient(160deg,#1f4a37 0%,#3C7D5E 100%);color:#fff}
+.gate-eyebrow{margin:0;font-size:13px;letter-spacing:.08em;color:rgba(255,255,255,.8)}
+.gate-title{margin:0;font-family:"Noto Serif KR",serif;font-size:34px;letter-spacing:.3em;padding-left:.3em}
+.gate-lead{margin:0 0 6px;color:rgba(255,255,255,.85);font-size:15px}
+.gate input{width:100%;min-height:48px;padding:12px 16px;border-radius:12px;border:none;font-size:16px;text-align:center;color:#17251d;background:#fff}
+.patient-list{width:100%;max-height:44vh;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.patient-item{width:100%;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;
+  border-radius:12px;border:none;background:rgba(255,255,255,.96);color:#17251d;font-size:17px;font-weight:600;cursor:pointer;text-align:left}
+.patient-item:hover,.patient-item:focus-visible{background:#DDE0C6}
+.patient-item small{display:block;font-weight:400;font-size:13px;color:#4a5a50}
+.patient-item .pbadge{flex:none;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:#E8F0EA;color:#3D6B50}
+.gate-add{width:100%}
+.gate-add summary::-webkit-details-marker{display:none}
+.gate-add summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;list-style:none}
+.gate-add form{display:flex;flex-direction:column;gap:8px}
+.gate-add button,.gate .gate-go{min-height:48px;border-radius:12px;border:none;background:#DDE0C6;color:#1f4a37;font-weight:700;font-size:16px;cursor:pointer}
+.gate .linkish{min-height:44px;border:none;background:none;color:rgba(255,255,255,.88);font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gate-note{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.78)}
+.gate-empty{margin:4px 0;color:rgba(255,255,255,.85);font-size:14px}
 </style>
 </head>
 <body>
@@ -998,10 +1020,34 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 <div class="shell">
 
   <!-- STEP 0: hero / start -->
-  <section class="step-wrap" id="view-start">
+  <section class="step-wrap" id="view-patients" aria-labelledby="gateTitle">
+    <div class="gate">
+      <div class="gate-card">
+        <p class="gate-eyebrow">以心傳心 · 한국어 BCI 스펠러</p>
+        <h1 class="gate-title" id="gateTitle">이심전심</h1>
+        <p class="gate-lead">대화할 환자를 고르세요</p>
+        <input id="patientFilter" type="search" placeholder="이름 검색" aria-label="환자 이름 검색" autocomplete="off">
+        <div class="patient-list" id="patientList" aria-live="polite"></div>
+        <p class="gate-empty" id="patientEmpty" hidden></p>
+        <details class="gate-add" id="patientAdd">
+          <summary>+ 새 환자 추가</summary>
+          <form id="patientForm">
+            <input id="pName" required maxlength="30" placeholder="이름" aria-label="환자 이름" autocomplete="off">
+            <input id="pNote" maxlength="120" placeholder="메모 — 질환·특이사항 (선택)" aria-label="메모" autocomplete="off">
+            <button type="submit">추가하고 시작</button>
+          </form>
+        </details>
+        <button type="button" class="linkish" id="btnGuest">기록 없이 둘러보기</button>
+        <button type="button" class="linkish" id="btnIntro">이심전심이 궁금하다면</button>
+        <p class="gate-note" id="dbMode">시연용 · 비밀번호 없이 누구나 목록을 볼 수 있습니다. 실제 환자 정보는 넣지 마세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="step-wrap" id="view-start" hidden>
     <div class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.18</i></p>
+        <p class="hero-eyebrow">한국어 BCI · AAC 스펠러 <i>v3.19</i></p>
         <h1 class="hero-title">마음이 먼저<br>닿는 대화.</h1>
         <p class="hero-lead">초성 몇 개면 충분합니다. <b>ㅁ ㅈ</b>를 누르면 <b>물 줘</b>가 되고, 띄어 치면 문장이 됩니다. 말하기 어려운 순간에도 내 말투 그대로.</p>
         <div class="hero-actions">
@@ -1078,6 +1124,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
     <!-- 한 줄 머리: 지금 누구와 어떤 상황인지 + 계기판 요약. 자세한 수치는 접어 둔다. -->
     <div class="topline">
       <div class="badge-row">
+        <button class="badge" id="patientBadge" type="button" hidden title="다른 환자 고르기"></button>
         <button class="badge done" id="partnerBadge" type="button"><span class="num">✓</span>가족</button>
         <button class="badge done" id="situationBadge" type="button"><span class="num">✓</span>일반</button>
       </div>
@@ -1259,7 +1306,7 @@ if("serviceWorker" in navigator && isSecureContext) addEventListener("load", ()=
 </div>
 
 <div class="footer-note">
-  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.18.0</p>
+  <p>연구용 프로토타입 · 실시간 뇌파 판독은 아직 없음(OpenBCI 자극·기록만) · <a href="/speller/research">입력 실험실</a> · <button type="button" class="link-btn" id="btnAbout">정보·출처</button> · v3.19.0</p>
 </div>
 
 <dialog id="guideDialog" class="guide" aria-labelledby="guideTitle">
@@ -1512,7 +1559,7 @@ function decayAll(store, days){
 }
 function loadLearn(){
   try{
-    const raw=JSON.parse(localStorage.getItem(LEARN_KEY)||"null");
+    const raw=JSON.parse(localStorage.getItem(learnKey())||"null");
     if(!raw || typeof raw!=="object") return;
     learn={word:raw.word||{}, next:raw.next||{}, next2:raw.next2||{}, phrase:raw.phrase||{}, ctx:raw.ctx||{}, names:raw.names||{}, day:raw.day||today()};
     // 이름: 두 번 이상 나온 것은 잊지 않는다. 한 번 나온 것도 90일은 둔다.
@@ -1536,7 +1583,8 @@ function saveLearn(){
     if(Object.keys(learn.next).length>400) learn.next=Object.fromEntries(Object.entries(learn.next).slice(-400));
     for(const k of Object.keys(learn.next2)) learn.next2[k]=topN(learn.next2[k],6);
     if(Object.keys(learn.next2).length>600) learn.next2=Object.fromEntries(Object.entries(learn.next2).slice(-600));
-    localStorage.setItem(LEARN_KEY, JSON.stringify(learn));
+    localStorage.setItem(learnKey(), JSON.stringify(learn));
+    schedulePatientSave();
   }catch(e){}
 }
 function topN(obj,n){
@@ -2050,7 +2098,7 @@ function cacheGet(k){
 }
 let prefetchTimer=null, prefetchController=null;
 let pendingController=null, autoTimer=null, undoStack=[], commitBusy=false;
-let metrics={version:"3.18.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
+let metrics={version:"3.19.0",actions:0,commits:0,undos:0,requests:0,cache_hits:0,prefetch_requests:0,prefetch_cancelled:0,errors:0,latencies_ms:[]};
 function announce(message){ el("notice").textContent=message; }
 function saveDraft(){
   try{ sessionStorage.setItem("bci_draft_v1", JSON.stringify({
@@ -2061,6 +2109,7 @@ function saveDraft(){
     latencyStrategy:el("latencyStrategy").value,
     expStim:el("expStim").value,expAcc:el("expAcc").value,expSubject:el("expSubject").value,
   })); }catch(e){}
+  schedulePatientSave();
 }
 function cancelPending(){
   clearTimeout(autoTimer);
@@ -2463,8 +2512,157 @@ function choseongOf(text){
 }
 
 /* ---------------- view switching ---------------- */
+/* ==========================================================================
+   v3.19 환자 DB — 첫 화면에서 환자를 고르면 그 환자의 대화 기록·개인 학습·환자 정보·실험 기록을
+   불러오고, 바뀔 때마다 1.5초 뒤 저장한다. Firebase(Firestore) 설정값을 넣으면 실시간 모드,
+   비어 있으면 데모 모드(이 브라우저 localStorage). 시연용: PIN이 없어 실제 환자 정보는 넣지 않는다.
+   구조: patients/{id} = {name,note,partner,situation,settings,turns,updatedAt}
+         patients/{id}/data/{history|learn|exp} = {json, updatedAt}
+   ========================================================================== */
+const FIREBASE_CONFIG={apiKey:"", authDomain:"", projectId:"", appId:""};   // 이심전심 전용 Firebase 프로젝트의 웹 앱 설정값
+const PDB=(()=>{
+  const live=!!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId), LS="bci_pdb_v1", PARTS=["history","learn","exp"];
+  let ready=null;
+  const readLocal=()=>{ try{ const d=JSON.parse(localStorage.getItem(LS)||"{}"); return d && typeof d==="object" ? d : {}; }catch(e){ return {}; } };
+  const writeLocal=d=>{ localStorage.setItem(LS, JSON.stringify(d)); };
+  const script=src=>new Promise((ok,no)=>{ const t=document.createElement("script"); t.src=src; t.onload=ok; t.onerror=()=>no(new Error("Firebase SDK")); document.head.appendChild(t); });
+  function db(){
+    return ready ||= (async()=>{
+      const v="https://www.gstatic.com/firebasejs/10.12.2/";
+      await script(v+"firebase-app-compat.js");
+      await Promise.all([script(v+"firebase-firestore-compat.js"), script(v+"firebase-auth-compat.js")]);
+      if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      await firebase.auth().signInAnonymously();          // 보안 규칙: 이 사이트에서 익명 로그인한 사람만 읽고 쓴다
+      return firebase.firestore();
+    })().catch(e=>{ ready=null; throw e; });
+  }
+  const col=fs=>fs.collection("patients");
+  return {
+    live,
+    async list(){
+      if(!live) return Object.entries(readLocal()).map(([id,p])=>({id,...(p.profile||{})})).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+      const q=await col(await db()).orderBy("updatedAt","desc").limit(300).get();
+      return q.docs.map(d=>({id:d.id,...d.data()}));
+    },
+    async create(profile){
+      const p={name:profile.name, note:profile.note||"", turns:0, createdAt:Date.now(), updatedAt:Date.now()};
+      if(!live){ const d=readLocal(), id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); d[id]={profile:p}; writeLocal(d); return id; }
+      return (await col(await db()).add(p)).id;
+    },
+    async load(id){
+      if(!live){ const p=readLocal()[id]; return p ? {profile:p.profile||{}, history:p.history||[], learn:p.learn||null, exp:p.exp||{}} : null; }
+      const r=col(await db()).doc(id), [pd,...parts]=await Promise.all([r.get(), ...PARTS.map(k=>r.collection("data").doc(k).get())]);
+      if(!pd.exists) return null;
+      const out={profile:pd.data()};
+      PARTS.forEach((k,i)=>{ try{ out[k]=parts[i].exists ? JSON.parse(parts[i].data().json) : null; }catch(e){ out[k]=null; } });
+      return out;
+    },
+    async save(id, d){
+      const now=Date.now(), profile={...d.profile, updatedAt:now};
+      if(!live){ const all=readLocal(); all[id]={...(all[id]||{}), ...d, profile:{...((all[id]||{}).profile||{}), ...profile}}; writeLocal(all); return; }
+      const r=col(await db()).doc(id), b=(await db()).batch();
+      b.set(r, profile, {merge:true});
+      for(const k of PARTS) if(d[k]!==undefined) b.set(r.collection("data").doc(k), {json:JSON.stringify(d[k]), updatedAt:now});
+      await b.commit();
+    },
+  };
+})();
+const PATIENT_KEY="bci_patient";
+let currentPatient=null, patientSaveTimer=null;
+function learnKey(){ return currentPatient ? LEARN_KEY+":"+currentPatient.id : LEARN_KEY; }
+function schedulePatientSave(){ if(!currentPatient) return; clearTimeout(patientSaveTimer); patientSaveTimer=setTimeout(flushPatient,1500); }
+function flushPatient(){
+  clearTimeout(patientSaveTimer);
+  if(!currentPatient) return Promise.resolve();
+  const turn=h=>({who:h.who==="partner"?"partner":"me", text:String(h.text||"").slice(0,300), ...(h.done===false?{done:false}:{})});
+  return PDB.save(currentPatient.id, {
+    profile:{name:currentPatient.name, note:currentPatient.note||"", partner:state.partner||null, situation:state.situation||null,
+      settings:{kb:kbLayout, none:noneMode()}, turns:(state.history||[]).length},
+    history:(state.history||[]).slice(-500).map(turn),
+    learn,
+    exp:{trials:trials.slice(-1000), selTotals:selTotals.slice(-1000), llmWaits:llmWaits.slice(-1000),
+      metrics:{...metrics, latencies_ms:(metrics.latencies_ms||[]).slice(-500)}},
+  }).catch(()=>announce("환자 기록을 저장하지 못했습니다 — 연결이 돌아오면 다음 입력 때 다시 저장합니다."));
+}
+document.addEventListener("visibilitychange",()=>{ if(document.hidden) flushPatient(); });
+function renderPatientBadge(){
+  const b=el("patientBadge"); b.hidden=!currentPatient;
+  b.textContent = currentPatient ? `환자 · ${currentPatient.name}` : "";
+}
+function leavePatient(){
+  flushPatient();
+  currentPatient=null;
+  try{ sessionStorage.removeItem(PATIENT_KEY); sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
+  learn={word:{},next:{},next2:{},phrase:{},ctx:{},names:{},day:today()}; loadLearn();
+  renderPatientBadge();
+}
+let patientsCache=[];
+async function renderPatients(){
+  const box=el("patientList"), empty=el("patientEmpty");
+  el("dbMode").textContent = PDB.live
+    ? "시연용 · 비밀번호 없이 이 사이트를 연 누구나 목록과 기록을 볼 수 있습니다. 실제 환자 정보는 넣지 마세요."
+    : "데모 모드 · 기록은 이 브라우저에만 저장됩니다. 실제 환자 정보는 넣지 마세요.";
+  empty.hidden=false; empty.textContent="불러오는 중…";
+  try{ patientsCache=await PDB.list(); }
+  catch(e){ box.innerHTML=""; empty.textContent="환자 목록을 불러오지 못했습니다 — 인터넷 연결을 확인하세요."; return; }
+  box.innerHTML=patientsCache.map(p=>`<button type="button" class="patient-item" data-id="${esc(p.id)}" data-name="${esc(p.name||"")}">
+      <span>${esc(p.name||"이름 없음")}${p.note?`<small>${esc(p.note)}</small>`:""}</span>
+      <span class="pbadge">${p.turns?`대화 ${p.turns}마디`:"새 환자"}</span></button>`).join("");
+  empty.hidden=patientsCache.length>0;
+  if(!patientsCache.length) empty.textContent="아직 등록한 환자가 없습니다. 아래에서 추가하세요.";
+  filterPatients(el("patientFilter").value);
+}
+function filterPatients(q){
+  q=String(q||"").trim();
+  el("patientList").querySelectorAll(".patient-item").forEach(b=>{ b.hidden = !!q && !b.dataset.name.includes(q); });
+}
+async function selectPatient(id){
+  if(currentPatient && currentPatient.id!==id) await flushPatient();
+  announce("환자 기록을 불러오는 중…");
+  let d=null;
+  try{ d=await PDB.load(id); }catch(e){ announce("환자 기록을 불러오지 못했습니다 — 인터넷 연결을 확인하세요."); return; }
+  if(!d){ announce("그 환자를 찾지 못했습니다."); renderPatients(); return; }
+  const pr=d.profile||{};
+  currentPatient={id, name:String(pr.name||"환자").slice(0,30), note:String(pr.note||"").slice(0,120)};
+  try{ sessionStorage.setItem(PATIENT_KEY, JSON.stringify(currentPatient)); sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
+  // 개인 학습(자주 쓰는 말·이어 쓴 말·이름)은 그 환자 것으로 바꿔 끼운다
+  try{ if(d.learn) localStorage.setItem(learnKey(), JSON.stringify(d.learn)); }catch(e){}
+  learn={word:{},next:{},next2:{},phrase:{},ctx:{},names:{},day:today()}; loadLearn();
+  const x=d.exp||{};
+  trials=Array.isArray(x.trials)?x.trials:[]; selTotals=Array.isArray(x.selTotals)?x.selTotals:[]; llmWaits=Array.isArray(x.llmWaits)?x.llmWaits:[];
+  if(x.metrics && typeof x.metrics==="object") metrics={...metrics, ...x.metrics, version:metrics.version};
+  const st=pr.settings||{};
+  if((st.kb==="fig"||st.kb==="k40") && st.kb!==kbLayout) setKbLayout(st.kb);
+  if(st.none==="auto"||st.none==="pick") try{ localStorage.setItem("bci_none", st.none); el("noneModeSel").value=st.none; }catch(e){}
+  predictCache.clear(); renderPatientBadge();
+  state.partner=PARTNERS.some(p=>p.v===pr.partner) ? pr.partner : null;
+  state.situation=SITUATIONS.some(s=>s.v===pr.situation) ? pr.situation : null;
+  state.history=(Array.isArray(d.history)?d.history:[]).filter(h=>h && typeof h.text==="string")
+    .map(h=>({who:h.who==="partner"?"partner":"me", text:h.text.slice(0,300), ...(h.done===false?{done:false}:{})})).slice(-500);
+  renderPartnerGrid(); renderSituationGrid();
+  if(state.partner && state.situation){
+    await startSession(); markContextDirty(); renderChat(); saveDraft(); showView("speller");
+    announce(`${currentPatient.name} 님의 대화를 이어 갑니다 (대화 ${state.history.length}마디).`);
+  } else {
+    el("toStep2").disabled=!state.partner; el("toStep3").disabled=true; showView("partner");
+    announce(`${currentPatient.name} 님 — 대화 상대를 고르세요.`);
+  }
+}
+el("patientList").onclick=e=>{ const b=e.target.closest(".patient-item"); if(b) selectPatient(b.dataset.id); };
+el("patientFilter").oninput=e=>filterPatients(e.target.value);
+el("patientForm").onsubmit=async e=>{
+  e.preventDefault();
+  const name=el("pName").value.trim().slice(0,30), note=el("pNote").value.trim().slice(0,120);
+  if(!name){ el("pName").focus(); return; }
+  try{ const id=await PDB.create({name, note}); el("pName").value=""; el("pNote").value=""; el("patientAdd").open=false; await selectPatient(id); }
+  catch(err){ el("patientEmpty").hidden=false; el("patientEmpty").textContent="환자를 추가하지 못했습니다 — 인터넷 연결을 확인하세요."; }
+};
+el("btnGuest").onclick=()=>{ leavePatient(); resetToStart(); showView("partner"); };
+el("btnIntro").onclick=()=>showView("start");
+el("patientBadge").onclick=()=>{ leavePatient(); showView("patients"); renderPatients(); };
+
 function showView(name){
-  ["start","partner","situation","speller"].forEach(v=>{
+  ["patients","start","partner","situation","speller"].forEach(v=>{
     el("view-"+v).hidden = (v!==name);
   });
   if(name==="speller"){ loadDict(); if(!newsEntries.length) (window.requestIdleCallback||(f=>setTimeout(f,800)))(()=>refreshNews()); }   // 사전·시사어를 미리 받아 둔다
@@ -2493,7 +2691,7 @@ function renderSituationGrid(){
   });
 }
 
-el("btnStart").onclick=()=>{ showView("partner"); };
+el("btnStart").onclick=()=>{ showView("patients"); renderPatients(); };
 el("toStep2").onclick=()=>{ showView("situation"); };
 el("backTo1").onclick=()=>{ showView("partner"); };
 el("toStep3").onclick=async ()=>{ await startSession(); showView("speller"); };
@@ -2516,7 +2714,7 @@ function resetToStart(){
   try{ localStorage.removeItem("bci_session_id"); }catch(e){}
   renderPartnerGrid(); renderSituationGrid();
   el("toStep2").disabled=true; el("toStep3").disabled=true;
-  showView("start");
+  showView(currentPatient ? "partner" : "patients"); if(!currentPatient) renderPatients();
 }
 
 /* ---------------- step 3: session + speller ---------------- */
@@ -2527,7 +2725,7 @@ async function startSession(){
   undoStack=[];
   el("partnerBadge").innerHTML = `<span class="num">✓</span>${esc(partnerLabel(state.partner))}`;
   el("situationBadge").innerHTML = `<span class="num">✓</span>${esc(situationLabel(state.situation))}`;
-  state.committed=""; state.initials=""; state.latest=[]; state.history=[];
+  state.committed=""; state.initials=""; state.latest=[]; if(!currentPatient) state.history=[];   // 환자 모드: 대화가 이어 쌓인다
   renderKeyboard(); renderBuffer(); renderChat(); renderCandidatesEmpty();
   refreshHabitual();
 }
@@ -3426,7 +3624,7 @@ el("btnForget").onclick=()=>{
   cancelPending();predictCache.clear();
   state.habitual=[]; state.lastWord=""; state.lastWord2=""; markContextDirty();
   learn={word:{},next:{},phrase:{},ctx:{},day:today()};
-  try{ localStorage.removeItem(LEARN_KEY); sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
+  try{ localStorage.removeItem(learnKey()); sessionStorage.removeItem("bci_draft_v1"); }catch(e){}
   resetToStart();
 };
 el("btnExportMetrics").onclick=()=>{
@@ -4159,10 +4357,13 @@ function restoreDraft(){
     announce("이 탭의 대화를 복원했습니다. 후보는 새로 조회해주세요.");
   }catch(e){}
 }
+try{ const cp=JSON.parse(sessionStorage.getItem(PATIENT_KEY)||"null"); if(cp && typeof cp.id==="string") currentPatient={id:cp.id, name:String(cp.name||"환자"), note:String(cp.note||"")}; }catch(e){}
 loadLearn();
+renderPatientBadge();
 renderPartnerGrid();
 renderSituationGrid();
 restoreDraft();
+if(!el("view-patients").hidden) renderPatients();
 health();
 setInterval(()=>{ if(!document.hidden) health(); },60000);
 // 사전은 첫 화면이 그려진 뒤 바로 받기 시작한다. 상대·상황을 고르는 몇 초 사이에
