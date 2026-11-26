@@ -326,7 +326,8 @@ test('Expired session retries once without losing input, context or FillMask con
     assert.equal(await page.locator('#committed').textContent(), '도와줘');
     assert.equal(await page.evaluate(() => localStorage.getItem('bci_session_id')), null);
     await page.locator('#candSents .cand.sent', {hasText:'물 좀'}).first().click();
-    await page.waitForFunction(()=>document.querySelector('#committed').textContent==='도와줘 물 좀');
+    // v3.20: 문장 후보는 고르면 바로 대화 창으로 들어가 끝난다(엔터 없음)
+    await page.waitForFunction(()=>document.querySelector('#committed').textContent==='' && state.history.at(-1)?.text==='도와줘 물 좀');
     await page.evaluate(() => { state.initials = 'ㅁㅈ'; return predict({}); });
     assert.equal(requests.at(-1).pathname, '/predict');
     assert.equal(requests.length, 3);
@@ -382,7 +383,7 @@ test('FillMask edits without committing and selects the displayed alternative', 
     assert.equal(await page.locator('#committed').textContent(), '');
     assert.ok((await page.locator('#candSents .cand.sent .tx').allTextContents()).some(t=>t.trim()==='물 좀'));
     await page.locator('#candSents .cand.sent', {hasText:'물 좀'}).first().click();
-    await page.waitForFunction(() => document.querySelector('#committed').textContent === '물 좀');
+    await page.waitForFunction(() => document.querySelector('#committed').textContent === '' && state.history.at(-1)?.text === '물 좀');
     assert.equal(requests.find(r => r.path.endsWith('/select')).body.candidate_id, 'alternative');
 
     // 조회가 도중일 때 입력을 비우면 늦게 온 응답은 버려져야 한다.
@@ -883,10 +884,12 @@ test('Enter after a mouse-picked candidate finishes the sentence instead of re-p
     const i=cands.findIndex(t=>t.includes('도와주세요'));
     assert.ok(i>=0, cands.join(' | '));
     await page.locator('#keyboard .key.cand').nth(i).click();
-    const picked=await page.evaluate(()=>state.committed);
+    // v3.20: 초성을 다 쓴 후보를 고르면 엔터 없이 바로 대화 창으로 들어간다
+    await page.waitForFunction(()=>state.history.length===1);
+    const picked=await page.evaluate(()=>state.history[0].text);
+    assert.equal(picked,'도와주세요');
     assert.equal(await page.evaluate(()=>state.initials),'');
-    assert.match(await page.locator('#keyboard .key[data-v="commit"]').getAttribute('aria-label'),/엔터/);
-    await page.keyboard.press('Enter');
+    assert.doesNotMatch(await page.locator('#keyboard .key[data-v="commit"]').getAttribute('aria-label'),/엔터/,'엔터 키 상태는 없다');
     assert.equal(await page.locator('#prevLines').textContent(),'','끝낸 문장은 입력 칸에서 빠진다');
     assert.equal(await page.locator('#committed').textContent(),'');
     assert.match(await page.locator('#chatLog .chat-turn.me').last().textContent(),new RegExp(picked.trim()),'대화 창으로 넘어간다');
